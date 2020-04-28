@@ -1,1 +1,1 @@
-# Envision for MarkLogic DataHub
+# Envision for MarkLogic Data Hub
