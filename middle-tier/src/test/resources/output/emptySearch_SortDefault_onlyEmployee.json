@@ -1,0 +1,135 @@
+{
+	"page": 1,
+	"total": 4,
+	"pageLength": 5,
+	"nodes": {
+		"/CoastalEmployees/55003.json": {
+			"id": "/CoastalEmployees/55003.json",
+			"uri": "/CoastalEmployees/55003.json",
+			"entityName": "Employee",
+			"label": "Joan Smith",
+			"entity": {
+				"name": "Joan Smith",
+				"departmentId": "3",
+				"employeeId": "55003",
+				"skills": [
+					"programming"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/MountainTopEmployees/employee4.json": {
+			"id": "/MountainTopEmployees/employee4.json",
+			"uri": "/MountainTopEmployees/employee4.json",
+			"entityName": "Employee",
+			"label": "Roberta Jones",
+			"entity": {
+				"name": "Roberta Jones",
+				"departmentId": "4",
+				"employeeId": "55004",
+				"skills": [
+					"hrSkill1",
+					"hrSkill2",
+					"hrSkill3"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 3
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/MountainTopEmployees/employee5.json": {
+			"id": "/MountainTopEmployees/employee5.json",
+			"uri": "/MountainTopEmployees/employee5.json",
+			"entityName": "Employee",
+			"label": "Sam Smith",
+			"entity": {
+				"name": "Sam Smith",
+				"departmentId": "4",
+				"employeeId": "55005",
+				"skills": [
+					"hrSkill1",
+					"hrSkill2"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 2
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Employee",
+			"label": "Zola Manchett",
+			"entity": {
+				"name": "Zola Manchett",
+				"skills": [
+					"general ledger",
+					"procurement"
+				],
+				"departmentId": "2",
+				"employeeId": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 5
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {}
+}

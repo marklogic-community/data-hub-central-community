@@ -1,0 +1,386 @@
+{
+	"page": 1,
+	"total": 31,
+	"pageLength": 30,
+	"nodes": {
+		"city#Kalamazoo": {
+			"id": "city#Kalamazoo",
+			"label": "Kalamazoo",
+			"entityName": "City",
+			"isConcept": true
+		},
+		"/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"id": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"uri": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"entityName": "Customer",
+			"label": "Sashenka",
+			"entity": {
+				"address": "571 Grayhawk Court",
+				"postalCode": [
+					"49006",
+					"83716"
+				],
+				"customerId": [
+					"4",
+					"260b514c-353b-442d-9db8-e7aca51b3765"
+				],
+				"firstName": "Sashenka",
+				"gender": "Female",
+				"state": "Michigan",
+				"email": "smontfort3@timesonline.co.uk",
+				"age": 18,
+				"segment": "Millenial",
+				"city": "Kalamazoo",
+				"favoriteStoreType": "mobile",
+				"lastName": "Montfort",
+				"phoneNumber": "269-621-8555"
+			},
+			"edgeCounts": {
+				"customer-places-order": {
+					"from": "customer",
+					"to": "order",
+					"label": "places",
+					"count": 3
+				},
+				"customer-hascity-city": {
+					"from": "customer",
+					"to": "city",
+					"label": "hasCity",
+					"count": 2
+				}
+			},
+			"prov": [
+				{
+					"id": "6fe8d0dc-db3c-4f41-844d-cff37271a7c8",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"activity": "89b7845f-a339-45e3-9e78-e4176fb646ea",
+						"time": "2020-04-24T17:35:28.287897Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"influencer": "MasterCustomers"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"usedEntity": "/envision/datahub/data/BrandBCustomers/45edbcc4-c1f3-41ee-b199-213d19326e87.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"agent": "default-mastering"
+					},
+					"wasAttributedTo": {
+						"entity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json": {
+			"id": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"uri": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"entityName": "Order",
+			"label": "6",
+			"entity": {
+				"orderId": "6",
+				"customerId": "4",
+				"pricePaid": 113,
+				"shipDate": "2017-12-31",
+				"orderDate": "2017-12-29",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "dbc8a655-5f83-45bc-a20d-2466adf3555a",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7d",
+						"time": "2020-04-24T17:35:24.97552Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"usedEntity": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "198b54a3-7dfb-4f8d-b8ad-f7f44a539ce2",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7d",
+						"time": "2020-04-24T17:35:26.565948Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"influencer": "BrandAOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"usedEntity": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json": {
+			"id": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"uri": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"entityName": "Order",
+			"label": "B-114",
+			"entity": {
+				"orderId": "B-114",
+				"customerId": "260b514c-353b-442d-9db8-e7aca51b3765",
+				"pricePaid": 44.64,
+				"shipDate": "2016-07-01",
+				"orderDate": "2016-06-24",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "d19be54f-c871-4f5d-85c9-f5d8521304aa",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:29.134285Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"influencer": "BrandBOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "aad2b6f0-f34d-4496-9ebb-0b81c5054719",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:28.880706Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json": {
+			"id": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"uri": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"entityName": "Order",
+			"label": "B-115",
+			"entity": {
+				"orderId": "B-115",
+				"customerId": "260b514c-353b-442d-9db8-e7aca51b3765",
+				"pricePaid": 83.98,
+				"shipDate": "2017-09-30",
+				"orderDate": "2017-09-14",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "776336bc-f7b2-4074-890c-6b0206b7fe67",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:29.134285Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"influencer": "BrandBOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "21212b2b-efa4-4823-b227-37b18f2279fe",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:28.886135Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json-http://www.w3.org/2000/01/rdf-schema#hasCity": {
+			"from": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"to": "city#Kalamazoo",
+			"id": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json-http://www.w3.org/2000/01/rdf-schema#hasCity",
+			"label": "hasCity",
+			"fromType": "customer",
+			"toType": "city",
+			"isConcept": true
+		},
+		"/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"from": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"to": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"id": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"label": "placedBy",
+			"fromType": "order",
+			"toType": "customer",
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"from": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"to": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"id": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"label": "placedBy",
+			"fromType": "order",
+			"toType": "customer",
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"from": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"to": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"id": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"label": "placedBy",
+			"fromType": "order",
+			"toType": "customer",
+			"isConcept": false
+		}
+	}
+}

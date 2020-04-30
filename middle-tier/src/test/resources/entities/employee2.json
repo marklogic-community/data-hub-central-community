@@ -1,0 +1,75 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "MountainTopEmployees"
+				}
+			],
+			"createdOn": "2020-03-11T15:13:43.41294Z",
+			"createdBy": "maverick",
+			"createdUsingFile": "/MountainTopEmployees/HR360-Employee-CSV.csv"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Employee": {
+				"name": "Zola Manchett",
+				"departmentId": "2",
+				"employeeId": "5",
+				"skills": ["procurement", "otherSkill"]
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [
+						{
+							"name": "MountainTopEmployees"
+						}
+					],
+					"createdOn": "2020-03-11T15:13:43.41294Z",
+					"createdBy": "maverick",
+					"createdUsingFile": "/MountainTopEmployees/HR360-Employee-CSV.csv"
+				},
+				"triples": [],
+				"instance": {
+					"emp_id": "5",
+					"status": "Active - Regular Exempt (Part-time)",
+					"first_name": "Zola",
+					"last_name": "Manchett",
+					"dob": "3/1/1986",
+					"addr1": "823 Bobwhite Drive",
+					"addr2": "",
+					"city": "Cape Coral",
+					"latitude": "26.6599",
+					"longitude": "-81.8934",
+					"state": "FL",
+					"zip": "33915",
+					"home_phone": "1(239)304-3717",
+					"mobile": "1(540)479-8296",
+					"pager": "",
+					"home_email": "",
+					"job_title": "Assistant Media Planner",
+					"hire_date": "11/20/2005",
+					"work_phone": "1(626)625-9650",
+					"work_email": "zola.manchett@mountaintop.com",
+					"reports_to": "3",
+					"dept_num": "2",
+					"products": "[\"procurement\", \"accounts receivable\"]",
+					"products[1-2]": "",
+					"languages": "[\"XQuery\"]",
+					"languages[1-4]": "",
+					"tools": "[\"Nifi\", \"Teradata\", \"Oracle\", \"Mulesoft\", \"Kafka\", \"Hadoop\"]",
+					"tools[1-6]": "",
+					"primaryProduct": "procurement"
+				},
+				"attachments": null
+			}
+		}
+	}
+}

@@ -1,0 +1,191 @@
+{
+	"nodes": {
+		"skill#general ledger": {
+			"id": "skill#general ledger",
+			"label": "general ledger",
+			"entityName": "Skill",
+			"isConcept": true
+		},
+		"skill#not visible in search": {
+			"id": "skill#not visible in search",
+			"label": "not visible in search",
+			"entityName": "Skill",
+			"isConcept": true
+		},
+		"skill#otherSkill": {
+			"id": "skill#otherSkill",
+			"label": "otherSkill",
+			"entityName": "Skill",
+			"isConcept": true
+		},
+		"skill#procurement": {
+			"id": "skill#procurement",
+			"label": "procurement",
+			"entityName": "Skill",
+			"isConcept": true
+		},
+		"/CoastalEmployees/55002.json": {
+			"id": "/CoastalEmployees/55002.json",
+			"uri": "/CoastalEmployees/55002.json",
+			"entityName": "Employee",
+			"label": "Zola Manchett",
+			"entity": {
+				"name": "Zola Manchett",
+				"departmentId": "2",
+				"employeeId": "55002",
+				"skills": [
+					"general ledger",
+					"not visible in search"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 3
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json": {
+			"id": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"uri": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"entityName": "Employee",
+			"label": "Zola Manchett",
+			"entity": {
+				"name": "Zola Manchett",
+				"departmentId": "2",
+				"employeeId": "5",
+				"skills": [
+					"procurement",
+					"otherSkill"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 2
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Department",
+			"label": "Marketing",
+			"entity": {
+				"name": "Marketing",
+				"departmentId": [
+					"2",
+					"22"
+				],
+				"employeeIds": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department",
+			"isConcept": false
+		},
+		"/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/CoastalEmployees/55002.json",
+			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department",
+			"isConcept": false
+		},
+		"/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger": {
+			"from": "/CoastalEmployees/55002.json",
+			"to": "skill#general ledger",
+			"id": "/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill",
+			"isConcept": true
+		},
+		"/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#has-skill#not visible in search": {
+			"from": "/CoastalEmployees/55002.json",
+			"to": "skill#not visible in search",
+			"id": "/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#has-skill#not visible in search",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill",
+			"isConcept": true
+		},
+		"/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json-http://www.w3.org/2000/01/rdf-schema#has-skill#otherSkill": {
+			"from": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"to": "skill#otherSkill",
+			"id": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json-http://www.w3.org/2000/01/rdf-schema#has-skill#otherSkill",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill",
+			"isConcept": true
+		},
+		"/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement": {
+			"from": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"to": "skill#procurement",
+			"id": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill",
+			"isConcept": true
+		},
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json": {
+			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee",
+			"isConcept": false
+		},
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55002.json": {
+			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/CoastalEmployees/55002.json",
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55002.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee",
+			"isConcept": false
+		}
+	}
+}

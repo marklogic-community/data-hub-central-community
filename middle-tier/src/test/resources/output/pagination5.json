@@ -1,0 +1,52 @@
+{
+	"page": 5,
+	"total": 7,
+	"pageLength": 1,
+	"nodes": {
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Employee",
+			"label": "Zola Manchett",
+			"entity": {
+				"name": "Zola Manchett",
+				"skills": [
+					"general ledger",
+					"procurement"
+				],
+				"departmentId": "2",
+				"employeeId": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 5
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee",
+			"isConcept": false
+		}
+	}
+}

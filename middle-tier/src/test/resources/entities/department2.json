@@ -1,0 +1,46 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "Departments"
+				}
+			],
+			"createdOn": "2020-03-11T15:13:51.895486Z",
+			"createdBy": "maverick"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Department",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Department": {
+				"name": "Marketing",
+				"departmentId": "2",
+				"employeeIds": ["55002"]
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [
+						{
+							"name": "Departments"
+						}
+					],
+					"createdOn": "2020-03-11T15:13:51.895486Z",
+					"createdBy": "maverick"
+				},
+				"triples": [],
+				"instance": {
+					"department_id": 2,
+					"dept_name": "Marketing",
+					"emp_id": "55002"
+				},
+				"attachments": null
+			}
+		}
+	}
+}

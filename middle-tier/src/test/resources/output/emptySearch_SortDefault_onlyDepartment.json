@@ -1,0 +1,82 @@
+{
+	"page": 1,
+	"total": 3,
+	"pageLength": 5,
+	"nodes": {
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Department",
+			"label": "Marketing",
+			"entity": {
+				"name": "Marketing",
+				"departmentId": [
+					"2",
+					"22"
+				],
+				"employeeIds": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/departments/department3.json": {
+			"id": "/departments/department3.json",
+			"uri": "/departments/department3.json",
+			"entityName": "Department",
+			"label": "Engineering",
+			"entity": {
+				"name": "Engineering",
+				"departmentId": "3",
+				"employeeIds": [
+					"55003"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/departments/department4.json": {
+			"id": "/departments/department4.json",
+			"uri": "/departments/department4.json",
+			"entityName": "Department",
+			"label": "Human Resources",
+			"entity": {
+				"name": "Human Resources",
+				"departmentId": "4",
+				"employeeIds": [
+					"55004",
+					"55005"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {}
+}

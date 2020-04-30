@@ -1,0 +1,151 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE"
+		classpath "com.moowork.gradle:gradle-node-plugin:1.3.1"
+	}
+}
+
+plugins {
+	id 'com.marklogic.ml-development-tools' version '4.1.1'
+	id 'org.springframework.boot' version '2.1.6.RELEASE'
+}
+
+apply plugin: "java"
+apply plugin: "io.spring.dependency-management"
+apply plugin: "com.moowork.node"
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+ext {
+	taskGroup = "Envision UI"
+}
+
+bootJar {
+	baseName = springBootJarName
+}
+
+repositories {
+	jcenter()
+	mavenCentral()
+}
+
+ext.springVersion = '5.1.5.RELEASE'
+ext.junit4Version        = '4.12'
+ext.junitVintageVersion  = '4.12.0-RC3'
+ext.junitPlatformVersion = '1.4.0'
+ext.junitJupiterVersion  = '5.4.0'
+
+dependencies {
+	compile group: 'org.springframework', name: 'spring-web', version: springVersion
+	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
+
+	compile group: 'org.springframework.security', name: 'spring-security-core', version: springVersion
+	compile group: 'org.springframework.security', name: 'spring-security-config', version: springVersion
+	compile group: 'org.springframework.security', name: 'spring-security-web', version: springVersion
+
+	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "com.marklogic:marklogic-data-hub:5.1.0"
+
+	compile("com.marklogic:marklogic-spring-web:1.0")
+
+	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
+	testCompile group: 'org.springframework', name: 'spring-test'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+
+	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testCompile "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+	testCompile "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+	testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testRuntime "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
+
+	testRuntime "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
+	testCompile 'xmlunit:xmlunit:1.3'
+	testCompile 'org.skyscreamer:jsonassert:1.5.0'
+	testCompile 'org.hamcrest:hamcrest-junit:2.0.0.0'
+	testCompile 'org.easymock:easymock:3.4'
+	testCompile 'ch.qos.logback:logback-classic:1.1.11'
+	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
+}
+
+task installDependencies(type: NpmTask, group: taskGroup) {
+	description = "Install UI dependencies before building the UI files"
+	args = ["install"]
+	execOverrides { it.workingDir = groveUiPath }
+}
+
+task buildUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
+	description = "Builds the UI files so that they can be copied to the Spring Boot application"
+	args = ["run", "build"]
+	execOverrides { it.workingDir = groveUiPath }
+}
+
+task runUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
+	description = "Run the UI in debug mode"
+	args = ["run", "start"]
+	execOverrides { it.workingDir = groveUiPath }
+}
+
+task deleteSpringBootUiFiles(type: Delete, group: taskGroup) {
+	description = "Delete the UI files that may have already been copied over to the Spring Boot UI directory"
+	delete springBootUiPath
+}
+
+task copyUiFiles(type: Copy, dependsOn: deleteSpringBootUiFiles, group: taskGroup) {
+	description = "Copies the UI files to a directory where Spring Boot will include them in the executable bootJar file"
+	from groveUiPath + "/dist"
+	into springBootUiPath
+}
+
+// Before the Spring Boot jar is built, build the UI files and copy them over
+build.dependsOn buildUi
+
+if (!(
+  gradle.startParameter.taskNames*.toLowerCase().contains("bootrun") ||
+    gradle.startParameter.taskNames*.toLowerCase().contains("test")
+)
+) {
+	processResources.dependsOn copyUiFiles
+	copyUiFiles.mustRunAfter buildUi
+}
+
+clean.dependsOn deleteSpringBootUiFiles
+
+springBoot {
+	// not in spring boot 2 executable = true
+	mainClassName = "com.marklogic.grove.boot.Application"
+}
+
+
+task generateEntitySearcher(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/ml-modules/root/entities/search/service.json'
+}
+
+task generateEntityModeller(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/ml-modules/root/entities/model/service.json'
+}
+
+task generateMastering(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/ml-modules/root/entities/mastering/service.json'
+}
+
+task generateTripleBrowser(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/ml-modules/root/triples/browse/service.json'
+}
+
+task generateSystemUtils(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/ml-modules/root/system/utils/service.json'
+}
+
+bootRun {
+	systemProperties = System.properties
+}
+
+test {
+	useJUnitPlatform()
+}

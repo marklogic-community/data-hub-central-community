@@ -1,0 +1,29 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "MountainTopEmployees"
+				}
+			],
+			"createdOn": "2020-03-11T15:13:43.41294Z",
+			"createdBy": "maverick",
+			"createdUsingFile": "/MountainTopEmployees/HR360-Employee-CSV.csv"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Employee": {
+				"name": "Sam Smith",
+				"departmentId": "4",
+				"employeeId": "55005",
+				"skills": ["hrSkill1", "hrSkill2"]
+			}
+		},
+		"attachments": {}
+	}
+}

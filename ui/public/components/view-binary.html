@@ -1,0 +1,318 @@
+<template id="view-binary-template">
+    <style>
+      .view-binary,
+      .view-binary #view-binary-loading,
+      .view-binary #view-binary-viewer,
+      .view-binary #view-binary-audio,
+      .view-binary #view-binary-video,
+      .view-binary #view-binary-picture,
+      .view-binary #view-binary-object {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+      }
+
+      /* fontawesome (copied because of Shadow DOM isolation) */
+      .fa {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .fa-refresh:before {
+        content: "\F021";
+      }
+      .fa-refresh[hidden]:before {
+        content: "";
+      }
+      .fa-spin {
+        -webkit-animation: fa-spin 2s infinite linear;
+        animation: fa-spin 2s infinite linear;
+      }
+      @-webkit-keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg);
+        }
+      }
+      @keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg);
+        }
+      }
+    </style>
+    <div class="view-binary">
+      <div id="view-binary-loading">
+        <slot name="loading">
+          Loading... <i class="fa fa-refresh fa-spin"></i>
+        </slot>
+      </div>
+      <div id="view-binary-viewer">
+        <audio id="view-binary-audio" controls preload="metadata" src="" title="">
+          <slot id="fallback" name="fallback"></slot>
+        </audio>
+        <video id="view-binary-video" controls preload="metadata" src="" title="" playsinline>
+        </video>
+        <picture id="view-binary-picture">
+          <img src="" alt="">
+        </picture>
+        <object id="view-binary-object" data="" type="" title="">
+        </object>
+      </div>
+      <div id="view-binary-spacer"></div>
+    </div>
+  </template>
+
+  <script>
+    // Usage:
+    // <view-binary src="" type="" title="">
+    //   <a class="btn btn-default" href="" target="_blank" download>Download</a>
+    // </view-binary>
+
+    (function() {
+
+      // Inspired by https://developers.google.com/web/fundamentals/web-components/
+
+      class ViewBinary extends HTMLElement {
+
+        static get observedAttributes() {
+          return ["src", "type", "title"];
+        }
+
+        /**
+         * The element's constructor is run anytime a new instance is created.
+         * Instances are created either by parsing HTML, calling
+         * `document.createElement('view-binary')`, or calling `new ViewBinary()`.
+         * The construtor is a good place to create shadow DOM, though you should
+         * avoid touching any attributes or light DOM children as they may not
+         * be available yet.
+         */
+        constructor() {
+          // always call super first
+          super();
+
+          // initialize private properties
+          this._src = undefined;
+          this._type = undefined;
+          this._title = undefined;
+
+          // initialize template placeholders
+          this.$loading = undefined;
+          this.$viewer = undefined;
+          this.$audio = undefined;
+          this.$video = undefined;
+          this.$picture = undefined;
+          this.$object = undefined;
+
+          // make sure private methods are properly bound to 'this'
+          this._upgradeProperty = this._upgradeProperty.bind(this);
+          this._initialize = this._initialize.bind(this);
+          this._updateRendering = this._updateRendering.bind(this);
+        }
+
+        /**
+         * `connectedCallback()` fires when the element is inserted into the DOM.
+         * It's a good place to set the initial internal state,
+         * and install event listeners.
+         */
+        connectedCallback() {
+          // initialize template
+          this._initialize();
+        }
+
+        /**
+         * `disconnectedCallback()` fires when the element is removed from the DOM.
+         * It's a good place to do clean up work like releasing references and
+         * removing event listeners.
+         */
+        disconnectedCallback() {
+          this._destroy();
+        }
+
+        /**
+         * `adoptedCallback()`: Invoked when the custom element is moved to a new document.
+        */
+        adoptedCallback() {
+          this._updateRendering();
+        }
+
+        /**
+         * `attributeChangedCallback()` is called when any of the attributes in the
+         * `observedAttributes` array are changed. It's a good place to handle
+         * side effects.
+         */
+        attributeChangedCallback(name, oldValue, newValue) {
+          switch (name) {
+            case "src" : {
+              this._src = newValue;
+              break;
+            }
+            case "type": {
+              this._type = newValue;
+              break;
+            }
+            case "title": {
+              this._title = newValue;
+              break;
+            }
+          }
+
+          this._updateRendering();
+        }
+
+        // Programmatic access to custom element properties
+        // Note: this loops back into attributeChangedCallback
+        set src(value) {
+          if (value)
+            this.setAttribute('src', value);
+          else
+            this.removeAttribute('src');
+        }
+
+        get src() {
+          return this._src;
+        }
+
+        set type(value) {
+          if (value)
+            this.setAttribute('type', value);
+          else
+            this.removeAttribute('type');
+        }
+
+        get type() {
+          return this._type;
+        }
+
+        set title(value) {
+          if (value)
+            this.setAttribute('title', value);
+          else
+            this.removeAttribute('title');
+        }
+
+        get title() {
+          return this._title;
+        }
+
+        // initialize contents of custom element
+        _initialize() {
+          if (this.attachShadow) {
+            // enable Shadow DOM
+            this.attachShadow({mode: 'open'});
+          } else {
+            // instant stub polyfill for shadowRoot
+            this.shadowRoot = this;
+          }
+
+          // Make sure to look inside this html fragement (in case of true html import)
+          const doc = document.currentScript ? (document.currentScript.ownerDocument || document) : document;
+
+          // get and append template
+          const template = doc
+            .getElementById("view-binary-template")
+            .content
+            .cloneNode(true);
+          this.shadowRoot.appendChild(template);
+
+          // get placeholders
+          this.$loading = this.shadowRoot.querySelector("#view-binary-loading");
+          this.$viewer = this.shadowRoot.querySelector("#view-binary-viewer");
+          this.$audio = this.shadowRoot.querySelector("#view-binary-audio");
+          this.$video = this.shadowRoot.querySelector("#view-binary-video");
+          this.$picture = this.shadowRoot.querySelector("#view-binary-picture");
+          this.$object = this.shadowRoot.querySelector("#view-binary-object");
+
+          // A user may set a property on an _instance_ of an element,
+          // before its prototype has been connected to this class.
+          // The `_upgradeProperty()` method will check for any instance properties
+          // and run them through the proper class setters.
+          this._upgradeProperty("src");
+          this._upgradeProperty("type");
+          this._upgradeProperty("title");
+
+          // initialize rendering
+          this._updateRendering();
+
+          // hook up event listeners
+          //this.$viewer.addEventListener('click', this.onViewerClick);
+        }
+
+        _destroy() {
+          // remove event listeners
+          //this.$viewer.removeEventListener('click', this.onViewerClick);
+        }
+
+        // capture property values from unupgraded instances, and delete them
+        // so they do not shadow the custom element's own property setter.
+        _upgradeProperty(prop) {
+          if (this.hasOwnProperty(prop)) {
+            let value = this[prop];
+            delete this[prop];
+            this[prop] = value;
+          }
+        }
+
+        // update rendering of placeholders
+        _updateRendering() {
+          if (this.shadowRoot) {
+            if (this.src !== undefined && this.type !== undefined) {
+              this.$loading.hidden = true;
+              this.$viewer.hidden = false;
+
+              this.$audio.hidden = true;
+              this.$video.hidden = true;
+              this.$picture.hidden = true;
+              this.$object.hidden = true;
+
+              // there can be only one fallback slot, move it around
+              var slot = this.shadowRoot.querySelector("#fallback");
+              slot.parentNode.removeChild(slot);
+
+              if (this.type.match(/^audio\//)) {
+                this.$audio.hidden = false;
+                this.$audio.setAttribute("src", this.src);
+                this.$audio.setAttribute("title", this.title || "");
+                this.$audio.appendChild(slot);
+              } else if (this.type.match(/^video\//)) {
+                this.$video.hidden = false;
+                this.$video.setAttribute("src", this.src);
+                this.$video.setAttribute("title", this.title || "");
+                this.$video.appendChild(slot);
+              } else if (this.type.match(/^image\//)) {
+                this.$picture.hidden = false;
+                this.$picture.firstElementChild.setAttribute("src", this.src);
+                this.$picture.firstElementChild.setAttribute("alt", this.title || "");
+                this.$picture.appendChild(slot);
+              } else {
+                this.$object.hidden = false;
+                this.$object.setAttribute("data", this.src);
+                this.$object.setAttribute("type", this.type);
+                this.$object.setAttribute("title", this.title || "");
+                this.$object.appendChild(slot);
+              }
+            } else {
+              this.$loading.hidden = false;
+              this.$viewer.hidden = true;
+            }
+          }
+        }
+
+      };
+
+      // declare the webcomponent
+      window.customElements.define("view-binary", ViewBinary);
+
+    })();
+  </script>

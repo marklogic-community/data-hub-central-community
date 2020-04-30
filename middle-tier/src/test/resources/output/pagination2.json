@@ -1,0 +1,54 @@
+{
+	"page": 2,
+	"total": 7,
+	"pageLength": 1,
+	"nodes": {
+		"skill#programming": {
+			"id": "skill#programming",
+			"label": "programming",
+			"entityName": "Skill",
+			"isConcept": true
+		},
+		"/CoastalEmployees/55003.json": {
+			"id": "/CoastalEmployees/55003.json",
+			"uri": "/CoastalEmployees/55003.json",
+			"entityName": "Employee",
+			"label": "Joan Smith",
+			"entity": {
+				"name": "Joan Smith",
+				"departmentId": "3",
+				"employeeId": "55003",
+				"skills": [
+					"programming"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "skill#programming",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill",
+			"isConcept": true
+		}
+	}
+}

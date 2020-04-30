@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#"
+							 xmlns:foaf="http://xmlns.com/foaf/0.1/"
+							 xmlns:sm="http://marklogic.com/smart-mastering/auditing#"
+							 xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<auditing:new-uri xmlns:auditing="http://marklogic.com/smart-mastering/auditing">/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json</auditing:new-uri>
+	<auditing:previous-uri xmlns:auditing="http://marklogic.com/smart-mastering/auditing">/CoastalEmployees/55002.json</auditing:previous-uri>
+	<auditing:previous-uri xmlns:auditing="http://marklogic.com/smart-mastering/auditing">/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</auditing:previous-uri>
+	<prov:activity prov:id="http://marklogic.com/smart-mastering/auditing#merge-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-5375182468647327552">
+		<prov:type xsi:type="xsd:string"
+							 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">merge</prov:type>
+		<prov:label>merge by maverick</prov:label>
+	</prov:activity>
+	<collection prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.json"
+							xmlns="http://www.w3.org/ns/prov#">
+		<type xsi:type="xsd:string"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">contributing record for merge</type>
+		<label>/CoastalEmployees/55002.json</label>
+	</collection>
+	<collection prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json"
+							xmlns="http://www.w3.org/ns/prov#">
+		<type xsi:type="xsd:string"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">contributing record for merge</type>
+		<label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</label>
+	</collection>
+	<collection prov:id="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"
+							xmlns="http://www.w3.org/ns/prov#">
+		<type xsi:type="xsd:string"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">result of record merge</type>
+		<label>/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json</label>
+	</collection>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.json"/>
+		<prov:activity prov:ref="http://marklogic.com/smart-mastering/auditing#merge-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-5375182468647327552"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json"/>
+		<prov:activity prov:ref="http://marklogic.com/smart-mastering/auditing#merge-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-5375182468647327552"/>
+	</prov:wasDerivedFrom>
+	<prov:agent prov:id="http://marklogic.com/smart-mastering/auditing#user-maverick">
+		<prov:type xsi:type="xsd:QName"
+							 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">foaf:OnlineAccount</prov:type>
+		<foaf:accountName>maverick</foaf:accountName>
+	</prov:agent>
+	<prov:wasAttributedTo>
+		<prov:entity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:agent prov:ref="http://marklogic.com/smart-mastering/auditing#user-maverick"/>
+	</prov:wasAttributedTo>
+	<prov:wasGeneratedBy>
+		<prov:entity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:activity prov:ref="http://marklogic.com/smart-mastering/auditing#merge-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-5375182468647327552"/>
+		<prov:time>2020-03-11T15:13:52.314304Z</prov:time>
+	</prov:wasGeneratedBy>
+	<prov:hadMember>
+		<prov:collection prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonaddress89210bf17edb6bd6e12e854fdda46d48eddedb556684b91cfd9dcc1bd5b67e13800fa26b76fe1e956e995a8a174bdf6fc5782eaa63297cb0ff78a84433455ac4">
+			<prov:type>address</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:address</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>823 Bobwhite Drive</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonpostalCode3750a9299f7d9f695b55afad150bc963bdeecd3398f717ff1abe4c6750afa8060799180efe4ee7bd2a3470e27321a0b71a5eddd85b54882a6a5f281981132579">
+			<prov:type>postalCode</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:postalCode</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>33915</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonfirstNameefb5a030cc0d5e459564cd5a00fbc3f92e45c90f1a4863f90a8230ddb074eae7fc5de10b16ced043efb006e5ad69dfecd9850175e0b41629bf9ef1e2f0afcf41">
+			<prov:type>firstName</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:firstName</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>Zola</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobStatus7110a8eb3d431bed1aac72e538d26c6262ef7d7614500bd23fdbf997217d5dd7984393831acacac62b768a766363ef11443745784ace8d48f4de37c5a380dbd8">
+			<prov:type>jobStatus</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:jobStatus</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>Active (Part-time)</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonproductSkills4f2fccdaa7a2bf85676ddc1f7567baa6bbcd621d6481ba9e60c0fc16fe1e8a3234cf032bf995cd20c8d7088b3f2f941a79937e9aa9e36cb64c308045cbcd32ee">
+			<prov:type>productSkills</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:productSkills</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>general ledger</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonstate88f618261147a04260f447b9c4dcfb69636afcc0b37a83e9fb954e786bd8badd04fed5396d3485f63c452ed98302bdc68f1cd6079ceb4f375989f70bcf8ed4b3">
+			<prov:type>state</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:state</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>FL</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonemail9d5913a594caab6968267192a1589aa31644e28ddfa12622f9c8a3f200fb8bebc0ee8cabb0a382d6bfc8a3c139d97a3658fe326a614934b7e0edf74cb7a4133f">
+			<prov:type>email</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:email</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>zola.manchett@coastal.com</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobTitled8f722042d116af9165fc6c17cca4f3181198dffc8cf593bb47ee0cd9aa5e11f466226f934250645875a8e7958da093bed7996c7d11da045d339cf6855dc836e">
+			<prov:type>jobTitle</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:jobTitle</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>Mechanical Systems Engineer</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobEffectiveDate2ea02d65a10bc5f7e4667c120ef6ed242826ea143995ad40fd335177bc162c5069470e7dfb73a06b68952732db50432fc64222675d208ca85e6f0ceca2ca2527">
+			<prov:type>jobEffectiveDate</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:jobEffectiveDate</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>2018-09-11</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonmobileNumberf5f6daea8d1127dd6200f137fb22c9c8370579fc48b5a1071fb32be816b130eaca4ba5edcfae782cbbd32228799eb089df615ed319d56c3421911eb5a1e502c5">
+			<prov:type>mobileNumber</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:mobileNumber</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>1(540)479-8296</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsoncity1c3ef2edafe8af18593f425643bd3c7ab6add674e924327d7eb038c84115098023fb35cd102fba4b689a4b8ca834e7e47f3dfc56761cef97f63650d9a2925d4e">
+			<prov:type>city</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:city</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>Cape Coral</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsontoolSkillse2358586dbe5af42f2b0bbd212fc2f2297e7df1ef2ec298d51c17672f9f0d76e222c443de1c4cfbe002d398823fcd28b9b3ea7c6d50e4380891ca4ce3dbb5191">
+			<prov:type>toolSkills</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:toolSkills</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>node.js , Kafka , Mulesoft , SQL Server , Oracle , Nifi</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsondepartmentId40b244112641dd78dd4f93b6c9190dd46e0099194d5a44257b7efad6ef9ff4683da1eda0244448cb343aa688f5d3efd7314dafe580ac0bcbf115aeca9e8dc114">
+			<prov:type>departmentId</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:departmentId</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>2</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonlastName8e378f720df06a4e03d84c3c98ed43518464ff33715bb355a31bbc296213c452d26911df31ec222348e109369e227d3f3856644c41a0b069aaf88da21af66689">
+			<prov:type>lastName</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:lastName</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>Manchett</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonlanguageSkills2519753f258957f4aaf3798edea27281a7816fc00a1405d201b3667c0fdcc7da38269a0b1fd7b67dd6c1cbea714dc37d9f829f729bca9adaab565cb6db850275">
+			<prov:type>languageSkills</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:languageSkills</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>RDF</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonemployeeId989b886e73bd52a2f4ee9c3e3d4f00354d232fa320a119f3f52e5dec85d6db4a49246ecaa8948766e0a7a39a8f9eb25a990013da88bb7916d58bf8f4436fd883">
+			<prov:type>employeeId</prov:type>
+			<prov:label>/CoastalEmployees/55002.json:employeeId</prov:label>
+			<prov:location>/CoastalEmployees/55002.json</prov:location>
+			<prov:value>55002</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonaddress89210bf17edb6bd6e12e854fdda46d48eddedb556684b91cfd9dcc1bd5b67e13800fa26b76fe1e956e995a8a174bdf6fc5782eaa63297cb0ff78a84433455ac4">
+			<prov:type>address</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:address</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>823 Bobwhite Drive</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonpostalCode3750a9299f7d9f695b55afad150bc963bdeecd3398f717ff1abe4c6750afa8060799180efe4ee7bd2a3470e27321a0b71a5eddd85b54882a6a5f281981132579">
+			<prov:type>postalCode</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:postalCode</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>33915</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonfirstNameefb5a030cc0d5e459564cd5a00fbc3f92e45c90f1a4863f90a8230ddb074eae7fc5de10b16ced043efb006e5ad69dfecd9850175e0b41629bf9ef1e2f0afcf41">
+			<prov:type>firstName</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:firstName</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>Zola</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobStatus5e41a2dbd1de71b415ff88514520bd966e1c5be48f95a36c41241bd45ea5eecc53feea3ceb47614d4e49a51b36c1ae57eaa3375cac0933ed9253b166388a1498">
+			<prov:type>jobStatus</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:jobStatus</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>Active - Regular Exempt (Part-time)</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonproductSkillsebdfac97d3d520fde6b3bfe73ed5fa839543141e27a1e7d4bbdc1f8ea1a5f038cd194aab13c8c2aa89aace45db19695aa715b4596cf8ca4056f43b5d4b2a120e">
+			<prov:type>productSkills</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:productSkills</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>procurement</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonstate88f618261147a04260f447b9c4dcfb69636afcc0b37a83e9fb954e786bd8badd04fed5396d3485f63c452ed98302bdc68f1cd6079ceb4f375989f70bcf8ed4b3">
+			<prov:type>state</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:state</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>FL</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonemail7698571dd827f76272b1c14af9dbea5e9631ebdd0156700fa241a2db429b78fa83bd54cb33053fb1cabb9ac5762ea238e5da73d8bcfe59d0a6e721144df1ff99">
+			<prov:type>email</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:email</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>zola.manchett@mountaintop.com</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobTitle7810b507a38d7d83276bd6ae94f2886ab50a9baa8826e7bfc8283ef4394b5f5dd2a170a575ac1ab07f89be4cb178f0e3b4df72c4d5f8f63424fa327b9df99783">
+			<prov:type>jobTitle</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:jobTitle</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>Assistant Media Planner</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobEffectiveDate3c154d7b6bf4a02cbe2161a4446a77aa9dcc50d702fdfac8c3a7eeb98313b7194266c1f525dfbcf18d5b770550165502e16e1daa8ee3e1dc8178db66546b0914">
+			<prov:type>jobEffectiveDate</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:jobEffectiveDate</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>2005-11-20</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonmobileNumberf5f6daea8d1127dd6200f137fb22c9c8370579fc48b5a1071fb32be816b130eaca4ba5edcfae782cbbd32228799eb089df615ed319d56c3421911eb5a1e502c5">
+			<prov:type>mobileNumber</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:mobileNumber</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>1(540)479-8296</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsoncity1c3ef2edafe8af18593f425643bd3c7ab6add674e924327d7eb038c84115098023fb35cd102fba4b689a4b8ca834e7e47f3dfc56761cef97f63650d9a2925d4e">
+			<prov:type>city</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:city</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>Cape Coral</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsontoolSkillscc104327a9c8ebe7fedc909c084c51ed54d99985210a44aab60c80823f664f26d6b7887bd0185eb32acf4478e66d85b9c2bc551ffd699158b5ab1813647207aa">
+			<prov:type>toolSkills</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:toolSkills</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>["Nifi", "Teradata", "Oracle", "Mulesoft", "Kafka", "Hadoop"]</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsondepartmentId40b244112641dd78dd4f93b6c9190dd46e0099194d5a44257b7efad6ef9ff4683da1eda0244448cb343aa688f5d3efd7314dafe580ac0bcbf115aeca9e8dc114">
+			<prov:type>departmentId</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:departmentId</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>2</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonlastName8e378f720df06a4e03d84c3c98ed43518464ff33715bb355a31bbc296213c452d26911df31ec222348e109369e227d3f3856644c41a0b069aaf88da21af66689">
+			<prov:type>lastName</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:lastName</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>Manchett</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonlanguageSkills8df63a642ad49f67806071a8349f9140b37df2bfe54a96c71a659ed2483f911654ad5535e7644af3d9431d767046514dc448c7c0b6f2616162d52e6bb2ebda25">
+			<prov:type>languageSkills</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:languageSkills</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>["XQuery"]</prov:value>
+		</prov:entity>
+		<prov:entity prov:id="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonemployeeId06df05371981a237d0ed11472fae7c94c9ac0eff1d05413516710d17b10a4fb6f4517bda4a695f02d0a73dd4db543b4653df28f5d09dab86f92ffb9b86d01e25">
+			<prov:type>employeeId</prov:type>
+			<prov:label>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json:employeeId</prov:label>
+			<prov:location>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</prov:location>
+			<prov:value>5</prov:value>
+		</prov:entity>
+	</prov:hadMember>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonmobileNumberf5f6daea8d1127dd6200f137fb22c9c8370579fc48b5a1071fb32be816b130eaca4ba5edcfae782cbbd32228799eb089df615ed319d56c3421911eb5a1e502c5"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobStatus7110a8eb3d431bed1aac72e538d26c6262ef7d7614500bd23fdbf997217d5dd7984393831acacac62b768a766363ef11443745784ace8d48f4de37c5a380dbd8"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonstate88f618261147a04260f447b9c4dcfb69636afcc0b37a83e9fb954e786bd8badd04fed5396d3485f63c452ed98302bdc68f1cd6079ceb4f375989f70bcf8ed4b3"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsondepartmentId40b244112641dd78dd4f93b6c9190dd46e0099194d5a44257b7efad6ef9ff4683da1eda0244448cb343aa688f5d3efd7314dafe580ac0bcbf115aeca9e8dc114"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsontoolSkillse2358586dbe5af42f2b0bbd212fc2f2297e7df1ef2ec298d51c17672f9f0d76e222c443de1c4cfbe002d398823fcd28b9b3ea7c6d50e4380891ca4ce3dbb5191"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsontoolSkillscc104327a9c8ebe7fedc909c084c51ed54d99985210a44aab60c80823f664f26d6b7887bd0185eb32acf4478e66d85b9c2bc551ffd699158b5ab1813647207aa"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonpostalCode3750a9299f7d9f695b55afad150bc963bdeecd3398f717ff1abe4c6750afa8060799180efe4ee7bd2a3470e27321a0b71a5eddd85b54882a6a5f281981132579"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonproductSkillsebdfac97d3d520fde6b3bfe73ed5fa839543141e27a1e7d4bbdc1f8ea1a5f038cd194aab13c8c2aa89aace45db19695aa715b4596cf8ca4056f43b5d4b2a120e"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonemployeeId989b886e73bd52a2f4ee9c3e3d4f00354d232fa320a119f3f52e5dec85d6db4a49246ecaa8948766e0a7a39a8f9eb25a990013da88bb7916d58bf8f4436fd883"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonfirstNameefb5a030cc0d5e459564cd5a00fbc3f92e45c90f1a4863f90a8230ddb074eae7fc5de10b16ced043efb006e5ad69dfecd9850175e0b41629bf9ef1e2f0afcf41"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobEffectiveDate2ea02d65a10bc5f7e4667c120ef6ed242826ea143995ad40fd335177bc162c5069470e7dfb73a06b68952732db50432fc64222675d208ca85e6f0ceca2ca2527"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonaddress89210bf17edb6bd6e12e854fdda46d48eddedb556684b91cfd9dcc1bd5b67e13800fa26b76fe1e956e995a8a174bdf6fc5782eaa63297cb0ff78a84433455ac4"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonmobileNumberf5f6daea8d1127dd6200f137fb22c9c8370579fc48b5a1071fb32be816b130eaca4ba5edcfae782cbbd32228799eb089df615ed319d56c3421911eb5a1e502c5"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonemail7698571dd827f76272b1c14af9dbea5e9631ebdd0156700fa241a2db429b78fa83bd54cb33053fb1cabb9ac5762ea238e5da73d8bcfe59d0a6e721144df1ff99"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobEffectiveDate2ea02d65a10bc5f7e4667c120ef6ed242826ea143995ad40fd335177bc162c5069470e7dfb73a06b68952732db50432fc64222675d208ca85e6f0ceca2ca2527"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonproductSkills4f2fccdaa7a2bf85676ddc1f7567baa6bbcd621d6481ba9e60c0fc16fe1e8a3234cf032bf995cd20c8d7088b3f2f941a79937e9aa9e36cb64c308045cbcd32ee"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobTitle7810b507a38d7d83276bd6ae94f2886ab50a9baa8826e7bfc8283ef4394b5f5dd2a170a575ac1ab07f89be4cb178f0e3b4df72c4d5f8f63424fa327b9df99783"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonstate88f618261147a04260f447b9c4dcfb69636afcc0b37a83e9fb954e786bd8badd04fed5396d3485f63c452ed98302bdc68f1cd6079ceb4f375989f70bcf8ed4b3"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonemail9d5913a594caab6968267192a1589aa31644e28ddfa12622f9c8a3f200fb8bebc0ee8cabb0a382d6bfc8a3c139d97a3658fe326a614934b7e0edf74cb7a4133f"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonaddress89210bf17edb6bd6e12e854fdda46d48eddedb556684b91cfd9dcc1bd5b67e13800fa26b76fe1e956e995a8a174bdf6fc5782eaa63297cb0ff78a84433455ac4"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobEffectiveDate3c154d7b6bf4a02cbe2161a4446a77aa9dcc50d702fdfac8c3a7eeb98313b7194266c1f525dfbcf18d5b770550165502e16e1daa8ee3e1dc8178db66546b0914"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonfirstNameefb5a030cc0d5e459564cd5a00fbc3f92e45c90f1a4863f90a8230ddb074eae7fc5de10b16ced043efb006e5ad69dfecd9850175e0b41629bf9ef1e2f0afcf41"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsondepartmentId40b244112641dd78dd4f93b6c9190dd46e0099194d5a44257b7efad6ef9ff4683da1eda0244448cb343aa688f5d3efd7314dafe580ac0bcbf115aeca9e8dc114"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobTitle7810b507a38d7d83276bd6ae94f2886ab50a9baa8826e7bfc8283ef4394b5f5dd2a170a575ac1ab07f89be4cb178f0e3b4df72c4d5f8f63424fa327b9df99783"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonmobileNumberf5f6daea8d1127dd6200f137fb22c9c8370579fc48b5a1071fb32be816b130eaca4ba5edcfae782cbbd32228799eb089df615ed319d56c3421911eb5a1e502c5"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonpostalCode3750a9299f7d9f695b55afad150bc963bdeecd3398f717ff1abe4c6750afa8060799180efe4ee7bd2a3470e27321a0b71a5eddd85b54882a6a5f281981132579"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonproductSkillsebdfac97d3d520fde6b3bfe73ed5fa839543141e27a1e7d4bbdc1f8ea1a5f038cd194aab13c8c2aa89aace45db19695aa715b4596cf8ca4056f43b5d4b2a120e"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonstate88f618261147a04260f447b9c4dcfb69636afcc0b37a83e9fb954e786bd8badd04fed5396d3485f63c452ed98302bdc68f1cd6079ceb4f375989f70bcf8ed4b3"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonlanguageSkills8df63a642ad49f67806071a8349f9140b37df2bfe54a96c71a659ed2483f911654ad5535e7644af3d9431d767046514dc448c7c0b6f2616162d52e6bb2ebda25"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonemployeeId06df05371981a237d0ed11472fae7c94c9ac0eff1d05413516710d17b10a4fb6f4517bda4a695f02d0a73dd4db543b4653df28f5d09dab86f92ffb9b86d01e25"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonproductSkills4f2fccdaa7a2bf85676ddc1f7567baa6bbcd621d6481ba9e60c0fc16fe1e8a3234cf032bf995cd20c8d7088b3f2f941a79937e9aa9e36cb64c308045cbcd32ee"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsoncity1c3ef2edafe8af18593f425643bd3c7ab6add674e924327d7eb038c84115098023fb35cd102fba4b689a4b8ca834e7e47f3dfc56761cef97f63650d9a2925d4e"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonpostalCode3750a9299f7d9f695b55afad150bc963bdeecd3398f717ff1abe4c6750afa8060799180efe4ee7bd2a3470e27321a0b71a5eddd85b54882a6a5f281981132579"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonemail9d5913a594caab6968267192a1589aa31644e28ddfa12622f9c8a3f200fb8bebc0ee8cabb0a382d6bfc8a3c139d97a3658fe326a614934b7e0edf74cb7a4133f"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonemployeeId06df05371981a237d0ed11472fae7c94c9ac0eff1d05413516710d17b10a4fb6f4517bda4a695f02d0a73dd4db543b4653df28f5d09dab86f92ffb9b86d01e25"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonpostalCode3750a9299f7d9f695b55afad150bc963bdeecd3398f717ff1abe4c6750afa8060799180efe4ee7bd2a3470e27321a0b71a5eddd85b54882a6a5f281981132579"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobTitled8f722042d116af9165fc6c17cca4f3181198dffc8cf593bb47ee0cd9aa5e11f466226f934250645875a8e7958da093bed7996c7d11da045d339cf6855dc836e"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonlanguageSkills2519753f258957f4aaf3798edea27281a7816fc00a1405d201b3667c0fdcc7da38269a0b1fd7b67dd6c1cbea714dc37d9f829f729bca9adaab565cb6db850275"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobStatus5e41a2dbd1de71b415ff88514520bd966e1c5be48f95a36c41241bd45ea5eecc53feea3ceb47614d4e49a51b36c1ae57eaa3375cac0933ed9253b166388a1498"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsondepartmentId40b244112641dd78dd4f93b6c9190dd46e0099194d5a44257b7efad6ef9ff4683da1eda0244448cb343aa688f5d3efd7314dafe580ac0bcbf115aeca9e8dc114"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonfirstNameefb5a030cc0d5e459564cd5a00fbc3f92e45c90f1a4863f90a8230ddb074eae7fc5de10b16ced043efb006e5ad69dfecd9850175e0b41629bf9ef1e2f0afcf41"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonaddress89210bf17edb6bd6e12e854fdda46d48eddedb556684b91cfd9dcc1bd5b67e13800fa26b76fe1e956e995a8a174bdf6fc5782eaa63297cb0ff78a84433455ac4"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonemail7698571dd827f76272b1c14af9dbea5e9631ebdd0156700fa241a2db429b78fa83bd54cb33053fb1cabb9ac5762ea238e5da73d8bcfe59d0a6e721144df1ff99"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobTitled8f722042d116af9165fc6c17cca4f3181198dffc8cf593bb47ee0cd9aa5e11f466226f934250645875a8e7958da093bed7996c7d11da045d339cf6855dc836e"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonlastName8e378f720df06a4e03d84c3c98ed43518464ff33715bb355a31bbc296213c452d26911df31ec222348e109369e227d3f3856644c41a0b069aaf88da21af66689"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonlanguageSkills8df63a642ad49f67806071a8349f9140b37df2bfe54a96c71a659ed2483f911654ad5535e7644af3d9431d767046514dc448c7c0b6f2616162d52e6bb2ebda25"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonstate88f618261147a04260f447b9c4dcfb69636afcc0b37a83e9fb954e786bd8badd04fed5396d3485f63c452ed98302bdc68f1cd6079ceb4f375989f70bcf8ed4b3"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonlastName8e378f720df06a4e03d84c3c98ed43518464ff33715bb355a31bbc296213c452d26911df31ec222348e109369e227d3f3856644c41a0b069aaf88da21af66689"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonfirstNameefb5a030cc0d5e459564cd5a00fbc3f92e45c90f1a4863f90a8230ddb074eae7fc5de10b16ced043efb006e5ad69dfecd9850175e0b41629bf9ef1e2f0afcf41"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobEffectiveDate3c154d7b6bf4a02cbe2161a4446a77aa9dcc50d702fdfac8c3a7eeb98313b7194266c1f525dfbcf18d5b770550165502e16e1daa8ee3e1dc8178db66546b0914"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsondepartmentId40b244112641dd78dd4f93b6c9190dd46e0099194d5a44257b7efad6ef9ff4683da1eda0244448cb343aa688f5d3efd7314dafe580ac0bcbf115aeca9e8dc114"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsoncity1c3ef2edafe8af18593f425643bd3c7ab6add674e924327d7eb038c84115098023fb35cd102fba4b689a4b8ca834e7e47f3dfc56761cef97f63650d9a2925d4e"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsoncity1c3ef2edafe8af18593f425643bd3c7ab6add674e924327d7eb038c84115098023fb35cd102fba4b689a4b8ca834e7e47f3dfc56761cef97f63650d9a2925d4e"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonaddress89210bf17edb6bd6e12e854fdda46d48eddedb556684b91cfd9dcc1bd5b67e13800fa26b76fe1e956e995a8a174bdf6fc5782eaa63297cb0ff78a84433455ac4"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonlastName8e378f720df06a4e03d84c3c98ed43518464ff33715bb355a31bbc296213c452d26911df31ec222348e109369e227d3f3856644c41a0b069aaf88da21af66689"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsoncity1c3ef2edafe8af18593f425643bd3c7ab6add674e924327d7eb038c84115098023fb35cd102fba4b689a4b8ca834e7e47f3dfc56761cef97f63650d9a2925d4e"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonlanguageSkills2519753f258957f4aaf3798edea27281a7816fc00a1405d201b3667c0fdcc7da38269a0b1fd7b67dd6c1cbea714dc37d9f829f729bca9adaab565cb6db850275"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonjobStatus7110a8eb3d431bed1aac72e538d26c6262ef7d7614500bd23fdbf997217d5dd7984393831acacac62b768a766363ef11443745784ace8d48f4de37c5a380dbd8"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsontoolSkillscc104327a9c8ebe7fedc909c084c51ed54d99985210a44aab60c80823f664f26d6b7887bd0185eb32acf4478e66d85b9c2bc551ffd699158b5ab1813647207aa"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonemployeeId989b886e73bd52a2f4ee9c3e3d4f00354d232fa320a119f3f52e5dec85d6db4a49246ecaa8948766e0a7a39a8f9eb25a990013da88bb7916d58bf8f4436fd883"/>
+	</prov:wasDerivedFrom>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonlastName8e378f720df06a4e03d84c3c98ed43518464ff33715bb355a31bbc296213c452d26911df31ec222348e109369e227d3f3856644c41a0b069aaf88da21af66689"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="http://marklogic.com/smart-mastering/auditing#/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.jsonjobStatus5e41a2dbd1de71b415ff88514520bd966e1c5be48f95a36c41241bd45ea5eecc53feea3ceb47614d4e49a51b36c1ae57eaa3375cac0933ed9253b166388a1498"/>
+		<prov:influencer prov:ref="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4="/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsonmobileNumberf5f6daea8d1127dd6200f137fb22c9c8370579fc48b5a1071fb32be816b130eaca4ba5edcfae782cbbd32228799eb089df615ed319d56c3421911eb5a1e502c5"/>
+	</prov:wasDerivedFrom>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"/>
+		<prov:usedEntity prov:ref="http://marklogic.com/smart-mastering/auditing#/CoastalEmployees/55002.jsontoolSkillse2358586dbe5af42f2b0bbd212fc2f2297e7df1ef2ec298d51c17672f9f0d76e222c443de1c4cfbe002d398823fcd28b9b3ea7c6d50e4380891ca4ce3dbb5191"/>
+	</prov:wasDerivedFrom>
+	<prov:softwareAgent prov:id="algorithm:standard;options:PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4=">
+		<prov:label>standard</prov:label>
+		<prov:location>PG9wdGlvbnMgeG1sbnM9Imh0dHA6Ly9tYXJrbG9naWMuY29tL3NtYXJ0LW1hc3RlcmluZy9tZXJnaW5nIj48dGFyZ2V0LWVudGl0eT5FbXBsb3llZTwvdGFyZ2V0LWVudGl0eT48bWF0Y2gtb3B0aW9ucy8+PHByb3BlcnR5LWRlZnMvPjxhbGdvcml0aG1zPjxzdGQtYWxnb3JpdGhtPjx0aW1lc3RhbXAgcGF0aD0iIi8+PC9zdGQtYWxnb3JpdGhtPjxjb2xsZWN0aW9ucz48b24tbWVyZ2UvPjxvbi1hcmNoaXZlLz48b24tbm8tbWF0Y2gvPjxvbi1ub3RpZmljYXRpb24vPjwvY29sbGVjdGlvbnM+PC9hbGdvcml0aG1zPjxjb2xsZWN0aW9ucz48Y29udGVudD5zbS1FbXBsb3llZS1tYXN0ZXJlZDwvY29udGVudD48bWVyZ2VkPnNtLUVtcGxveWVlLW1lcmdlZDwvbWVyZ2VkPjxhcmNoaXZlZD5zbS1FbXBsb3llZS1hcmNoaXZlZDwvYXJjaGl2ZWQ+PG5vdGlmaWNhdGlvbj5zbS1FbXBsb3llZS1ub3RpZmljYXRpb248L25vdGlmaWNhdGlvbj48YXVkaXRpbmc+c20tRW1wbG95ZWUtYXVkaXRpbmc8L2F1ZGl0aW5nPjwvY29sbGVjdGlvbnM+PG1lcmdpbmcvPjwvb3B0aW9ucz4=</prov:location>
+	</prov:softwareAgent>
+</prov:document>

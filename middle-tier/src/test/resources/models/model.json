@@ -1,0 +1,138 @@
+{
+	"name": "Test Model",
+	"edges": {
+		"employee-has-skill": {
+			"from": "employee",
+			"label": "has",
+			"to": "skill",
+			"keyFrom": "employeeId",
+			"keyTo": "skills",
+			"id": "employee-has-skill",
+			"smooth": {
+				"roundness": 0.5
+			},
+			"dashes": [
+				4,
+				3
+			],
+			"color": {
+				"color": "#3cdbc0"
+			}
+		},
+		"employee-belongsto-department": {
+			"from": "employee",
+			"label": "belongsTo",
+			"to": "department",
+			"cardinality": "1:1",
+			"keyFrom": "departmentId",
+			"keyTo": "departmentId",
+			"id": "employee-belongsto-department",
+			"smooth": {
+				"roundness": 0.5
+			}
+		},
+		"department-hasemployee-employee": {
+			"from": "department",
+			"label": "hasEmployee",
+			"to": "employee",
+			"cardinality": "1:Many",
+			"keyFrom": "employeeIds",
+			"keyTo": "employeeId",
+			"id": "department-hasemployee-employee",
+			"smooth": {
+				"roundness": 0.5
+			}
+		}
+	},
+	"nodes": {
+		"employee": {
+			"id": "employee",
+			"x": -90.6311826611079,
+			"y": -36.2954678939717,
+			"label": "Employee",
+			"entityName": "Employee",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "611f2987-6652-4d00-90d3-b557a74eea3b",
+					"name": "departmentId",
+					"type": "String",
+					"isArray": false
+				},
+				{
+					"_propId": "6074d7e7-5ad2-4a1f-bf52-6568b5842f1d",
+					"name": "employeeId",
+					"type": "String",
+					"isArray": false
+				},
+				{
+					"_propId": "b904d6b4-5aa4-4498-8952-5a13a26c37d0",
+					"name": "name",
+					"type": "String",
+					"isArray": false
+				},
+				{
+					"_propId": "3da018d0-6466-41af-bd1c-b19c00077044",
+					"name": "skills",
+					"type": "String",
+					"isArray": true
+				}
+			],
+			"idField": "employeeId",
+			"labelField": "name"
+		},
+		"department": {
+			"id": "department",
+			"label": "Department",
+			"x": 183.305019305019,
+			"y": -25.3166023166023,
+			"entityName": "Department",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "9b6e57d2-5888-4117-a742-a34d6138038a",
+					"name": "departmentId",
+					"type": "String",
+					"isArray": false
+				},
+				{
+					"_propId": "d7bcf2ab-ae04-49ae-b63e-5364b85249f2",
+					"name": "employeeIds",
+					"type": "String",
+					"isArray": true
+				},
+				{
+					"_propId": "9643395b-cca7-44d7-a3fe-326d00d0ef23",
+					"name": "name",
+					"type": "String",
+					"isArray": false
+				}
+			],
+			"idField": "departmentId",
+			"labelField": "name"
+		},
+		"skill": {
+			"id": "skill",
+			"x": -42.0422303315071,
+			"y": -178.865683282142,
+			"label": "Skill",
+			"entityName": "Skill",
+			"shapeProperties": {
+				"borderDashes": [
+					4,
+					3
+				]
+			},
+			"type": "concept",
+			"properties": [],
+			"color": {
+				"border": "#3cdbc0",
+				"highlight": {
+					"border": "#3cdbc0",
+					"background": "#c9f5ed"
+				}
+			}
+		}
+	},
+	"img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAADUUlEQVRYR2NkGOSAcZC7j2HUgZTGEMUhGLpqFfOq0NA/P3//nsXBxpZOqYPQ9VPswKwn579OlTbgOvTs/m17aSV1BgaG/9R0JMUO/PHjRwc7O3v5kZePbttKyA8+B9rc2Lu6/Pa34x8/frweExOznZqhBzKL0hBkFPNztXq1afcpBgaGvwwMDP8GmwNZaeUwmEcpCkGjHYtVznnE3qV2xkCOBYocGHfr6Ory3wLR2trav6gdtVQJQdeb+7fsUnPwY2RkpHrao4oDra/tm3JUyykHW+h9+vTNsr6+ep+Tk9P/s2fPCh04IM9w4EDiD1JDmqIoZmBgYGdgYABFL0rhLCVlzKWgEmBz7FDtAwYGhj+g0sLJfXr5n98/l7Ayct/sW5ii8/XzJxYOLq6/RvKse/GlYUodCMrFoOgFFTFg4Oo1N/vwvpYtP37c/8jAwADCMMczOblNLQqNsxS2djSsgKl/+/q5raOB1BFcIUupAxkVGorVt0WU92qqizKo6MclCvHIe58+1rKcgYEBW3QyHrn2eQcfP48bzEHHDp5dnxFlEkQrBzL8+fv3JcN/RjFmZkaGnz9/XuPg0DBmYHiAM61Vtx76LSrBz3Lh1D0Gc1t1hi1rT//Zuj6eDVc0UxSCxsZprKdPz/j48tUXTjFRHoavX38xLFt7Ui0j0f42rhBZsf3hRy09OT6Y/KZVxz7UFFoL46qFKHKgjU274MGD5c9Xrr7EHuivzcDOzsxw/fp1bW1t7Wu4HDhr+fXVFnYaITD55fNXTWivCS+kVRQz/f///zMDAwMXyIIfP3587uvrU6+urn6Oy0Jz64bGuu4EK1l5eZcDu/fsWTHrUNWxY82naeVAhs2bN1v6+PgcA1kQFFq15eNneaV9OzN0sUWZi+ecE9cuzg8rrS/6zS8uJrdkzuwn+7YsAnkGZ0FPURQj+VqVgYFBnIGB4YyWTny2kIj2nxdPZs1YtmzNJzFxsffbtm7gWrX+79UDu3O9GBgY3pNSWFPLgeh2ciqo+Oorq/rX/fv78/n+XdktDAwMLxgYGL6T4jhqtAcJ2QcKABAmu66mVQgScjjR8qMOJDqocCgcDcHREKQ0BCjVP5oGR0OQ0hCgVP9oGhwNQUpDgFL9AJ/qGTiFElZ6AAAAAElFTkSuQmCC"
+}

@@ -1,0 +1,90 @@
+{
+	"envelope": {
+		"headers": {
+			"createdUsingFile": "/MountainTopEmployees/HR360-Employee-CSV.csv",
+			"merge-options": {
+				"lang": "zxx",
+				"value": "504B0304140000000800BA796B5044D35528ED00000025020000110000006D657267652D6F7074696F6E732E786D6C5D51416EC4200CBCF715ABDCA9EF95975B1F828897A00246E056CDEF175252853DC17886F1182367F19CEAED378654EFCB26923F00A2295F819DB7EF9623D406454553858A4F0E2215D7CE45A398E2481425F1B2EBCF9803EF4408731DA311BBA9D10A34E6C2998AEC6AA547C726382E5EB658355659D53F6E1D7CA42A26E65B36B2DD97A5C9E145633904B287B9464EAAE72338AEA6D8CDFF0C90581D494E24FEE1ADE9EFBAE9E402D748136339499B4BD7A8CE79C7D7D0DA4DFE583C32ACB3EA28210C0A47B65974165B8293C66BD2497C251026199AEFD54BDBD2EC3E8ACDFDA45F061FBBED1F32F6A5DF9E504B01020000140000000800BA796B5044D35528ED000000250200001100000000000000010000000000000000006D657267652D6F7074696F6E732E786D6C504B050600000000010001003F0000001C0100000000"
+			},
+			"sources": [
+				{
+					"name": "EmployeesMastering"
+				},
+				{
+					"name": "MountainTopEmployees"
+				}
+			],
+			"createdOn": [
+				"2020-03-11T15:13:51.895486Z",
+				"2020-03-11T15:13:43.41294Z"
+			],
+			"createdBy": "maverick",
+			"merges": [
+				{
+					"document-uri": "/CoastalEmployees/55002.json",
+					"last-merge": "2020-03-11T15:13:52.314304Z"
+				},
+				{
+					"document-uri": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json",
+					"last-merge": "2020-03-11T15:13:52.314304Z"
+				}
+			],
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json"
+		},
+		"triples": [
+			{
+				"triple": {
+					"subject": "http://marklogic.com/envision/Employee-0.0.1/Employee/%2FUsers%2Fphare%2Fsrc%2Fml%2Ftgcom%2Fdatahub%2Fdata%2FHR360%2FCoastalEmployees%2F55002.json%231",
+					"predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+					"object": "http://marklogic.com/envision/Employee-0.0.1/Employee"
+				}
+			},
+			{
+				"triple": {
+					"subject": "http://marklogic.com/envision/Employee-0.0.1/Employee/%2FUsers%2Fphare%2Fsrc%2Fml%2Ftgcom%2Fdatahub%2Fdata%2FHR360%2FMountainTopEmployees%2F2d26f742-29b9-47f6-84d1-5f017ddf76d3.json%231",
+					"predicate": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+					"object": "http://marklogic.com/envision/Employee-0.0.1/Employee"
+				}
+			},
+			{
+				"triple": {
+					"subject": "http://marklogic.com/envision/Employee-0.0.1/Employee/%2FUsers%2Fphare%2Fsrc%2Fml%2Ftgcom%2Fdatahub%2Fdata%2FHR360%2FCoastalEmployees%2F55002.json%231",
+					"predicate": "http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
+					"object": {
+						"datatype": "http://www.w3.org/2001/XMLSchema#anyURI",
+						"value": "/CoastalEmployees/55002.json"
+					}
+				}
+			},
+			{
+				"triple": {
+					"subject": "http://marklogic.com/envision/Employee-0.0.1/Employee/%2FUsers%2Fphare%2Fsrc%2Fml%2Ftgcom%2Fdatahub%2Fdata%2FHR360%2FMountainTopEmployees%2F2d26f742-29b9-47f6-84d1-5f017ddf76d3.json%231",
+					"predicate": "http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
+					"object": {
+						"datatype": "http://www.w3.org/2001/XMLSchema#anyURI",
+						"value": "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json"
+					}
+				}
+			}
+		],
+		"instance": {
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Employee": {
+				"name": "Zola Manchett",
+				"skills": [
+					"general ledger",
+					"procurement"
+				],
+				"departmentId": "2",
+				"employeeId": [
+					"55002",
+					"5"
+				]
+			}
+		}
+	}
+}

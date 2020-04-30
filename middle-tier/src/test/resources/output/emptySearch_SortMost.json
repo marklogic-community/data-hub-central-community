@@ -1,0 +1,74 @@
+{
+	"page": 1,
+	"total": 7,
+	"pageLength": 1,
+	"nodes": {
+		"/MountainTopEmployees/employee4.json": {
+			"id": "/MountainTopEmployees/employee4.json",
+			"uri": "/MountainTopEmployees/employee4.json",
+			"entityName": "Employee",
+			"label": "Roberta Jones",
+			"entity": {
+				"name": "Roberta Jones",
+				"departmentId": "4",
+				"employeeId": "55004",
+				"skills": [
+					"hrSkill1",
+					"hrSkill2",
+					"hrSkill3"
+				]
+			},
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 3
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/departments/department4.json": {
+			"id": "/departments/department4.json",
+			"uri": "/departments/department4.json",
+			"entityName": "Department",
+			"label": "Human Resources",
+			"entity": {
+				"name": "Human Resources",
+				"departmentId": "4",
+				"employeeIds": [
+					"55004",
+					"55005"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "/departments/department4.json",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department",
+			"isConcept": false
+		}
+	}
+}

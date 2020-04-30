@@ -1,0 +1,564 @@
+<template id="file-dropzone-template">
+    <style>
+      .file-dropzone {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        margin: 20px 0;
+      }
+
+      /* hidden input */
+      .file-dropzone .file-dropzone-hidden {
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+
+      /* dropzone */
+      .file-dropzone #file-dropzone-dropzone {
+        border: dashed 1px;
+        border-radius: 6px;
+        padding: 15px;
+        text-align: center;
+        background: #F9F9F9;
+        min-height: 300px;
+      }
+      .file-dropzone #file-dropzone-dropzone.hover {
+        background: #9CF;
+        border-color: #369;
+      }
+
+      /* intro */
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-intro {
+        padding: 20px 15px;
+      }
+
+      /* file list */
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files {
+        display: block;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* file in list */
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file {
+        display: inline-block;
+        background-color: #FFF;
+        border-radius: 8px;
+        border: solid 1px #333;
+        box-shadow: 2px 2px 1px #999;
+        padding: 10px;
+        margin: 5px;
+        position: relative;
+        height: 90px;
+        max-width: 95%;
+        overflow: hidden;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file .file-dropzone-file-icon {
+        display: block;
+        margin-top: 15px;
+        text-align: center;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file #file-dropzone-file-name {
+        display: block;
+      }
+
+      /* file progress */
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file .file-dropzone-file-progress {
+        display: block;
+        position: absolute;
+        bottom: 5px;
+        left: 5%;
+        font-size: 0.75em;
+        text-align: center;
+        padding: 0;
+        width: 90%;
+        line-height: 1.75;
+        border-radius: 6px;
+        color: #FFF;
+        background-color: #999;
+        overflow: hidden;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file .file-dropzone-file-progress #file-dropzone-progress-bar {
+        background-color: #9CF;
+        height: 100%;
+        width: 1%;
+        display: block;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file .file-dropzone-file-progress #file-dropzone-progress-value {
+        position: absolute;
+        display: block;
+        left: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* result coloring */
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file {
+        border-color: orange;
+        background-color: lightyellow;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file .file-dropzone-file-progress #file-dropzone-progress-bar {
+        background-color: orange;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file.done {
+        border-color: green;
+        background-color: lightgreen;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file.done .file-dropzone-file-progress #file-dropzone-progress-bar {
+        background-color: green;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file.failed {
+        border-color: red;
+        background-color: pink;
+      }
+      .file-dropzone #file-dropzone-dropzone #file-dropzone-files #file-dropzone-file.failed .file-dropzone-file-progress #file-dropzone-progress-bar {
+        background-color: red;
+      }
+
+      /* fontawesome (copied because of Shadow DOM isolation) */
+      .fa {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .fa-check:before {
+        content: "\F00C";
+      }
+      .fa-check[hidden]:before {
+        content: "";
+      }
+      .fa-times:before {
+        content: "\F00D";
+      }
+      .fa-times[hidden]:before {
+        content: "";
+      }
+      .fa-refresh:before {
+        content: "\F021";
+      }
+      .fa-refresh[hidden]:before {
+        content: "";
+      }
+      .fa-spin {
+        -webkit-animation: fa-spin 2s infinite linear;
+        animation: fa-spin 2s infinite linear;
+      }
+      @-webkit-keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg);
+        }
+      }
+      @keyframes fa-spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg);
+        }
+      }
+    </style>
+    <div class="file-dropzone">
+      <div id="file-dropzone-button">
+        <button class="btn btn-default">Upload file(s)</button>
+      </div>
+      <div class="file-dropzone-hidden">
+        <input type="file" id="file-dropzone-input" multiple>
+      </div>
+      <div id="file-dropzone-dropzone">
+        <div id="file-dropzone-intro">
+          <slot name="intro">
+            <p><strong>Drop files here or click to select files.</strong></p>
+          </slot>
+        </div>
+        <ul id="file-dropzone-files">
+          <!-- file-dropzone-file-template -->
+        </ul>
+      </div>
+    </div>
+  </template>
+
+  <template id="file-dropzone-file-template">
+    <li id="file-dropzone-file" class="" title="">
+      <span id="file-dropzone-file-name">
+        filename.ext
+      </span>
+      <span class="file-dropzone-file-icon">
+        <i id="file-dropzone-file-spinner" class="fa fa-refresh fa-spin"></i>
+        <i id="file-dropzone-file-done" class="fa fa-check"></i>
+        <i id="file-dropzone-file-failed" class="fa fa-times"></i>
+      </span>
+      <span class="file-dropzone-file-progress">
+        <span id="file-dropzone-progress-value">%</span>
+        <span id="file-dropzone-progress-bar" style="width: 0px;">&nbsp;</span>
+      </span>
+    </li>
+  </template>
+
+  <script>
+    // Usage:
+    //  <file-dropzone
+    //      button="false"
+    //      multiple="true"
+    //      @drop=""
+    //      @drop-all=""
+    //      @file-dblclick="">
+    //    <p><strong>Drop files here or click to select files.</strong></p>
+    //    <em>(Files will be uploaded automatically)</em>
+    //  </file-dropzone>
+
+    (function() {
+
+      // Progress helper object
+      var Progress = {};
+
+      Progress.value = 0;
+      Progress.done = false;
+      Progress.failed = false;
+      Progress.file = undefined;
+      Progress.template = undefined;
+
+      Progress.update = function(val) {
+        this.updated = Date.now();
+        if (val) {
+          val = Math.round(val);
+          this.value = val;
+          this.done = val === 100;
+        }
+        this._updateRendering();
+      };
+
+      Progress.error = function(code) {
+        this.failed = true;
+        this.errorStatus = code;
+        this._updateRendering();
+      };
+
+      Progress._updateRendering = function() {
+        if (this.template) {
+          this.template
+            .setAttribute("title", this.errorStatus || this.file.name);
+          this.template
+            .className = this.failed ? "failed" : (this.done ? "done" : "");
+          this.template
+            .querySelector("#file-dropzone-file-name")
+            .textContent = this.file.name;
+          this.template
+            .querySelector("#file-dropzone-file-done")
+            .hidden = !(this.done || this.failed) || this.failed;
+          this.template
+            .querySelector("#file-dropzone-file-failed")
+            .hidden = !(this.done || this.failed) || this.done;
+          this.template
+            .querySelector("#file-dropzone-file-spinner")
+            .hidden = this.done || this.failed;
+          this.template
+            .querySelector("#file-dropzone-progress-value")
+            .textContent = "" + this.value + "%";
+          this.template
+            .querySelector("#file-dropzone-progress-bar")
+            .style.width = "" + this.value + "%";
+        }
+      };
+
+      // Inspired by https://developers.google.com/web/fundamentals/web-components/
+
+      class FileDropzone extends HTMLElement {
+
+        static get observedAttributes() {
+          return ["button", "multiple"];
+        }
+
+        /**
+         * The element"s constructor is run anytime a new instance is created.
+         * Instances are created either by parsing HTML, calling
+         * `document.createElement("file-dropzone")`, or calling `new FileDropzone()`.
+         * The construtor is a good place to create shadow DOM, though you should
+         * avoid touching any attributes or light DOM children as they may not
+         * be available yet.
+         */
+        constructor() {
+          // always call super first
+          super();
+
+          // initialize private properties
+          this._button = undefined;
+          this._multiple = undefined;
+          this._files = [];
+
+          // initialize template placeholders
+          this.$button = undefined;
+          this.$dropzone = undefined;
+          this.$intro = undefined;
+          this.$files = undefined;
+          this.$input = undefined;
+
+          // make sure private methods are properly bound to "this"
+          this._upgradeProperty = this._upgradeProperty.bind(this);
+          this._initialize = this._initialize.bind(this);
+          this._updateRendering = this._updateRendering.bind(this);
+          this._onClick = this._onClick.bind(this);
+          this._onDrag = this._onDrag.bind(this);
+          this._onDrop = this._onDrop.bind(this);
+          this._dropFiles = this._dropFiles.bind(this);
+          this._onFileDoubleClick = this._onFileDoubleClick.bind(this);
+        }
+
+        /**
+         * `connectedCallback()` fires when the element is inserted into the DOM.
+         * It"s a good place to set the initial internal state,
+         * and install event listeners.
+         */
+        connectedCallback() {
+          // initialize template
+          this._initialize();
+        }
+
+        /**
+         * `disconnectedCallback()` fires when the element is removed from the DOM.
+         * It"s a good place to do clean up work like releasing references and
+         * removing event listeners.
+         */
+        disconnectedCallback() {
+          this._destroy();
+        }
+
+        /**
+         * `adoptedCallback()`: Invoked when the custom element is moved to a new document.
+        */
+        adoptedCallback() {
+          this._updateRendering();
+        }
+
+        /**
+         * `attributeChangedCallback()` is called when any of the attributes in the
+         * `observedAttributes` array are changed. It"s a good place to handle
+         * side effects.
+         */
+        attributeChangedCallback(name, oldValue, newValue) {
+          switch (name) {
+            case "button" : {
+              this._button = newValue && (newValue !== "false");
+              break;
+            }
+            case "multiple": {
+              this._multiple = newValue && (newValue !== "false");
+              break;
+            }
+          }
+
+          this._updateRendering();
+        }
+
+        // Programmatic access to custom element properties
+        // Note: this loops back into attributeChangedCallback
+        set button(value) {
+          if (value)
+            this.setAttribute("button", value);
+          else
+            this.removeAttribute("button");
+        }
+
+        get button() {
+          return this._button;
+        }
+
+        set multiple(value) {
+          if (value)
+            this.setAttribute("multiple", value);
+          else
+            this.removeAttribute("multiple");
+        }
+
+        get multiple() {
+          return this._multiple;
+        }
+
+        get files() {
+          return this._files;
+        }
+
+        // initialize contents of custom element
+        _initialize() {
+          if (!(window.File && window.FileList && window.FileReader)) {
+            throw "file-dropzone - HTML5 file upload not supported by this browser";
+          }
+
+          if (this.attachShadow) {
+            // enable Shadow DOM
+            this.attachShadow({mode: 'open'});
+          } else {
+            // instant stub polyfill for shadowRoot
+            this.shadowRoot = this;
+          }
+
+          // Make sure to look inside this html fragement (in case of true html import)
+          const doc = document.currentScript ? (document.currentScript.ownerDocument || document) : document;
+
+          // get and append template
+          const template = doc
+            .getElementById("file-dropzone-template")
+            .content
+            .cloneNode(true);
+          this.shadowRoot.appendChild(template);
+
+          this.$fileTemplate = doc
+            .getElementById("file-dropzone-file-template")
+            .content;
+
+            // get placeholders
+          this.$button = this.shadowRoot.querySelector("#file-dropzone-button");
+          this.$dropzone = this.shadowRoot.querySelector("#file-dropzone-dropzone");
+          this.$intro = this.shadowRoot.querySelector("#file-dropzone-intro");
+          this.$files = this.shadowRoot.querySelector("#file-dropzone-files");
+          this.$input = this.shadowRoot.querySelector("#file-dropzone-input");
+
+          // A user may set a property on an _instance_ of an element,
+          // before its prototype has been connected to this class.
+          // The `_upgradeProperty()` method will check for any instance properties
+          // and run them through the proper class setters.
+          this._upgradeProperty("button");
+          this._upgradeProperty("multiple");
+
+          // initialize rendering
+          this._updateRendering();
+
+          // hook up event listeners
+          this.$button.addEventListener("click", this._onClick);
+          this.$dropzone.addEventListener("click", this._onClick);
+          this.$dropzone.addEventListener("dragenter", this._onDrag);
+          this.$dropzone.addEventListener("dragleave", this._onDrag);
+          this.$dropzone.addEventListener("dragover", this._onDrag);
+          this.$dropzone.addEventListener("drop", this._onDrop);
+          this.$input.addEventListener("change", this._onDrop);
+        }
+
+        _destroy() {
+          // remove event listeners
+          this.$button.removeEventListener("click", this._onClick);
+          this.$dropzone.removeEventListener("click", this._onClick);
+          this.$dropzone.removeEventListener("dragenter", this._onDrag);
+          this.$dropzone.removeEventListener("dragleave", this._onDrag);
+          this.$dropzone.removeEventListener("dragover", this._onDrag);
+          this.$dropzone.removeEventListener("drop", this._onDrop);
+          this.$input.removeEventListener("change", this._onDrop);
+          this._files.forEach(function(progress) {
+            progress.template.removeEventListener("dblclick", this._onFileDoubleClick);
+          });
+        }
+
+        // capture property values from unupgraded instances, and delete them
+        // so they do not shadow the custom element"s own property setter.
+        _upgradeProperty(prop) {
+          if (this.hasOwnProperty(prop)) {
+            let value = this[prop];
+            delete this[prop];
+            this[prop] = value;
+          }
+        }
+
+        // update rendering of placeholders
+        _updateRendering() {
+          if (this.shadowRoot) {
+            this.$button.hidden = !this.button;
+            this.$dropzone.hidden = this.button;
+            this.$input.multiple = this.multiple;
+            this.$intro.hidden = this._files.length > 0;
+          }
+        }
+
+        _onClick(e) {
+          // ignore single click on file
+          if (!e.target.id.match(/^file-dropzone-(file|progress)/)) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.$input.click();
+          }
+        }
+
+        _onDrag(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.type === "dragenter" || e.type === "dragover") {
+            this.$dropzone.classList.add("hover");
+          } else {
+            this.$dropzone.classList.remove("hover");
+          }
+        }
+
+        _onDrop(e) {
+          this._onDrag(e);
+          var files = e.target.files || e.dataTransfer.files;
+          this._dropFiles(files);
+        }
+
+        _dropFiles(files) {
+          var all = Array.from(files).map(function(file) {
+            // Wrap file in Progress tracking object
+            var p = Object.create(Progress);
+            p.file = file;
+
+            // Insert file template to UI, and add bi-dir link between progress and template
+            var template = this.$fileTemplate.cloneNode(true);
+            this.$files.appendChild(template);
+            template = this.$files.lastElementChild;
+            template.addEventListener("dblclick", this._onFileDoubleClick);
+            template.progress = p;
+            p.template = template;
+
+            // Init progress at 0%
+            p.update(0);
+
+            // Keep an internal ref to all file progress
+            this._files.push(p);
+
+            // Throw drop event that can be captured from outside your component
+            this.dispatchEvent(new CustomEvent("drop", {
+              detail: p,
+              bubbles: true,
+            }));
+
+            return p;
+          }, this);
+
+          this._updateRendering();
+
+          // Throw drop-all event that can be captured from outside your component
+          this.dispatchEvent(new CustomEvent("drop-all", {
+            detail: all,
+            bubbles: true,
+          }));
+        }
+
+        _onFileDoubleClick(e) {
+          // ignore double-click on panel
+          if (e.target.id.match(/^file-dropzone-(file|progress)/)) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Throw drop-all event that can be captured from outside your component
+            this.dispatchEvent(new CustomEvent("file-dblclick", {
+              detail: e.target.progress,
+              bubbles: true,
+            }));
+          }
+        }
+
+      };
+
+      // declare the webcomponent
+      window.customElements.define("file-dropzone", FileDropzone);
+
+    })();
+  </script>

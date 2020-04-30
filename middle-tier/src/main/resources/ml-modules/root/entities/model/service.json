@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/entities/model",
+	"$javaClass": "com.marklogic.envision.EntityModeller"
+}

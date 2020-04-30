@@ -1,0 +1,3 @@
+# Run Liseners
+org.springframework.boot.SpringApplicationRunListener=\
+com.marklogic.grove.boot.ApplicationRunListener

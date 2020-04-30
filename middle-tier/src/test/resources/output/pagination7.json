@@ -1,0 +1,31 @@
+{
+	"page": 7,
+	"total": 7,
+	"pageLength": 1,
+	"nodes": {
+		"/departments/department3.json": {
+			"id": "/departments/department3.json",
+			"uri": "/departments/department3.json",
+			"entityName": "Department",
+			"label": "Engineering",
+			"entity": {
+				"name": "Engineering",
+				"departmentId": "3",
+				"employeeIds": [
+					"55003"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {}
+}

@@ -1,0 +1,33 @@
+{
+    "functionName": "relatedEntities",
+    "params": [
+      {
+        "datatype": "string",
+        "name": "fromId"
+      },
+			{
+        "datatype": "string",
+        "name": "from"
+      },
+			{
+        "datatype": "string",
+        "name": "label"
+      },
+			{
+        "datatype": "string",
+        "name": "to"
+      },
+			{
+        "datatype": "int",
+        "name": "page"
+      },
+			{
+        "datatype": "int",
+        "name": "pageLength"
+      }
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}

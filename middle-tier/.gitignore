@@ -1,0 +1,8 @@
+build/
+.idea/
+.tmp/
+.gradle/
+src/main/resources/static/
+out/
+bin/
+installer.log

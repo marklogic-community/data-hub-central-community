@@ -1,0 +1,68 @@
+{
+	"nodes": {
+		"/CoastalEmployees/55003.json": {
+			"id": "/CoastalEmployees/55003.json",
+			"uri": "/CoastalEmployees/55003.json",
+			"entityName": "Employee",
+			"label": "Joan Smith",
+			"entity": {
+				"name": "Joan Smith",
+				"departmentId": "3",
+				"employeeId": "55003",
+				"skills": [
+					"programming"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/departments/department3.json": {
+			"id": "/departments/department3.json",
+			"uri": "/departments/department3.json",
+			"entityName": "Department",
+			"label": "Engineering",
+			"entity": {
+				"name": "Engineering",
+				"departmentId": "3",
+				"employeeIds": [
+					"55003"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "/departments/department3.json",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department",
+			"isConcept": false
+		}
+	}
+}

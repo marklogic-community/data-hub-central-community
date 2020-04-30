@@ -1,0 +1,76 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "EmployeesMastering"
+				}
+			],
+			"createdOn": "2020-03-11T15:13:51.895486Z",
+			"createdBy": "maverick"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Employee": {
+				"name": "Zola Manchett",
+				"departmentId": "2",
+				"employeeId": "55002",
+				"skills": ["general ledger", "not visible in search"]
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [
+						{
+							"name": "EmployeesMastering"
+						}
+					],
+					"createdOn": "2020-03-11T15:13:51.895486Z",
+					"createdBy": "maverick"
+				},
+				"triples": [],
+				"instance": {
+					"employee_id": 55002,
+					"status": "Active (Part-time)",
+					"f_name": "Zola",
+					"l_name": "Manchett",
+					"dob": "1986-03-01",
+					"address1": "823 Bobwhite Drive",
+					"city": "Cape Coral",
+					"state": "FL",
+					"zip": "33915",
+					"cell_phone": "1(540)479-8296",
+					"job_title": "Mechanical Systems Engineer",
+					"start_date": "2018-09-11",
+					"email": "zola.manchett@coastal.com",
+					"reports_to": 55008,
+					"dept_num": 2,
+					"primary_prod": "general ledger",
+					"competency": {
+						"products": [
+							"general ledger"
+						],
+						"languages": [
+							"RDF"
+						],
+						"tools": [
+							"node.js",
+							"Kafka",
+							"Mulesoft",
+							"SQL Server",
+							"Oracle",
+							"Nifi"
+						]
+					}
+				},
+				"attachments": null
+			}
+		}
+	}
+}

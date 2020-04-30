@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/entities/mastering",
+	"$javaClass": "com.marklogic.envision.Mastering"
+}
