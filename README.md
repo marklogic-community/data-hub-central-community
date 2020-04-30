@@ -1,13 +1,8 @@
 # Envision
 
 ## Just want to run it?
-Go grab it as a docker container!
 
-- _vpn required_
-- _instructions are on the page_
-
-https://mlregistry.marklogic.com/tag/marklogic/topgun/latest/  
-
+See the guides here:  
 
 ## Want to write some code or tests?
 If you are here to write code then keep reading. First thing to do is clone the repo. Then create a new branch to do your work.
@@ -22,8 +17,7 @@ For the UI you need:
 
 ### Envision Installation Instructions 
 
-Clone this repo:
-- git clone ssh://git@project.marklogic.com:7999/int/topgun.git
+Clone this repo.
 
 ### Running the project
 
