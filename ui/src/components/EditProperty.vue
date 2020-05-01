@@ -5,6 +5,7 @@
 		<v-container>
 			<v-text-field
 				ref="propName"
+				data-cy="editProperty.propName"
 				color="primary"
 				required
 				:error="error"
@@ -14,6 +15,7 @@
 			></v-text-field>
 			<v-select
 				:items="dataTypeWithArray"
+				data-cy="editProperty.dataType"
 				item-text="text"
 				item-value="value"
 				label="Data Type"
@@ -22,40 +24,47 @@
 			<v-select
 				v-show="isArray"
 				:items="dataTypes"
+				data-cy="editProperty.arrayDataType"
 				item-text="text"
 				item-value="value"
 				label="Array Data Type"
 				v-model="arrayType"
 			></v-select>
 			<v-expansion-panels v-model="advancedState">
-				<v-expansion-panel>
+				<v-expansion-panel data-cy="editProperty.advancedBtn">
 					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<v-layout row>
 							<v-flex md6>
 								<v-checkbox
+									data-cy="prop.isElementRangeIndex"
 									v-model="isElementRangeIndex"
 									label="Element Range Index"
 								></v-checkbox>
 								<v-checkbox
+									data-cy="prop.isRangeIndex"
 									v-model="isRangeIndex"
 									label="Path Range Index"
 								></v-checkbox>
 								<v-checkbox
+									data-cy="prop.isPii"
 									v-model="isPii"
 									label="PII"
 								></v-checkbox>
 							</v-flex>
 							<v-flex md6>
 								<v-checkbox
+									data-cy="prop.isPrimaryKey"
 									v-model="isPrimaryKey"
 									label="Primary Key"
 								></v-checkbox>
 								<v-checkbox
+									data-cy="prop.isRequired"
 									v-model="isRequired"
 									label="Required"
 								></v-checkbox>
 								<v-checkbox
+									data-cy="prop.isWordLexicon"
 									v-model="isWordLexicon"
 									label="Word Lexicon"
 								></v-checkbox>
@@ -69,7 +78,7 @@
 		<v-card-actions>
 			<v-spacer></v-spacer>
 			<v-btn text color="secondary" @click="cancel">Cancel</v-btn>
-			<v-btn type="submit" text color="primary">Save</v-btn>
+			<v-btn data-cy="editProperty.createBtn" type="submit" text color="primary">Save</v-btn>
 		</v-card-actions>
 	</v-card>
 </v-form>

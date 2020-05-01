@@ -3,9 +3,7 @@
 		<v-flex xs12 fill-height class="relparent">
 			<v-card dark class="white--text abs">
 				<v-card-title primary-title>
-					<div class="headline" v-if="model" data-cy="createModelVue.currentModelLabel">
-						{{model.name}}
-					</div>
+					<div class="headline" v-if="model" data-cy="createModelVue.currentModelLabel">{{model.name}}</div>
 					<v-spacer></v-spacer>
 					<v-menu
 						:close-on-content-click="false"
@@ -45,6 +43,7 @@
 							<v-tooltip bottom>
 								<template v-slot:activator="{ on: tooltip }">
 									<v-btn
+										data-cy="cardMenu.loadModelButton"
 										right
 										icon
 										small
@@ -65,6 +64,7 @@
 					<v-tooltip bottom>
 						<template v-slot:activator="{ on }">
 							<v-btn
+								data-cy="cardMenu.saveImageButton"
 								right
 								icon
 								small

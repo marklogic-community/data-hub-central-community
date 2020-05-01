@@ -30,6 +30,9 @@ public class Search extends BaseTest {
 		allCollections = om.readTree("[\"Department\", \"Employee\", \"Skill\"]");
 
 		clearStagingFinalAndJobDatabases();
+
+		installEnvisionModules();
+		
 		modelService.saveModel(getFinalClient(), getResourceStream("models/model.json"));
 		installFinalDoc("entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee");
 		installFinalDoc("entities/employee1.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "sm-Employee-archived", "Employee");
