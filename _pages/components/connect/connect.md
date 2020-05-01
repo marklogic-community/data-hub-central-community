@@ -15,7 +15,7 @@ When creating an entity, you can add an "Entity" or a "Concept" to the whiteboar
 
 Simply put, on the modeling canvas: solid line circles are documents, dotted line circles are IRIs.
 <br><br> 
-![workflow.](/envision/images/ConnectGH.png)
+![Connect](/envision/images/ConnectGH.png)
 <br><br>
 
 ### Getting Started
