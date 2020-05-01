@@ -1,6 +1,5 @@
 package com.marklogic.envision;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.appdeployer.AppConfig;
 import com.marklogic.client.DatabaseClient;
@@ -10,6 +9,7 @@ import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.FileHandle;
+import com.marklogic.envision.services.DeployService;
 import com.marklogic.grove.boot.error.NotAuthenticatedException;
 import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.HubConfig;
@@ -33,6 +33,9 @@ public class BaseTest {
 
 	@Autowired
 	private HubProject hubProject;
+
+	@Autowired
+	private DeployService deployService;
 
 	@Value("${dhfDir}")
 	private File dhfDir;
@@ -158,6 +161,10 @@ public class BaseTest {
 		if (result.hasNext()) {
 			logger.error(result.next().getString());
 		}
+	}
+
+	public void installEnvisionModules() {
+		deployService.deploy();
 	}
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());

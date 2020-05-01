@@ -24,16 +24,17 @@
 								<span v-if="entities[entity].idField === prop.name">id</span>
 							</td>
 							<td data-cy="entityPickList.entityPropertyName">{{prop.name}}</td>
-							<td>{{prop.type}}{{prop.isArray ? '[]' : ''}}</td>
+							<td data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</td>
 							<td class="action">
 								<edit-property-menu
 									:prop="Object.assign({}, prop)"
 									:entity="entity"
 									:existingProperties="entities[entity].properties"
 									@save="btnSaveProperty(entity, $event)">
-									<button class="fa fa-pencil" aria-label="Edit Property" />
+									<button data-cy="entityPickList.editPropertyBtn" class="fa fa-pencil" aria-label="Edit Property" />
 								</edit-property-menu>
 								<button
+									data-cy="entityPickList.deletePropertyBtn"
 									class="fa fa-trash"
 									v-on:click="btnDeleteProperties(entity, prop.name)"
 									aria-label="Delete property"></button>

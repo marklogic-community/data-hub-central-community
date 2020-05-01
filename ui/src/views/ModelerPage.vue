@@ -13,6 +13,9 @@
 							ref="graph"
 						></visjs-graph>
 						<v-btn data-cy="modelerPageVue.addNodeButton" class="hideUnlessTesting" v-on:click="graphAddNode({})">Add Node Test</v-btn>
+						<ul class="hideUnlessTesting">
+							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
+						</ul>
 					</v-flex>
 					<v-flex md4 class="right-pane">
 						<entity-pick-list
@@ -217,6 +220,10 @@ export default {
 		}
 	},
   methods: {
+		selectNode( selectedNode ) {
+			// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
+			this.currentNode = selectedNode.id//this.nodeMap[selectedNode.id]
+		},
     doAction(name, options) {
       // All actions emitted from child components use this method. Functionality also performed by
       // native VisJS (eg adding nodes, edges) should be in there own functions that are called
@@ -706,8 +713,7 @@ table {
 .hideUnlessTesting {
 	visibility: hidden;
 	position: absolute;
-	top: -100px;
-	left: -100px;
+	top: 0px;
 }
 
 .container--fluid {

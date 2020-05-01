@@ -2,10 +2,12 @@
 
 ## Just want to run it?
 
-See the guides here:  
+Download the [Envision Jar](https://github.com/marklogic-community/envision/releases/download/v1.0.1/envision-1.0.1.jar)
+
+Go read the docs here: https://marklogic-community.github.io/envision/
 
 ## Want to write some code or tests?
-If you are here to write code then keep reading. First thing to do is clone the repo. Then create a new branch to do your work.
+If you are here to write code then keep reading. Make sure you read the [Contributing doc](./contributing.md). First thing to do is clone the repo. Then create a new branch to do your work.
 
 ### Before You Start
 You will need access to a Data Hub project somewhere on your disk. You'll also need a running MarkLogic with the data hub deployed to it.
@@ -28,31 +30,35 @@ Open 2 terminal tabs/windows
 Open a terminal in the project root
 
 The basic command to run the middle tier is:
-`./gradlew bootrun`
+`gradlew bootrun`
 
 But... you'll need to point the middle tier at your DHF instance
 
-`./gradlew -DdhfDir=/full/path/to/your/datahub bootrun`
+`gradlew -DdhfDir=/full/path/to/your/datahub bootrun`
 
 Also you might want to override where the Concept Connector models live
 
-`./gradlew -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir bootrun`
+`gradlew -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir bootrun`
 
+Lastly, you may want to choose a different Hub environment (qa, prod, etc). The default is local
+`gradlew -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -DdhfEnv=prod bootrun`
+
+#### Running Middle Tier Tests
+`gradlew -DdhfDir=/full/path/to/your/datahub test`
 
 ##### User Interface
 Open a terminal in the project root
 
 launch the ui in develop mode
-`gradle runui`
+`gradlew runui`
 
 #### Access the Envision UI
 http://localhost:9999
 
-#### Running End to End Tests
+#### Running End to End UI Tests
 Open a terminal in the top level envision directory.
 
-`cd ui`  
-`npm run test:e2e`
+`gradlew testUi`
 
 This will launch the Cypress UI. http://cypress.io is a testing framework we are using to test the UI e2e. When the Cypress UI launches you can click the run specs button to run the tests. Cypress will autowatch your files. If you make any changes the tests will re-run.
 
@@ -60,7 +66,14 @@ This will launch the Cypress UI. http://cypress.io is a testing framework we are
 Open a terminal window:  
 
 ##### Build the jar
-`./gradlew clean build`  
+
+###### Without tests
+`gradlew clean build -x test`
+
+###### With tests
+Note that you do need a running DHF 5.1.0 instance with a project folder
+
+`gradlew -DdhfDir=/full/path/to/your/datahub clean build`
 
 ##### Run the jar
 `java -jar middle-tier/build/lib/envision.jar`
