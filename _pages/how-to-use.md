@@ -9,7 +9,7 @@ permalink: /how-to-use/
 
 **Envision** **[Connect](/envision/components/connect/)** and **[Explore](/envision/components/explore/)**,  with the **[DataHub Framework's QuickStart](http://docs.marklogic.com/datahub/)** and **[Pipes](https://github.com/marklogic-community/pipes/wiki)** provide a low-code solution for integrating data in the MarkLogic Data Hub.
 <br><br> 
-![workflow.](/envision/images/Workflow.png)
+![Workflow.](/envision/images/Workflow.png)
 <br><br>
 ### Connect
 Use Connect to define your Entity model.  Connect also is used to configure the Explore visualization to tailor it appropriately for your consumers. 
