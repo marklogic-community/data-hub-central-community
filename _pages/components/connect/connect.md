@@ -14,6 +14,9 @@ As the model is created, entity services descriptors are generated in the MarkLo
 When creating an entity, you can add an "Entity" or a "Concept" to the whiteboard.  Entities result in an entity services model and will be persisted as the model and subsequently as harmonized records in the data hub. Concepts are projections of a property value from an entity.  Concepts result in a Semantics triple in the system.  
 
 Simply put, on the modeling canvas: solid line circles are documents, dotted line circles are IRIs.
+<br><br> 
+![workflow.](/envision/images/ConnectGH.png)
+<br><br>
 
 ### Getting Started
 
