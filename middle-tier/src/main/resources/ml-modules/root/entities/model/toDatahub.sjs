@@ -29,7 +29,7 @@ Object.keys(model.nodes).forEach(key => {
 			if (p.isRangeIndex) {
 				rangeIndex[p.name] = true
 			}
-			if (p.wordLexicon) {
+			if (p.isWordLexicon) {
 				wordLexicon[p.name] = true
 			}
 			if (p.isArray) {
