@@ -156,8 +156,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.editPropertyBtn"]').first().click()
 		cy.get('[data-cy="editProperty.propName"]').clear().type('id')
 		cy.get('[data-cy="editProperty.createBtn"]').click()
-		cy.get('[data-cy="entityPickList.entityPropertyName"]').first().should('have.text', 'id')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'String')
+		cy.get('.v-messages__message').should('have.text', 'Property already exists')
 	})
 
 	it('can show advanced property features', () => {
