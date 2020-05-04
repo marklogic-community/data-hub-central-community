@@ -140,7 +140,6 @@ export default {
 			this.updateValues()
 		},
 		updateValues() {
-			console.log('updateValues')
 			setTimeout(() => {
 				this.$refs.propName.focus()
 			}, 250);
@@ -180,7 +179,7 @@ export default {
 				this.errorMsg = ['Property name cannot contain spaces. Only letters, numbers, and underscore']
 				return
 			}
-			if (this.prop && this.prop._propId && this.existingProperties && this.existingProperties.find(p => p._propId !== this.prop._propId && p.name === this.prop.name)) {
+			if (this.prop && this.prop._propId && this.existingProperties && this.existingProperties.find(p => p._propId !== this.prop._propId && p.name === this.name)) {
 				this.error = true
 				this.errorMsg = ['Property already exists']
 				return
