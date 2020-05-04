@@ -56,13 +56,13 @@
 								<tr :key="key">
 									<td>{{key}}</td>
 									<td>
-										<template v-if="value.length > 100 && !expandedProperty[key]">
+										<template v-if="value && value.length > 100 && !expandedProperty[key]">
 											<span>{{value | truncate(100, '')}}</span>
 											<a class="more-less" @click="$set(expandedProperty, key, true)">(more...)</a>
 										</template>
 										<template v-else>
 											<span>{{value}}</span>
-											<a class="more-less"  v-if="value.length > 100" @click="$set(expandedProperty, key, false)">(less...)</a>
+											<a class="more-less" v-if="value && value.length > 100" @click="$set(expandedProperty, key, false)">(less...)</a>
 										</template>
 									</td>
 								</tr>
