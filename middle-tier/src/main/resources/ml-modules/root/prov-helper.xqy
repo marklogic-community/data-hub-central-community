@@ -2,6 +2,8 @@ xquery version "1.0-ml";
 
 module namespace ns = "http://marklogic.com/prov-helper";
 
+import module namespace config = "http://marklogic.com/data-hub/config" at '/com.marklogic.hub/config.xqy';
+
 declare namespace prov = "http://www.w3.org/ns/prov#";
 
 declare option xdmp:mapping "false";
@@ -30,6 +32,6 @@ declare function ns:get-prov($uri)
 				json:array-push($a, $o)
 		return
 			document { xdmp:to-json($a) }
-	}, map:entry("database", xdmp:database('data-hub-JOBS')))
+	}, map:entry("database", xdmp:database($config:JOB-DATABASE)))
 };
 
