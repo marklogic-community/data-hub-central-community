@@ -47,7 +47,7 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 		});
 		modulesLoader.setModulesManager(propsManager);
 		if (caughtException == null) {
-			modulesLoader.loadModules("classpath*:/topgun-modules", new DefaultModulesFinder(), modulesClient);
+			modulesLoader.loadModules("classpath*:/envision-modules", new DefaultModulesFinder(), modulesClient);
 		}
 
 
