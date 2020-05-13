@@ -47,8 +47,7 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 		});
 		modulesLoader.setModulesManager(propsManager);
 		if (caughtException == null) {
-			modulesLoader.loadModules("classpath*:/ml-modules", new DefaultModulesFinder(), modulesClient);
-//			modulesLoader.loadModules("classpath*:/ml-modules-staging", new SearchOptionsFinder(), hubConfig.newStagingClient());
+			modulesLoader.loadModules("classpath*:/envision-modules", new DefaultModulesFinder(), modulesClient);
 		}
 
 
