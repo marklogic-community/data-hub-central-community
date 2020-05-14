@@ -32,7 +32,7 @@ public class Search extends BaseTest {
 		clearStagingFinalAndJobDatabases();
 
 		installEnvisionModules();
-		
+
 		modelService.saveModel(getFinalClient(), getResourceStream("models/model.json"));
 		installFinalDoc("entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee");
 		installFinalDoc("entities/employee1.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "sm-Employee-archived", "Employee");
@@ -52,71 +52,71 @@ public class Search extends BaseTest {
 	@Test
 	public void noresults() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities("fdljfkladjljad", 1, 5, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/noresults.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/noresults.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_all() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 30, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_noCollections() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 30, "default", om.readTree("[]"));
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_onlyEmployee() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 5, "default", om.readTree("[\"Employee\"]"));
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_onlyDepartment() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 5, "default", om.readTree("[\"Department\"]"));
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_some() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 5, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_some.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_some.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortMostConnected() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 1, "mostConnected", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortMost.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortMost.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void emptySearch_SortLeastConnected() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 1, "leastConnected", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortLeast.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortLeast.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void pagination() throws IOException, JSONException {
-		for (int page = 3; page <= 3; page++) {
+		for (int page = 1; page <= 8; page++) {
 			JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, page, 1, "default", allCollections);
-			JSONAssert.assertEquals(getResource("output/pagination" + page + ".json"), om.writeValueAsString(found), false);
+			JSONAssert.assertEquals(getResource("output/pagination" + page + ".json"), om.writeValueAsString(found), true);
 		}
 	}
 
 	@Test
 	public void search_hrskill3() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities("hrSkill3", 1, 5, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/hrskill3.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/hrskill3.json"), om.writeValueAsString(found), true);
 	}
 
 	@Test
 	public void getRelated() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "employee", "belongsTo", "department", 1, 10);
-		JSONAssert.assertEquals(getResource("output/related-belongs-to.json"), om.writeValueAsString(found), false);
+		JsonNode found = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "belongsTo", 1, 10);
+		JSONAssert.assertEquals(getResource("output/related-belongs-to.json"), om.writeValueAsString(found), true);
 
-		JsonNode found2 = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "employee", "has", "skill", 1, 10);
-		JSONAssert.assertEquals(getResource("output/related-has.json"), om.writeValueAsString(found2), false);
+		JsonNode found2 = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "has",1, 10);
+		JSONAssert.assertEquals(getResource("output/related-has.json"), om.writeValueAsString(found2), true);
 	}
 }

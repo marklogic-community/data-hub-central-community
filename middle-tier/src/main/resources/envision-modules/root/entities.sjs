@@ -10,7 +10,7 @@ const model = require('/model.sjs');
  * Options:
  * 		start - start index for pagination
  * 		connectionLimit - # of connections to grab
- *    allowedEntities - an array of entities that are allowed, empty means all
+ *		allowedEntities - an array of entities that are allowed, empty means all
  * 		labels - an array of edge labels to return, empty means all
  */
 function getEntities(uris, opts) {
@@ -45,7 +45,7 @@ function getEntities(uris, opts) {
 		PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
 
 		select distinct
-		  # we use fromUri and toUri to determine which side is a concept
+			# we use fromUri and toUri to determine which side is a concept
 			?fromUri ?toUri
 
 			# this returns the uri (for docs) or the id (for concepts) on the from side
@@ -111,7 +111,14 @@ function getEntities(uris, opts) {
 	// uris to return. This allows us to grab any nodes for which we have edges, but
 	// no node yet. Look below to see where we iterate over the uris to make nodes
 	for (let t of triples) {
-		resp.edges[t.id] = t
+		resp.edges[t.id] = {
+			from: t.from,
+			to: t.to,
+			id: t.id,
+			label: t.label,
+			fromType: t.fromType,
+			toType: t.toType
+		}
 
 		if (t.isConcept) {
 			// determine which "side" (from or to) has the concept
@@ -193,43 +200,53 @@ function getEntities(uris, opts) {
  * @param uris an array of uris
  */
 function getEdgeCounts(uris) {
-	let edgeCounts = {}
 	const countSparql = `
 	PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-	SELECT (str(?uri) as ?id)
-	(REPLACE(str(?s), "#.+$", "") as ?from)
-	(REPLACE(str(?p), "^.+#", "") as ?label)
-	(REPLACE(str(?o), "#.+$", "") as ?to)
-	(COUNT(?p) as ?count)
-	where {
+	PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+	SELECT DISTINCT
+		(str(fn:head((?fromUri, ?s))) as ?x)
+		?p
+		(str(fn:head((?toUri, ?o))) as ?y)
+		(REPLACE(str(?s), "#.+$", "") as ?from)
+		(REPLACE(str(?p), "^.+#", "") as ?label)
+		(REPLACE(str(?o), "#.+$", "") as ?to)
+		(str(fn:lower-case(fn:string-join((?from, ?label, ?to), "-"))) as ?edgeId)
+		where {
 		{
 			?s ?p ?o.
-			?uri rdf:hasId ?s.
-			FILTER(?uri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ))
+			?fromUri rdf:hasId ?s.
+			optional { ?toUri rdf:hasId ?o }
+			FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
 			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId ) )
 		}
 		UNION
 		{
 			?s ?p ?o.
-			?uri rdf:hasId ?o.
-			FILTER(?uri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ))
+			?toUri rdf:hasId ?o.
+			optional { ?fromUri rdf:hasId ?s }
+			FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
 			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId ) )
 		}
-	}
-	GROUP BY ?uri ?p
-	ORDER BY DESC(?count)`
+	}`
 
-	sem.sparql(countSparql).toArray().forEach(t => {
-		let ec = edgeCounts[t.id] || {}
-		const edgeId = `${t.from}-${t.label}-${t.to}`.toLowerCase()
-		ec[edgeId] = {
+	const buildEdgeCount = (obj, key, t) => {
+		let ex = obj[key] || {}
+		const count = (ex[t.edgeId] && ex[t.edgeId].count) || 0
+		ex[t.edgeId] = {
 			from: t.from,
 			to: t.to,
 			label: t.label,
-			count: t.count
+			count: count + 1
 		}
-		edgeCounts[t.id] = ec
-	})
+		obj[key] = ex
+		return obj
+	}
+
+	const edgeCounts = sem.sparql(countSparql).toArray().reduce((obj, t) => {
+		let newObj = buildEdgeCount(obj, t.x, t)
+		newObj = buildEdgeCount(newObj, t.y, t)
+		return newObj
+	}, {})
 	return edgeCounts
 }
 

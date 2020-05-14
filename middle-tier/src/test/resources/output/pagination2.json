@@ -3,37 +3,96 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
-		"skill#programming": {
-			"id": "skill#programming",
-			"label": "programming",
+		"skill#hrSkill1": {
+			"id": "skill#hrSkill1",
+			"label": "hrSkill1",
 			"entityName": "Skill",
-			"isConcept": true
+			"isConcept": true,
+			"edgeCounts": {}
 		},
-		"/CoastalEmployees/55003.json": {
-			"id": "/CoastalEmployees/55003.json",
-			"uri": "/CoastalEmployees/55003.json",
+		"skill#hrSkill2": {
+			"id": "skill#hrSkill2",
+			"label": "hrSkill2",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {}
+		},
+		"skill#hrSkill3": {
+			"id": "skill#hrSkill3",
+			"label": "hrSkill3",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {}
+		},
+		"/MountainTopEmployees/employee4.json": {
+			"id": "/MountainTopEmployees/employee4.json",
+			"uri": "/MountainTopEmployees/employee4.json",
 			"entityName": "Employee",
-			"label": "Joan Smith",
+			"label": "Roberta Jones",
 			"entity": {
-				"name": "Joan Smith",
-				"departmentId": "3",
-				"employeeId": "55003",
+				"name": "Roberta Jones",
+				"departmentId": "4",
+				"employeeId": "55004",
 				"skills": [
-					"programming"
+					"hrSkill1",
+					"hrSkill2",
+					"hrSkill3"
 				]
 			},
 			"edgeCounts": {
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
 				"employee-has-skill": {
-					"from": "employee",
+					"from":"employee",
 					"to": "skill",
 					"label": "has",
-					"count": 1
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 3
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/departments/department4.json": {
+			"id": "/departments/department4.json",
+			"uri": "/departments/department4.json",
+			"entityName": "Department",
+			"label": "Human Resources",
+			"entity": {
+				"name": "Human Resources",
+				"departmentId": "4",
+				"employeeIds": [
+					"55004",
+					"55005"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				},
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 2
 				}
 			},
 			"prov": [],
@@ -41,14 +100,69 @@
 		}
 	},
 	"edges": {
-		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming": {
-			"from": "/CoastalEmployees/55003.json",
-			"to": "skill#programming",
-			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming",
+		"/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee4.json": {
+			"from": "/departments/department4.json",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee4.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee"
+		},
+		"skill#hrSkill1-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill1",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill1-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#hrSkill2-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill2",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill2-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#hrSkill3-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill3",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill3-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "/departments/department4.json",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill1",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
 			"label": "has",
 			"fromType": "employee",
-			"toType": "skill",
-			"isConcept": true
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill2",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill3",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
 		}
 	}
 }

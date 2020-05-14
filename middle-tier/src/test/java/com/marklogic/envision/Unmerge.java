@@ -52,6 +52,6 @@ public class Unmerge extends BaseTest {
 	@Test
 	public void unmerge() throws IOException, JSONException {
 		JsonNode found = Mastering.on(getFinalClient()).unmerge("/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json");
-		JSONAssert.assertEquals(getResource("output/unmerge.json"), om.writeValueAsString(found), false);
+		JSONAssert.assertEquals(getResource("output/unmerge.json"), om.writeValueAsString(found), true);
 	}
 }

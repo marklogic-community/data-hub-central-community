@@ -17,14 +17,26 @@
 				]
 			},
 			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
 				"employee-has-skill": {
-					"from": "employee",
+					"from":"employee",
 					"to": "skill",
 					"label": "has",
 					"count": 1
@@ -49,17 +61,29 @@
 				]
 			},
 			"edgeCounts": {
-				"employee-has-skill": {
-					"from": "employee",
-					"to": "skill",
-					"label": "has",
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 3
 				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
+				},
+				"employee-has-skill": {
+					"from":"employee",
+					"to": "skill",
+					"label": "has",
+					"count": 3
 				}
 			},
 			"prov": [],
@@ -80,17 +104,29 @@
 				]
 			},
 			"edgeCounts": {
-				"employee-has-skill": {
-					"from": "employee",
-					"to": "skill",
-					"label": "has",
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 2
 				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
+				},
+				"employee-has-skill": {
+					"from":"employee",
+					"to": "skill",
+					"label": "has",
+					"count": 2
 				}
 			},
 			"prov": [],
@@ -114,17 +150,29 @@
 				]
 			},
 			"edgeCounts": {
-				"employee-has-skill": {
-					"from": "employee",
-					"to": "skill",
-					"label": "has",
-					"count": 5
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 4
 				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 2
+					"count": 3
+				},
+				"employee-has-skill": {
+					"from":"employee",
+					"to": "skill",
+					"label": "has",
+					"count": 4
 				}
 			},
 			"prov": [],
