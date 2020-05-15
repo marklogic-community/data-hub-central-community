@@ -49,7 +49,7 @@ describe('Explore', () => {
 		cy.contains('Showing results 1 to 5 of 31')
 	})
 
-  it('Finds one search result and properties right panel populated', () => {
+  	it('Finds one search result and properties right panel populated', () => {
 		cy.visit('/explore')
 		cy.get('[data-cy=searchInput]').clear()
 		cy.get('[data-cy=searchInput]').type('Sashenka{enter}')
@@ -60,5 +60,17 @@ describe('Explore', () => {
 
 		cy.get('[data-cy=entityTitle]').contains("Sashenka")
 		cy.contains('571 Grayhawk Court')
+	})
+
+	it('Property panel cleared after search', () => {
+		cy.visit('/explore')
+		cy.get('[data-cy=searchInput]').clear()
+		cy.get('[data-cy=searchInput]').type('Sashenka{enter}')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json").click()
+
+		cy.get('[data-cy=searchInput]').clear()
+		cy.get('[data-cy=searchInput]').type('DoesNotExist{enter}')
+		cy.get('[data-cy=entityTitle]').should('not.contain', 'Sashenka')
 	})
 })
