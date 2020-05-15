@@ -32,15 +32,15 @@ public class ExploreController extends AbstractController {
 
         JsonNode node = om.readTree(request.getInputStream());
         String qtext = null;
-        if (!node.get("qtext").isNull()) {
+        if (node.has("qtext") && !node.get("qtext").isNull()) {
             qtext = node.get("qtext").asText();
         }
         int page = 1;
-		if (!node.get("page").isNull()) {
+		if (node.has("page") && !node.get("page").isNull()) {
 			page = node.get("page").asInt();
 		}
 		int pageLength = 10;
-		if (!node.get("page").isNull()) {
+		if (node.has("pageLength") && !node.get("pageLength").isNull()) {
 			pageLength = node.get("pageLength").asInt();
 		}
 
@@ -58,12 +58,10 @@ public class ExploreController extends AbstractController {
         DatabaseClient client = getFinalClient();
 
         JsonNode node = om.readTree(request.getInputStream());
-        String fromId = node.get("fromId").asText();
-        String from = node.get("from").asText();
+        String uri = node.get("uri").asText();
         String label = node.get("label").asText();
-        String to = node.get("to").asText();
 		int page = node.get("page").asInt();
 		int pageLength = node.get("pageLength").asInt();
-        return EntitySearcher.on(client).relatedEntities(fromId, from, label, to, page, pageLength);
+        return EntitySearcher.on(client).relatedEntities(uri, label, page, pageLength);
     }
 }

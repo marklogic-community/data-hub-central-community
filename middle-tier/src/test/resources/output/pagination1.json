@@ -3,6 +3,13 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
+		"skill#programming": {
+			"id": "skill#programming",
+			"label": "programming",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {}
+		},
 		"/CoastalEmployees/55003.json": {
 			"id": "/CoastalEmployees/55003.json",
 			"uri": "/CoastalEmployees/55003.json",
@@ -18,15 +25,27 @@
 			},
 			"edgeCounts": {
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
 				"employee-has-skill": {
-					"from": "employee",
+					"from":"employee",
 					"to": "skill",
 					"label": "has",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 1
 				}
 			},
@@ -46,8 +65,14 @@
 				]
 			},
 			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
 				"department-hasemployee-employee": {
-					"from": "department",
+					"from":"department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1
@@ -64,8 +89,31 @@
 			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
 			"label": "belongsTo",
 			"fromType": "employee",
-			"toType": "department",
-			"isConcept": false
+			"toType": "department"
+		},
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "skill#programming",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55003.json": {
+			"from": "/departments/department3.json",
+			"to": "/CoastalEmployees/55003.json",
+			"id": "/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55003.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee"
+		},
+		"skill#programming-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/CoastalEmployees/55003.json": {
+			"from": "skill#programming",
+			"to": "/CoastalEmployees/55003.json",
+			"id": "skill#programming-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/CoastalEmployees/55003.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
 		}
 	}
 }

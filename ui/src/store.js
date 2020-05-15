@@ -204,9 +204,9 @@ const explore = {
 					}
 				})
 		},
-		getRelatedEntities({ commit, state }, q) {
+		getRelatedEntities({ commit, state }, { uri, label, page, pageLength }) {
 			return searchApi
-				.getRelatedEntities(q)
+				.getRelatedEntities({ uri, label, page, pageLength })
 				.then(response => {
 					commit('addDocs', response)
 				})

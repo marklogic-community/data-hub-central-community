@@ -4,7 +4,8 @@
 			"id": "skill#programming",
 			"label": "programming",
 			"entityName": "Skill",
-			"isConcept": true
+			"isConcept": true,
+			"edgeCounts": {}
 		},
 		"/CoastalEmployees/55003.json": {
 			"id": "/CoastalEmployees/55003.json",
@@ -20,14 +21,26 @@
 				]
 			},
 			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
 				"employee-has-skill": {
-					"from": "employee",
+					"from":"employee",
 					"to": "skill",
 					"label": "has",
 					"count": 1
@@ -44,8 +57,7 @@
 			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming",
 			"label": "has",
 			"fromType": "employee",
-			"toType": "skill",
-			"isConcept": true
+			"toType": "skill"
 		}
 	}
 }

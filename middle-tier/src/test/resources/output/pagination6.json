@@ -3,33 +3,94 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
-		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
-			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
-			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+		"/departments/department3.json": {
+			"id": "/departments/department3.json",
+			"uri": "/departments/department3.json",
 			"entityName": "Department",
-			"label": "Marketing",
+			"label": "Engineering",
 			"entity": {
-				"name": "Marketing",
-				"departmentId": [
-					"2",
-					"22"
-				],
+				"name": "Engineering",
+				"departmentId": "3",
 				"employeeIds": [
-					"55002",
-					"5"
+					"55003"
 				]
 			},
 			"edgeCounts": {
 				"department-hasemployee-employee": {
-					"from": "department",
+					"from":"department",
 					"to": "employee",
 					"label": "hasEmployee",
-					"count": 2
+					"count": 1
+				},
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/CoastalEmployees/55003.json": {
+			"id": "/CoastalEmployees/55003.json",
+			"uri": "/CoastalEmployees/55003.json",
+			"entityName": "Employee",
+			"label": "Joan Smith",
+			"entity": {
+				"name": "Joan Smith",
+				"departmentId": "3",
+				"employeeId": "55003",
+				"skills": [
+					"programming"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from":"employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
 				}
 			},
 			"prov": [],
 			"isConcept": false
 		}
 	},
-	"edges": {}
+	"edges": {
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "/departments/department3.json",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55003.json": {
+			"from": "/departments/department3.json",
+			"to": "/CoastalEmployees/55003.json",
+			"id": "/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55003.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee"
+		}
+	}
 }
