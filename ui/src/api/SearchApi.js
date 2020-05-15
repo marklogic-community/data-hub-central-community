@@ -163,8 +163,8 @@ export default {
 			return error;
 		});
 	},
-	getRelatedEntities(q) {
-		return axios.post('/api/explore/related-entities/', q)
+	getRelatedEntities({ uri, label, page, pageLength }) {
+		return axios.post('/api/explore/related-entities/', { uri, label, page, pageLength })
 		.then(response => response.data)
 		.catch(error => {
 			console.error('error:', error);

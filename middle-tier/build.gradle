@@ -129,23 +129,23 @@ springBoot {
 
 
 task generateEntitySearcher(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
-    serviceDeclarationFile = 'src/main/resources/ml-modules/root/entities/search/service.json'
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/entities/search/service.json'
 }
 
 task generateEntityModeller(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
-    serviceDeclarationFile = 'src/main/resources/ml-modules/root/entities/model/service.json'
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/entities/model/service.json'
 }
 
 task generateMastering(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
-    serviceDeclarationFile = 'src/main/resources/ml-modules/root/entities/mastering/service.json'
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/entities/mastering/service.json'
 }
 
 task generateTripleBrowser(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
-    serviceDeclarationFile = 'src/main/resources/ml-modules/root/triples/browse/service.json'
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/triples/browse/service.json'
 }
 
 task generateSystemUtils(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
-    serviceDeclarationFile = 'src/main/resources/ml-modules/root/system/utils/service.json'
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/system/utils/service.json'
 }
 
 bootRun {
@@ -154,9 +154,5 @@ bootRun {
 
 test {
 	useJUnitPlatform()
-	systemProperty "dhfDir", System.getProperty("dhfDir")
-	systemProperty "modelsDir", System.getProperty("modelsDir")
-	systemProperty "dhfEnv", System.getProperty("dhfEnv")
-	systemProperty "mlUsername", System.getProperty("mlUsername")
-	systemProperty "mlPassword", System.getProperty("mlPassword")
+	systemProperties = System.properties
 }

@@ -1,13 +1,10 @@
 const ents = require('/entities.sjs');
-var fromId;
-var from;
+var uri;
 var label;
-var to;
-var pageLength;
 var page;
+var pageLength;
 
 const connectionLimit = pageLength
-const start = ((page - 1) * pageLength);
 const labels = [label]
-const results = ents.getEntities([fromId], { connectionLimit, labels })
+const results = ents.getEntities([uri], { connectionLimit, labels })
 results;

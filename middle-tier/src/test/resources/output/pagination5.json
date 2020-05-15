@@ -3,6 +3,39 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Department",
+			"label": "Marketing",
+			"entity": {
+				"name": "Marketing",
+				"departmentId": [
+					"2",
+					"22"
+				],
+				"employeeIds": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 3
+				},
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 3
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
 		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
 			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
@@ -21,17 +54,29 @@
 				]
 			},
 			"edgeCounts": {
-				"employee-has-skill": {
-					"from": "employee",
-					"to": "skill",
-					"label": "has",
-					"count": 5
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 3
 				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 2
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 4
+				},
+				"employee-has-skill": {
+					"from":"employee",
+					"to": "skill",
+					"label": "has",
+					"count": 4
 				}
 			},
 			"prov": [],
@@ -39,14 +84,21 @@
 		}
 	},
 	"edges": {
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
 		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
 			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
 			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"label": "hasEmployee",
 			"fromType": "department",
-			"toType": "employee",
-			"isConcept": false
+			"toType": "employee"
 		}
 	}
 }
