@@ -19,7 +19,7 @@ The jar is configured so that you can drop it into a DHF project directory and r
 
 `java -jar envision.jar`
 
-_Note: models will be saved in a directory, /conceptConnectorModels, sibing to the .jar file.  You can move your existing models here or see below for how to specify a different models directory._
+_Note: Models will be saved in a directory called ./conceptConnectorModels, which can be found sibling to the envision.jar file by default. You can move your existing models here or see below for how to specify a different models directory._
 
 If you need to point it at another folder where the DHF is installed, run like so:
 
