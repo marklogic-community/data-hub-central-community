@@ -18,8 +18,12 @@ if [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] ; then
 	echo "mlUsername=admin
 mlPassword=admin
 " > gradle-local.properties
+
 	gradle mlDeploy -i
 	gradle mlLoadModules -i
+
+	echo "is hub running?"
+	curl --anyauth --user admin:admin -X GET "http://localhost:8011/v1/search"
 
 	cd $project_dir
   echo "./gradlew -DdhfDir=${tmp_dir} -DmodelsDir=${tmp_dir}/conceptConnectorModels -DdhfEnv=local clean test -i"
