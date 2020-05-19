@@ -25,7 +25,5 @@ jobs:
         - cd ui
       install:
         - npm install
-      before_script:
-        - cd ui
       script:
         - npm run test:e2e:headless
