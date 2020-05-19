@@ -39,7 +39,7 @@ describe('Explore', () => {
 		})
 		cy.visit('/explore')
 		cy.get('[data-cy=searchInput]').type('WrightWrong{enter}')
-		cy.contains('No Results found')
+		cy.contains('No Results found', { timeout: 10000 })
 	})
 
 	it('Finds one search result', () => {
@@ -69,8 +69,18 @@ describe('Explore', () => {
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.get('[data-cy=nodeList]').contains("/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json").click()
 
+		cy.route('POST', '/api/explore/entities/', {
+			"page": 1,
+			"total": 0,
+			"pageLength": 30,
+			"nodes": {},
+			"edges": {}
+		})
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'hidden')
 		cy.get('[data-cy=searchInput]').clear()
+		cy.get('[data-cy=searchInput]').type('{enter}')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.get('[data-cy=searchInput]').type('DoesNotExist{enter}')
-		cy.get('[data-cy=entityTitle]').should('not.contain', 'Sashenka')
+		cy.get('[data-cy=entityTitle]').should('not.contain', 'Sashenka', { timeout: 10000 })
 	})
 })

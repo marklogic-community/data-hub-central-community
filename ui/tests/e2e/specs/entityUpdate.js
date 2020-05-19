@@ -36,6 +36,7 @@ describe('End to end test to create and update model', () => {
 		cy.visit('/')
 		cy.url().should('include', '/model')
 		cy.route('GET', '/api/models/', [])
+		cy.route('POST', '/api/models/delete', {})
 		cy.get('[data-cy="cardMenu.deleteModelButton"]').click()
 		cy.get('button').contains('Delete').click()
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('not.contain', 'Test Model')
@@ -75,7 +76,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'String')
 	})
 
-	it('can add a new Array property', () => {
+	it.only('can add a new Array property', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
@@ -86,9 +87,9 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('[data-cy="editProperty.propName"]').type('arrayProp')
 		cy.get('[data-cy="editProperty.dataType"]').parentsUntil('.v-select__slot').click()
-		cy.get('.v-menu__content:visible .v-list-item').contains('Array').parentsUntil('.v-list-item').click()
+		cy.get('.menuDataType .v-list-item').contains('Array').parentsUntil('.v-list-item').click()
 		cy.get('[data-cy="editProperty.arrayDataType"]').parentsUntil('.v-select__slot').click()
-		cy.get('.v-menu__content:visible').last().find('.v-list-item').contains('Boolean').parentsUntil('.v-list-item').click()
+		cy.get('.menuDataTypeArray .v-list-item').contains('Boolean').parentsUntil('.v-list-item').click()
 		cy.get('[data-cy="editProperty.advancedBtn"]').click()
 		cy.get('[data-cy="prop.isPii"]').should('not.be.checked')
 		cy.get('[data-cy="prop.isPrimaryKey"]').should('not.be.checked')
