@@ -20,8 +20,12 @@ jobs:
       addons:
         apt:
           packages:
-          - libgconf-2-4
+					- libgconf-2-4
+			before_install:
+				- cd ui
       install:
-        - npm install
+				- npm install
+			before_script:
+				- cd ui
       script:
         - npm run test:e2e:headless
