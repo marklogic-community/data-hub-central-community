@@ -22,5 +22,6 @@ mlPassword=admin
 	gradle mlLoadModules -i
 
 	cd $project_dir
-  ./gradlew -DdhfDir=${tmp_dir} -DmodelsDir=${tmp_dir}/conceptConnectorModels clean test
+  echo "./gradlew -DdhfDir=${tmp_dir} -DmodelsDir=${tmp_dir}/conceptConnectorModels -DdhfEnv=local clean test -i"
+  ./gradlew -DdhfDir=${tmp_dir} -DmodelsDir=${tmp_dir}/conceptConnectorModels -DdhfEnv=local clean test -i
 fi
