@@ -155,4 +155,8 @@ bootRun {
 test {
 	useJUnitPlatform()
 	systemProperties = System.properties
+	testLogging {
+		events "failed"
+		exceptionFormat "short"
+	}
 }
