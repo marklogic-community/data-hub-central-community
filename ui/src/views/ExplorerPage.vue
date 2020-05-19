@@ -409,11 +409,10 @@ export default {
 			this.getEntities()
 		},
 		searchText() {
+			this.currentNode = null
 			this.$store.commit('explore/setText', { qtext: this.qtext })
 			this.$store.commit('explore/setPage', 1)
 			this.getEntities()
-			 
-			this.currentNode = null
 		},
 		clearSearch() {
 			this.qtext = null
@@ -435,6 +434,7 @@ export default {
 			this.$store
 				.dispatch('explore/search')
 				.then(() => {
+					this.searchPending = false
 				}).finally(() => {
 					this.searchPending = false
 				});
