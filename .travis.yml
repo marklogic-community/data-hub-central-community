@@ -1,6 +1,7 @@
 jobs:
   include:
-    - language: java
+		- language: java
+			dist: trusty
       jdk:
         - oraclejdk9
       services:
