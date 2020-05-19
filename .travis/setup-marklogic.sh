@@ -10,4 +10,3 @@ curl -i -X POST  \
 	--data "admin-username=admin&admin-password=admin&wallet-password=admin&realm=public" \
 	"http://localhost:8001/admin/v1/instance-admin"
 sleep 10
-
