@@ -1,7 +1,7 @@
 jobs:
   include:
-		- language: java
-			dist: trusty
+    - language: java
+      dist: trusty
       jdk:
         - oraclejdk9
       services:
@@ -16,16 +16,16 @@ jobs:
         - ./.travis/run-tests.sh
     - language: node_js
       node_js:
-				- 10
+        - 10
       addons:
         apt:
           packages:
-					- libgconf-2-4
-			before_install:
-				- cd ui
+          - libgconf-2-4
+      before_install:
+        - cd ui
       install:
-				- npm install
-			before_script:
-				- cd ui
+        - npm install
+      before_script:
+        - cd ui
       script:
         - npm run test:e2e:headless
