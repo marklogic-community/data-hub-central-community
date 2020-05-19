@@ -20,11 +20,17 @@
 				]
 			},
 			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 3
+				},
 				"department-hasemployee-employee": {
-					"from": "department",
+					"from":"department",
 					"to": "employee",
 					"label": "hasEmployee",
-					"count": 2
+					"count": 3
 				}
 			},
 			"prov": [],
@@ -43,8 +49,14 @@
 				]
 			},
 			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
 				"department-hasemployee-employee": {
-					"from": "department",
+					"from":"department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1
@@ -67,8 +79,14 @@
 				]
 			},
 			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				},
 				"department-hasemployee-employee": {
-					"from": "department",
+					"from":"department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 2

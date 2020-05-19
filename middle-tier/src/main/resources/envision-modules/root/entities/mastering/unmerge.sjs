@@ -15,8 +15,8 @@ xdmp.invokeFunction(() => {
 
 let result = null
 xdmp.invokeFunction(() => {
-	// xdmp.sleep(5000)
-	result = ents.getEntities(uris)
+	const connectionLimit = 20
+	result = ents.getEntities(uris, { connectionLimit })
 })
 
 result

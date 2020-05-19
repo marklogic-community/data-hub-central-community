@@ -33,7 +33,7 @@ let query =
 		])
 	])
 
-let start = ((page - 1) * pageLength);
+let start = ((page - 1) * pageLength) + 1;
 
 const sorted = ents.runQuery(query, {start, pageLength, sort})
 

@@ -7,19 +7,22 @@
 			"id": "skill#hrSkill1",
 			"label": "hrSkill1",
 			"entityName": "Skill",
-			"isConcept": true
+			"isConcept": true,
+			"edgeCounts": {}
 		},
 		"skill#hrSkill2": {
 			"id": "skill#hrSkill2",
 			"label": "hrSkill2",
 			"entityName": "Skill",
-			"isConcept": true
+			"isConcept": true,
+			"edgeCounts": {}
 		},
 		"skill#hrSkill3": {
 			"id": "skill#hrSkill3",
 			"label": "hrSkill3",
 			"entityName": "Skill",
-			"isConcept": true
+			"isConcept": true,
+			"edgeCounts": {}
 		},
 		"/MountainTopEmployees/employee4.json": {
 			"id": "/MountainTopEmployees/employee4.json",
@@ -37,17 +40,29 @@
 				]
 			},
 			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
 				"employee-has-skill": {
-					"from": "employee",
+					"from":"employee",
 					"to": "skill",
 					"label": "has",
 					"count": 3
 				},
-				"employee-belongsto-department": {
-					"from": "employee",
-					"to": "department",
-					"label": "belongsTo",
-					"count": 1
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 3
 				}
 			},
 			"prov": [],
@@ -67,8 +82,14 @@
 				]
 			},
 			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				},
 				"department-hasemployee-employee": {
-					"from": "department",
+					"from":"department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 2
@@ -85,8 +106,31 @@
 			"id": "/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee4.json",
 			"label": "hasEmployee",
 			"fromType": "department",
-			"toType": "employee",
-			"isConcept": false
+			"toType": "employee"
+		},
+		"skill#hrSkill1-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill1",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill1-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#hrSkill2-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill2",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill2-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#hrSkill3-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill3",
+			"to": "/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill3-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
 		},
 		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
 			"from": "/MountainTopEmployees/employee4.json",
@@ -94,8 +138,7 @@
 			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
 			"label": "belongsTo",
 			"fromType": "employee",
-			"toType": "department",
-			"isConcept": false
+			"toType": "department"
 		},
 		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
 			"from": "/MountainTopEmployees/employee4.json",
@@ -103,8 +146,7 @@
 			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
 			"label": "has",
 			"fromType": "employee",
-			"toType": "skill",
-			"isConcept": true
+			"toType": "skill"
 		},
 		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
 			"from": "/MountainTopEmployees/employee4.json",
@@ -112,8 +154,7 @@
 			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
 			"label": "has",
 			"fromType": "employee",
-			"toType": "skill",
-			"isConcept": true
+			"toType": "skill"
 		},
 		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3": {
 			"from": "/MountainTopEmployees/employee4.json",
@@ -121,8 +162,7 @@
 			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3",
 			"label": "has",
 			"fromType": "employee",
-			"toType": "skill",
-			"isConcept": true
+			"toType": "skill"
 		}
 	}
 }

@@ -412,6 +412,8 @@ export default {
 			this.$store.commit('explore/setText', { qtext: this.qtext })
 			this.$store.commit('explore/setPage', 1)
 			this.getEntities()
+			 
+			this.currentNode = null
 		},
 		clearSearch() {
 			this.qtext = null
@@ -473,15 +475,13 @@ export default {
 						y: e.event.y
 					}
 
-					let items = Object.values(node.edgeCounts).map(e => {
+					let items = _.sortBy(Object.values(node.edgeCounts), 'label').map(e => {
 						return {
 							label: `Expand ${e.label} (${e.count})`,
 							action: 'expand',
 							rel: {
-								from: e.from,
-								fromId: this.currentNode.id,
-								label: e.label,
-								to: e.to
+								uri: this.currentNode.id,
+								label: e.label
 							}
 						}
 					})
@@ -497,7 +497,7 @@ export default {
 						this.rightClickItems = items
 
 						this.$nextTick(() => {
-							this.rightClickMenu = true;
+							this.rightClickMenu = true
 						})
 					}
 				}
@@ -513,12 +513,11 @@ export default {
 					break;
 			}
 		},
-		expandRelationship(rel) {
+		expandRelationship({ uri, label }) {
 			// TODO: move this to store
-			rel.page = 1
-			rel.pageLength = 10
-			this.$store
-				.dispatch('explore/getRelatedEntities', rel)
+			const page = 1
+			const pageLength = 10
+			this.$store.dispatch('explore/getRelatedEntities', { uri, label, page, pageLength })
 		},
 		unmerge(uri) {
 			this.$store.dispatch('explore/unmerge', uri)

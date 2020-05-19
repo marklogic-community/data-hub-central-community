@@ -50,16 +50,14 @@ public interface EntitySearcher {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode relatedEntities(String fromId, String from, String label, String to, Integer page, Integer pageLength) {
+            public com.fasterxml.jackson.databind.JsonNode relatedEntities(String uri, String label, Integer page, Integer pageLength) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("relatedEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
                 .withSession()
                 .withParams(
-                    BaseProxy.atomicParam("fromId", false, BaseProxy.StringType.fromString(fromId)),
-                    BaseProxy.atomicParam("from", false, BaseProxy.StringType.fromString(from)),
+                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)),
                     BaseProxy.atomicParam("label", false, BaseProxy.StringType.fromString(label)),
-                    BaseProxy.atomicParam("to", false, BaseProxy.StringType.fromString(to)),
                     BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
                     BaseProxy.atomicParam("pageLength", false, BaseProxy.IntegerType.fromInteger(pageLength)))
                 .withMethod("POST")
@@ -87,14 +85,12 @@ public interface EntitySearcher {
   /**
    * Invokes the relatedEntities operation on the database server
    *
-   * @param fromId	provides input
-   * @param from	provides input
+   * @param uri	provides input
    * @param label	provides input
-   * @param to	provides input
    * @param page	provides input
    * @param pageLength	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode relatedEntities(String fromId, String from, String label, String to, Integer page, Integer pageLength);
+    com.fasterxml.jackson.databind.JsonNode relatedEntities(String uri, String label, Integer page, Integer pageLength);
 
 }

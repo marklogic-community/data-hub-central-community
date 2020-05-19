@@ -19,6 +19,24 @@
 				"color": "#3cdbc0"
 			}
 		},
+		"skill-isSkillFor-employee": {
+			"from": "skill",
+			"label": "isSkillFor",
+			"to": "employee",
+			"keyFrom": "skills",
+			"keyTo": "employeeId",
+			"id": "skill-isSkillFor-employee",
+			"smooth": {
+				"roundness": 0.5
+			},
+			"dashes": [
+				4,
+				3
+			],
+			"color": {
+				"color": "#3cdbc0"
+			}
+		},
 		"employee-belongsto-department": {
 			"from": "employee",
 			"label": "belongsTo",

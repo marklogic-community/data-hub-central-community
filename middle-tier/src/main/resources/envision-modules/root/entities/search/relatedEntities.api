@@ -3,19 +3,11 @@
     "params": [
       {
         "datatype": "string",
-        "name": "fromId"
-      },
-			{
-        "datatype": "string",
-        "name": "from"
+        "name": "uri"
       },
 			{
         "datatype": "string",
         "name": "label"
-      },
-			{
-        "datatype": "string",
-        "name": "to"
       },
 			{
         "datatype": "int",

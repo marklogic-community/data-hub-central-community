@@ -3,32 +3,94 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
-		"/MountainTopEmployees/employee5.json": {
-			"id": "/MountainTopEmployees/employee5.json",
-			"uri": "/MountainTopEmployees/employee5.json",
+		"skill#general ledger": {
+			"id": "skill#general ledger",
+			"label": "general ledger",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {}
+		},
+		"skill#procurement": {
+			"id": "skill#procurement",
+			"label": "procurement",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {}
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"entityName": "Employee",
-			"label": "Sam Smith",
+			"label": "Zola Manchett",
 			"entity": {
-				"name": "Sam Smith",
-				"departmentId": "4",
-				"employeeId": "55005",
+				"name": "Zola Manchett",
 				"skills": [
-					"hrSkill1",
-					"hrSkill2"
+					"general ledger",
+					"procurement"
+				],
+				"departmentId": "2",
+				"employeeId": [
+					"55002",
+					"5"
 				]
 			},
 			"edgeCounts": {
-				"employee-has-skill": {
-					"from": "employee",
-					"to": "skill",
-					"label": "has",
-					"count": 2
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 3
 				},
 				"employee-belongsto-department": {
-					"from": "employee",
+					"from":"employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 1
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from":"skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 4
+				},
+				"employee-has-skill": {
+					"from":"employee",
+					"to": "skill",
+					"label": "has",
+					"count": 4
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Department",
+			"label": "Marketing",
+			"entity": {
+				"name": "Marketing",
+				"departmentId": [
+					"2",
+					"22"
+				],
+				"employeeIds": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from":"department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 3
+				},
+				"employee-belongsto-department": {
+					"from":"employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 3
 				}
 			},
 			"prov": [],
@@ -36,14 +98,53 @@
 		}
 	},
 	"edges": {
-		"/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee5.json": {
-			"from": "/departments/department4.json",
-			"to": "/MountainTopEmployees/employee5.json",
-			"id": "/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee5.json",
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"label": "hasEmployee",
 			"fromType": "department",
-			"toType": "employee",
-			"isConcept": false
+			"toType": "employee"
+		},
+		"skill#general ledger-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "skill#general ledger",
+			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "skill#general ledger-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#procurement-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "skill#procurement",
+			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "skill#procurement-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "skill#general ledger",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "skill#procurement",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
 		}
 	}
 }
