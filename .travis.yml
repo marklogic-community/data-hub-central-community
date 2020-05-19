@@ -1,0 +1,22 @@
+jobs:
+	include:
+		- language: java
+			jdk:
+				- oraclejdk9
+			services:
+				- docker
+			before_install:
+				- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+				- docker pull store/marklogicdb/marklogic-server:10.0-3-dev-centos
+				- docker run -d --privileged -p 7997-8002:7997-8002 -p 8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-3-dev-centos
+				- ./.travis/setup-marklogic.sh
+			sudo: true
+			script:
+				- ./.travis/run-tests.sh
+		- language: node_js
+			node_js:
+				- 10
+			install:
+				- npm install
+			script:
+				- npm run test:e2e:headless
