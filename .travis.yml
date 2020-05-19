@@ -15,7 +15,11 @@ jobs:
         - ./.travis/run-tests.sh
     - language: node_js
       node_js:
-        - 10
+				- 10
+      addons:
+        apt:
+          packages:
+          - libgconf-2-4
       install:
         - npm install
       script:
