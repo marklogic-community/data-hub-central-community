@@ -159,6 +159,19 @@ const $router = new Router({
         checkLogin
       }
     },
+    {
+      path: '/dhs',  //url path
+      name: 'root.dhs', //use to navigate to page
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "modeler" */ './views/DHSPage.vue'),
+      meta: {
+        label: 'DHS',
+        navArea: 'header',
+        requiresLogin: true,
+        checkLogin
+      }
+    },
     /*{
       path: '/map',  //url path
       name: 'root.mapper', //use to navigate to page
