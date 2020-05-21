@@ -25,25 +25,25 @@
 			},
 			"edgeCounts": {
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
 					"count": 1
 				},
 				"skill-isskillfor-employee": {
-					"from":"skill",
+					"from": "skill",
 					"to": "employee",
 					"label": "isSkillFor",
 					"count": 1
@@ -66,13 +66,13 @@
 			},
 			"edgeCounts": {
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1

@@ -16,16 +16,16 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
 					"count": 1
 				}
 			},
@@ -46,28 +46,28 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
+				"department-hasemployee-employee": {
+					"from": "department",
 					"to": "employee",
-					"label": "isSkillFor",
+					"label": "hasEmployee",
 					"count": 1
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 1
 				}
 			},
@@ -76,14 +76,6 @@
 		}
 	},
 	"edges": {
-		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
-			"from": "/CoastalEmployees/55003.json",
-			"to": "/departments/department3.json",
-			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
 		"/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55003.json": {
 			"from": "/departments/department3.json",
 			"to": "/CoastalEmployees/55003.json",
@@ -91,6 +83,14 @@
 			"label": "hasEmployee",
 			"fromType": "department",
 			"toType": "employee"
+		},
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "/departments/department3.json",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
 		}
 	}
 }

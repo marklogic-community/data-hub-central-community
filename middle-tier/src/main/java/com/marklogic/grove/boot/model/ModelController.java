@@ -67,4 +67,9 @@ public class ModelController extends AbstractController {
     public void toDataHub(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         modelService.toDataHub(getFinalClient());
     }
+
+	@RequestMapping(value = "/activeIndexes", method = RequestMethod.GET)
+	public JsonNode getActiveIndexes(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		return modelService.getActiveIndexes(getFinalClient());
+	}
 }

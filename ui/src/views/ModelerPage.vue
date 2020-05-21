@@ -663,7 +663,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .pagination {
 	margin: 0px 5px;
 }
@@ -681,35 +681,10 @@ table {
 	margin-bottom: 20px;
 }
 
-.graph-controls {
-  display: none !important;
-}
-
 .graph-container {
 	padding: 10px;
 }
 
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label {
-	color: #44499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label::before {
-	color: #44499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-close::before {
-	color: #44499c;
-}
-.mlvisjs-graph .vis-network {
-	border: 1px solid #44499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation {
-	border-bottom: 1px solid #444499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover {
-	color: #0511e6;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover::before {
-	color: #0511e6;
-}
 .hideUnlessTesting {
 	visibility: hidden;
 	position: absolute;

@@ -242,7 +242,13 @@ function getEdgeCounts(uris) {
 		return obj
 	}
 
-	const edgeCounts = sem.sparql(countSparql).toArray().reduce((obj, t) => {
+	// build a cts.query that omits archived documents from smart mastering
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const query = cts.notQuery(cts.collectionQuery(archivedCollections))
+
+	// run the sparql query while ignoring archived docs
+	const trips = sem.sparql(countSparql, null, null, sem.store(null, query)).toArray()
+	const edgeCounts = trips.reduce((obj, t) => {
 		let newObj = buildEdgeCount(obj, t.x, t)
 		newObj = buildEdgeCount(newObj, t.y, t)
 		return newObj
@@ -254,12 +260,33 @@ function runQuery(query, options) {
 	const opts = options || {}
 	const start = opts.start || 1
 	const pageLength = opts.pageLength || 10
-	const sort = opts.sort || 'default'
+	const rawSort = opts.sort || 'default'
+	const sort = rawSort.startsWith('{') ? JSON.parse(rawSort) : rawSort
+
 	if (sort === 'default') {
 		let allUris = cts.uris(null, null, query)
 		return {
 			total: fn.count(allUris),
 			uris: fn.subsequence(allUris, start, pageLength).toArray()
+		}
+	}
+	else if (sort instanceof Object) {
+		const total = cts.estimate(query)
+		const uris = fn.subsequence(
+			cts.search(
+				query,
+				[
+					'unfiltered',
+					cts.indexOrder(cts.jsonPropertyReference(sort.property), sort.sortDirection)
+				]
+			),
+			start,
+			pageLength
+		).toArray().map(r => xdmp.nodeUri(r))
+
+		return {
+			total,
+			uris
 		}
 	}
 
