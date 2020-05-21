@@ -1,5 +1,5 @@
 <template>
-	<v-card class="abs" dark v-if="entity">
+	<v-card class="detailCard" dark v-if="entity">
 		<v-card-title data-cy="entityTitle">
 			{{ entity.label }} <span class="subtitle">({{ entity.entityName }})</span>
 			<v-spacer></v-spacer>
@@ -385,15 +385,11 @@ th {
 	}
 }
 
-.abs {
-	margin-bottom: 20px;
-	position: absolute;
-	top: 0;
-	right: 0;
-	left: 0;
-	bottom: 0;
+.detailCard {
 	display: flex;
+	flex: 1 1 auto;
 	flex-direction: column;
+	overflow: auto;
 }
 
 .v-card__text {
@@ -408,5 +404,9 @@ th {
 
 .more-less {
 	float: right;
+}
+
+.v-input {
+	flex: 0 0 auto;
 }
 </style>

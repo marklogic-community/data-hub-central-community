@@ -18,13 +18,13 @@
 			},
 			"edgeCounts": {
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 2
 				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 2
@@ -50,27 +50,27 @@
 			},
 			"edgeCounts": {
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1
 				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
-					"to": "employee",
-					"label": "isSkillFor",
-					"count": 3
-				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 3
 				}
 			},
@@ -93,27 +93,27 @@
 			},
 			"edgeCounts": {
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1
 				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
-					"to": "employee",
-					"label": "isSkillFor",
-					"count": 2
-				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
+					"count": 2
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 2
 				}
 			},
@@ -122,22 +122,6 @@
 		}
 	},
 	"edges": {
-		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
-			"from": "/MountainTopEmployees/employee4.json",
-			"to": "/departments/department4.json",
-			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
-		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
-			"from": "/MountainTopEmployees/employee5.json",
-			"to": "/departments/department4.json",
-			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
 		"/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee4.json": {
 			"from": "/departments/department4.json",
 			"to": "/MountainTopEmployees/employee4.json",
@@ -153,6 +137,22 @@
 			"label": "hasEmployee",
 			"fromType": "department",
 			"toType": "employee"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "/departments/department4.json",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
+			"from": "/MountainTopEmployees/employee5.json",
+			"to": "/departments/department4.json",
+			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
 		}
 	}
 }

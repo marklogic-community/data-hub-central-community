@@ -148,7 +148,7 @@ export default {
 				entities,
 				page,
 				pageLength,
-				sort
+				sort: (sort instanceof Object) ? JSON.stringify(sort) : sort
 			},
 			{
 				cancelToken: new CancelToken(c => this.cancelEntities = c)

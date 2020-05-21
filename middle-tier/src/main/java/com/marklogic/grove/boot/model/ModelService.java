@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -130,6 +131,10 @@ public class ModelService {
 			names = listAllModels(client);
 		}
 		return names;
+	}
+
+	public JsonNode getActiveIndexes(DatabaseClient client) throws IOException {
+		return EntityModeller.on(client).getActiveIndexes();
 	}
 
 	private List<JsonNode> listAllModels(DatabaseClient client) throws IOException {

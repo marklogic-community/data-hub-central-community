@@ -46,6 +46,20 @@ public interface EntityModeller {
 
 
             @Override
+            public com.fasterxml.jackson.databind.JsonNode getActiveIndexes() {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("getActiveIndexes.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .withSession()
+                .withParams(
+                    )
+                .withMethod("POST")
+                .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
             public com.fasterxml.jackson.databind.JsonNode createTdes() {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
@@ -112,6 +126,14 @@ public interface EntityModeller {
    * @return	as output
    */
     Boolean needsImport(com.fasterxml.jackson.databind.node.ArrayNode models);
+
+  /**
+   * Invokes the getActiveIndexes operation on the database server
+   *
+   * 
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode getActiveIndexes();
 
   /**
    * Invokes the createTdes operation on the database server

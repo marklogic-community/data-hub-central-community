@@ -9,11 +9,11 @@ export default {
 	},
   view() {
 		return axios.get(`/api/models/model.json`)
-		.then(response => response.data)
+			.then(response => response.data)
 	},
 	needsImport() {
 		return axios.get(`/api/models/needsImport`)
-		.then(response => response.data)
+			.then(response => response.data)
 	},
   save(data) {
     return axios.put('/api/models/', data)
@@ -26,13 +26,17 @@ export default {
 		});
   },
   deleteModel(data) {
-	return axios.post('/api/models/delete', data)
-    .then(response => {
-		return { isError: false, response: response.data };
-	})
-    .catch(error => {
-		console.error('error:', error);
-		return { isError: true, error: error };
-	});
-  }
+		return axios.post('/api/models/delete', data)
+			.then(response => {
+				return { isError: false, response: response.data };
+			})
+			.catch(error => {
+				console.error('error:', error);
+				return { isError: true, error: error };
+			});
+	},
+	getActiveIndexes() {
+		return axios.get('/api/models/activeIndexes')
+			.then(response => response.data)
+	}
 };

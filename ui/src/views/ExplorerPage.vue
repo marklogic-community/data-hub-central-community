@@ -1,8 +1,8 @@
 <template>
-	<v-container fluid>
+	<v-container fluid class="ExplorerPage">
 		<v-layout column>
 			<v-layout row class="searchArea">
-				<v-flex md10>
+				<v-flex md9>
 					<form class="ml-input ml-search form-inline" role="search" v-on:submit.prevent="searchText">
 						<v-text-field
 							hide-details
@@ -16,14 +16,8 @@
 						></v-text-field>
 					</form>
 				</v-flex>
-				<v-flex md2>
-					<v-select
-						v-model="sort"
-						:items="sortOptions"
-						item-text="label"
-						item-value="value"
-						label="Sort">
-					</v-select>
+				<v-flex md3>
+					<nested-menu class="sortMenu" :name="currentSort.preview"  :menuItems="sortOptions" @selected="updateSort" />
 				</v-flex>
 			</v-layout>
 			<v-flex md12>
@@ -55,7 +49,7 @@
 							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
 						</ul>
 					</v-flex>
-					<v-flex md4 class="right-pane relparent">
+					<v-flex md4 class="right-pane">
 						<v-select
 							v-model="selectedEntities"
 							:items="entitiesArray"
@@ -119,15 +113,15 @@
 
 <script>
 
-import VisjsGraph from 'grove-vue-visjs-graph';
 import 'vis/dist/vis.css';
 import 'ml-visjs-graph/less/ml-visjs-graph.js.less';
-import crudApi from '@/api/CRUDApi.js';
-import EntityDetails from '@/components/ml-explorer/EntityDetails';
-import Confirm from '@/components/Confirm.vue';
 import { mapState } from 'vuex'
 import _ from 'lodash';
 import ColorScheme from 'color-scheme';
+import NestedMenu from '@/components/NestedMenu';
+import VisjsGraph from 'grove-vue-visjs-graph';
+import EntityDetails from '@/components/ml-explorer/EntityDetails';
+import Confirm from '@/components/Confirm.vue';
 
 export default {
 	name: 'ExplorePage',
@@ -153,6 +147,10 @@ export default {
 		};
 
 		return {
+			currentSort: {
+				preview: 'Default'
+			},
+			showSortMenu: false,
 			concepts: [],
 			searchPending: false,
 			rightClickMenu: null,
@@ -164,18 +162,24 @@ export default {
 			entities: {},
 			colors: {},
 			qtext: '',
-			sortOptions: [
+			defaultSortOptions: [
 				{
 					label: 'Default',
-					value: 'default'
+					preview: 'Default',
+					value: 'default',
+					enabled: true
 				},
 				{
 					label: 'Most Connected First',
-					value: 'mostConnected'
+					preview: 'Most Connected First',
+					value: 'mostConnected',
+					enabled: true
 				},
 				{
 					label: 'Least Connected First',
-					value: 'leastConnected'
+					preview: 'Least Connected First',
+					value: 'leastConnected',
+					enabled: true
 				}
 			],
 			graphOptions: {
@@ -242,7 +246,8 @@ export default {
 	components: {
 		VisjsGraph,
 		EntityDetails,
-		Confirm
+		Confirm,
+		NestedMenu
 	},
 	computed: {
 		...mapState({
@@ -256,7 +261,8 @@ export default {
 			total: state => state.explore.total,
 			pageLength: state => state.explore.pageLength,
 			storeSort: state => state.explore.sort,
-			model: state => state.model.model
+			model: state => state.model.model,
+			activeIndexes: state => state.model.activeIndexes
 		}),
 		sort: {
 			get() {
@@ -267,6 +273,51 @@ export default {
 				this.$store.commit('explore/setPage', 1)
 				this.getEntities()
 			}
+		},
+		entitySortOptions() {
+			if (!(this.model && this.model.nodes)) {
+				return []
+			}
+			const entities = Object.values(this.model.nodes)
+				.filter(n => n.type === 'entity')
+				.filter(n => n.properties.find(p => p.isElementRangeIndex === true))
+			let options = []
+			entities.forEach(e => {
+				e.properties
+					.filter(p => p.isElementRangeIndex === true)
+					.forEach(p => {
+						const enabled = this.activeIndexes.indexOf(p.name) >= 0
+						options.push({
+							label: `${e.entityName}.${p.name}`,
+							enabled,
+							items: ['Ascending', 'Descending'].map(sort => {
+								return {
+									label: sort,
+									preview: `${e.entityName}.${p.name} (${sort})`,
+									value: {
+										entity: e.entityName,
+										property: p.name,
+										sortDirection: sort.toLowerCase()
+									},
+									enabled
+								}
+							})
+						})
+					})
+			})
+
+			return options
+		},
+		sortOptions() {
+			const items = this.entitySortOptions
+			if (items.length > 0) {
+				return this.defaultSortOptions.concat([{
+					label: 'Advanced',
+					enabled: true,
+					items
+				}])
+			}
+			return this.defaultSortOptions
 		},
 		selectedEntities: {
 			get() {
@@ -338,8 +389,13 @@ export default {
 		this.$refs.graph.graph.network.network.canvas._cleanUp()
 
 		this.handleModelChange();
+		this.$store.dispatch('model/getActiveIndexes')
 	},
 	methods: {
+		updateSort( val ) {
+			this.sort = val.value
+			this.currentSort = val
+		},
 		selectNode( selectedNode ) {
 			// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
 			this.currentNode = this.nodeMap[selectedNode.id]
@@ -412,15 +468,12 @@ export default {
 			this.$store.commit('explore/setText', { qtext: this.qtext })
 			this.$store.commit('explore/setPage', 1)
 			this.getEntities()
-			 
+
 			this.currentNode = null
 		},
 		clearSearch() {
 			this.qtext = null
 			this.searchText()
-		},
-		selectEntity(name) {
-			this.getEntities()
 		},
 		previousPage() {
 			this.$store.commit('explore/setPage', this.currentPage - 1)
@@ -528,7 +581,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .graph-controls {
 	display: none !important;
 }
@@ -556,8 +609,15 @@ table {
 }
 
 .right-pane {
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
 	padding: 20px;
 	margin-top: 0px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
 
 	.v-input--selection-controls {
 		margin: 0px;
@@ -588,6 +648,10 @@ table {
 	height: 100%
 }
 
+.fullHeight {
+	position: relative;
+}
+
 .graph-container {
 	display: flex;
 	flex-direction: column;
@@ -605,4 +669,26 @@ table {
 .searchArea {
 	height: auto !important;
 }
+</style>
+
+<style lang="less">
+	.ExplorerPage {
+		vis-network {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+
+		.sortMenu {
+			justify-content: start;
+			align-items: start;
+			text-align: left;
+		}
+	}
+
+	.sortMenuContent .v-list-group__header {
+		padding: 0 16px 0 0;
+	}
 </style>
