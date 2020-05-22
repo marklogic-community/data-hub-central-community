@@ -8,8 +8,6 @@ import triplesApi from './api/TriplesApi';
 import masteringApi from './api/MasteringApi';
 import axios from 'axios';
 
-import uuidv4 from 'uuid/v4';
-
 Vue.use(Vuex);
 
 const debug = true; //(process !== undefined) ? process.env.NODE_ENV !== "production" : true;
@@ -226,6 +224,7 @@ const model = {
 	state: {
 		models: [],
 		model: null,
+		activeIndexes: []
 	},
 	mutations: {
 		setModel(state, model) {
@@ -233,10 +232,13 @@ const model = {
 		},
 		setModels(state, models) {
 			state.models = models;
+		},
+		setActiveIndexes(state, indexes) {
+			state.activeIndexes = indexes
 		}
 	},
 	actions: {
-		async init({ commit, state, dispatch }) {
+		async init({ commit, dispatch }) {
 			if (auth.state.needsInstall) {
 				await authApi.install()
 				await commit('auth/setNeedsInstall', { needsInstall: false }, { root: true })
@@ -244,13 +246,17 @@ const model = {
 			await dispatch('getAll')
 			await dispatch('getModel')
 		},
+		async getActiveIndexes({ commit }) {
+			let activeIndexes = await modelApi.getActiveIndexes()
+			commit('setActiveIndexes', activeIndexes)
+		},
 		async getAll({ commit }) {
 			let models = await modelApi.getAllModels()
 			commit('setModels', models);
 		},
 		async getModel({ state, commit, dispatch }) {
 			try {
-				let model = await modelApi.view(state.currentModel);
+				let model = await modelApi.view();
 				if (model && state.models.findIndex(m => m.name === model.name) >= 0) {
 					commit('setModel', model);
 				}

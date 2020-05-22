@@ -1,5 +1,5 @@
 <template>
-	<v-container fluid>
+	<v-container fluid class="KnowPage">
 		<v-layout column>
 			<v-flex>
 				<form class="ml-input ml-search form-inline" role="search" v-on:submit.prevent="searchText">
@@ -615,4 +615,15 @@ table {
 	display: flex;
 	flex: 1;
 }
+</style>
+
+
+<style lang="less">
+	.KnowPage vis-network {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
 </style>

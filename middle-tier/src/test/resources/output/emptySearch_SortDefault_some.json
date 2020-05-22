@@ -59,28 +59,28 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
+				"department-hasemployee-employee": {
+					"from": "department",
 					"to": "employee",
-					"label": "isSkillFor",
+					"label": "hasEmployee",
 					"count": 1
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 1
 				}
 			},
@@ -103,28 +103,28 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
+				"department-hasemployee-employee": {
+					"from": "department",
 					"to": "employee",
-					"label": "isSkillFor",
-					"count": 3
+					"label": "hasEmployee",
+					"count": 1
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 3
 				}
 			},
@@ -146,28 +146,28 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
+				"department-hasemployee-employee": {
+					"from": "department",
 					"to": "employee",
-					"label": "isSkillFor",
-					"count": 2
+					"label": "hasEmployee",
+					"count": 1
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
+					"count": 2
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 2
 				}
 			},
@@ -192,29 +192,29 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 3
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 3
+					"count": 1
 				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
+				"department-hasemployee-employee": {
+					"from": "department",
 					"to": "employee",
-					"label": "isSkillFor",
-					"count": 4
+					"label": "hasEmployee",
+					"count": 1
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
-					"count": 4
+					"count": 2
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 2
 				}
 			},
 			"prov": [],
@@ -237,17 +237,17 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 3
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 3
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
 				}
 			},
 			"prov": [],
@@ -266,16 +266,16 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
 					"count": 1
 				}
 			},
@@ -296,16 +296,16 @@
 				]
 			},
 			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 2
-				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
+					"count": 2
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
 					"count": 2
 				}
 			},
@@ -314,6 +314,38 @@
 		}
 	},
 	"edges": {
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "/departments/department3.json",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "/departments/department4.json",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
+			"from": "/MountainTopEmployees/employee5.json",
+			"to": "/departments/department4.json",
+			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
 		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
 			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
 			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
@@ -321,6 +353,70 @@
 			"label": "hasEmployee",
 			"fromType": "department",
 			"toType": "employee"
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "skill#general ledger",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill1",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
+			"from": "/MountainTopEmployees/employee5.json",
+			"to": "skill#hrSkill1",
+			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill2",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
+			"from": "/MountainTopEmployees/employee5.json",
+			"to": "skill#hrSkill2",
+			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3": {
+			"from": "/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill3",
+			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "skill#procurement",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming": {
+			"from": "/CoastalEmployees/55003.json",
+			"to": "skill#programming",
+			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
 		},
 		"/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55003.json": {
 			"from": "/departments/department3.json",
@@ -345,14 +441,6 @@
 			"label": "hasEmployee",
 			"fromType": "department",
 			"toType": "employee"
-		},
-		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
-			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
-			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
-			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
 		},
 		"skill#general ledger-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
 			"from": "skill#general ledger",
@@ -417,94 +505,6 @@
 			"label": "isSkillFor",
 			"fromType": "skill",
 			"toType": "employee"
-		},
-		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
-			"from": "/CoastalEmployees/55003.json",
-			"to": "/departments/department3.json",
-			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
-		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
-			"from": "/MountainTopEmployees/employee5.json",
-			"to": "/departments/department4.json",
-			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
-		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
-			"from": "/MountainTopEmployees/employee4.json",
-			"to": "/departments/department4.json",
-			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
-		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger": {
-			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
-			"to": "skill#general ledger",
-			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#general ledger",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement": {
-			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
-			"to": "skill#procurement",
-			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#has-skill#procurement",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming": {
-			"from": "/CoastalEmployees/55003.json",
-			"to": "skill#programming",
-			"id": "/CoastalEmployees/55003.json-http://www.w3.org/2000/01/rdf-schema#has-skill#programming",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
-			"from": "/MountainTopEmployees/employee4.json",
-			"to": "skill#hrSkill1",
-			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
-			"from": "/MountainTopEmployees/employee4.json",
-			"to": "skill#hrSkill2",
-			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3": {
-			"from": "/MountainTopEmployees/employee4.json",
-			"to": "skill#hrSkill3",
-			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
-			"from": "/MountainTopEmployees/employee5.json",
-			"to": "skill#hrSkill1",
-			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
-		},
-		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
-			"from": "/MountainTopEmployees/employee5.json",
-			"to": "skill#hrSkill2",
-			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
-			"label": "has",
-			"fromType": "employee",
-			"toType": "skill"
 		}
 	}
 }

@@ -44,6 +44,10 @@ export default {
 </script>
 
 <style>
+.container {
+	padding: 12px 20px;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -51,5 +55,31 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+
+.graph-controls {
+  display: none !important;
+}
+
+.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label {
+	color: #44499c;
+}
+.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label::before {
+	color: #44499c;
+}
+.mlvisjs-graph.fontawesome-style .vis-network .vis-close::before {
+	color: #44499c;
+}
+.mlvisjs-graph .vis-network {
+	border: 1px solid #44499c;
+}
+.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation {
+	border-bottom: 1px solid #444499c;
+}
+.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover {
+	color: #0511e6;
+}
+.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover::before {
+	color: #0511e6;
 }
 </style>
