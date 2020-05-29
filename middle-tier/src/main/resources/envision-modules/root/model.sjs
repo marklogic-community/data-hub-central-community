@@ -7,7 +7,9 @@ function getModel() {
 	let names = {};
 	Object.keys(model.nodes).forEach(key => {
 		let node = model.nodes[key];
-		names[key] = node.entityName
+		names[key] = node.entityName;
+		names[`${node.baseUri}${key}`] = node.entityName;
+
 	});
 
 	/**
