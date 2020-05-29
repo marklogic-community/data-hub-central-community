@@ -3,7 +3,7 @@
 		v-model="dialog"
 		persistent
 		eager
-		max-width="290"
+		max-width="340"
 		@keydown.esc="cancel">
 		<add-entity
 			ref="addEntity"

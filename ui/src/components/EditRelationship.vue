@@ -227,6 +227,7 @@ export default {
 		},
 		updateRelationship(newVal) {
 			const rel = JSON.parse(JSON.stringify(newVal))
+
 			if (!rel.to && this.nodes) {
 				rel.to = this.nodes[0].id
 			}

@@ -20,7 +20,25 @@
 				v-model="entityName"
 				data-cy="addEntity.entityNameField"
 			></v-text-field>
+				<v-expansion-panels v-model="advancedState">
+				<v-expansion-panel data-cy="addEntity.advancedBtn">
+					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
+					<v-expansion-panel-content>
+						<v-text-field
+							v-if = "type === 'entity'"
+							label="version"
+							v-model="version"
+							>
+						</v-text-field>
+						<v-text-field
+							label="IRI"
+							v-model="iri">
+						</v-text-field>
+					</v-expansion-panel-content>
+				</v-expansion-panel>
+			</v-expansion-panels>
 		</v-container>
+
 		<v-card-actions>
 			<v-spacer></v-spacer>
 			<v-btn text color="secondary" @click="cancel">Cancel</v-btn>
@@ -36,6 +54,9 @@ export default {
 		existingEntityNames: {type: Array}
 	},
 	data: () => ({
+		advancedState: null,
+		iri: "http://marklogic.envision.com/",
+		version: "0.0.1",
 		type: 'entity',
 		entityName: null,
 		error: false,
@@ -61,6 +82,9 @@ export default {
 			this.error = false
 			this.errorMsg = []
 			this.entityName = null
+			this.advancedState = null
+			this.iri = "http://marklogic.envision.com/"
+			this.version = "0.0.1"
 		},
 		save() {
 			if (!this.entityName || this.entityName.length === 0) {
@@ -79,7 +103,7 @@ export default {
 				this.errorMsg = ['Entity already exists']
 				return
 			}
-			this.$emit('save', { type: this.type, name: this.entityName})
+			this.$emit('save', { type: this.type, name: this.entityName, iri: this.iri, version: this.version})
 		},
 		cancel() {
 			this.$emit('cancel')
