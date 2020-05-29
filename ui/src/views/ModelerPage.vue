@@ -479,7 +479,7 @@ export default {
 		},
 		graphAddNode(nodeData, callback) {
 			this.$refs.addEntity.open(this.nodes.map(n => n.label.toLowerCase()))
-				.then(({type, name}) => {
+				.then(({type, name, iri, version}) => {
 					if (name) {
 						var entityLabel
 						if (this.showFullEntityNames == true) {
@@ -495,6 +495,8 @@ export default {
 							}
 						}
 						nodeData.type = type
+						nodeData.baseUri = iri
+						nodeData.version = version
 
 						const node = {
 							...nodeData,
