@@ -1,6 +1,5 @@
 package com.marklogic.grove.boot.OS;
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.JsonArray;
 import com.marklogic.appdeployer.AppConfig;
@@ -17,11 +16,8 @@ import com.marklogic.hub.flow.FlowRunner;
 import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.flow.RunFlowResponse;
 import com.marklogic.hub.impl.*;
-import com.marklogic.hub.step.MarkLogicStepDefinitionProvider;
 import com.marklogic.hub.step.StepDefinition;
-import com.marklogic.hub.step.StepDefinitionProvider;
 import com.marklogic.hub.step.StepRunner;
-import com.marklogic.hub.step.StepDefinition.StepDefinitionType;
 import com.marklogic.hub.step.impl.Step;
 import com.marklogic.hub.step.impl.WriteStepRunner;
 import com.marklogic.hub.util.json.JSONObject;
@@ -29,7 +25,6 @@ import com.marklogic.dhf.DataHubService;
 import com.marklogic.dhf.DataMovementService;
 import com.marklogic.dhf.config.MarkLogicConfiguration;
 import com.marklogic.dhf.config.ServerTransformConfig;
-import com.marklogic.hub.impl.StepDefinitionManagerImpl;
 
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
@@ -92,18 +87,19 @@ public class OSController extends AbstractController {
 	FlowRunner fr;
 
 	//support for dmsdk 
-	//@Autowired
-    //private MarkLogicConfiguration markLogicConfiguration;
+	@Autowired
+    private MarkLogicConfiguration markLogicConfiguration;
 
-    //@Autowired
-	//private DataMovementService dataMovementService;
+    @Autowired
+	private DataMovementService dataMovementService;
 	
 	//support for hub step runner
+	private StepRunner stepRunner;
 	private int batchSize = 100;
     private int threadCount = 4;
     private String sourceDatabase;
     private String targetDatabase;
-	private StepDefinitionProvider stepDefinitionProvider; 
+	private StepDefinitionProvider stepDefinitionProvider;
 	
 	// runs a gradle task
 	@RequestMapping(value = "/gradle", method = RequestMethod.POST)
@@ -285,7 +281,10 @@ public class OSController extends AbstractController {
 		// read the DHS properties file
 		String dhfDir = hubConfig.getHubProject().getProjectDirString();
 		String output = "";
-		stepDefinitionProvider = new MarkLogicStepDefinitionProvider(hubConfig.newStagingClient(null));
+		Properties prop = new Properties();
+		try (InputStream input = new FileInputStream(dhfDir + "/gradle-dhs.properties")) {
+			prop.load(input);
+
 			// get Ingestion flows
 			List<Flow> flows = flowManager.getFlows();
 
@@ -294,17 +293,14 @@ public class OSController extends AbstractController {
 				Map<String, Step> steps = flow.getSteps();
 				Integer i = 0;
 				for (Map.Entry<String, Step> step: steps.entrySet()){
-					Step theStep = step.getValue();
 					i++;
-					System.out.println("FR starting Step: " + i);
-					if (theStep.getStepDefinitionType().toString() == "ingestion") {
-						StepDefinition stepDef = stepDefinitionProvider.getStepDefinition(theStep.getStepDefinitionName(), theStep.getStepDefinitionType());
+					if (step.getValue().getStepDefinitionType().toString() == "ingestion") {
+						StepDefinition stepDef = stepDefinitionProvider.getStepDefinition(step.getValue().getStepDefinitionName(), step.getValue().getStepDefinitionType());
 						WriteStepRunner stepRunner = new WriteStepRunner(hubConfig);
-						//set step runner step to index of step in flow
-						stepRunner.withFlow(flow).withStep(i.toString());
-						System.out.println("FR Step: " + stepDef.getName());
-						if(theStep.getBatchSize() != 0) {
-							batchSize = theStep.getBatchSize();
+						stepRunner.withFlow(flow).withStep(stepDef.getName());
+
+						if(step.getValue().getBatchSize() != 0) {
+							batchSize = step.getValue().getBatchSize();
 						}
 						else if(flow.getBatchSize() != 0) {
 							batchSize = flow.getBatchSize();
@@ -314,8 +310,8 @@ public class OSController extends AbstractController {
 						}
 						stepRunner.withBatchSize(batchSize);
 
-						if(theStep.getThreadCount() != 0) {
-							threadCount = theStep.getThreadCount();
+						if(step.getValue().getThreadCount() != 0) {
+							threadCount = step.getValue().getThreadCount();
 						}
 						else if(flow.getThreadCount() != 0) {
 							threadCount = flow.getThreadCount();
@@ -326,8 +322,8 @@ public class OSController extends AbstractController {
 
 						stepRunner.withThreadCount(threadCount);
 
-						if(theStep.getOptions().get("sourceDatabase") != null) {
-							sourceDatabase = ((TextNode)theStep.getOptions().get("sourceDatabase")).asText();
+						if(step.getValue().getOptions().get("sourceDatabase") != null) {
+							sourceDatabase = ((TextNode)step.getValue().getOptions().get("sourceDatabase")).asText();
 						}
 						else if(stepDef.getOptions().get("sourceDatabase") != null) {
 							sourceDatabase = ((TextNode)stepDef.getOptions().get("sourceDatabase")).asText();
@@ -337,14 +333,14 @@ public class OSController extends AbstractController {
 						}
 						stepRunner.withSourceClient(hubConfig.newStagingClient(sourceDatabase));
 
-						if(theStep.getOptions().get("targetDatabase") != null) {
-							targetDatabase = ((TextNode)theStep.getOptions().get("targetDatabase")).asText();
+						if(step.getValue().getOptions().get("targetDatabase") != null) {
+							targetDatabase = ((TextNode)step.getOptions().get("targetDatabase")).asText();
 						}
 						else if(stepDef.getOptions().get("targetDatabase") != null) {
 							targetDatabase = ((TextNode)stepDef.getOptions().get("targetDatabase")).asText();
 						}
 						else {
-							if(StepDefinition.StepDefinitionType.INGESTION.equals(step.getValue().getStepDefinitionType())) {
+							if(StepDefinition.StepDefinitionType.INGESTION.equals(step.getStepDefinitionType())) {
 								targetDatabase = hubConfig.getDbName(DatabaseKind.STAGING);
 							}
 							else {
@@ -355,26 +351,57 @@ public class OSController extends AbstractController {
 						stepRunner.withDestinationDatabase(targetDatabase);
 
 						//For ingest flow, set stepDef.
-						if(StepDefinition.StepDefinitionType.INGESTION.equals(theStep.getStepDefinitionType())) {
+						if(StepDefinition.StepDefinitionType.INGESTION.equals(step.getValue().getStepDefinitionType())) {
 							((WriteStepRunner)stepRunner).withStepDefinition(stepDef);
 						}
-						System.out.println("FR Running Step: " + stepDef);
-						//set up runner for running
-						Map<String, Object> optsMap ;
-						if(flow.getOverrideOptions() != null) {
-							optsMap = new HashMap<>(flow.getOverrideOptions());
-						}
-						else {
-							optsMap = new HashMap<>();
-						}
-						stepRunner.withOptions(optsMap).withJobId(UUID.randomUUID().toString());
+
 						stepRunner.run();
-						stepRunner.awaitCompletion();
+
+						//get the ingestion step file locations
+						Entry<String, Step> step2 = step;
+						JsonNode stepFileLocations = step2.getValue().getFileLocations();
+						String inputFilePath = stepFileLocations.get("inputFilePath").asText();
+						String inputFileType = stepFileLocations.get("inputFileType").asText();
+						String outputURIReplacement = stepFileLocations.get("outputURIReplacement").asText();
+						String separator = stepFileLocations.get("separator").asText();
+						//create the content for dmsdk
+						List<LinkedHashMap> contents = new ArrayList<>();
+						
+						//get the ingestion step options
+						Map<String, Object> stepOptions = step2.getValue().getOptions();
+						//collections
+						String[] colls = {flow.getName() + "-Ingest-" + i.toString()};
+						Object collections = stepOptions.get("collections");
+						if (collections instanceof Array) {
+							colls = (String[])collections;
+						}
+						// get a job id
+						String jobId = UUID.randomUUID().toString();
+						/*
+						create the transform config
+						mlRunIngest puts DHF envelope around it
+						*/
+						ServerTransformConfig serverTransform = new ServerTransformConfig();
+						serverTransform.setName("mlRunIngest");
+						Map<String, String> params  = new HashMap<String, String>() {
+							/**
+							* compiler complains serializable class needs serialVersionUID
+							*/
+							private static final long serialVersionUID = 1L;
+
+							{
+							put("flow-name", flow.getName());
+							put("step", i.toString());
+							put("job-id", jobId);
+						}};
+						serverTransform.setParams(params);
+						this.dataMovementService.load(serverTransform, jobId, "/data/", colls[0], contents);
 					}
 				}
 			}
-		
-		return output;
+		} catch (IOException e){
+			System.out.println("Cannot read gradle-dhs.properties");
+		}
 	}
 	
 	// runs all flow steps except for ingestion

@@ -151,6 +151,7 @@ task generateSystemUtils(type: com.marklogic.client.tools.gradle.EndpointProxies
 
 bootRun {
 	systemProperties = System.properties
+	jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=32323"]
 }
 
 test {
