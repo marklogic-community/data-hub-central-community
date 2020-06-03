@@ -74,9 +74,11 @@ public class OSController extends AbstractController {
 	// private static final Logger log = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
 	boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-	//private HubConfig hubConfig;
+	
+	//TODO	superclass has private HubConfig hubConfig you can access:
+	//super.getHubConfig()
 	@Autowired
-	HubConfigImpl hubConfig;
+	HubConfigImpl hubConfig; // = super.getHubConfig();
 
 	@Autowired
 	DataHubImpl datahub;
@@ -91,24 +93,17 @@ public class OSController extends AbstractController {
 	@Autowired
 	FlowRunner fr;
 
-	//support for dmsdk 
-	//@Autowired
-    //private MarkLogicConfiguration markLogicConfiguration;
-
-    //@Autowired
-	//private DataMovementService dataMovementService;
-	
 	//support for hub step runner
 	private int batchSize = 100;
     private int threadCount = 4;
     private String sourceDatabase;
     private String targetDatabase;
-	private StepDefinitionProvider stepDefinitionProvider; 
-	
+	private StepDefinitionProvider stepDefinitionProvider;
+
 	// runs a gradle task
 	@RequestMapping(value = "/gradle", method = RequestMethod.POST)
-	public String getGradle(@RequestBody ObjectNode searchRequest) {
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
+	public String getGradle(@RequestBody final ObjectNode searchRequest) {
+		final String dhfDir = super.getHubConfig().getHubProject().getProjectDirString();
 		String task = new String();
 
 		task = "tasks" ; // default value
@@ -117,7 +112,7 @@ public class OSController extends AbstractController {
 
 		}
 
-		ProcessBuilder builder = new ProcessBuilder();
+		final ProcessBuilder builder = new ProcessBuilder();
 		if (isWindows) {
 			// Not tested
 			builder.command("cmd.exe", "/c", "cd " + dhfDir + " & gradlew " + task );
@@ -126,30 +121,30 @@ public class OSController extends AbstractController {
 			builder.command("sh", "-c", "cd " + dhfDir + "; sh gradlew " + task);
 		}
 
-		String output = runProcess( builder );
+		final String output = runProcess( builder );
 
 		return "Done with " + task + " - "  + output;
 	}
-	private String runProcess (ProcessBuilder builder) {
+	private String runProcess (final ProcessBuilder builder) {
 		// see https://www.baeldung.com/java-lang-processbuilder-api
 		System.out.println ("Start of runProcess");
 		String output = new String();
 
 		try {
-			Process process = builder.start();
+			final Process process = builder.start();
 			if( process.getErrorStream().read() != -1 ){
 				// convert process.getErrorStream() to a string
-				StringWriter writer = new StringWriter();
+				final StringWriter writer = new StringWriter();
 				IOUtils.copy(process.getErrorStream(), writer);
 				output = "Errors " + writer.toString();
 			} else {
-				StringWriter writer = new StringWriter();
+				final StringWriter writer = new StringWriter();
 				IOUtils.copy(process.getInputStream(), writer);
 				output = "Output " + writer.toString();
 			}
 
 
-		} catch(IOException e) {
+		} catch(final IOException e) {
 			e.printStackTrace();
 		}
 		System.out.println ("End of runProcess");
@@ -159,27 +154,27 @@ public class OSController extends AbstractController {
 	// returns JSON (or string) containining details of the DH project config
 	@RequestMapping(value = "/getDHprojectConfig", method = RequestMethod.GET)
 	public String getDHprojectConfig()  {
-		JSONObject config = new JSONObject();
+		final JSONObject config = new JSONObject();
 
 		// Does grade-dhs.properties exists in the datahub project dir?
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
-		File dhsConfigFile = new File(dhfDir + "/gradle-dhs.properties");
+		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
+		final File dhsConfigFile = new File(dhfDir + "/gradle-dhs.properties");
 		config.put("dhsConfigFileExists", dhsConfigFile.exists());
 
 		// get flows
-		ArrayList<String> arrFlows = new ArrayList<String>();
+		final ArrayList<String> arrFlows = new ArrayList<String>();
 
-		List<Flow> flows = flowManager.getFlows();
-		for(Flow flow : flows) {
+		final List<Flow> flows = flowManager.getFlows();
+		for(final Flow flow : flows) {
 			System.out.println("DGB got flow: " + flow.getName());
 			arrFlows.add(flow.getName());
 		}
 		config.put("flows", arrFlows.toString());
 
 		// get Entities
-		ArrayList<String> arrEntities = new ArrayList<String>();
-		List<HubEntity> entities = entityManager.getEntities();
-		for(HubEntity entity : entities) {
+		final ArrayList<String> arrEntities = new ArrayList<String>();
+		final List<HubEntity> entities = entityManager.getEntities();
+		for(final HubEntity entity : entities) {
 			System.out.println("DGB got entity: " + entity.getInfo().getTitle() );
 			arrEntities.add(entity.getInfo().getTitle());
 		}
@@ -194,20 +189,20 @@ public class OSController extends AbstractController {
 	@RequestMapping(value = "/setGradleProps", method = RequestMethod.POST)
 
 	//public String setGradleProps(@RequestBody ObjectNode searchRequest) {
-	public void setGradleProps(HttpEntity<String> httpEntity) {
+	public void setGradleProps(final HttpEntity<String> httpEntity) {
 
-		String dhsConfig = httpEntity.getBody();
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
+		final String dhsConfig = httpEntity.getBody();
+		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
 
-		File dhsPropertiesFile = new File(dhfDir + "/gradle-dhs.properties");
+		final File dhsPropertiesFile = new File(dhfDir + "/gradle-dhs.properties");
 
 		if (dhsPropertiesFile.exists() ) {
 			System.out.println("Creating backup copy of gradle-dhs.properties");
-			File safeCopy = new File(dhfDir + "/gradle-dhs.properties." + Instant.now().getEpochSecond() );
+			final File safeCopy = new File(dhfDir + "/gradle-dhs.properties." + Instant.now().getEpochSecond() );
 
 			try {
 				FileUtils.moveFile(dhsPropertiesFile, safeCopy);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				System.out.println("Error making backup copy of gradle-dhs.properties ");
 				e.printStackTrace();
 			}
@@ -215,7 +210,7 @@ public class OSController extends AbstractController {
 
 		try {
 			FileUtils.write(dhsPropertiesFile, dhsConfig);
-		}  catch (IOException e) {
+		}  catch (final IOException e) {
 			System.out.println("Error creating gradle-dhs.properties");
 			e.printStackTrace();
 		}
@@ -229,30 +224,30 @@ public class OSController extends AbstractController {
 	public String runIngestSteps()  {
 
 		// read the DHS properties file
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
+		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
 		String output = "";
-		Properties prop = new Properties();
+		final Properties prop = new Properties();
 
-		ProcessBuilder builder = new ProcessBuilder();
+		final ProcessBuilder builder = new ProcessBuilder();
 
 		try (InputStream input = new FileInputStream(dhfDir + "/gradle-dhs.properties")) {
 			prop.load(input);
 
 			// get Ingestion flows
-			ArrayList<String> arrFlows = new ArrayList<String>();
-			List<Flow> flows = flowManager.getFlows();
+			final ArrayList<String> arrFlows = new ArrayList<String>();
+			final List<Flow> flows = flowManager.getFlows();
 
 
 
-			for(Flow flow : flows) {
+			for(final Flow flow : flows) {
 				System.out.println("DGB got flow: " + flow.getName());
-				Map<String, Step> steps = flow.getSteps();
+				final Map<String, Step> steps = flow.getSteps();
 				Integer i = 0;
-				for (Map.Entry<String, Step> step: steps.entrySet()){
+				for (final Map.Entry<String, Step> step: steps.entrySet()){
 					i++;
 					if (step.getValue().getStepDefinitionType().toString() == "ingestion") {
 
-						String mlcp = getMLCPCommand(prop, flow, step.getValue(), i);
+						final String mlcp = getMLCPCommand(prop, flow, step.getValue(), i);
 
 						if (isWindows) {
 							builder.command("cmd.exe", "/c", ".... todo" );
@@ -271,7 +266,7 @@ public class OSController extends AbstractController {
 				}
 			}
 
-		} catch (IOException e){
+		} catch (final IOException e){
 			System.out.println("Cannot read gradle-dhs.properties");
 		}
 
@@ -279,130 +274,142 @@ public class OSController extends AbstractController {
 	}
 
 //DMSDK approach to ingestion
+//TODO --
+//file uploader file being uploaded, name of flow/step
+//write to tmp
+//kick off nifi/etc to run ingest/harmonize
+//S3 upload?
+//Rest service in spring boot- will collect all files in tmp
+//real way - write own custom ui for uploadin 1-n file
+//automagically determine file type
+//could do in naive way- json, xml, csv
+//no need to specify a flow, just target collection-
+//custom ui for loading data flow
+
 	@RequestMapping(value = "/runIngestSteps", method = RequestMethod.GET)
 	public String runIngestStepsDMSK()  {
-		//get properties defining DHS dir
-		// read the DHS properties file
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
-		String output = "";
+		
+		//TODO This return variable has no value
+		final String output = "";
+
 		stepDefinitionProvider = new MarkLogicStepDefinitionProvider(hubConfig.newStagingClient(null));
-			// get Ingestion flows
-			List<Flow> flows = flowManager.getFlows();
+		
+		// get Ingestion flows
+		final List<Flow> flows = flowManager.getFlows();
 
-			for(Flow flow : flows) {
-				System.out.println("FR got flow: " + flow.getName());
-				Map<String, Step> steps = flow.getSteps();
-				Integer i = 0;
-				for (Map.Entry<String, Step> step: steps.entrySet()){
-					Step theStep = step.getValue();
-					i++;
-					System.out.println("FR starting Step: " + i);
-					if (theStep.getStepDefinitionType().toString() == "ingestion") {
-						StepDefinition stepDef = stepDefinitionProvider.getStepDefinition(theStep.getStepDefinitionName(), theStep.getStepDefinitionType());
-						WriteStepRunner stepRunner = new WriteStepRunner(hubConfig);
-						//set step runner step to index of step in flow
-						stepRunner.withFlow(flow).withStep(i.toString());
-						System.out.println("FR Step: " + stepDef.getName());
-						if(theStep.getBatchSize() != 0) {
-							batchSize = theStep.getBatchSize();
-						}
-						else if(flow.getBatchSize() != 0) {
-							batchSize = flow.getBatchSize();
-						}
-						else if(stepDef!=null && stepDef.getBatchSize() != 0) {
-							batchSize = stepDef.getBatchSize();
-						}
-						stepRunner.withBatchSize(batchSize);
-
-						if(theStep.getThreadCount() != 0) {
-							threadCount = theStep.getThreadCount();
-						}
-						else if(flow.getThreadCount() != 0) {
-							threadCount = flow.getThreadCount();
-						}
-						else if(stepDef != null && stepDef.getThreadCount() !=0 ){
-							threadCount = stepDef.getThreadCount();
-						}
-
-						stepRunner.withThreadCount(threadCount);
-
-						if(theStep.getOptions().get("sourceDatabase") != null) {
-							sourceDatabase = ((TextNode)theStep.getOptions().get("sourceDatabase")).asText();
-						}
-						else if(stepDef.getOptions().get("sourceDatabase") != null) {
-							sourceDatabase = ((TextNode)stepDef.getOptions().get("sourceDatabase")).asText();
-						}
-						else {
-							sourceDatabase = hubConfig.getDbName(DatabaseKind.STAGING);
-						}
-						stepRunner.withSourceClient(hubConfig.newStagingClient(sourceDatabase));
-
-						if(theStep.getOptions().get("targetDatabase") != null) {
-							targetDatabase = ((TextNode)theStep.getOptions().get("targetDatabase")).asText();
-						}
-						else if(stepDef.getOptions().get("targetDatabase") != null) {
-							targetDatabase = ((TextNode)stepDef.getOptions().get("targetDatabase")).asText();
-						}
-						else {
-							if(StepDefinition.StepDefinitionType.INGESTION.equals(step.getValue().getStepDefinitionType())) {
-								targetDatabase = hubConfig.getDbName(DatabaseKind.STAGING);
-							}
-							else {
-								targetDatabase = hubConfig.getDbName(DatabaseKind.FINAL);
-							}
-						}
-
-						stepRunner.withDestinationDatabase(targetDatabase);
-
-						//For ingest flow, set stepDef.
-						if(StepDefinition.StepDefinitionType.INGESTION.equals(theStep.getStepDefinitionType())) {
-							((WriteStepRunner)stepRunner).withStepDefinition(stepDef);
-						}
-						System.out.println("FR Running Step: " + stepDef);
-						//set up runner for running
-						Map<String, Object> optsMap ;
-						if(flow.getOverrideOptions() != null) {
-							optsMap = new HashMap<>(flow.getOverrideOptions());
-						}
-						else {
-							optsMap = new HashMap<>();
-						}
-						stepRunner.withOptions(optsMap).withJobId(UUID.randomUUID().toString());
-						stepRunner.run();
-						stepRunner.awaitCompletion();
+		for(final Flow flow : flows) {
+			System.out.println("FR got flow: " + flow.getName());
+			final Map<String, Step> steps = flow.getSteps();
+			Integer i = 0;
+			for (final Entry<String, Step> step: steps.entrySet()){
+				final Step theStep = step.getValue();
+				i++;
+				System.out.println("FR starting Step: " + i);
+				if (theStep.getStepDefinitionType().toString() == "ingestion") {
+					final StepDefinition stepDef = stepDefinitionProvider.getStepDefinition(theStep.getStepDefinitionName(), theStep.getStepDefinitionType());
+					final WriteStepRunner stepRunner = new WriteStepRunner(hubConfig);
+					stepRunner.withFlow(flow).withStep(i.toString());
+					System.out.println("FR Step: " + stepDef.getName());
+					if(theStep.getBatchSize() != 0) {
+						batchSize = theStep.getBatchSize();
 					}
+					else if(flow.getBatchSize() != 0) {
+						batchSize = flow.getBatchSize();
+					}
+					else if(stepDef!=null && stepDef.getBatchSize() != 0) {
+						batchSize = stepDef.getBatchSize();
+					}
+					stepRunner.withBatchSize(batchSize);
+
+					if(theStep.getThreadCount() != 0) {
+						threadCount = theStep.getThreadCount();
+					}
+					else if(flow.getThreadCount() != 0) {
+						threadCount = flow.getThreadCount();
+					}
+					else if(stepDef != null && stepDef.getThreadCount() !=0 ){
+						threadCount = stepDef.getThreadCount();
+					}
+
+					stepRunner.withThreadCount(threadCount);
+
+					if(theStep.getOptions().get("sourceDatabase") != null) {
+						sourceDatabase = ((TextNode)theStep.getOptions().get("sourceDatabase")).asText();
+					}
+					else if(stepDef.getOptions().get("sourceDatabase") != null) {
+						sourceDatabase = ((TextNode)stepDef.getOptions().get("sourceDatabase")).asText();
+					}
+					else {
+						sourceDatabase = hubConfig.getDbName(DatabaseKind.STAGING);
+					}
+					stepRunner.withSourceClient(hubConfig.newStagingClient(sourceDatabase));
+
+					if(theStep.getOptions().get("targetDatabase") != null) {
+						targetDatabase = ((TextNode)theStep.getOptions().get("targetDatabase")).asText();
+					}
+					else if(stepDef.getOptions().get("targetDatabase") != null) {
+						targetDatabase = ((TextNode)stepDef.getOptions().get("targetDatabase")).asText();
+					}
+					else {
+						if(StepDefinitionType.INGESTION.equals(step.getValue().getStepDefinitionType())) {
+							targetDatabase = hubConfig.getDbName(DatabaseKind.STAGING);
+						}
+						else {
+							targetDatabase = hubConfig.getDbName(DatabaseKind.FINAL);
+						}
+					}
+
+					stepRunner.withDestinationDatabase(targetDatabase);
+
+					//For ingest flow, set stepDef.
+					if(StepDefinitionType.INGESTION.equals(theStep.getStepDefinitionType())) {
+						((WriteStepRunner)stepRunner).withStepDefinition(stepDef);
+					}
+					//set up runner for running
+					Map<String, Object> optsMap ;
+					if(flow.getOverrideOptions() != null) {
+						optsMap = new HashMap<>(flow.getOverrideOptions());
+					}
+					else {
+						optsMap = new HashMap<>();
+					}
+					System.out.println("FR Running Step: " + stepDef);
+					stepRunner.withOptions(optsMap).withJobId(UUID.randomUUID().toString());
+					stepRunner.run();
+					stepRunner.awaitCompletion();
 				}
 			}
-		
+		}
+
 		return output;
 	}
-	
+
 	// runs all flow steps except for ingestion
 	@RequestMapping(value = "/runFlowsWithoutIngestionSteps", method = RequestMethod.GET)
 	public String runFlowsWithoutIngestionSteps()  {
 
 		// read the DHS properties file
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
+		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
 		String output = "";
-		Properties prop = new Properties();
+		final Properties prop = new Properties();
 
-		ProcessBuilder builder = new ProcessBuilder();
+		final ProcessBuilder builder = new ProcessBuilder();
 
 		try (InputStream input = new FileInputStream(dhfDir + "/gradle-dhs.properties")) {
 			prop.load(input);
 
 			// get Ingestion flows
-			ArrayList<String> arrFlows = new ArrayList<String>();
-			List<Flow> flows = flowManager.getFlows();
+			final ArrayList<String> arrFlows = new ArrayList<String>();
+			final List<Flow> flows = flowManager.getFlows();
 
-			for(Flow flow : flows) {
+			for(final Flow flow : flows) {
 				System.out.println("DGB got flow: " + flow.getName());
-				Map<String, Step> steps = flow.getSteps();
-				ArrayList<String> arrSteps = new ArrayList<>();
+				final Map<String, Step> steps = flow.getSteps();
+				final ArrayList<String> arrSteps = new ArrayList<>();
 
 
 				int i = 0;
-				for (Map.Entry<String, Step> step: steps.entrySet()){
+				for (final Map.Entry<String, Step> step: steps.entrySet()){
 					i++;
 					if (!step.getValue().getStepDefinitionType().toString().equals("ingestion")) {
 						arrSteps.add(Integer.toString(i));
@@ -410,22 +417,22 @@ public class OSController extends AbstractController {
 				}
 				System.out.println("DGB flow: " + flow.getName() + " steps: " + String.join("," , arrSteps) );
 
-				RunFlowResponse runNonIngestSteps = fr.runFlow(flow.getName(), String.join("," , arrSteps));
+				final RunFlowResponse runNonIngestSteps = fr.runFlow(flow.getName(), String.join("," , arrSteps));
 
 				fr.awaitCompletion();
 				output += " " + flow.getName();
 			}
 
-		} catch (IOException e){
+		} catch (final IOException e){
 			System.out.println("Cannot read gradle-dhs.properties");
 		}
 
 		return "Processed: " + output;
 	}
 
-	private String getMLCPCommand(Properties prop,  Flow flow,  Step step, int stepNumber) {
-		Map<String, Object> stepOptions = step.getOptions();
-		JsonNode jsonFileLocs = step.getFileLocations();
+	private String getMLCPCommand(final Properties prop,  final Flow flow,  final Step step, final int stepNumber) {
+		final Map<String, Object> stepOptions = step.getOptions();
+		final JsonNode jsonFileLocs = step.getFileLocations();
 
 		String mlcp = " ";
 		mlcp = mlcp.concat(" import -mode \"local\"");
@@ -477,7 +484,7 @@ public class OSController extends AbstractController {
 		HubDeployStatusListener listener;
 		listener = new HubDeployStatusListener() {
 			@Override
-			public void onStatusChange(int percentComplete, String message) {
+			public void onStatusChange(final int percentComplete, final String message) {
 
 			}
 
@@ -495,15 +502,15 @@ public class OSController extends AbstractController {
 		// Deploy entities and flows to DHS
 		// Does the equivalent of ./gradlew hubDeploy -PenvironmentName=dhs -i
 
-		HubDeployStatusListener listener =  getListener() ;
+		final HubDeployStatusListener listener =  getListener() ;
 
 		System.out.println("DGB start");
 
-		String dhfDir = hubConfig.getHubProject().getProjectDirString();
+		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
 
 		System.out.println("DGB got dir: " + dhfDir);
 
-		Properties prop = new Properties();
+		final Properties prop = new Properties();
 		try (InputStream input = new FileInputStream(dhfDir + "/gradle-dhs.properties")) {
 			prop.load(input);
 			hubConfig.setHost(prop.getProperty("mlHost"));
@@ -520,12 +527,12 @@ public class OSController extends AbstractController {
 
 			System.out.println("DGB hubConfig: " + hubConfig.getInfo().toString() );
 
-			DhsDeployer dhsDeployer = new DhsDeployer();
+			final DhsDeployer dhsDeployer = new DhsDeployer();
 
 			dhsDeployer.deployAsSecurityAdmin(hubConfig);
 			dhsDeployer.deployAsDeveloper(hubConfig);
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			System.out.println("Cannot read gradle-dhs.properties");
 		}
 
