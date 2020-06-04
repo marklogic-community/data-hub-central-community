@@ -67,7 +67,15 @@ function getMergedDoc(uris) {
 function getNotification(uri, doc) {
 	const flowInfo = getNotificationFlowInfo(uri);
 	const r = doc.root;
-	const uris = r.xpath('*:document-uris/*:document-uri/string()').toObject();
+	const uris = r.xpath('*:document-uris/*:document-uri/string()').toObject()
+		.map(uri => {
+			if (fn.docAvailable(uri)) {
+				return uri;
+			}
+			else {
+				return fn.head(cts.uriMatch(`*${uri}*`))
+			}
+		});
 	const blocks = getBlocks(uris);
 	const blocked = uris.reduce((isBlocked, uri) => {
 		const otherUris = uris.filter(u => u !== uri);
@@ -109,9 +117,6 @@ function getNotification(uri, doc) {
     labels: uris.reduce((prev, cur) => {
 			console.log('uri', cur);
 			let doc = cts.doc(cur);
-			if (!doc) {
-				doc = cts.doc(fn.head(cts.uriMatch(`*${cur}*`)))
-			}
 			if (doc) {
 				doc = doc.root;
 				const entity = getEntityType(doc);
