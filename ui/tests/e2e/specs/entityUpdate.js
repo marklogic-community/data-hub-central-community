@@ -76,7 +76,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'String')
 	})
 
-	it.only('can add a new Array property', () => {
+	it('can add a new Array property', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')

@@ -9,7 +9,7 @@ import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.FileHandle;
-import com.marklogic.envision.services.DeployService;
+import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.grove.boot.error.NotAuthenticatedException;
 import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.HubConfig;

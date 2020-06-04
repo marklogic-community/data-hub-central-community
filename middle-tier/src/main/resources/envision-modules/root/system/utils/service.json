@@ -1,4 +1,0 @@
-{
-	"endpointDirectory": "/system/utils",
-	"$javaClass": "com.marklogic.envision.SystemUtils"
-}

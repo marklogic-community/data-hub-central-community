@@ -7,10 +7,114 @@ import modelApi from './api/ModelApi';
 import triplesApi from './api/TriplesApi';
 import masteringApi from './api/MasteringApi';
 import axios from 'axios';
+import * as _ from 'lodash';
 
 Vue.use(Vuex);
 
 const debug = true; //(process !== undefined) ? process.env.NODE_ENV !== "production" : true;
+
+const mastering = {
+	namespaced: true,
+	state: {
+		page: 1,
+		pageLength: 10,
+		total: 0,
+		totalUnread: 0,
+		allNotifications: {},
+		pagedNotifications: [],
+		docs: {},
+		blocks: {},
+		mergedDoc: null
+	},
+	mutations: {
+		setPagination(state, { page, pageLength, total, totalUnread }) {
+			state.page = page || state.page
+			state.total = _.isNumber(total) ? total : state.total
+			state.totalUnread = _.isNumber(totalUnread) ? totalUnread : state.totalUnread
+			state.pageLength = _.isNumber(pageLength) ? pageLength :  state.pageLength
+		},
+		setNotification(state, notification) {
+			Vue.set(state.allNotifications, notification.meta.uri, notification)
+		},
+		setNotifications(state, notifications) {
+			state.pagedNotifications = notifications
+			notifications.forEach(n => {
+				Vue.set(state.allNotifications, n.meta.uri, n)
+			});
+		},
+		setBlocks(state, blocks) {
+			state.blocks = Object.assign({}, state.blocks, blocks)
+		},
+		resetDocs(state) {
+			state.docs = {}
+		},
+		setDoc(state, {uri, doc}) {
+			Vue.set(state.docs, uri, doc)
+		},
+		setMergedDoc(state, doc) {
+			state.mergedDoc = doc
+		}
+	},
+	actions: {
+		getNotification({ commit, dispatch }, uri) {
+			return masteringApi.getNotification(uri).then(notification => {
+				commit('setNotification', notification)
+				dispatch('getBlocks', notification.uris)
+			})
+		},
+		getNotifications({ state, commit }, { page, pageLength, extractions }) {
+			const newPage = page || 1
+			const newPageLength = pageLength || state.pageLength
+			if (state.needsInstall) {
+				return
+			}
+			return masteringApi.getNotifications(newPage, newPageLength, extractions || []).then(result => {
+				commit('setPagination', { page: newPage, pageLength: result.pageLength, total: result.total, totalUnread: result.totalUnread })
+				commit('setNotifications', result.notifications)
+			})
+		},
+		async updateNotification({ state, dispatch }, { uris, readStatus, mergeStatus, blockStatus }) {
+			await masteringApi.updateNotification(uris, readStatus, mergeStatus, blockStatus)
+			dispatch('getNotifications', { page: state.page })
+		},
+		getBlocks({ commit }, uris) {
+			masteringApi.getBlocks(uris).then(blocks => {
+				commit('setBlocks', blocks)
+			})
+		},
+		block({ commit }, uris) {
+			masteringApi.block(uris).then(blocks => {
+				commit('setBlocks', blocks)
+			})
+		},
+		unblock({ commit }, uris) {
+			masteringApi.unBlock(uris).then(blocks => {
+				commit('setBlocks', blocks)
+			})
+		},
+		getDocs({ commit }, uris) {
+			uris.forEach(uri => {
+				masteringApi.getDoc(uri).then(doc => {
+					commit('setDoc', { uri, doc })
+				})
+			})
+		},
+		merge({ commit }, { uris, flowName, stepNumber, preview }) {
+			return masteringApi.merge(uris, flowName, stepNumber, preview).then(resp => {
+				console.log('resp', resp)
+				// console.log('commit', commit)
+				commit('setMergedDoc', resp.mergedDocument.value)
+			})
+		},
+		unmerge({ commit }, doc) {
+			return masteringApi.unmerge(doc)
+				// .then(response => {
+				// 	// commit('addDocs', response)
+				// 	// commit('removeDoc', doc)
+				// })
+		}
+	}
+}
 
 const auth = {
 	namespaced: true,
@@ -19,7 +123,7 @@ const auth = {
 		authenticated: false,
 		username: undefined,
 		profile: undefined,
-		needsInstall: false
+		needsInstall: false,
 	},
 	mutations: {
 		isInitialized(state, { initialized }) {
@@ -69,21 +173,24 @@ const auth = {
 							},
 							{ root: true }
 						);
-						authApi.profile().then(result => {
-							if (result.isError) {
-								// error
-								return result;
-							} else {
-								commit('setProfile', {
-									profile: result
-								});
-							}
-						});
+						dispatch('getProfile')
 					}
 				}
 			});
 		},
-		login({ commit, dispatch }, { user, pass }) {
+		getProfile({ commit }) {
+			authApi.profile().then(result => {
+				if (result.isError) {
+					// error
+					return result;
+				} else {
+					commit('setProfile', {
+						profile: result
+					});
+				}
+			});
+		},
+		login({ dispatch }, { user, pass }) {
 			return authApi.login(user, pass).then(result => {
 				if (result.isError) {
 					// error
@@ -97,16 +204,7 @@ const auth = {
 						},
 						{ root: true }
 					);
-					authApi.profile().then(result => {
-						if (result.isError) {
-							// error
-							return result;
-						} else {
-							commit('setProfile', {
-								profile: result
-							});
-						}
-					});
+					dispatch('getProfile')
 				}
 			});
 		},
@@ -205,6 +303,12 @@ const explore = {
 		getRelatedEntities({ commit, state }, { uri, label, page, pageLength }) {
 			return searchApi
 				.getRelatedEntities({ uri, label, page, pageLength })
+				.then(response => {
+					commit('addDocs', response)
+				})
+		},
+		getHistory({ commit }, uri) {
+			return masteringApi.getHistory(uri)
 				.then(response => {
 					commit('addDocs', response)
 				})
@@ -374,6 +478,7 @@ export default new Vuex.Store({
 		loggedIn({ commit, dispatch }, payload) {
 			commit('auth/loggedIn', payload);
 			dispatch('model/init');
+			dispatch('mastering/getNotifications', {});
 		},
 		loggedOut({ commit }, payload) {
 			commit('auth/loggedOut', payload);
@@ -383,6 +488,7 @@ export default new Vuex.Store({
 		auth,
 		explore,
 		model,
-		triples
+		triples,
+		mastering
 	}
 });

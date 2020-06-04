@@ -8,8 +8,6 @@ import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.impl.HubConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -50,7 +48,7 @@ public class SearchController extends AbstractController {
 	/**
 	 * Uses a QueryBuilderAndCriteria object so that a criteria string can be captured (if needed) and then applied
 	 * against the overall StructuredQueryDefinition.
-	 * 
+	 *
 	 * @param queryBuilder
 	 * @param filters
 	 * @return
