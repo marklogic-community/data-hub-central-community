@@ -1,5 +1,8 @@
 'use strict'
 
+const config = require('/com.marklogic.hub/config.sjs')
+const finalDB = config.FINALDATABASE
+const stagingDB = config.STAGINGDATABASE
 let arrErrors = []
 
 // code to delete anything in a collection EXCEPT ES/DH collections, or items not in any
@@ -13,7 +16,7 @@ function deleteCollections() {
 	}
 }
 
-let arrDatabases = ["data-hub-FINAL", "data-hub-STAGING"]
+let arrDatabases = [finalDB, stagingDB]
 
 arrDatabases.forEach(db => {
 	try {

@@ -1,3 +1,4 @@
+const jobDB = require('/com.marklogic.hub/config.sjs').JOBDATABASE
 let model = cts.doc('model.json');
 if (model) {
 	model = model.root;
@@ -15,7 +16,7 @@ function getNotificationFlowInfo(uri) {
 		const assocs = prov.xpath('//*:wasAssociatedWith/*:agent/@*:ref/string()')
 		return assocs.toArray()
 	}, {
-		database: xdmp.database('data-hub-JOBS')
+		database: xdmp.database(jobDB)
 	}))
 
 	const flows = fn.collection(['http://marklogic.com/data-hub/flow']).toArray()
@@ -88,10 +89,17 @@ function getNotification(uri, doc) {
 		uris: uris,
 		merged: merged,
     labels: uris.reduce((prev, cur) => {
-      const doc = cts.doc(cur).root;
-      const entity = getEntityType(doc);
-      const labelField = labels[entity];
-      prev[cur] = doc.xpath(`//*:${labelField}`);
+			console.log('uri', cur);
+			let doc = cts.doc(cur);
+			if (!doc) {
+				doc = cts.doc(fn.head(cts.uriMatch(`*${cur}*`)))
+			}
+			if (doc) {
+				doc = doc.root;
+				const entity = getEntityType(doc);
+				const labelField = labels[entity];
+				prev[cur] = doc.xpath(`//*:${labelField}`);
+			}
       return prev;
     }, {})
   }
