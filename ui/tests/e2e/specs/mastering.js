@@ -118,9 +118,9 @@ describe('Mastering', () => {
 				"dateTime": "2020-05-28T18:44:17.461166Z",
 				"user": "admin",
 				"uri": "/note1.xml",
-				"readStatus": "unread",
-				"mergeStatus": null,
-				"blockStatus": null
+				"status": "unread",
+				"merged": false,
+				"blocked": false
 			},
 			"flowInfo": {
 				"flowName": "EmployeesMastering",
@@ -211,9 +211,9 @@ describe('Mastering', () => {
 				"dateTime": "2020-05-28T18:44:17.461166Z",
 				"user": "admin",
 				"uri": "/note1.xml",
-				"readStatus": "unread",
-				"mergeStatus": "merged",
-				"blockStatus": null
+				"status": "unread",
+				"merged": true,
+				"blocked": false
 			},
 			"flowInfo": {
 				"flowName": "EmployeesMastering",
@@ -318,9 +318,9 @@ describe('Mastering', () => {
 				"dateTime": "2020-05-28T18:44:17.461166Z",
 				"user": "admin",
 				"uri": "/note1.xml",
-				"readStatus": "unread",
-				"mergeStatus": null,
-				"blockStatus": "blocked"
+				"status": "unread",
+				"merged": false,
+				"blocked": true
 			},
 			"flowInfo": {
 				"flowName": "EmployeesMastering",

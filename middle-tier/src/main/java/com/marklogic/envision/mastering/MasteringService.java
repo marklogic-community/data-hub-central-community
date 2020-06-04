@@ -84,8 +84,8 @@ public class MasteringService {
 		return Mastering.on(client).getNotifications(qtext, page, pageLength, sort);
 	}
 
-	public JsonNode updateNotifications(DatabaseClient client, ArrayNode uris, String readStatus, String mergeStatus, String blockStatus) {
-		return Mastering.on(client).updateNotifications(uris, readStatus, mergeStatus, blockStatus);
+	public JsonNode updateNotifications(DatabaseClient client, ArrayNode uris, String status) {
+		return Mastering.on(client).updateNotifications(uris, status);
 	}
 
 	public JsonNode getBlocks(DatabaseClient client, ArrayNode uris) {

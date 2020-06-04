@@ -14,7 +14,6 @@ describe('Explore', () => {
 		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false,"needsInstall":false})
 		cy.route('/api/models/activeIndexes', ['age'])
 		cy.route('PUT', '/api/models/', {})
-		// cy.route('GET', '/api/models/', [])
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
 
 		return cy.readFile('tests/e2e/data/model.json')

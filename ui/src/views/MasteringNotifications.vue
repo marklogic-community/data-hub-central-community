@@ -45,7 +45,7 @@
 								<template v-for="(notification, index) in notifications">
 									<tr
 										:key="index"
-										:class="notification.meta.readStatus"
+										:class="notification.meta.status"
 									>
 										<td><v-checkbox
 											v-model="checkedNotifications[index]"
@@ -55,13 +55,13 @@
 										<td @click="gotoCompare(notification)">{{notification.uris.length}}</td>
 										<td @click="gotoCompare(notification)">{{notification.meta.dateTime}}</td>
 										<td style="width: 58px;" @click="gotoCompare(notification)">
-											<v-tooltip top v-if="notification.meta.mergeStatus === 'merged'">
+											<v-tooltip top v-if="notification.meta.merged">
 												<template v-slot:activator="{ on }">
 													<v-icon v-on="on">merge_type</v-icon>
 												</template>
 												<span>Merged</span>
 											</v-tooltip>
-											<v-tooltip top v-if="notification.meta.blockStatus === 'blocked'">
+											<v-tooltip top v-if="notification.meta.blocked">
 												<template v-slot:activator="{ on }">
 													<v-icon v-on="on">block</v-icon>
 												</template>
@@ -152,26 +152,18 @@ export default {
 		markUnread() {
 			const uris = this.allCheckedNotifications.map(not => not.meta.uri)
 			if (uris.length > 0) {
-				this.$store.dispatch('mastering/updateNotification', { uris, readStatus: 'unread' })
+				this.$store.dispatch('mastering/updateNotification', { uris, status: 'unread' })
 			}
 		},
 		merge() {
 			this.allCheckedNotifications.forEach(notification => {
 				this.$store.dispatch('mastering/merge', { uris: notification.uris, flowName: notification.flowInfo.flowName, stepNumber: notification.flowInfo.stepNumber, preview: false })
 			})
-			const uris = this.allCheckedNotifications.map(not => not.meta.uri)
-			if (uris.length > 0) {
-				this.$store.dispatch('mastering/updateNotification', { uris: uris, mergeStatus: 'merged' })
-			}
 		},
 		unmerge() {
 			this.allCheckedNotifications.forEach(notification => {
 				this.$store.dispatch('mastering/unmerge', notification.merged.uri)
 			})
-			const uris = this.allCheckedNotifications.map(not => not.meta.uri)
-			if (uris.length > 0) {
-				this.$store.dispatch('mastering/updateNotification', { uris: uris, mergeStatus: 'unmerged' })
-			}
 		},
 		gotoCompare(notification) {
 			this.$router.push({

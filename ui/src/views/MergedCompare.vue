@@ -64,30 +64,20 @@ export default {
 			return this.mergedDoc ? this.mergedDoc.envelope.headers.merges.map(m => m['document-uri']) : null
 		},
 		blocked() {
-			if (this.blocks && this.uris && this.uris.length > 0) {
-				const b = this.blocks[this.uris[0]]
-				if (b) {
-					const incs = b.includes(this.uris[1])
-					return incs
-				}
-			}
-			return false
+			return this.notification ? this.notification.meta.blocked : false
 		},
 		merged() {
-			return this.notification ? this.notification.meta.mergeStatus === 'merged' : false
+			return this.notification ? this.notification.meta.merged : false
 		}
 	},
 	methods: {
 		unmerge() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], mergeStatus: 'unmerged' })
 			this.showAlert('Unmerge Complete')
 		},
 		block() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], blockStatus: 'blocked' })
 			this.showAlert('Blocked')
 		},
 		unblock() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], blockStatus: 'unblocked' })
 			this.showAlert('Unblocked')
 		},
 		showAlert(msg) {

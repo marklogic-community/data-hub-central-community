@@ -61,14 +61,12 @@ export default {
 		});
 	},
 
-	updateNotification(uris, readStatus, mergeStatus, blockStatus) {
+	updateNotification(uris, status) {
 		return axios.put(
 			'/api/mastering/notifications/',
 			{
 				uris,
-				readStatus,
-				mergeStatus,
-				blockStatus
+				status
 			}
 		)
 		.then(response => {

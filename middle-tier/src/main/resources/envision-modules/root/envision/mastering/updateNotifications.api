@@ -8,18 +8,7 @@
 			},
 			{
         "datatype": "string",
-        "name": "readStatus",
-				"nullable": true
-      },
-			{
-        "datatype": "string",
-        "name": "mergeStatus",
-				"nullable": true
-      },
-			{
-        "datatype": "string",
-        "name": "blockStatus",
-				"nullable": true
+        "name": "status"
       }
     ],
     "return": {

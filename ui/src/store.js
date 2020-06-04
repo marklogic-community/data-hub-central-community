@@ -73,8 +73,8 @@ const mastering = {
 				commit('setNotifications', result.notifications)
 			})
 		},
-		async updateNotification({ state, dispatch }, { uris, readStatus, mergeStatus, blockStatus }) {
-			await masteringApi.updateNotification(uris, readStatus, mergeStatus, blockStatus)
+		async updateNotification({ state, dispatch }, { uris, status }) {
+			await masteringApi.updateNotification(uris, status)
 			dispatch('getNotifications', { page: state.page })
 		},
 		getBlocks({ commit }, uris) {
@@ -477,8 +477,9 @@ export default new Vuex.Store({
 		},
 		loggedIn({ commit, dispatch }, payload) {
 			commit('auth/loggedIn', payload);
-			dispatch('model/init');
-			dispatch('mastering/getNotifications', {});
+			dispatch('model/init').then(() => {
+				dispatch('mastering/getNotifications', {})
+			})
 		},
 		loggedOut({ commit }, payload) {
 			commit('auth/loggedOut', payload);

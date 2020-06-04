@@ -2,17 +2,14 @@
 var uris;
 uris = uris.toObject();
 
-const matcher = require("/com.marklogic.smart-mastering/matcher.xqy");
+const mastering = require('/envision/mastering.sjs')
 
 xdmp.invokeFunction(function() {
 	declareUpdate();
-	matcher.blockMatches(uris);
+	mastering.blockMatches(uris);
 })
 
 const blocks = xdmp.invokeFunction(function() {
-	return uris.reduce((obj, uri) => {
-		obj[uri] = matcher.getBlocks(uri)
-		return obj
-	}, {});
+	return mastering.getBlocks(uris);
 })
 blocks;

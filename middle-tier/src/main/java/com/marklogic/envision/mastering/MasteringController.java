@@ -100,33 +100,18 @@ public class MasteringController extends AbstractController {
 		JsonNode node = om.readTree(request.getInputStream());
 		ArrayNode uris = (ArrayNode)node.get("uris");
 
-		String readStatus = null;
-		String mergeStatus = null;
-		String blockStatus = null;
+		String status = "";
 
-		if (node.has("readStatus") && !node.get("readStatus").isNull()) {
-			readStatus = node.get("readStatus").asText();
+		if (node.has("status") && !node.get("status").isNull()) {
+			status = node.get("status").asText();
 		}
-		if (node.has("mergeStatus") && !node.get("mergeStatus").isNull()) {
-			mergeStatus = node.get("mergeStatus").asText();
-		}
-		if (node.has("blockStatus") && !node.get("blockStatus").isNull()) {
-			blockStatus = node.get("blockStatus").asText();
-		}
-		return masteringService.updateNotifications(getFinalClient(), uris, readStatus, mergeStatus, blockStatus);
+		return masteringService.updateNotifications(getFinalClient(), uris, status);
 	}
 
 	@RequestMapping(value = "/notifications", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteNotification(HttpServletRequest request) throws IOException {
 
 		String[] uris = om.readValue(request.getInputStream(), String[].class);
-//		JsonNode node = om.readTree(request.getInputStream());
-//		ArrayNode urisArray = (ArrayNode)node.get("uris");
-//		ArrayList<String> uris = new ArrayList<>();
-//		for (JsonNode jsonNode : urisArray) {
-//			uris.add(jsonNode.asText());
-//		}
-//		getFinalClient().newDocumentManager().delete(uris.toArray(new String[0]));
 		getFinalClient().newDocumentManager().delete(uris);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

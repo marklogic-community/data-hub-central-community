@@ -32,16 +32,14 @@ public interface Mastering {
             }
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, String readStatus, String mergeStatus, String blockStatus) {
+            public com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, String status) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("updateNotifications.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
                 .withSession()
                 .withParams(
                     BaseProxy.documentParam("uris", false, BaseProxy.JsonDocumentType.fromJsonNode(uris)),
-                    BaseProxy.atomicParam("readStatus", true, BaseProxy.StringType.fromString(readStatus)),
-                    BaseProxy.atomicParam("mergeStatus", true, BaseProxy.StringType.fromString(mergeStatus)),
-                    BaseProxy.atomicParam("blockStatus", true, BaseProxy.StringType.fromString(blockStatus)))
+                    BaseProxy.atomicParam("status", false, BaseProxy.StringType.fromString(status)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -176,12 +174,10 @@ public interface Mastering {
    * Invokes the updateNotifications operation on the database server
    *
    * @param uris	provides input
-   * @param readStatus	provides input
-   * @param mergeStatus	provides input
-   * @param blockStatus	provides input
+   * @param status	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, String readStatus, String mergeStatus, String blockStatus);
+    com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, String status);
 
   /**
    * Invokes the getNotification operation on the database server

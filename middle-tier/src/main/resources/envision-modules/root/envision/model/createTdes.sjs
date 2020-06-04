@@ -143,7 +143,6 @@ for (let key in model.nodes) {
 		})
 	}
 	templates.push(template);
-	// console.log('template', JSON.stringify(template))
 	tde.templateInsert(`${entity.id}-relationships-tde.json`, template);
 }
 

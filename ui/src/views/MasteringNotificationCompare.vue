@@ -115,24 +115,20 @@ export default {
 			return false
 		},
 		merged() {
-			return this.notification ? this.notification.meta.mergeStatus === 'merged' : false
+			return this.notification ? this.notification.meta.merged : false
 		}
 	},
 	methods: {
 		merge() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], mergeStatus: 'merged' })
 			this.showAlert('Merge Complete')
 		},
 		unmerge() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], mergeStatus: 'unmerged' })
 			this.showAlert('Unmerge Complete')
 		},
 		block() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], blockStatus: 'blocked' })
 			this.showAlert('Blocked')
 		},
 		unblock() {
-			this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], blockStatus: 'unblocked' })
 			this.showAlert('Unblocked')
 		},
 		showAlert(msg) {
@@ -171,9 +167,8 @@ export default {
 		},
 		getNotification() {
 			this.$store.dispatch('mastering/getNotification', this.notificationUri).then(() => {
-				if (this.notification.meta.readStatus === 'unread') {
-					this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], readStatus: 'read' })
-					// this.$store.commit('mastering/setPagination', { totalUnread: this.totalUnread - 1 })
+				if (this.notification.meta.status === 'unread') {
+					this.$store.dispatch('mastering/updateNotification', { uris: [this.notificationUri], status: 'read' })
 				}
 				if (!this.merged.doc) {
 					this.$store.dispatch('mastering/merge', { uris: this.uris, flowName: this.flowName, stepNumber: this.stepNumber, preview: true})
