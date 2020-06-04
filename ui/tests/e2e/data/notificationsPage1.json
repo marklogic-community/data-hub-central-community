@@ -1,0 +1,133 @@
+{
+	"page": 1,
+	"total": 12,
+	"totalUnread": 12,
+	"pageLength": 5,
+	"notifications": [
+		{
+			"meta": {
+				"dateTime": "2020-05-28T18:44:17.461166Z",
+				"user": "admin",
+				"uri": "/note1.xml",
+				"readStatus": "unread",
+				"mergeStatus": null,
+				"blockStatus": null
+			},
+			"flowInfo": {
+				"flowName": "EmployeesMastering",
+				"stepName": "MasterEmployees",
+				"stepNumber": "3"
+			},
+			"thresholdLabel": "Maybe Match?",
+			"uris": [
+				"/doc1.json",
+				"/doc2.json"
+			],
+			"merged": {},
+			"labels": {
+				"/doc1.json": "doc 1",
+				"/doc2.json": "doc 2"
+			}
+		},
+		{
+			"meta": {
+				"dateTime": "2020-05-28T18:44:17.461166Z",
+				"user": "admin",
+				"uri": "/note2.xml",
+				"readStatus": "unread",
+				"mergeStatus": null,
+				"blockStatus": null
+			},
+			"flowInfo": {
+				"flowName": "EmployeesMastering",
+				"stepName": "MasterEmployees",
+				"stepNumber": "3"
+			},
+			"thresholdLabel": "Maybe Match?",
+			"uris": [
+				"/doc1.json",
+				"/doc2.json"
+			],
+			"merged": {},
+			"labels": {
+				"/doc1.json": "doc 1",
+				"/doc2.json": "doc 2"
+			}
+		},
+		{
+			"meta": {
+				"dateTime": "2020-05-28T18:44:17.461166Z",
+				"user": "admin",
+				"uri": "/note3.xml",
+				"readStatus": "unread",
+				"mergeStatus": null,
+				"blockStatus": null
+			},
+			"flowInfo": {
+				"flowName": "EmployeesMastering",
+				"stepName": "MasterEmployees",
+				"stepNumber": "3"
+			},
+			"thresholdLabel": "Maybe Match?",
+			"uris": [
+				"/doc1.json",
+				"/doc2.json"
+			],
+			"merged": {},
+			"labels": {
+				"/doc1.json": "doc 1",
+				"/doc2.json": "doc 2"
+			}
+		},
+		{
+			"meta": {
+				"dateTime": "2020-05-28T18:44:17.461166Z",
+				"user": "admin",
+				"uri": "/note4.xml",
+				"readStatus": "unread",
+				"mergeStatus": null,
+				"blockStatus": null
+			},
+			"flowInfo": {
+				"flowName": "EmployeesMastering",
+				"stepName": "MasterEmployees",
+				"stepNumber": "3"
+			},
+			"thresholdLabel": "Maybe Match?",
+			"uris": [
+				"/doc1.json",
+				"/doc2.json"
+			],
+			"merged": {},
+			"labels": {
+				"/doc1.json": "doc 1",
+				"/doc2.json": "doc 2"
+			}
+		},
+		{
+			"meta": {
+				"dateTime": "2020-05-28T18:44:17.461166Z",
+				"user": "admin",
+				"uri": "/note5.xml",
+				"readStatus": "unread",
+				"mergeStatus": null,
+				"blockStatus": null
+			},
+			"flowInfo": {
+				"flowName": "EmployeesMastering",
+				"stepName": "MasterEmployees",
+				"stepNumber": "3"
+			},
+			"thresholdLabel": "Maybe Match?",
+			"uris": [
+				"/doc1.json",
+				"/doc2.json"
+			],
+			"merged": {},
+			"labels": {
+				"/doc1.json": "doc 1",
+				"/doc2.json": "doc 2"
+			}
+		}
+	]
+}

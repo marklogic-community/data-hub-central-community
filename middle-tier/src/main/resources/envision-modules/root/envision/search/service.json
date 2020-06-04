@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/envision/search",
+	"$javaClass": "com.marklogic.envision.dataServices.EntitySearcher"
+}

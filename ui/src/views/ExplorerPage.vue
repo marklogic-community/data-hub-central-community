@@ -85,12 +85,15 @@
 			:position-y="rightClickPos.y"
 		>
 			<v-list>
-				<v-list-item
-					v-for="item in rightClickItems"
-					:key="item.label"
-					@click="contextClick(item)">
-					<v-list-item-title>{{item.label}}</v-list-item-title>
-				</v-list-item>
+				<template v-for="item in rightClickItems">
+					<v-divider :key="item.label" v-if="item.divider"></v-divider>
+					<v-list-item
+						v-else
+						:key="item.label"
+						@click="contextClick(item)">
+						<v-list-item-title>{{item.label}}</v-list-item-title>
+					</v-list-item>
+				</template>
 			</v-list>
 		</v-menu>
 		<v-menu
@@ -541,8 +544,16 @@ export default {
 
 					if (node.uri && node.uri.match('/com.marklogic.smart-mastering/merged/')) {
 						items.push({
+							divider: true
+						})
+						items.push({
 							label: 'UnMerge',
 							action: 'unmerge',
+							node: node
+						})
+						items.push({
+							label: 'Merge History',
+							action: 'mergeHistory',
 							node: node
 						})
 					}
@@ -564,6 +575,9 @@ export default {
 				case 'unmerge':
 					this.confirmUnmergeMenu = true
 					break;
+				case 'mergeHistory':
+					this.mergeHistory(item.node.uri)
+					break;
 			}
 		},
 		expandRelationship({ uri, label }) {
@@ -571,6 +585,9 @@ export default {
 			const page = 1
 			const pageLength = 10
 			this.$store.dispatch('explore/getRelatedEntities', { uri, label, page, pageLength })
+		},
+		mergeHistory(uri) {
+			this.$router.push({ name: 'root.explorer.compare', query: { uri } })
 		},
 		unmerge(uri) {
 			this.$store.dispatch('explore/unmerge', uri)

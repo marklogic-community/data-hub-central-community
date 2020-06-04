@@ -1,0 +1,37 @@
+{
+    "functionName": "merge",
+    "params": [
+			{
+				"datatype": "array",
+				"name": "uris",
+				"$javaClass": "com.fasterxml.jackson.databind.node.ArrayNode"
+			},
+      {
+        "datatype": "string",
+        "name": "flowName"
+      },
+			{
+        "datatype": "string",
+        "name": "stepNumber",
+				"nullable": true
+      },
+			{
+        "datatype": "boolean",
+        "name": "preview",
+				"nullable": true
+      },
+			{
+        "datatype": "string",
+        "name": "jobId"
+      },
+			{
+				"datatype": "boolean",
+				"name": "performanceMetrics",
+				"nullable": true
+			}
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}

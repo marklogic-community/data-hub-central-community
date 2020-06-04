@@ -11,7 +11,7 @@ import './registerServiceWorker'
 import './styles/main.less'
 
 Vue.filter('truncate', function (text, stop, clamp) {
-	return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
+	return text && text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
 })
 
 Vue.use(VueHttp)
