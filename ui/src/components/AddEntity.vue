@@ -25,7 +25,7 @@
 					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<v-text-field
-							v-if = "type === 'entity'"
+							v-if = "this.type === 'entity'"
 							label="version"
 							v-model="version"
 							>
