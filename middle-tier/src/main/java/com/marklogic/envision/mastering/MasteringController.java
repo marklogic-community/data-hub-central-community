@@ -4,12 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.document.DocumentPage;
-import com.marklogic.client.document.DocumentRecord;
-import com.marklogic.client.io.StringHandle;
 import com.marklogic.envision.dataServices.Mastering;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.grove.boot.error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/mastering")
@@ -93,12 +87,12 @@ public class MasteringController extends AbstractController {
 
 	@RequestMapping(value = "/block", method = RequestMethod.POST)
 	public JsonNode setBlocks(@RequestBody ArrayNode uris) {
-		return  masteringService.setBlocks(getFinalClient(), uris);
+		return  masteringService.block(getFinalClient(), uris);
 	}
 
 	@RequestMapping(value = "/unblock", method = RequestMethod.POST)
 	public JsonNode unsetBlocks(@RequestBody ArrayNode uris) {
-		return  masteringService.unsetBlocks(getFinalClient(), uris);
+		return  masteringService.unblock(getFinalClient(), uris);
 	}
 
 	@RequestMapping(value = "/notifications", method = RequestMethod.PUT)

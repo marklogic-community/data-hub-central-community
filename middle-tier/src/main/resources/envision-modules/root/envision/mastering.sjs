@@ -1,8 +1,12 @@
-const model = cts.doc('model.json').root;
-const labels = Object.values(model.nodes).reduce((prev, cur) => {
+let model = cts.doc('model.json');
+if (model) {
+	model = model.root;
+}
+
+const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {
 	prev[cur.entityName] = cur.labelField
 	return prev;
-}, {});
+}, {}) : {};
 
 function getNotificationFlowInfo(uri) {
 	const prov = fn.head(xdmp.invokeFunction(() => {

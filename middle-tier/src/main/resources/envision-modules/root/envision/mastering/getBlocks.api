@@ -1,5 +1,5 @@
 {
-    "functionName": "block",
+    "functionName": "getBlocks",
     "params": [
 			{
 				"datatype": "array",

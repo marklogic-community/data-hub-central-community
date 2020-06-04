@@ -1,9 +1,10 @@
 package com.marklogic.envision;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.envision.dataServices.Mastering;
-import com.marklogic.grove.boot.Application;
 import com.marklogic.envision.model.ModelService;
+import com.marklogic.grove.boot.Application;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import java.io.IOException;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = Application.class)
-public class Unmerge extends BaseTest {
+public class MasteringTest extends BaseTest {
 
 	@Autowired
 	ModelService modelService;
@@ -54,5 +55,18 @@ public class Unmerge extends BaseTest {
 	public void unmerge() throws IOException, JSONException {
 		JsonNode found = Mastering.on(getFinalClient()).unmerge("/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json");
 		JSONAssert.assertEquals(getResource("output/unmerge.json"), om.writeValueAsString(found), true);
+	}
+
+	@Test
+	public void block() throws IOException, JSONException {
+		ArrayNode uris = (ArrayNode)om.readTree("[\"/CoastalEmployees/55003.json\", \"/MountainTopEmployees/employee4.json\"]");
+
+		JsonNode preblocked = Mastering.on(getFinalClient()).getBlocks(uris);
+		JSONAssert.assertEquals("{\"/CoastalEmployees/55003.json\":[],\"/MountainTopEmployees/employee4.json\":[]}", om.writeValueAsString(preblocked), true);
+
+		JsonNode block = Mastering.on(getFinalClient()).block(uris);
+
+		JsonNode blocked = Mastering.on(getFinalClient()).getBlocks(uris);
+		JSONAssert.assertEquals("{\"/CoastalEmployees/55003.json\":[\"/MountainTopEmployees/employee4.json\"],\"/MountainTopEmployees/employee4.json\":[\"/CoastalEmployees/55003.json\"]}", om.writeValueAsString(blocked), true);
 	}
 }

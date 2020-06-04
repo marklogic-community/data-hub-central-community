@@ -63,7 +63,7 @@ public interface Mastering {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode setBlocks(com.fasterxml.jackson.databind.node.ArrayNode uris) {
+            public com.fasterxml.jackson.databind.JsonNode block(com.fasterxml.jackson.databind.node.ArrayNode uris) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("block.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
@@ -141,7 +141,7 @@ public interface Mastering {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode block(com.fasterxml.jackson.databind.node.ArrayNode uris) {
+            public com.fasterxml.jackson.databind.JsonNode getBlocks(com.fasterxml.jackson.databind.node.ArrayNode uris) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("getBlocks.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
@@ -192,12 +192,12 @@ public interface Mastering {
     com.fasterxml.jackson.databind.JsonNode getNotification(String uri);
 
   /**
-   * Invokes the setBlocks operation on the database server
+   * Invokes the block operation on the database server
    *
    * @param uris	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode setBlocks(com.fasterxml.jackson.databind.node.ArrayNode uris);
+    com.fasterxml.jackson.databind.JsonNode block(com.fasterxml.jackson.databind.node.ArrayNode uris);
 
   /**
    * Invokes the getNotifications operation on the database server
@@ -240,12 +240,12 @@ public interface Mastering {
     com.fasterxml.jackson.databind.JsonNode unBlock(com.fasterxml.jackson.databind.node.ArrayNode uris);
 
   /**
-   * Invokes the block operation on the database server
+   * Invokes the getBlocks operation on the database server
    *
    * @param uris	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode block(com.fasterxml.jackson.databind.node.ArrayNode uris);
+    com.fasterxml.jackson.databind.JsonNode getBlocks(com.fasterxml.jackson.databind.node.ArrayNode uris);
 
   /**
    * Invokes the getHistory operation on the database server

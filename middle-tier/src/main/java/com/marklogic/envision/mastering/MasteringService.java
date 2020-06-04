@@ -89,14 +89,14 @@ public class MasteringService {
 	}
 
 	public JsonNode getBlocks(DatabaseClient client, ArrayNode uris) {
+		return Mastering.on(client).getBlocks(uris);
+	}
+
+	public JsonNode block(DatabaseClient client, ArrayNode uris) {
 		return Mastering.on(client).block(uris);
 	}
 
-	public JsonNode setBlocks(DatabaseClient client, ArrayNode uris) {
-		return Mastering.on(client).setBlocks(uris);
-	}
-
-	public JsonNode unsetBlocks(DatabaseClient client, ArrayNode uris) {
+	public JsonNode unblock(DatabaseClient client, ArrayNode uris) {
 		return Mastering.on(client).unBlock(uris);
 	}
 
