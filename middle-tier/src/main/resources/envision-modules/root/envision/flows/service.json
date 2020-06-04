@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/envision/flows",
+	"$javaClass": "com.marklogic.envision.dataServices.Flows"
+}

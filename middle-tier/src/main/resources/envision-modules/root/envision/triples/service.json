@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/envision/triples",
+	"$javaClass": "com.marklogic.envision.dataServices.Triples"
+}

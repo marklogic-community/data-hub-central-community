@@ -29,6 +29,7 @@
     "highlight.js": "^9.13.1",
     "isomorphic-fetch": "^2.2.1",
     "litegraph.js": "^0.7.0",
+    "lodash": "^4.17.15",
     "material-design-icons-iconfont": "^5.0.1",
     "ml-visjs-graph": "^0.5.1",
     "moment": "^2.24.0",

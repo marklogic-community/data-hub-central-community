@@ -1,8 +1,9 @@
 package com.marklogic.envision;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.marklogic.envision.dataServices.EntitySearcher;
 import com.marklogic.grove.boot.Application;
-import com.marklogic.grove.boot.model.ModelService;
+import com.marklogic.envision.model.ModelService;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
