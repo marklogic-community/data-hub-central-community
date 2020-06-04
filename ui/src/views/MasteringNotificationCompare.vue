@@ -121,9 +121,11 @@ export default {
 	methods: {
 		merge() {
 			this.showAlert('Merge Complete')
+			this.getNotification()
 		},
 		unmerge() {
 			this.showAlert('Unmerge Complete')
+			this.getNotification()
 		},
 		block() {
 			this.showAlert('Blocked')
