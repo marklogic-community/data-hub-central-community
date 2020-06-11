@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import BreadCrumbs from '@/components/BreadCrumbs.vue';
 import Header from '@/components/Header.vue';
 import mlFooter from '@/components/ml-footer.vue';
 import { mapState } from 'vuex'
@@ -17,7 +16,6 @@ import { mapState } from 'vuex'
 export default {
   name: 'app',
   components: {
-    BreadCrumbs,
     Header,
 		mlFooter
 	},
@@ -31,7 +29,7 @@ export default {
 	},
 	created() {
     this.$http.interceptors.response.use(undefined, (err) => {
-      return new Promise((resolve, reject) => {
+      return new Promise(() => {
         if (err && err.response && err.response.status === 401 && err.config && !err.config.__isRetryRequest) {
 					this.$store.dispatch('auth/logout')
 					this.$router.push({ name: 'root.login' });

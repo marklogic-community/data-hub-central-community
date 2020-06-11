@@ -2,22 +2,27 @@
   <div class="facet-list">
     <ml-chiclets :active-facets="activeFacets" :toggle="toggle"></ml-chiclets>
 
-    <div class="facet" v-for="(facet, facetName, $index) in facets" :key="$index"
-        v-if="hasNonSelectedValues(facet)" v-show="!facet.hide">
-      <h3>{{ facetName }}</h3>
-      <div v-for="(value, $index) in facet.facetValues" :key="$index" v-if="!value.selected">
-        <span v-on:click.prevent="toggle(facetName, facet.type, value.name)">
-          <i class="fa fa-plus-circle facet-add-pos"></i>
-          <span v-if="!!value.name" :title="value.name"> {{ value.name }}</span>
-          <em v-if="!value.name">blank</em>
-          <span> ({{ value.count }}) </span>
-        </span>
-        <i v-if="!!negate" class="fa fa-ban facet-add-neg" v-on:click.prevent="negate(facetName, facet.type, value.name)" :title="value.name"></i>
-      </div>
-      <div v-if="!!showMore && !facet.displayingAll">
-        <a href v-on:click.prevent="showMore(facetName)">see more ...</a>
-      </div>
-    </div>
+		<template v-for="(facet, facetName, $index) in facets">
+			<v-card :key="$index" v-show="!facet.hide && facet.facetValues.length > 0">
+				<v-card-title>{{ facetName }}</v-card-title>
+				<v-card-text>
+					<template v-for="(value, $index) in facet.facetValues">
+						<div v-if="!value.selected" :key="$index">
+							<span v-on:click.prevent="toggle(facetName, facet.type, value.name)">
+								<i class="fa fa-plus-circle facet-add-pos"></i>
+								<span v-if="!!value.name" :title="value.name"> {{ value.name }}</span>
+								<em v-if="!value.name">blank</em>
+								<span> ({{ value.count }}) </span>
+							</span>
+							<i v-if="!!negate" class="fa fa-ban facet-add-neg" v-on:click.prevent="negate(facetName, facet.type, value.name)" :title="value.name"></i>
+						</div>
+					</template>
+					<div v-if="!!showMore && !facet.displayingAll">
+						<a class="seemore" href v-on:click.prevent="showMore(facet, facetName)">see more ...</a>
+					</div>
+				</v-card-text>
+			</v-card>
+		</template>
   </div>
 </template>
 
@@ -63,6 +68,8 @@ export default {
 
 <style lang="less" scoped>
 .facet-list {
+	padding: 0.25em;
+
   .facet-add-pos,
   .facet-add-neg {
     visibility: hidden;
@@ -71,5 +78,16 @@ export default {
   div:hover > .facet-add-neg {
     visibility: visible !important;
   }
+}
+
+.seemore {
+	padding-left: 15px;
+}
+
+.v-card {
+	margin-bottom: 20px;
+}
+.v-card__title {
+	text-transform: capitalize;
 }
 </style>

@@ -246,14 +246,15 @@ export default {
           break;
         case 'deleteNode':
           this.doDeleteNode(options.nodeId);
-			break;
-		case 'saveGraphImage':
-			this.saveGraphImage();
-			break;
-		case 'deleteModel':
-			this.deleteModel();
-        default:
-          console.log('Invalid action sent to ModelerPage.vue');
+					break;
+				case 'saveGraphImage':
+					this.saveGraphImage();
+					break;
+				case 'deleteModel':
+					this.deleteModel();
+					break;
+				default:
+					console.log('Invalid action sent to ModelerPage.vue');
       }
     },
 
@@ -287,8 +288,8 @@ export default {
       let myNodesCache = {};
 
       if (this.showFullEntityNames == true) {
-        for (var node in this.nodesCache) {
-          var thisNode = this.nodesCache[node];
+        for (let node in this.nodesCache) {
+          let thisNode = this.nodesCache[node];
 
           thisNode.label = thisNode.entityName;
           myNodesCache[node] = thisNode;
@@ -296,8 +297,8 @@ export default {
           thisNode.font.size = 10;
         }
       } else {
-        for (var node in this.nodesCache) {
-          var thisNode = this.nodesCache[node];
+        for (let node in this.nodesCache) {
+          let thisNode = this.nodesCache[node];
 
           thisNode.label = thisNode.entityName.substring(0, 2);
           myNodesCache[node] = thisNode;
@@ -353,7 +354,6 @@ export default {
 			}
 		},
 		getNextRoundness( self, toNode, fromNode) {
-			let edgeRoundness = {}  // contains edgeFrom|To: roundness
 			const defaultRoundness = 0.5 // midpoint
 			let roundnessInc = 0.15
 			let roundness = defaultRoundness
@@ -530,10 +530,9 @@ export default {
 				})
 			}
 		},
-		graphEditEdge(edgeData, callback) {
+		graphEditEdge(edgeData) {
 			let edge = this.edgesCache[this.currentEdge]
 			let cardinality = edge.cardinality || '1:1'
-			let key = edge.key || null
 			this.doSaveEdge({
 				id: edgeData.id,
 				from: edgeData.from,
@@ -544,7 +543,7 @@ export default {
 				keyTo: node.keyTo
 			});
 		},
-		graphDeleteNode(nodeData, callback) {
+		graphDeleteNode(nodeData) {
 			// nodeData will be something like:
 			// {"nodes":["node1", ..... ],"edges":["edge1",.....]}
 			// delete all the nodes and edges from our caches and refresh
@@ -555,7 +554,7 @@ export default {
 			this.doUpdateEdges(this.edgesCache);
 			this.doMLSave();
 		},
-		graphDeleteEdge(edgeData, callback) {
+		graphDeleteEdge(edgeData) {
 			// edgeData will be something like:
 			// {"nodes":[],"edges":["edge1",.....]}   <<< note that nodes is always empty
 			// delete all the edges from our caches and refresh
@@ -583,9 +582,6 @@ export default {
 		},
 		graphRightClick(e) {
 			e.event.preventDefault()
-			var rect = e.event.target.getBoundingClientRect();
-			var x = e.event.clientX - rect.left; //x position within the element.
-			var y = e.event.clientY - rect.top;
 			this.rightClickPos = {
 				x: e.event.x,
 				y: e.event.y,
@@ -602,7 +598,7 @@ export default {
 				this.rightClickMenu = true;
 			}
 		},
-		runRightclickAction(action, e) {
+		runRightclickAction(action) {
 			if (action === 'addEntity') {
 				let nodeData = {
 					id: "89855843-0ae4-40b7-8a58-6d378f040354",
@@ -642,7 +638,7 @@ export default {
 			this.graphImage = ctx.canvas.toDataURL();
 		},
 		resizedataURL(datas, wantedWidth, wantedHeight) {
-			return new Promise(async (resolve, reject) => {
+			return new Promise(async (resolve) => {
 					var img = document.createElement('img');
 					img.onload = function() {
 							var canvas = document.createElement('canvas');

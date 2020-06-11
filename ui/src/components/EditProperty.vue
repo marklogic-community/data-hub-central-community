@@ -99,7 +99,7 @@ export default {
 	},
 	computed: {
 		isNew() {
-			return !(!!this.prop)
+			return !(this.prop)
 		},
 		isArray() {
 			return this.type === 'Array'

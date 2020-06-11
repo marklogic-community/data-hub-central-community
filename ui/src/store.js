@@ -6,8 +6,10 @@ import searchApi from './api/SearchApi';
 import modelApi from './api/ModelApi';
 import triplesApi from './api/TriplesApi';
 import masteringApi from './api/MasteringApi';
+import crudApi from './api/CRUDApi';
 import axios from 'axios';
 import * as _ from 'lodash';
+import SearchApi from './api/SearchApi';
 
 Vue.use(Vuex);
 
@@ -108,10 +110,6 @@ const mastering = {
 		},
 		unmerge({ commit }, doc) {
 			return masteringApi.unmerge(doc)
-				// .then(response => {
-				// 	// commit('addDocs', response)
-				// 	// commit('removeDoc', doc)
-				// })
 		}
 	}
 }
@@ -239,10 +237,13 @@ const explore = {
 		nodes: {},
 		total: 0,
 		page: 1,
+		database: 'final',
 		pageLength: 10,
-		entities: [],
+		results: [],
 		qtext: null,
-		sort: 'default'
+		sort: 'default',
+		facets: {},
+		activeFacets: {}
 	},
 	mutations: {
 		setDocs(state, response) {
@@ -253,6 +254,8 @@ const explore = {
 				state.colors = {};
 				state.edges = response.edges
 				state.nodes = response.nodes
+				state.results = response.results
+				state.facets = response.facets
 			}
 		},
 		addDocs(state, docs) {
@@ -288,19 +291,90 @@ const explore = {
 			if (qtext !== undefined) {
 				state.qtext = qtext;
 			}
+		},
+		setFacetValue(state, { facetName, facets }) {
+			if (facets) {
+				let values = state.facets[facetName].facetValues;
+
+				if (facets) {
+					facets.forEach(function(newFacetValue) {
+						//check if not existing
+						for (let i = 0; i < values.length; i++) {
+							if (values[i].name === newFacetValue._value) {
+								Vue.set(state.facets[facetName], 'displayingAll', true);
+								return;
+							}
+						}
+						values.push({
+							name: newFacetValue._value || 'blank',
+							count: facetName.endsWith('*')?'':newFacetValue.frequency,
+							value: newFacetValue._value || ''
+						});
+					});
+				}
+
+				Vue.set(state.facets[facetName], 'facetValues', values);
+			} else {
+				Vue.set(state.facets[facetName], 'displayingAll', true);
+			}
+		},
+		setFacetDisplayingAll(state, { facetName }) {
+			Vue.set(state.facets[facetName], 'displayingAll', true);
+		},
+		setDatabase(state, database) {
+			state.database = database
+		},
+		toggleActiveFacet(state, { facet, type, value, negated }) {
+			const activeFacet = state.activeFacets[facet];
+			if (activeFacet) {
+				const activeValue = activeFacet.values.filter(facetValue => {
+					return facetValue.value === value;
+				});
+				if (activeValue.length) {
+					activeFacet.values = activeFacet.values.filter(facetValue => {
+						return facetValue.value !== value;
+					});
+				} else {
+					activeFacet.values.push({
+						value: value,
+						negated: negated
+					});
+				}
+				Vue.set(state.activeFacets, facet, activeFacet)
+			} else {
+				Vue.set(state.activeFacets, facet, {
+					type: type,
+					values: [{ value: value, negated: negated }]
+				})
+			}
 		}
 	},
 	actions: {
 		search({ commit, state }) {
 			return searchApi
-				.getEntities(state.entities, state.qtext, state.page, state.pageLength, state.sort)
+				.getEntities(state.database, state.activeFacets, state.qtext, state.page, state.pageLength, state.sort)
 				.then(response => {
 					if (response) {
 						commit('setDocs', response)
 					}
 				})
 		},
-		getRelatedEntities({ commit, state }, { uri, label, page, pageLength }) {
+		toggleFacet({ commit, dispatch }, { facet, type, value, negated }) {
+			commit('toggleActiveFacet', { facet, type, value, negated });
+			dispatch('search')
+		},
+		showMore({ commit, state }, facetName) {
+			return SearchApi.getValues(state.database, state.activeFacets, state.qtext, facetName)
+				.then(response => {
+					let newFacets = response && response['values-response'] && response['values-response']['distinct-value']
+					if (newFacets) {
+						commit('setFacetValue', { facetName, facets: newFacets })
+					} else {
+						commit('setFacetDisplayingAll', { facetName })
+					}
+				})
+		},
+		getRelatedEntities({ commit }, { uri, label, page, pageLength }) {
 			return searchApi
 				.getRelatedEntities({ uri, label, page, pageLength })
 				.then(response => {
@@ -377,7 +451,7 @@ const model = {
 			await modelApi.save(data);
 			return dispatch('getAll');
 		},
-		async delete({ state, commit, dispatch }, data) {
+		async delete({ state, dispatch }, data) {
 			await modelApi.deleteModel(data);
 			dispatch('save', state.models.filter(m => m.name !== data.name)[0]);
 		}
@@ -459,6 +533,19 @@ const triples = {
 	}
 };
 
+const crud = {
+	namespaced: true,
+	actions: {
+		metadata(context, { uri, db }) {
+			return crudApi.metadata(uri, db)
+		},
+		doc(context, { uri, db }) {
+			return crudApi.doc(uri, db)
+		}
+	}
+}
+
+
 export default new Vuex.Store({
 	strict: debug,
 	state: {
@@ -490,6 +577,7 @@ export default new Vuex.Store({
 		explore,
 		model,
 		triples,
-		mastering
+		mastering,
+		crud
 	}
 });

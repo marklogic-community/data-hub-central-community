@@ -50,7 +50,7 @@
 										<td><v-checkbox
 											v-model="checkedNotifications[index]"
 										></v-checkbox></td>
-										<td @click="gotoCompare(notification)">{{getLabel(notification)}}</router-link>
+										<td @click="gotoCompare(notification)">{{getLabel(notification)}}</td>
 										<td @click="gotoCompare(notification)">{{notification.thresholdLabel}}</td>
 										<td @click="gotoCompare(notification)">{{notification.uris.length}}</td>
 										<td @click="gotoCompare(notification)">{{notification.meta.dateTime}}</td>

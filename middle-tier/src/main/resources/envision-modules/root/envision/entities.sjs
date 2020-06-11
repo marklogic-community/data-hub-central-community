@@ -1,5 +1,10 @@
 const provHelper = require('/envision/prov-helper.xqy');
 const model = require('/envision/model.sjs');
+const indexes = require('/envision/options.xqy');
+const search = require('/MarkLogic/appservices/search/search');
+const searchImpl = require('/MarkLogic/appservices/search/search-impl.xqy');
+const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
+const json = require('/MarkLogic/json/json.xqy');
 
 /**
  * This method takes a given array of uris and returns the # of edges
@@ -10,14 +15,12 @@ const model = require('/envision/model.sjs');
  * Options:
  * 		start - start index for pagination
  * 		connectionLimit - # of connections to grab
- *		allowedEntities - an array of entities that are allowed, empty means all
  * 		labels - an array of edge labels to return, empty means all
  */
 function getEntities(uris, opts) {
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
-	let allowedEntities = options.allowedEntities || []
 	let labels = options.labels || []
 
 	const resp = {
@@ -26,11 +29,6 @@ function getEntities(uris, opts) {
 	}
 	if (uris.length < 1) {
 		return resp
-	}
-
-	let entityFilter = ''
-	if (allowedEntities && allowedEntities.length > 0) {
-		entityFilter = `FILTER( ?entityType IN ( ${allowedEntities.map(et => `"${et}"`).join(', ')} ) )`
 	}
 
 	let labelFilter = ''
@@ -76,7 +74,6 @@ function getEntities(uris, opts) {
 				?toId rdf:hasEntityType ?entityType.
 				optional { ?toUri rdf:hasId ?toId }
 				FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-				${entityFilter}
 				${labelFilter}
 			}
 
@@ -87,7 +84,6 @@ function getEntities(uris, opts) {
 				?fromId rdf:hasEntityType ?entityType.
 				optional { ?fromUri rdf:hasId ?fromId }
 				FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-				${entityFilter}
 				${labelFilter}
 			}
 		}
@@ -162,19 +158,28 @@ function getEntities(uris, opts) {
 	// do this by opening the docs at each uri
 	// then insert some additional metadata about each "node"
 	uris.forEach(uri => {
-		const doc = cts.doc(uri).root
+		const doc = cts.doc(uri)
 
 		// the actual entity
-		const entity = fn.head(cts.doc(uri).xpath('envelope/instance/node()[node-name(.) = ../info/title]')).toObject()
+		let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
 
 		// use metadata from the model to grab the "label" out of the entity
 		// the label is specified in envision's UI on the Modeler page
-		const entityName = doc.xpath('envelope/instance/info/title/string()').toString();
+		const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
 		const entityId = entityName.toLowerCase()
-		const modelNode = model.nodes[entityId];
+		const modelNode = model.nodes[entityId] || {};
 		const labelField = modelNode.labelField;
+
 		// grab the label or default to the uri
-		const label = (!!labelField) ? entity[labelField] : uri
+		const label = (!!labelField) ? entity.xpath(`//${labelField}/string()`) : uri
+
+		// convert xml to json map
+		if (entity instanceof Element) {
+			entity = entity.xpath('node()').toArray().reduce((item, el) => {
+				item[el.xpath('local-name(.)')] = el.xpath('string(.)')
+				return item;
+			}, {})
+		}
 
 		resp.nodes[uri] = {
 			id: uri,
@@ -256,59 +261,73 @@ function getEdgeCounts(uris) {
 	return edgeCounts
 }
 
-function runQuery(query, options) {
+/**
+ * Adds the index based sort to the structured query
+ * @param query - a MarkLogic structured query: http://docs.marklogic.com/guide/search-dev/structured-query
+ * @param sort - an object with property and sortDirection
+ */
+function addSortToQuery(query, sort) {
+	const x = new NodeBuilder();
+	x.startElement("query", "http://marklogic.com/appservices/search");
+	if (sort.property && sort.sortDirection) {
+		x.startElement('operator-state', 'http://marklogic.com/appservices/search');
+		x.startElement('operator-name', 'http://marklogic.com/appservices/search');
+		x.addText('sort');
+		x.endElement();
+		x.startElement('state-name', 'http://marklogic.com/appservices/search');
+		const direction = sort.sortDirection === 'ascending' ? 'Asc' : 'Desc';
+		x.addText(`${sort.property}${direction}`);
+		x.endElement();
+		x.endElement();
+	}
+	for (let y of query.xpath('*')) {
+		x.addNode(y)
+	}
+	x.endElement();
+	return x.toNode();
+}
+
+/**
+ * runs the query
+ * @param qtext - text query typed into the search box
+ * @param query  - a MarkLogic structured query: http://docs.marklogic.com/guide/search-dev/structured-query
+ * @param options - { start, pageLength, sort }
+ */
+function runQuery(qtext, query, options) {
 	const opts = options || {}
 	const start = opts.start || 1
 	const pageLength = opts.pageLength || 10
 	const rawSort = opts.sort || 'default'
 	const sort = rawSort.startsWith('{') ? JSON.parse(rawSort) : rawSort
+	const searchOptions = indexes.getSearchConfig()
 
-	if (sort === 'default') {
-		let allUris = cts.uris(null, null, query)
-		return {
-			total: fn.count(allUris),
-			uris: fn.subsequence(allUris, start, pageLength).toArray()
-		}
-	}
-	else if (sort instanceof Object) {
-		const total = cts.estimate(query)
-		const uris = fn.subsequence(
-			cts.search(
-				query,
-				[
-					'unfiltered',
-					cts.indexOrder(cts.jsonPropertyReference(sort.property), sort.sortDirection)
-				]
-			),
-			start,
-			pageLength
-		).toArray().map(r => xdmp.nodeUri(r))
+	// inject the sort info into the structure query (if it's an index sort)
+	query = addSortToQuery(query, sort);
 
-		return {
-			total,
-			uris
-		}
-	}
+	// combine the text query with the facets
+	// this is using an internal MarkLogic function
+	const newQuery = sut.makeStructuredQuery(query, qtext, searchOptions);
 
-	const orderClause = (sort === 'mostConnected') ? 'ORDER BY DESC(?count)' : 'ORDER BY ASC(?count)'
-	const countSparql = `
-	PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
-	SELECT ?uri (COUNT(?p) as ?count) where {
-		?s ?p ?o.
-		?uri rdf:hasId ?s.
-		FILTER( ?p NOT IN ( rdf:hasEntityType ) )
-	}
-	GROUP BY ?uri
-	${orderClause}`
+	// run the search.search and return the json
+	// this is using an internal MarkLogic function for converting to json (sut.responseToJsonObject)
+	return fn.head(
+		sut.responseToJsonObject(
+			search.resolve(newQuery, searchOptions, start, pageLength),
+			'results'
+		)
+	).toObject();
+}
 
-	let response = sem.sparql(countSparql, null, null, sem.store(null, query))
-	return {
-		total: fn.count(response),
-		uris: fn.subsequence(response, start, pageLength)
-			.toArray()
-			.map(t => t.uri.toString())
-	}
+function getValues(qtext, query, facetName) {
+	const searchOptions = indexes.getSearchConfig()
+
+	// combine the text query with the facets
+	// this is using an internal MarkLogic function
+	const newQuery = sut.makeStructuredQuery(query, qtext, searchOptions);
+	const root = search.values(facetName, searchOptions, newQuery)
+	return fn.head(xdmp.toJSON(json.transformToJsonObject(root, sut.buildValResultsConfig()))).root.toObject();
 }
 
 exports.getEntities = getEntities;
 exports.runQuery = runQuery
+exports.getValues = getValues

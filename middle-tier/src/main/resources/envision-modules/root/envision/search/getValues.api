@@ -1,0 +1,22 @@
+{
+    "functionName": "getValues",
+    "params": [
+			{
+				"datatype": "string",
+        "name": "facetName"
+			},
+      {
+        "datatype": "string",
+        "name": "qtext",
+				"nullable": true
+      },
+			{
+				"datatype": "string",
+				"name": "searchQuery"
+			}
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}

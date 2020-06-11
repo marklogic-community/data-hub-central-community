@@ -32,17 +32,17 @@ public interface EntitySearcher {
             }
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, com.fasterxml.jackson.databind.JsonNode entities) {
+            public com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, String searchQuery) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("findEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
+                .request("findEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
                 .withSession()
                 .withParams(
                     BaseProxy.atomicParam("qtext", true, BaseProxy.StringType.fromString(qtext)),
                     BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
                     BaseProxy.atomicParam("pageLength", false, BaseProxy.IntegerType.fromInteger(pageLength)),
                     BaseProxy.atomicParam("sort", true, BaseProxy.StringType.fromString(sort)),
-                    BaseProxy.documentParam("entities", false, BaseProxy.JsonDocumentType.fromJsonNode(entities)))
+                    BaseProxy.atomicParam("searchQuery", false, BaseProxy.StringType.fromString(searchQuery)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -65,6 +65,22 @@ public interface EntitySearcher {
                 );
             }
 
+
+            @Override
+            public com.fasterxml.jackson.databind.JsonNode getValues(String facetName, String qtext, String searchQuery) {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("getValues.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
+                .withSession()
+                .withParams(
+                    BaseProxy.atomicParam("facetName", false, BaseProxy.StringType.fromString(facetName)),
+                    BaseProxy.atomicParam("qtext", true, BaseProxy.StringType.fromString(qtext)),
+                    BaseProxy.atomicParam("searchQuery", false, BaseProxy.StringType.fromString(searchQuery)))
+                .withMethod("POST")
+                .responseSingle(false, Format.JSON)
+                );
+            }
+
         }
 
         return new EntitySearcherImpl(db);
@@ -77,10 +93,10 @@ public interface EntitySearcher {
    * @param page	provides input
    * @param pageLength	provides input
    * @param sort	provides input
-   * @param entities	provides input
+   * @param searchQuery	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, com.fasterxml.jackson.databind.JsonNode entities);
+    com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, String searchQuery);
 
   /**
    * Invokes the relatedEntities operation on the database server
@@ -92,5 +108,15 @@ public interface EntitySearcher {
    * @return	as output
    */
     com.fasterxml.jackson.databind.JsonNode relatedEntities(String uri, String label, Integer page, Integer pageLength);
+
+  /**
+   * Invokes the getValues operation on the database server
+   *
+   * @param facetName	provides input
+   * @param qtext	provides input
+   * @param searchQuery	provides input
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode getValues(String facetName, String qtext, String searchQuery);
 
 }

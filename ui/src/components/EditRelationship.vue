@@ -49,7 +49,7 @@
 					></v-select>
 				</v-card-text>
 				<v-card-text v-else>
-      		<div>Linking</div>
+					<div>Linking</div>
 					<v-row align="center">
 						<v-col class="d-flex" cols="12" sm="5">
 							<v-select
@@ -148,7 +148,7 @@ export default {
 			this.updateRelationship(newVal)
 		},
 		newRelationship: {
-			handler(newVal) {
+			handler() {
 				this.updateToFrom()
 			},
 			deep: true
@@ -214,7 +214,7 @@ export default {
 			}
 			return true
 		},
-		save(e) {
+		save() {
 			if (this.validate()) {
 				this.$emit('save', this.newRelationship)
 			}

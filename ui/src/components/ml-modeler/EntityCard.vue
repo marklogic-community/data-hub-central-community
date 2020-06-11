@@ -151,7 +151,6 @@
 
 <script>
 import EditRelationship from '@/components/EditRelationship.vue';
-import EditProperty from '@/components/EditProperty.vue';
 import EditPropertyMenu from '@/components/EditPropertyMenu.vue'
 
 export default {
@@ -166,7 +165,6 @@ export default {
 	},
 	components: {
 		EditRelationship,
-		EditProperty,
 		EditPropertyMenu
 	},
 	data() {
@@ -195,7 +193,7 @@ export default {
 			entity.properties.push(newProp)
 			this.btnUpdateModel(item)
 		},
-		btnUpdateModel(item) {
+		btnUpdateModel() {
 			this.$emit('updateModel')
 		},
 		btnDeleteProperties(item, propName){

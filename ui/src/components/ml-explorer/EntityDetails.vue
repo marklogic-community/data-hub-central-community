@@ -3,8 +3,19 @@
 		<v-card-title data-cy="entityTitle">
 			{{ entity.label }} <span class="subtitle">({{ entity.entityName }})</span>
 			<v-spacer></v-spacer>
+			<v-tooltip v-if="isMerged" bottom>
+				<template v-slot:activator="{ on }">
+					<v-btn
+						@click="mergeHistory"
+						right icon small class="small-btn" v-on="on">
+						<v-icon>compare_arrows</v-icon>
+					</v-btn>
+				</template>
+				<span>Merge History</span>
+			</v-tooltip>
+
 			<v-menu
-				v-if="entity.uri.match('/com.marklogic.smart-mastering/merged/')"
+				v-if="isMerged"
 				:close-on-content-click="false"
 				:nudge-width="300"
 				offset-x
@@ -32,6 +43,17 @@
 					@confirm="unmerge"
 					@cancel="confirmUnmergeMenu = false"></confirm>
 			</v-menu>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on }">
+					<v-btn
+						@click="goDetails"
+						right icon small class="small-btn" v-on="on">
+						<v-icon>list_alt</v-icon>
+					</v-btn>
+				</template>
+				<span>View Document</span>
+			</v-tooltip>
 		</v-card-title>
 		<v-card-text class="overflow">
 			<v-tabs
@@ -52,17 +74,17 @@
 							</tr>
 						</thead>
 						<tbody>
-							<template v-for="(value, key) in filteredProperties">
-								<tr :key="key">
-									<td>{{key}}</td>
+							<template v-for="(prop, index) in filteredProperties">
+								<tr :key="index">
+									<td>{{prop.label}}</td>
 									<td>
-										<template v-if="value && value.length > 100 && !expandedProperty[key]">
-											<span>{{value | truncate(100, '')}}</span>
-											<a class="more-less" @click="$set(expandedProperty, key, true)">(more...)</a>
+										<template v-if="prop.value && prop.value.length > 100 && !expandedProperty[prop.label]">
+											<span>{{prop.value | truncate(100, '')}}</span>
+											<a class="more-less" @click="$set(expandedProperty, prop.label, true)">(more...)</a>
 										</template>
 										<template v-else>
-											<span>{{value}}</span>
-											<a class="more-less" v-if="value && value.length > 100" @click="$set(expandedProperty, key, false)">(less...)</a>
+											<span>{{prop.value}}</span>
+											<a class="more-less" v-if="prop.value && prop.value.length > 100" @click="$set(expandedProperty, prop.label, false)">(less...)</a>
 										</template>
 									</td>
 								</tr>
@@ -191,8 +213,11 @@ export default {
 		}
 	},
 	computed: {
+		isMerged() {
+			return this.entity && this.entity.uri && this.entity.uri.match('/com.marklogic.smart-mastering/merged/')
+		},
 		hasRelationships() {
-			return Object.keys(this.entity.edgeCounts).length > 0
+			return Object.keys(this.entity.edgeCounts || []).length > 0
 		},
 		prov() {
 			return this.entity.prov
@@ -206,7 +231,15 @@ export default {
 				.reverse()
 		},
 		filteredProperties() {
-			return this.entity.entity
+			let props = []
+			for (let key in this.entity.entity) {
+				props.push({
+					label: key,
+					value: this.entity.entity[key]
+				})
+			}
+			props.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()))
+			return props
 		},
 		advancedProperties() {
 			return _.pickBy(this.entity, (v, k) => {
@@ -224,6 +257,12 @@ export default {
 		unmerge() {
 			this.$emit('unmerge', this.entity.uri);
 			this.confirmUnmergeMenu = false;
+		},
+		mergeHistory() {
+			this.$router.push({ name: 'root.explorer.compare', query: { uri: this.entity.uri } })
+		},
+		goDetails() {
+			this.$router.push({ name: 'root.details', query: { uri: this.entity.uri, db: 'final' } })
 		},
 		isPropExpanded(prop) {
 			return !!prop.expanded

@@ -172,11 +172,6 @@
 </template>
 
 <script>
-function getId(str) {
-	// get a unique ID - perhaps should use some uuid library?
-	return (str).trim().toLowerCase().replace(/ /g, "_")
-}
-
 import CreateModel from '@/components/CreateModel.vue';
 import LoadModel from '@/components/LoadModel.vue';
 import Confirm from '@/components/Confirm.vue';
@@ -277,14 +272,12 @@ export default {
 				this.currentItem = newVal.entityName;
 				//turn on the correct button
 				this.panel = this.nodeLabels.findIndex(v => v == this.currentItem)
-				let item = this.nodeLabels[this.panel];
 				this.activeTab = 0;
 			}
 		},
 		edge(newVal) {
 			if (newVal) {
 				this.panel = this.nodeLabels.findIndex(v => v.toLowerCase() == newVal.from)
-				let item = this.nodeLabels[this.panel];
 				this.activeTab = 1;
 			}
 		}
@@ -314,7 +307,7 @@ export default {
 		onDeleteEdge(edge) {
 			this.$emit('doAction', 'deleteEdge', {edge})
 		},
-		onSaveEdge({item, relInfo}) {
+		onSaveEdge({relInfo}) {
 			this.$emit ("doAction", 'saveEdge', {
 				id: relInfo.id,
 				from: relInfo.from,
@@ -325,12 +318,11 @@ export default {
 				keyTo: relInfo.keyTo
 			})
 		},
-		onUpdateModel(item) {
+		onUpdateModel() {
 			this.$emit ("doAction", 'saveToML')
 		},
 		onAddProperties({item, propInfo}) {
 			let entity = this.entities[item]
-			let nodeId = getId(entity.entityName)
 			entity.properties.push(propInfo)
 
 			this.$emit ("doAction", 'updateNodes', { nodesCache: this.nodesCache })
