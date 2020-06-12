@@ -506,5 +506,401 @@
 			"fromType": "skill",
 			"toType": "employee"
 		}
-	}
+	},
+	"results": [
+    {
+      "index": 1,
+      "uri": "/departments/department3.json",
+      "path": "fn:doc(\"/departments/department3.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/departments/department3.json\")/object-node()",
+          "match-text": [
+            "Departments 2020-03-11T15:13:51.895486Z maverick Department 0.0.1 http://marklogic.com/envision/ Engineering 3 55003 Departments 2020-03-11T15:13:51.895486Z maverick Engineering 55003"
+          ]
+        }
+      ],
+      "id": "/departments/department3.json",
+      "entityName": "Department",
+      "label": "Engineering",
+      "entity": {
+        "name": "Engineering",
+        "departmentId": "3",
+        "employeeIds": [
+          "55003"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 1
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 1
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    },
+    {
+      "index": 2,
+      "uri": "/departments/department4.json",
+      "path": "fn:doc(\"/departments/department4.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/departments/department4.json\")/object-node()",
+          "match-text": [
+            "Departments 2020-03-11T15:13:51.895486Z maverick Department 0.0.1 http://marklogic.com/envision/ Human Resources 4 55004 55005 Departments 2020-03-11T15:13:51.895486Z maverick Human Resources 55004"
+          ]
+        }
+      ],
+      "id": "/departments/department4.json",
+      "entityName": "Department",
+      "label": "Human Resources",
+      "entity": {
+        "name": "Human Resources",
+        "departmentId": "4",
+        "employeeIds": [
+          "55004",
+          "55005"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 2
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 2
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    },
+    {
+      "index": 3,
+      "uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+      "path": "fn:doc(\"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json\")/object-node()",
+          "match-text": [
+            "/MountainTopEmployees/HR360-Employee-CSV.csv zxx..."
+          ]
+        }
+      ],
+      "id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+      "entityName": "Employee",
+      "label": "Zola Manchett",
+      "entity": {
+        "name": "Zola Manchett",
+        "skills": [
+          "general ledger",
+          "procurement"
+        ],
+        "departmentId": "2",
+        "employeeId": [
+          "55002",
+          "5"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 1
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 2
+        },
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 2
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    },
+    {
+      "index": 4,
+      "uri": "/CoastalEmployees/55003.json",
+      "path": "fn:doc(\"/CoastalEmployees/55003.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/CoastalEmployees/55003.json\")/object-node()",
+          "match-text": [
+            "MountainTopEmployees 2020-03-11T15:13:43.41294Z maverick /MountainTopEmployees/HR360-Employee-CSV.csv Employee 0.0.1 http://marklogic.com/envision/ Joan Smith 3 55003 programming"
+          ]
+        }
+      ],
+      "id": "/CoastalEmployees/55003.json",
+      "entityName": "Employee",
+      "label": "Joan Smith",
+      "entity": {
+        "name": "Joan Smith",
+        "departmentId": "3",
+        "employeeId": "55003",
+        "skills": [
+          "programming"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 1
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 1
+        },
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 1
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    },
+    {
+      "index": 5,
+      "uri": "/MountainTopEmployees/employee4.json",
+      "path": "fn:doc(\"/MountainTopEmployees/employee4.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/MountainTopEmployees/employee4.json\")/object-node()",
+          "match-text": [
+            "MountainTopEmployees 2020-03-11T15:13:43.41294Z maverick /MountainTopEmployees/HR360-Employee-CSV.csv Employee 0.0.1 http://marklogic.com/envision/ Roberta Jones 4 55004 hrSkill1 hrSkill2 hrSkill3"
+          ]
+        }
+      ],
+      "id": "/MountainTopEmployees/employee4.json",
+      "entityName": "Employee",
+      "label": "Roberta Jones",
+      "entity": {
+        "name": "Roberta Jones",
+        "departmentId": "4",
+        "employeeId": "55004",
+        "skills": [
+          "hrSkill1",
+          "hrSkill2",
+          "hrSkill3"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 1
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 3
+        },
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 3
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    },
+    {
+      "index": 6,
+      "uri": "/MountainTopEmployees/employee5.json",
+      "path": "fn:doc(\"/MountainTopEmployees/employee5.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/MountainTopEmployees/employee5.json\")/object-node()",
+          "match-text": [
+            "MountainTopEmployees 2020-03-11T15:13:43.41294Z maverick /MountainTopEmployees/HR360-Employee-CSV.csv Employee 0.0.1 http://marklogic.com/envision/ Sam Smith 4 55005 hrSkill1 hrSkill2"
+          ]
+        }
+      ],
+      "id": "/MountainTopEmployees/employee5.json",
+      "entityName": "Employee",
+      "label": "Sam Smith",
+      "entity": {
+        "name": "Sam Smith",
+        "departmentId": "4",
+        "employeeId": "55005",
+        "skills": [
+          "hrSkill1",
+          "hrSkill2"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 1
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 2
+        },
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 2
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    },
+    {
+      "index": 7,
+      "uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+      "path": "fn:doc(\"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json\")",
+      "score": 0,
+      "confidence": 0,
+      "fitness": 0,
+      "matches": [
+        {
+          "path": "fn:doc(\"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json\")/object-node()",
+          "match-text": [
+            "/MountainTopDepartments/HR360-Department-CSV.csv zxx..."
+          ]
+        }
+      ],
+      "id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+      "entityName": "Department",
+      "label": "Marketing",
+      "entity": {
+        "name": "Marketing",
+        "departmentId": [
+          "2",
+          "22"
+        ],
+        "employeeIds": [
+          "55002",
+          "5"
+        ]
+      },
+      "edgeCounts": {
+        "employee-belongsto-department": {
+          "from": "employee",
+          "to": "department",
+          "label": "belongsTo",
+          "count": 1
+        },
+        "department-hasemployee-employee": {
+          "from": "department",
+          "to": "employee",
+          "label": "hasEmployee",
+          "count": 1
+        }
+      },
+      "prov": [],
+      "isConcept": false
+    }
+  ],
+  "facets": {
+    "Collections": {
+      "type": "collection",
+      "facetValues": [
+        {
+          "name": "Employee",
+          "count": 4,
+          "value": "Employee"
+        },
+        {
+          "name": "MapEmployees",
+          "count": 4,
+          "value": "MapEmployees"
+        },
+        {
+          "name": "MasterEmployees",
+          "count": 4,
+          "value": "MasterEmployees"
+        },
+        {
+          "name": "Department",
+          "count": 3,
+          "value": "Department"
+        },
+        {
+          "name": "MapCoastalEmployees",
+          "count": 1,
+          "value": "MapCoastalEmployees"
+        }
+      ]
+    },
+    "firstName": {
+      "type": "xs:string",
+      "facetValues": []
+    }
+  }
 }

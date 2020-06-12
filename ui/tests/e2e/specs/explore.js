@@ -67,7 +67,6 @@ describe('Explore', () => {
 	it('Searches staging db', () => {
 		cy.visit('/explore')
 		cy.get('[data-cy=searchInput]').clear()
-		cy.url().should('equal', 'http://localhost:9999/explore?tab=0&page=1&db=final')
 		cy.get('[data-cy=tabGrid]').should('exist')
 		cy.get('[data-cy=tabGraph]').should('exist')
 		cy.get('[data-cy="explore.database"]').parentsUntil('.v-select__slot').click()

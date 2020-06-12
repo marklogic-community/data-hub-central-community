@@ -171,7 +171,7 @@ function getEntities(uris, opts) {
 		const labelField = modelNode.labelField;
 
 		// grab the label or default to the uri
-		const label = (!!labelField) ? entity.xpath(`//${labelField}/string()`) : uri
+		const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
 
 		// convert xml to json map
 		if (entity instanceof Element) {

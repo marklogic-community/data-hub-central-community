@@ -1,1 +1,18 @@
-{"page":1,"total":0,"pageLength":5,"nodes":{},"edges":{}}
+{
+	"page": 1,
+	"total": 0,
+	"pageLength": 5,
+	"nodes": {},
+	"edges": {},
+	"results": [],
+	"facets": {
+		"Collections": {
+			"type": "collection",
+			"facetValues": []
+		},
+		"firstName": {
+			"type": "xs:string",
+			"facetValues": []
+		}
+	}
+}
