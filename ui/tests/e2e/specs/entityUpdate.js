@@ -12,6 +12,7 @@ describe('End to end test to create and update model', () => {
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
 		cy.route('/api/models/model.json', 'fixture:model.json')
 		cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
+		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json')
 	})
 
 	//create new 'Test Model'

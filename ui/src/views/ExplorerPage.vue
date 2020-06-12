@@ -178,7 +178,7 @@ export default {
 		};
 
 		return {
-			tab: 0,
+			tabPrivate: 0,
 			databases: [
 				{
 					label: 'Final',
@@ -303,12 +303,22 @@ export default {
 		isFinalDb() {
 			return this.currentDatabase === 'final'
 		},
+		tab: {
+			get() {
+				return this.tabPrivate
+			},
+			set(val) {
+				this.tabPrivate = val
+				this.currentNode = null
+			}
+		},
 		currentDatabase: {
 			get() {
 				return this.database
 			},
 			set(val) {
 				if (this.database !== val) {
+					this.currentNode = null
 					this.$store.commit('explore/setDatabase', val)
 					this.updateRoute()
 				}

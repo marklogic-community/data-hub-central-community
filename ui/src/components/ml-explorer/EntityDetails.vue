@@ -277,13 +277,9 @@ export default {
 			}
 		},
 		expandRelationships(link) {
-			let from = link.from.replace(/(.+)#(.+)/, '$1');
-			let to = link.to.replace(/(.+)#(.+)/, '$1');
 			this.$emit('expandRelationship', {
-				fromId: this.entity.id,
-				from: from,
-				label: link.label,
-				to: to
+				uri: this.entity.uri,
+				label: link.label
 			});
 		}
 	}

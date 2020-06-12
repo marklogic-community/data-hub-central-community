@@ -1,7 +1,7 @@
 <template>
 	<v-card>
 		<v-card-text>
-			<div v-for="(result, $index) in coloredResults" :key="$index" :class="['result', (currentNode === result) ? 'active': '']" @click="selectResult(result)">
+			<div v-for="(result, $index) in coloredResults" :key="$index" :class="['result', (currentNode && currentNode.id === result.id) ? 'active': '']" @click="selectResult(result)">
 				<h3>{{ resultLabel(result) }}</h3>
 				<v-chip v-if="result.entityName" :color="result.bgColor" :style="{border: '2px dashed', borderColor: result.borderColor}">{{result.entityName}}</v-chip>
 				<div class="matches">

@@ -132,7 +132,9 @@ export default {
 			},
 			set(val) {
 				this.$store.dispatch('mastering/getNotifications', { page: val });
-				this.$router.push({ name: 'root.notifications', query: { page: val} })
+				if (this.$route.query.page != val) {
+					this.$router.push({ name: 'root.notifications', query: { page: val} })
+				}
 			}
 		},
 		totalPages() {
@@ -155,15 +157,19 @@ export default {
 				this.$store.dispatch('mastering/updateNotification', { uris, status: 'unread' })
 			}
 		},
-		merge() {
-			this.allCheckedNotifications.forEach(notification => {
-				this.$store.dispatch('mastering/merge', { uris: notification.uris, flowName: notification.flowInfo.flowName, stepNumber: notification.flowInfo.stepNumber, preview: false })
-			})
+		async merge() {
+			for (let i = 0; i < this.allCheckedNotifications.length; i++) {
+				let notification = this.allCheckedNotifications[i]
+				await this.$store.dispatch('mastering/merge', { uris: notification.uris, flowName: notification.flowInfo.flowName, stepNumber: notification.flowInfo.stepNumber, preview: false })
+			}
+			this.$store.dispatch('mastering/getNotifications', { page: this.currentPage });
 		},
-		unmerge() {
-			this.allCheckedNotifications.forEach(notification => {
-				this.$store.dispatch('mastering/unmerge', notification.merged.uri)
-			})
+		async unmerge() {
+			for (let i = 0; i < this.allCheckedNotifications.length; i++) {
+				let notification = this.allCheckedNotifications[i]
+				await this.$store.dispatch('mastering/unmerge', notification.merged.uri)
+			}
+			this.$store.dispatch('mastering/getNotifications', { page: this.currentPage });
 		},
 		gotoCompare(notification) {
 			this.$router.push({

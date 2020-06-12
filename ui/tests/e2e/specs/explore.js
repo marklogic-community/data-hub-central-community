@@ -23,6 +23,7 @@ describe('Explore', () => {
 		cy.route('GET', '/api/crud/metadata**?uri=/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json&database=staging', 'fixture:metadata.json')
 		cy.route('GET', '/api/crud?uri=/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json&database=final', 'fixture:crud.json')
 		cy.route('GET', '/api/crud?uri=/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json&database=staging', 'fixture:crud.json')
+		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json')
 	})
 
 	it('Finds no search results', () => {
@@ -64,11 +65,34 @@ describe('Explore', () => {
 		cy.contains('571 Grayhawk Court')
 	})
 
+	it.only('Clears Properties area on db switch', () => {
+		cy.visit('/explore')
+		cy.get('[data-cy=searchInput]').clear()
+		cy.get('[data-cy=searchInput]').type('Sashenka{enter}')
+		cy.contains('Showing results 1 to 5 of 31')
+		cy.url().should('equal', 'http://localhost:9999/explore?tab=0&q=Sashenka&page=1&db=final')
+
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json").click()
+
+		cy.get('[data-cy=entityTitle]').contains("Sashenka")
+		cy.contains('571 Grayhawk Court')
+
+		cy.get('[data-cy="explore.database"]').parentsUntil('.v-select__slot').click()
+		cy.get('.databaseArray .v-list-item').contains('Staging').parentsUntil('.v-list-item').click()
+		cy.url().should('equal', 'http://localhost:9999/explore?tab=0&q=Sashenka&page=1&db=staging')
+		cy.get('[data-cy=tabGrid]').should('not.exist')
+		cy.get('[data-cy=tabGraph]').should('not.exist')
+
+		cy.get('[data-cy=entityTitle]').should('not.exist')
+	})
+
 	it('Searches staging db', () => {
 		cy.visit('/explore')
 		cy.get('[data-cy=searchInput]').clear()
 		cy.get('[data-cy=tabGrid]').should('exist')
 		cy.get('[data-cy=tabGraph]').should('exist')
+
 		cy.get('[data-cy="explore.database"]').parentsUntil('.v-select__slot').click()
 		cy.get('.databaseArray .v-list-item').contains('Staging').parentsUntil('.v-list-item').click()
 		cy.url().should('equal', 'http://localhost:9999/explore?tab=0&page=1&db=staging')

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prov:document xmlns:prov="http://www.w3.org/ns/prov#"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ps="http://marklogic.com/provenance-services"
+	xmlns:dhf="http://marklogic.com/dhf">
+	<prov:entity prov:id="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml">
+		<prov:type xsi:type="xsd:QName">ps:Flow</prov:type>
+		<prov:type xsi:type="xsd:QName">ps:Entity</prov:type>
+		<prov:type xsi:type="xsd:QName">dhf:Entity</prov:type>
+		<prov:type xsi:type="xsd:QName">dhf:MasteringStep</prov:type>
+		<prov:type xsi:type="xsd:QName">dhf:MasteringStepEntity</prov:type>
+		<prov:type xsi:type="xsd:QName">dhf:DocUpdated</prov:type>
+		<location>/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml</location>
+		<roles>8487823278258687528</roles>
+		<roleNames>admin</roleNames>
+	</prov:entity>
+	<prov:wasGeneratedBy>
+		<prov:entity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:activity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23"/>
+		<prov:time>2020-05-28T18:44:18.817387Z</prov:time>
+	</prov:wasGeneratedBy>
+	<prov:wasInfluencedBy>
+		<prov:influencee prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:influencer prov:ref="MasterEmployees"/>
+	</prov:wasInfluencedBy>
+	<prov:wasDerivedFrom>
+		<prov:generatedEntity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:usedEntity prov:ref="/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+	</prov:wasDerivedFrom>
+	<prov:wasAssociatedWith>
+		<prov:activity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:agent prov:ref="EmployeesMastering"/>
+	</prov:wasAssociatedWith>
+	<prov:wasAssociatedWith>
+		<prov:activity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:agent prov:ref="MasterEmployees"/>
+	</prov:wasAssociatedWith>
+	<prov:wasAssociatedWith>
+		<prov:activity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:agent prov:ref="default-mastering"/>
+	</prov:wasAssociatedWith>
+	<prov:wasAttributedTo>
+		<prov:entity prov:ref="25455f87-4bdf-46d7-aea2-40ad91be0f23EmployeesMasteringmastering/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml"/>
+		<prov:agent prov:ref="admin"/>
+	</prov:wasAttributedTo>
+</prov:document>

@@ -14,9 +14,12 @@ const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {
 function getNotificationFlowInfo(uri) {
 	const prov = fn.head(xdmp.invokeFunction(() => {
 		const doc = fn.head(cts.search(cts.elementValueQuery(xs.QName('location'), uri)))
-		const prov = doc.root
-		const assocs = prov.xpath('//*:wasAssociatedWith/*:agent/@*:ref/string()')
-		return assocs.toArray()
+		if (doc) {
+			const prov = doc.root
+			const assocs = prov.xpath('//*:wasAssociatedWith/*:agent/@*:ref/string()')
+			return assocs.toArray()
+		}
+		return []
 	}, {
 		database: xdmp.database(jobDB)
 	}))
@@ -26,16 +29,19 @@ function getNotificationFlowInfo(uri) {
 		.map(flow => flow.toObject())
 
 	const flow = flows.find(flow => prov.indexOf(flow.name) >= 0)
-	const steps = Object.values(flow.steps).map(step => step.name)
-	const flowName = flow.name
-	const stepName = steps.find(step => prov.indexOf(step) >= 0)
-	const stepNumber = Object.keys(flow.steps).find(key => prov.indexOf(flow.steps[key].name) >= 0);
-	const res = {
-		flowName,
-		stepName,
-		stepNumber
+	if (flow) {
+		const steps = Object.values(flow.steps).map(step => step.name)
+		const flowName = flow.name
+		const stepName = steps.find(step => prov.indexOf(step) >= 0)
+		const stepNumber = Object.keys(flow.steps).find(key => prov.indexOf(flow.steps[key].name) >= 0);
+		const res = {
+			flowName,
+			stepName,
+			stepNumber
+		}
+		return res;
 	}
-	return res;
+	return null;
 }
 
 function getEntityType(doc) {
