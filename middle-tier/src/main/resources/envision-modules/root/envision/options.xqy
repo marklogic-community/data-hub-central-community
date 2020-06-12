@@ -76,16 +76,16 @@ declare function idx:get-search-config() {
 
 			{
 				for $idx in admin:database-get-range-element-indexes($config, xdmp:database($finalDB))
-				let $name := $idx/*:localname/fn:string()
+				for $name in fn:tokenize($idx/*:localname/fn:string(), " ")
 				return (
 					<state name="{$name}Asc" xmlns="http://marklogic.com/appservices/search">
-						<sort-order direction="ascending" type="xs:string" collation="http://marklogic.com/collation/codepoint">
+						<sort-order direction="ascending" type="xs:{$idx/*:scalar-type}" collation="http://marklogic.com/collation/codepoint">
 							<element ns="{$idx/*:namespace-uri/fn:string()}" name="{$name}"/>
 						</sort-order>
 					</state>,
 
 					<state name="{$name}Desc" xmlns="http://marklogic.com/appservices/search">
-						<sort-order direction="descending" type="xs:string" collation="http://marklogic.com/collation/codepoint">
+						<sort-order direction="descending" type="xs:{$idx/*:scalar-type}" collation="http://marklogic.com/collation/codepoint">
 							<element ns="{$idx/*:namespace-uri/fn:string()}" name="{$name}"/>
 						</sort-order>
 					</state>
@@ -117,10 +117,10 @@ declare function idx:get-search-config() {
 
 			{
 				for $idx in admin:database-get-range-element-indexes($config, xdmp:database($finalDB))
-				let $name := $idx/*:localname/fn:string()
+				for $name in fn:tokenize($idx/*:localname/fn:string(), " ")
 				return (
 					<constraint name="{$name}" xmlns="http://marklogic.com/appservices/search">
-						<range type="xs:string" facet="true" collation="{$idx/*:collation/fn:string()}">
+						<range type="xs:{$idx/*:scalar-type}" facet="true" collation="{$idx/*:collation/fn:string()}">
 							<facet-option>frequency-order</facet-option>
 							<facet-option>descending</facet-option>
 							<facet-option>limit=5</facet-option>
@@ -128,7 +128,7 @@ declare function idx:get-search-config() {
 						</range>
 					</constraint>,
 					<values name="{$name}" xmlns="http://marklogic.com/appservices/search">
-						<range type="xs:string" collation="{$idx/*:collation/fn:string()}">
+						<range type="xs:{$idx/*:scalar-type}" collation="{$idx/*:collation/fn:string()}">
 							<element name="{$name}" ns="{$idx/*:namespace-uri/fn:string()}" />
 						</range>
 						<values-option>frequency-order</values-option>

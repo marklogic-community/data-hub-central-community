@@ -41,7 +41,8 @@ public class Search extends BaseTest {
 
 	private CustomComparator resultCompare = new CustomComparator(JSONCompareMode.STRICT,
 		new Customization("results[*].confidence", (o1, o2) -> true),
-		new Customization("results[*].fitness", (o1, o2) -> true)
+		new Customization("results[*].fitness", (o1, o2) -> true),
+		new Customization("results[*].score", (o1, o2) -> true)
 	);
 
 	@BeforeEach
