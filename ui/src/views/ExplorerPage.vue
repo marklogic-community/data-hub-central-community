@@ -29,6 +29,7 @@
 								item-value="value"
 								label="Database"
 								v-model="currentDatabase"
+								:menu-props="{ 'content-class': 'databaseArray'}"
 							></v-select>
 						</v-flex>
 					</v-flex>
@@ -39,8 +40,8 @@
 					<v-flex :class="['graph-container', currentNode ? 'md8' : 'md12']">
 						<div row>
 							<v-tabs v-if="isFinalDb" v-model="tab" @change="updateRoute" hide-slider>
-								<v-tab><v-icon>bubble_chart</v-icon>Graph</v-tab>
-								<v-tab><v-icon>reorder</v-icon>Grid</v-tab>
+								<v-tab data-cy="tabGraph"><v-icon>bubble_chart</v-icon>Graph</v-tab>
+								<v-tab data-cy="tabGrid"><v-icon>reorder</v-icon>Grid</v-tab>
 							</v-tabs>
 							<div class="pagination-wrapper">
 								<span v-if="searchPending">
@@ -307,9 +308,10 @@ export default {
 				return this.database
 			},
 			set(val) {
-				this.$store.commit('explore/setDatabase', val)
-				this.updateRoute()
-				// this.searchText()
+				if (this.database !== val) {
+					this.$store.commit('explore/setDatabase', val)
+					this.updateRoute()
+				}
 			}
 		},
 		routeQuery() {

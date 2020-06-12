@@ -47,6 +47,7 @@
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on }">
 					<v-btn
+						data-cy="entity.detailsBtn"
 						@click="goDetails"
 						right icon small class="small-btn" v-on="on">
 						<v-icon>list_alt</v-icon>

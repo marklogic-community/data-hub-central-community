@@ -3,11 +3,11 @@
     <ml-chiclets :active-facets="activeFacets" :toggle="toggle"></ml-chiclets>
 
 		<template v-for="(facet, facetName, $index) in facets">
-			<v-card :key="$index" v-show="!facet.hide && facet.facetValues.length > 0">
+			<v-card :key="$index" v-show="!facet.hide && facet.facetValues.length > 0" :data-cy="`facet.${facetName}`">
 				<v-card-title>{{ facetName }}</v-card-title>
 				<v-card-text>
 					<template v-for="(value, $index) in facet.facetValues">
-						<div v-if="!value.selected" :key="$index">
+						<div v-if="!value.selected" :key="$index" class="facet-item">
 							<span v-on:click.prevent="toggle(facetName, facet.type, value.name)">
 								<i class="fa fa-plus-circle facet-add-pos"></i>
 								<span v-if="!!value.name" :title="value.name"> {{ value.name }}</span>

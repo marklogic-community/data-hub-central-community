@@ -1,0 +1,291 @@
+{
+	"snippet-format": "snippet",
+	"total": 221,
+	"start": 1,
+	"page-length": 10,
+	"results": [
+		{
+			"index": 1,
+			"uri": "/mappings/CoastalEmployees-MapPerfEvaluations/CoastalEmployees-MapPerfEvaluations-0.mapping.json",
+			"path": "fn:doc(\"/mappings/CoastalEmployees-MapPerfEvaluations/CoastalEmployees-MapPerfEvaluations-0.mapping.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fmappings%2FCoastalEmployees-MapPerfEvaluations%2FCoastalEmployees-MapPerfEvaluations-0.mapping.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/mappings/CoastalEmployees-MapPerfEvaluations/CoastalEmployees-MapPerfEvaluations-0.mapping.json\")/object-node()",
+					"match-text": [
+						"zxx CoastalEmployees-MapPerfEvaluations http://marklogic.com/envision/JobReview-0.0.1/JobReview / /C/Users/paven/Desktop/HR360/CoastalEmployeeReviews/163a73d5-05dc-4feb-8bbf-be458b8ed24b.json..."
+					]
+				}
+			],
+			"id": "%2Fmappings%2FCoastalEmployees-MapPerfEvaluations%2FCoastalEmployees-MapPerfEvaluations-0.mapping.json"
+		},
+		{
+			"index": 2,
+			"uri": "/envision/datahub/data/SonoranDesertEmployees/a3d52a4e-7865-4d82-a2db-f5067c9263ab.json",
+			"path": "fn:doc(\"/envision/datahub/data/SonoranDesertEmployees/a3d52a4e-7865-4d82-a2db-f5067c9263ab.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertEmployees%2Fa3d52a4e-7865-4d82-a2db-f5067c9263ab.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/SonoranDesertEmployees/a3d52a4e-7865-4d82-a2db-f5067c9263ab.json\")/object-node()",
+					"match-text": [
+						"SonoranDesertEmployees 2020-05-28T18:44:21.383722Z admin /envision/datahub/data/SonoranDesertEmployees/HR360-SonoranDesert-Employee-CSV.csv A-3223Q 10002 Inactive Fawnia Scini 8/23/1980..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertEmployees%2Fa3d52a4e-7865-4d82-a2db-f5067c9263ab.json"
+		},
+		{
+			"index": 3,
+			"uri": "/envision/datahub/data/SonoranDesertEmployees/fe799d27-ee3a-4c5a-904d-3759740b5344.json",
+			"path": "fn:doc(\"/envision/datahub/data/SonoranDesertEmployees/fe799d27-ee3a-4c5a-904d-3759740b5344.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertEmployees%2Ffe799d27-ee3a-4c5a-904d-3759740b5344.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/SonoranDesertEmployees/fe799d27-ee3a-4c5a-904d-3759740b5344.json\")/object-node()",
+					"match-text": [
+						"SonoranDesertEmployees 2020-05-28T18:44:21.383722Z admin /envision/datahub/data/SonoranDesertEmployees/HR360-SonoranDesert-Employee-CSV.csv A-20182 10009 Part Time Andre Lambricht 12/7/1970..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertEmployees%2Ffe799d27-ee3a-4c5a-904d-3759740b5344.json"
+		},
+		{
+			"index": 4,
+			"uri": "/envision/datahub/data/SonoranDesertAddresses/b20083b2-6abb-4395-98ae-11e337167d8d.json",
+			"path": "fn:doc(\"/envision/datahub/data/SonoranDesertAddresses/b20083b2-6abb-4395-98ae-11e337167d8d.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertAddresses%2Fb20083b2-6abb-4395-98ae-11e337167d8d.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/SonoranDesertAddresses/b20083b2-6abb-4395-98ae-11e337167d8d.json\")/object-node()",
+					"match-text": [
+						"SonoranDesertEmployees 2020-05-28T18:44:21.839726Z admin /envision/datahub/data/SonoranDesertAddresses/HR360-SonoranDesert-Address-CSV.csv 10022 413 Tennyson Junction #2 Phoenix 33.4724 -112.1832..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertAddresses%2Fb20083b2-6abb-4395-98ae-11e337167d8d.json"
+		},
+		{
+			"index": 5,
+			"uri": "/flows/SonoranDesertEmployees.flow.json",
+			"path": "fn:doc(\"/flows/SonoranDesertEmployees.flow.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fflows%2FSonoranDesertEmployees.flow.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/flows/SonoranDesertEmployees.flow.json\")/object-node()",
+					"match-text": [
+						"SonoranDesertEmployees SonoranEmployees SonoranDesertEmployees currentDateTime currentUser cts.collectionQuery([]) SonoranEmployees rest-reader,read,rest-writer,update json data-hub-STAGING..."
+					]
+				}
+			],
+			"id": "%2Fflows%2FSonoranDesertEmployees.flow.json"
+		},
+		{
+			"index": 6,
+			"uri": "/envision/datahub/data/JobOpenings/de5cc4d6-95b4-4d22-980b-bf3a78769291.json",
+			"path": "fn:doc(\"/envision/datahub/data/JobOpenings/de5cc4d6-95b4-4d22-980b-bf3a78769291.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FJobOpenings%2Fde5cc4d6-95b4-4d22-980b-bf3a78769291.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/JobOpenings/de5cc4d6-95b4-4d22-980b-bf3a78769291.json\")/object-node()",
+					"match-text": [
+						"MountainTopEmployees 2020-05-28T18:44:08.509551Z admin /envision/datahub/data/JobOpenings/HR360-JobOpening-CSV.csv 13 1 Compensation Analyst OPEN 3/27/2020 [\"XSLT\", \"Linux\", \"C#\"] Active - Regular..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FJobOpenings%2Fde5cc4d6-95b4-4d22-980b-bf3a78769291.json"
+		},
+		{
+			"index": 7,
+			"uri": "/envision/datahub/data/SonoranDesertEmployees/ab53e158-c798-4c57-973e-7b9298c7d741.json",
+			"path": "fn:doc(\"/envision/datahub/data/SonoranDesertEmployees/ab53e158-c798-4c57-973e-7b9298c7d741.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertEmployees%2Fab53e158-c798-4c57-973e-7b9298c7d741.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/SonoranDesertEmployees/ab53e158-c798-4c57-973e-7b9298c7d741.json\")/object-node()",
+					"match-text": [
+						"SonoranDesertEmployees 2020-05-28T18:44:21.383722Z admin /envision/datahub/data/SonoranDesertEmployees/HR360-SonoranDesert-Employee-CSV.csv A-9966R 10015 Full Time Sallyanne Pankhurst. 9/18/1988..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FSonoranDesertEmployees%2Fab53e158-c798-4c57-973e-7b9298c7d741.json"
+		},
+		{
+			"index": 8,
+			"uri": "/envision/datahub/data/CoastalEmployees/55016.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55016.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55016.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55016.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Inactive Trey Pashen 1983-03-31 90405 Butternut Trail Amarillo TX 79182 1(806)146-9836 Librarian 2017-10-12 trey.pashen@coastal.com BOM BOM CRM..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55016.json"
+		},
+		{
+			"index": 9,
+			"uri": "/flows/default-map-and-master.flow.json",
+			"path": "fn:doc(\"/flows/default-map-and-master.flow.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fflows%2Fdefault-map-and-master.flow.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/flows/default-map-and-master.flow.json\")/object-node()",
+					"match-text": [
+						"default-map-and-master This is the default flow for mapping previously ingested data and then mastering it into data hub cts.collectionQuery('default-ingestion') mapping default-mapping json..."
+					]
+				}
+			],
+			"id": "%2Fflows%2Fdefault-map-and-master.flow.json"
+		},
+		{
+			"index": 10,
+			"uri": "/envision/datahub/data/JobOpenings/24d2af18-8ec7-4067-9f22-a89c25683edc.json",
+			"path": "fn:doc(\"/envision/datahub/data/JobOpenings/24d2af18-8ec7-4067-9f22-a89c25683edc.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FJobOpenings%2F24d2af18-8ec7-4067-9f22-a89c25683edc.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/JobOpenings/24d2af18-8ec7-4067-9f22-a89c25683edc.json\")/object-node()",
+					"match-text": [
+						"MountainTopEmployees 2020-05-28T18:44:08.509551Z admin /envision/datahub/data/JobOpenings/HR360-JobOpening-CSV.csv 2 2 Cost Accountant CLOSED 10/16/2020 [\"node.js\", \"Java\", \"SPARQL\", \"Hadoop\",..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FJobOpenings%2F24d2af18-8ec7-4067-9f22-a89c25683edc.json"
+		}
+	],
+	"facets": {
+		"Collection": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "CoastalEmployees",
+					"count": 20,
+					"value": "CoastalEmployees"
+				},
+				{
+					"name": "IngestDepartments",
+					"count": 5,
+					"value": "IngestDepartments"
+				},
+				{
+					"name": "IngestEmployees",
+					"count": 20,
+					"value": "IngestEmployees"
+				},
+				{
+					"name": "IngestJobOpenings",
+					"count": 20,
+					"value": "IngestJobOpenings"
+				},
+				{
+					"name": "IngestPerformanceReviews",
+					"count": 20,
+					"value": "IngestPerformanceReviews"
+				},
+				{
+					"name": "IngestResumes",
+					"count": 20,
+					"value": "IngestResumes"
+				},
+				{
+					"name": "PerformanceEvaluations",
+					"count": 20,
+					"value": "PerformanceEvaluations"
+				},
+				{
+					"name": "SonoranAddresses",
+					"count": 30,
+					"value": "SonoranAddresses"
+				},
+				{
+					"name": "SonoranEmployees",
+					"count": 30,
+					"value": "SonoranEmployees"
+				},
+				{
+					"name": "http://marklogic.com/data-hub/flow",
+					"count": 10,
+					"value": "http://marklogic.com/data-hub/flow"
+				},
+				{
+					"name": "http://marklogic.com/data-hub/mappings",
+					"count": 8,
+					"value": "http://marklogic.com/data-hub/mappings"
+				},
+				{
+					"name": "http://marklogic.com/data-hub/step-definition",
+					"count": 9,
+					"value": "http://marklogic.com/data-hub/step-definition"
+				},
+				{
+					"name": "http://marklogic.com/entity-services/models",
+					"count": 8,
+					"value": "http://marklogic.com/entity-services/models"
+				},
+				{
+					"name": "marklogic-pipes/type/savedGraph",
+					"count": 1,
+					"value": "marklogic-pipes/type/savedGraph"
+				}
+			]
+		}
+	},
+	"metrics": {
+		"query-resolution-time": "PT0.001561S",
+		"facet-resolution-time": "PT0.00079S",
+		"snippet-resolution-time": "PT0.003028S",
+		"total-time": "PT0.008233S"
+	}
+}

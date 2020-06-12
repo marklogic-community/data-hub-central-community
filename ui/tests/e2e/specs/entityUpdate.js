@@ -10,14 +10,8 @@ describe('End to end test to create and update model', () => {
 		})
 		cy.route('GET', '/api/models/', [])
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
-		return cy.readFile('tests/e2e/data/model.json')
-			.then(file => {
-				cy.route('/api/models/model.json', file)
-				return cy.readFile('tests/e2e/data/searchResults.json')
-			})
-			.then(file => {
-				cy.route('POST', '/api/explore/entities', file)
-			})
+		cy.route('/api/models/model.json', 'fixture:model.json')
+		cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
 	})
 
 	//create new 'Test Model'

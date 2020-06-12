@@ -1,0 +1,56 @@
+{
+	"values-response": {
+		"name": "Collections",
+		"type": "xs:string",
+		"distinct-value": [
+			{
+				"frequency": 5,
+				"_value": "Department"
+			},
+			{
+				"frequency": 40,
+				"_value": "Employee"
+			},
+			{
+				"frequency": 20,
+				"_value": "JobOpening"
+			},
+			{
+				"frequency": 20,
+				"_value": "MapCoastalEmployees"
+			},
+			{
+				"frequency": 5,
+				"_value": "MapDepartments"
+			},
+			{
+				"frequency": 20,
+				"_value": "MapEmployees"
+			},
+			{
+				"frequency": 20,
+				"_value": "MapJobOpenings"
+			},
+			{
+				"frequency": 20,
+				"_value": "MapResumes"
+			},
+			{
+				"frequency": 40,
+				"_value": "MasterEmployees"
+			},
+			{
+				"frequency": 20,
+				"_value": "Resume"
+			},
+			{
+				"frequency": 40,
+				"_value": "sm-Employee-mastered"
+			}
+		],
+		"metrics": {
+			"values-resolution-time": "PT0.00032S",
+			"total-time": "PT0.001416S"
+		}
+	}
+}
