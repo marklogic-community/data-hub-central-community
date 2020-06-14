@@ -103,9 +103,9 @@ const mastering = {
 		},
 		merge({ commit }, { uris, flowName, stepNumber, preview }) {
 			return masteringApi.merge(uris, flowName, stepNumber, preview).then(resp => {
-				console.log('resp', resp)
-				// console.log('commit', commit)
-				commit('setMergedDoc', resp.mergedDocument.value)
+				if (resp.success) {
+					commit('setMergedDoc', resp.mergedDocument.value)
+				}
 			})
 		},
 		unmerge({ commit }, doc) {
@@ -323,6 +323,9 @@ const explore = {
 		},
 		setDatabase(state, database) {
 			state.database = database
+		},
+		clearActiveFacets(state) {
+			state.activeFacets = {}
 		},
 		toggleActiveFacet(state, { facet, type, value, negated }) {
 			const activeFacet = state.activeFacets[facet];

@@ -70,18 +70,7 @@ function getMergedDoc(uris) {
 	))
 }
 
-function getNotification(uri, doc) {
-	const flowInfo = getNotificationFlowInfo(uri);
-	const r = doc.root;
-	const uris = r.xpath('*:document-uris/*:document-uri/string()').toObject()
-		.map(uri => {
-			if (fn.docAvailable(uri)) {
-				return uri;
-			}
-			else {
-				return fn.head(cts.uriMatch(`*${uri}*`))
-			}
-		});
+function isBlocked(uris) {
 	const blocks = getBlocks(uris);
 	const blocked = uris.reduce((isBlocked, uri) => {
 		const otherUris = uris.filter(u => u !== uri);
@@ -96,7 +85,25 @@ function getNotification(uri, doc) {
 		}
 		return result;
 	}, true);
+	return {
+		blocks: blocks,
+		blocked: blocked
+	}
+}
 
+function getNotification(uri, doc) {
+	const flowInfo = getNotificationFlowInfo(uri);
+	const r = doc.root;
+	const uris = r.xpath('*:document-uris/*:document-uri/string()').toObject()
+		.map(uri => {
+			if (fn.docAvailable(uri)) {
+				return uri;
+			}
+			else {
+				return fn.head(cts.uriMatch(`*${uri}*`))
+			}
+		});
+	const blocked = isBlocked(uris);
 	let mergedDoc = getMergedDoc(uris);
 	let merged = {};
 	if (mergedDoc) {
@@ -113,8 +120,8 @@ function getNotification(uri, doc) {
       uri: uri,
 			status: r.xpath('*:meta/*:status/string()'),
 			merged: !!mergedDoc,
-			blocks: blocks,
-			blocked: blocked
+			blocks: blocked.blocks,
+			blocked: blocked.blocked
 		},
 		flowInfo: flowInfo || {},
     thresholdLabel: r.xpath('*:threshold-label/string()'),
@@ -159,3 +166,5 @@ exports.updateStatus = updateStatus;
 exports.unblock = unblock;
 exports.blockMatches = blockMatches;
 exports.getBlocks = getBlocks;
+exports.isBlocked = isBlocked;
+exports.getMergedDoc = getMergedDoc;

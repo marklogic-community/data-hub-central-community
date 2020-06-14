@@ -319,6 +319,7 @@ export default {
 			set(val) {
 				if (this.database !== val) {
 					this.currentNode = null
+					this.$store.commit('explore/clearActiveFacets')
 					this.$store.commit('explore/setDatabase', val)
 					this.updateRoute()
 				}

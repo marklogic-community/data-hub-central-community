@@ -167,7 +167,9 @@ export default {
 		async unmerge() {
 			for (let i = 0; i < this.allCheckedNotifications.length; i++) {
 				let notification = this.allCheckedNotifications[i]
-				await this.$store.dispatch('mastering/unmerge', notification.merged.uri)
+				if (notification.merged.uri) {
+					await this.$store.dispatch('mastering/unmerge', notification.merged.uri)
+				}
 			}
 			this.$store.dispatch('mastering/getNotifications', { page: this.currentPage });
 		},

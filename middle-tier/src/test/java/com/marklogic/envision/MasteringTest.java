@@ -68,7 +68,7 @@ public class MasteringTest extends BaseTest {
 		JsonNode preblocked = Mastering.on(getFinalClient()).getBlocks(uris);
 		JSONAssert.assertEquals("{\"/CoastalEmployees/55003.json\":[],\"/MountainTopEmployees/employee4.json\":[]}", om.writeValueAsString(preblocked), true);
 
-		JsonNode block = Mastering.on(getFinalClient()).block(uris);
+		Mastering.on(getFinalClient()).block(uris);
 
 		JsonNode blocked = Mastering.on(getFinalClient()).getBlocks(uris);
 		JSONAssert.assertEquals("{\"/CoastalEmployees/55003.json\":[\"/MountainTopEmployees/employee4.json\"],\"/MountainTopEmployees/employee4.json\":[\"/CoastalEmployees/55003.json\"]}", om.writeValueAsString(blocked), true);
