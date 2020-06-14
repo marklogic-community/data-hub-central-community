@@ -65,7 +65,7 @@ describe('Explore', () => {
 		cy.contains('571 Grayhawk Court')
 	})
 
-	it.only('Clears Properties area on db switch', () => {
+	it('Clears Properties area on db switch', () => {
 		cy.visit('/explore')
 		cy.get('[data-cy=searchInput]').clear()
 		cy.get('[data-cy=searchInput]').type('Sashenka{enter}')
