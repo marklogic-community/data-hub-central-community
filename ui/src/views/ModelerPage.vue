@@ -16,6 +16,9 @@
 						<ul class="hideUnlessTesting">
 							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
 						</ul>
+						<ul class="hideUnlessTesting edges">
+							<li v-for="edge in edges" :key="edge.id" data-cy="edgeList" v-on:click="selectEdge(edge)">{{ edge.id }}</li>
+						</ul>
 					</v-flex>
 					<v-flex md4 class="right-pane">
 						<entity-pick-list
@@ -149,7 +152,7 @@ export default {
           initiallyActive: true,
           addNode: this.graphAddNode,
           addEdge: this.graphAddEdge.bind(this),
-					editEdge: this.graphEditEdge,
+					editEdge: false,
           deleteNode: this.graphDeleteNode,
           deleteEdge: this.graphDeleteEdge
         }
@@ -220,9 +223,41 @@ export default {
 		}
 	},
   methods: {
+		// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
 		selectNode( selectedNode ) {
-			// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
-			this.currentNode = selectedNode.id//this.nodeMap[selectedNode.id]
+			this.$refs.graph.graph.network.network.selectNodes([selectedNode.id])
+			const props = {
+				"pointer": null,
+				"event": null,
+				"nodes": [selectedNode.id],
+				"edges": [],
+				"items": [
+					{
+						"nodeId": selectedNode.id
+					}
+				]
+			}
+			this.$refs.graph.graph.network.network.body.emitter.emit('select', props)
+			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
+		},
+		// called bu Cypress to select an edge, as couldn't find how to make it click the graph directly
+		selectEdge( edge ) {
+			this.$refs.graph.graph.network.network.selectEdges([edge.id])
+			const props = {
+				"pointer": null,
+				"event": null,
+				"nodes": [],
+				"edges": [
+					edge.id
+				],
+				"items": [
+					{
+						"edgeId": edge.id
+					}
+				]
+			}
+			this.$refs.graph.graph.network.network.body.emitter.emit('select', props)
+			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
 		},
     doAction(name, options) {
       // All actions emitted from child components use this method. Functionality also performed by
@@ -530,20 +565,7 @@ export default {
 				})
 			}
 		},
-		graphEditEdge(edgeData) {
-			let edge = this.edgesCache[this.currentEdge]
-			let cardinality = edge.cardinality || '1:1'
-			this.doSaveEdge({
-				id: edgeData.id,
-				from: edgeData.from,
-				label: edgeData.label,
-				to: edgeData.to,
-				cardinality: cardinality,
-				keyFrom: node.keyFrom,
-				keyTo: node.keyTo
-			});
-		},
-		graphDeleteNode(nodeData) {
+		graphDeleteNode(nodeData, callback) { // eslint-disable-line no-unused-vars
 			// nodeData will be something like:
 			// {"nodes":["node1", ..... ],"edges":["edge1",.....]}
 			// delete all the nodes and edges from our caches and refresh
@@ -554,7 +576,7 @@ export default {
 			this.doUpdateEdges(this.edgesCache);
 			this.doMLSave();
 		},
-		graphDeleteEdge(edgeData) {
+		graphDeleteEdge(edgeData, callback) {  // eslint-disable-line no-unused-vars
 			// edgeData will be something like:
 			// {"nodes":[],"edges":["edge1",.....]}   <<< note that nodes is always empty
 			// delete all the edges from our caches and refresh
@@ -685,6 +707,10 @@ table {
 	visibility: hidden;
 	position: absolute;
 	top: 0px;
+
+	&.edges {
+		left: 200px;
+	}
 }
 
 .container--fluid {

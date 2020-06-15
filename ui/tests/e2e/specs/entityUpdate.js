@@ -56,6 +56,38 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'String')
 	})
 
+	it('can delete an entity', () => {
+		cy.route('GET', '/api/models/', [ { "name": "Test Model", "edges": {}, "nodes": { "poet": { "id": "poet", "x": -156.3861003861004, "y": -130.42857142857144, "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] }, "philos": { "id": "philosopher", "x": -156.3861003861004, "y": -230.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] } } } ])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').should('contain', 'poet')
+		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
+		cy.get('[data-cy=nodeList]').contains("poet").click()
+
+		cy.get('.vis-label').contains('Delete selected').parent().click()
+		cy.get('[data-cy=nodeList]').should('not.contain', 'poet')
+		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
+	})
+
+	it('can delete an edge', () => {
+		cy.route('GET', '/api/models/', [ { "name": "Test Model", "nodes": { "poet": { "id": "poet", "x": -156.3861003861004, "y": -130.42857142857144, "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] }, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] } }, "edges": { "poet-is-philosopher": { "id": "poet-is-philosopher", "from": "poet", "label": "is", "to": "philosopher", "cardinality": "1:Many", "keyFrom": "orderId", "keyTo": "orderId", "smooth": { "roundness": 0.5 } } } } ])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').should('contain', 'poet')
+		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
+		cy.get('[data-cy=edgeList]').should('contain', 'poet-is-philosopher')
+		cy.get('[data-cy=edgeList]').contains('poet-is-philosopher').click()
+
+		cy.get('.vis-label').contains('Delete selected').parent().click()
+		cy.get('[data-cy=nodeList]').should('contain', 'poet')
+		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
+		cy.get('[data-cy=edgeList]').should('not.contain', 'poet-is-philosopher')
+	})
+
 	it('can add a new String property', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
 		cy.visit('/')
@@ -130,6 +162,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="editProperty.propName"]').clear().type('arrayProp')
 		cy.get('[data-cy="editProperty.dataType"]').parentsUntil('.v-select__slot').click()
 		cy.get('.v-menu__content:visible .v-list-item').contains('Array').parentsUntil('.v-list-item').click()
+		cy.wait(1000)
 		cy.get('[data-cy="editProperty.arrayDataType"]').parentsUntil('.v-select__slot').click()
 		cy.get('.v-menu__content:visible').last().find('.v-list-item').contains('Boolean').parentsUntil('.v-list-item').click()
 		cy.get('[data-cy="editProperty.createBtn"]').click()
