@@ -16,10 +16,12 @@
           <friendly-json :json="val"></friendly-json>
         </dd>
         <!-- array of object, repeat recurse -->
-        <dd v-if="isArray(val) && isObject(val[0])" v-for="(v, $index) in val" :key="$index">
-          <!--span ng-repeat="json in val track by $index" ng-include="'/view-file-ng/friendly-json.html'"></span-->
-          <friendly-json :json="v"></friendly-json>
-        </dd>
+				<template v-if="isArray(val) && isObject(val[0])">
+					<dd v-for="(v, $index) in val" :key="$index">
+						<!--span ng-repeat="json in val track by $index" ng-include="'/view-file-ng/friendly-json.html'"></span-->
+						<friendly-json :json="v"></friendly-json>
+					</dd>
+				</template>
       </span>
     </span>
   </dl>

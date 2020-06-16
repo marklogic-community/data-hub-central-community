@@ -1,0 +1,933 @@
+{
+	"page": 1,
+	"total": 31,
+	"pageLength": 5,
+	"nodes": {
+		"city#Kalamazoo": {
+			"id": "city#Kalamazoo",
+			"label": "Kalamazoo",
+			"entityName": "City",
+			"isConcept": true
+		},
+		"/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"id": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"uri": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"entityName": "Customer",
+			"label": "Sashenka",
+			"entity": {
+				"address": "571 Grayhawk Court",
+				"postalCode": [
+					"49006",
+					"83716"
+				],
+				"customerId": [
+					"4",
+					"260b514c-353b-442d-9db8-e7aca51b3765"
+				],
+				"firstName": "Sashenka",
+				"nullProp": null,
+				"gender": "Female",
+				"state": "Michigan",
+				"email": "smontfort3@timesonline.co.uk",
+				"age": 18,
+				"segment": "Millenial",
+				"city": "Kalamazoo",
+				"favoriteStoreType": "mobile",
+				"lastName": "Montfort",
+				"phoneNumber": "269-621-8555"
+			},
+			"edgeCounts": {
+				"customer-places-order": {
+					"from": "customer",
+					"to": "order",
+					"label": "places",
+					"count": 3
+				},
+				"customer-hascity-city": {
+					"from": "customer",
+					"to": "city",
+					"label": "hasCity",
+					"count": 2
+				}
+			},
+			"prov": [
+				{
+					"id": "6fe8d0dc-db3c-4f41-844d-cff37271a7c8",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"activity": "89b7845f-a339-45e3-9e78-e4176fb646ea",
+						"time": "2020-04-24T17:35:28.287897Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"influencer": "MasterCustomers"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"usedEntity": "/envision/datahub/data/BrandBCustomers/45edbcc4-c1f3-41ee-b199-213d19326e87.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"agent": "default-mastering"
+					},
+					"wasAttributedTo": {
+						"entity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json": {
+			"id": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"uri": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"entityName": "Order",
+			"label": "6",
+			"entity": {
+				"orderId": "6",
+				"customerId": "4",
+				"pricePaid": 113,
+				"shipDate": "2017-12-31",
+				"orderDate": "2017-12-29",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "dbc8a655-5f83-45bc-a20d-2466adf3555a",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7d",
+						"time": "2020-04-24T17:35:24.97552Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"usedEntity": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "198b54a3-7dfb-4f8d-b8ad-f7f44a539ce2",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7d",
+						"time": "2020-04-24T17:35:26.565948Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"influencer": "BrandAOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"usedEntity": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json": {
+			"id": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"uri": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"entityName": "Order",
+			"label": "B-114",
+			"entity": {
+				"orderId": "B-114",
+				"customerId": "260b514c-353b-442d-9db8-e7aca51b3765",
+				"pricePaid": 44.64,
+				"shipDate": "2016-07-01",
+				"orderDate": "2016-06-24",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "d19be54f-c871-4f5d-85c9-f5d8521304aa",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:29.134285Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"influencer": "BrandBOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "aad2b6f0-f34d-4496-9ebb-0b81c5054719",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:28.880706Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json": {
+			"id": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"uri": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"entityName": "Order",
+			"label": "B-115",
+			"entity": {
+				"orderId": "B-115",
+				"customerId": "260b514c-353b-442d-9db8-e7aca51b3765",
+				"pricePaid": 83.98,
+				"shipDate": "2017-09-30",
+				"orderDate": "2017-09-14",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "776336bc-f7b2-4074-890c-6b0206b7fe67",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:29.134285Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"influencer": "BrandBOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "21212b2b-efa4-4823-b227-37b18f2279fe",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:28.886135Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json-http://www.w3.org/2000/01/rdf-schema#hasCity": {
+			"from": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"to": "city#Kalamazoo",
+			"id": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json-http://www.w3.org/2000/01/rdf-schema#hasCity",
+			"label": "hasCity",
+			"fromType": "customer",
+			"toType": "city",
+			"isConcept": true
+		},
+		"/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"from": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"to": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"id": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"label": "placedBy",
+			"fromType": "order",
+			"toType": "customer",
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"from": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"to": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"id": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"label": "placedBy",
+			"fromType": "order",
+			"toType": "customer",
+			"isConcept": false
+		},
+		"/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json": {
+			"from": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"to": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"id": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json-http://www.w3.org/2000/01/rdf-schema#placedBy-/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"label": "placedBy",
+			"fromType": "order",
+			"toType": "customer",
+			"isConcept": false
+		}
+	},
+	"results": [
+		{
+			"index": 1,
+			"uri": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"path": "fn:doc(\"/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json\")/object-node()",
+					"match-text": [
+						"MountainTopEmployees 2020-05-28T18:44:08.509551Z admin /envision/datahub/data/JobOpenings/HR360-JobOpening-CSV.csv JobOpening 0.0.1 http://marklogic.com/envision/ [\"XSLT\", \"Linux\", \"C#\"] 13 Active..."
+					]
+				}
+			],
+			"id": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+			"entityName": "Customer",
+			"label": "Sashenka",
+			"entity": {
+				"address": "571 Grayhawk Court",
+				"postalCode": [
+					"49006",
+					"83716"
+				],
+				"customerId": [
+					"4",
+					"260b514c-353b-442d-9db8-e7aca51b3765"
+				],
+				"firstName": "Sashenka",
+				"nullProp": null,
+				"gender": "Female",
+				"state": "Michigan",
+				"email": "smontfort3@timesonline.co.uk",
+				"age": 18,
+				"segment": "Millenial",
+				"city": "Kalamazoo",
+				"favoriteStoreType": "mobile",
+				"lastName": "Montfort",
+				"phoneNumber": "269-621-8555"
+			},
+			"edgeCounts": {
+				"customer-places-order": {
+					"from": "customer",
+					"to": "order",
+					"label": "places",
+					"count": 3
+				},
+				"customer-hascity-city": {
+					"from": "customer",
+					"to": "city",
+					"label": "hasCity",
+					"count": 2
+				}
+			},
+			"prov": [
+				{
+					"id": "6fe8d0dc-db3c-4f41-844d-cff37271a7c8",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"activity": "89b7845f-a339-45e3-9e78-e4176fb646ea",
+						"time": "2020-04-24T17:35:28.287897Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"influencer": "MasterCustomers"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"usedEntity": "/envision/datahub/data/BrandBCustomers/45edbcc4-c1f3-41ee-b199-213d19326e87.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"agent": "default-mastering"
+					},
+					"wasAttributedTo": {
+						"entity": "89b7845f-a339-45e3-9e78-e4176fb646eaBrandBCustomerFlowmastering/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		{
+			"index": 2,
+			"uri": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"path": "fn:doc(\"/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Employee 0.0.1 http://marklogic.com/envision/ Pashen 2017-10-12 Inactive 90405 Butternut Trail Amarillo 1(806)146-9836 5 Librarian 79182 55016..."
+					]
+				}
+			],
+			"id": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+			"entityName": "Order",
+			"label": "6",
+			"entity": {
+				"orderId": "6",
+				"customerId": "4",
+				"pricePaid": 113,
+				"shipDate": "2017-12-31",
+				"orderDate": "2017-12-29",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "dbc8a655-5f83-45bc-a20d-2466adf3555a",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7d",
+						"time": "2020-04-24T17:35:24.97552Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"usedEntity": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowingestion/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "198b54a3-7dfb-4f8d-b8ad-f7f44a539ce2",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7d",
+						"time": "2020-04-24T17:35:26.565948Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"influencer": "BrandAOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"usedEntity": "/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "cdbc4cae-eb12-41d5-b521-98ae2e9c4a7dBrandAFlowmapping/envision/datahub/data/BrandAOrders/5c5efd3e-d243-4d18-87c7-e020dc16615b.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		{
+			"index": 3,
+			"uri": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"path": "fn:doc(\"/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json\")/object-node()",
+					"match-text": [
+						"MountainTopEmployees 2020-05-28T18:44:08.509551Z admin /envision/datahub/data/JobOpenings/HR360-JobOpening-CSV.csv JobOpening 0.0.1 http://marklogic.com/envision/ [\"node.js\", \"Java\", \"SPARQL\",..."
+					]
+				}
+			],
+			"id": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+			"entityName": "Order",
+			"label": "B-114",
+			"entity": {
+				"orderId": "B-114",
+				"customerId": "260b514c-353b-442d-9db8-e7aca51b3765",
+				"pricePaid": 44.64,
+				"shipDate": "2016-07-01",
+				"orderDate": "2016-06-24",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "d19be54f-c871-4f5d-85c9-f5d8521304aa",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:29.134285Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"influencer": "BrandBOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "aad2b6f0-f34d-4496-9ebb-0b81c5054719",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:28.880706Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/8dd096e3-48ef-4a93-aa78-e36a9e3184c7.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		{
+			"index": 4,
+			"uri": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"path": "fn:doc(\"/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json\")/object-node()",
+					"match-text": [
+						"MountainTopEmployees 2020-05-28T18:44:09.235956Z admin /envision/datahub/data/MountainTopResumes/resumes-small.csv Resume 0.0.1 http://marklogic.com/envision/ 'Resume of Satheesh www.downlo..."
+					]
+				}
+			],
+			"id": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+			"entityName": "Order",
+			"label": "B-115",
+			"entity": {
+				"orderId": "B-115",
+				"customerId": "260b514c-353b-442d-9db8-e7aca51b3765",
+				"pricePaid": 83.98,
+				"shipDate": "2017-09-30",
+				"orderDate": "2017-09-14",
+				"status": "closed"
+			},
+			"edgeCounts": {
+				"order-placedby-customer": {
+					"from": "order",
+					"to": "customer",
+					"label": "placedBy",
+					"count": 1
+				},
+				"order-has-product": {
+					"from": "order",
+					"to": "product",
+					"label": "has",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "776336bc-f7b2-4074-890c-6b0206b7fe67",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:29.134285Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"influencer": "BrandBOrderMapping"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowmapping/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "21212b2b-efa4-4823-b227-37b18f2279fe",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9",
+						"time": "2020-04-24T17:35:28.886135Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"usedEntity": "/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "74f8ab2c-f1a8-4875-b3bb-c1a8ceeb6dc9BrandBOrdersProductsFlowingestion/envision/datahub/data/BrandBOrders/c1858d96-c9ae-43ab-aacc-78b5deba1bad.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		},
+		{
+			"index": 5,
+			"uri": "/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+			"path": "fn:doc(\"/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json\")/object-node()",
+					"match-text": [
+						"MountainTopEmployees 2020-05-28T18:44:08.945948Z admin /envision/datahub/data/MountaintopEmployeeReviews/HR360-EmployeeReview.csv JobReview 0.0.1 http://marklogic.com/envision/ 1926-06-19 80 5..."
+					]
+				}
+			],
+			"id": "/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+			"entityName": "JobReview",
+			"label": "80",
+			"entity": {
+				"reviewDate": "1926-06-19",
+				"reviewCode": "80",
+				"employeeId": "5",
+				"reviewer": "Project Manager",
+				"reasonType": "Reorganization",
+				"reviewId": "5"
+			},
+			"edgeCounts": {
+				"employee-hasjobreview-jobreview": {
+					"from": "employee",
+					"to": "jobreview",
+					"label": "hasJobReview",
+					"count": 1
+				}
+			},
+			"prov": [
+				{
+					"id": "46b28fff-6a9b-4666-af3c-198e22d5d0fa",
+					"entity": {
+						"type": "dhf:DocUpdated",
+						"location": "/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesmapping/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"activity": "dd250ac0-2ac0-47f4-a0de-0e556add777e",
+						"time": "2020-05-28T18:44:14.098331Z"
+					},
+					"wasInfluencedBy": {
+						"influencee": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesmapping/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"influencer": "MapPerformanceReviews"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesmapping/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"usedEntity": "/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesmapping/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"agent": "entity-services-mapping"
+					},
+					"wasAttributedTo": {
+						"entity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesmapping/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"agent": "admin"
+					}
+				},
+				{
+					"id": "bc742682-14b9-4259-9400-018bcde8e242",
+					"entity": {
+						"type": "dhf:DocCreated",
+						"location": "/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"roles": "8487823278258687528",
+						"roleNames": "admin"
+					},
+					"wasGeneratedBy": {
+						"entity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesingestion/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"activity": "dd250ac0-2ac0-47f4-a0de-0e556add777e",
+						"time": "2020-05-28T18:44:08.972884Z"
+					},
+					"wasDerivedFrom": {
+						"generatedEntity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesingestion/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"usedEntity": "/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json"
+					},
+					"wasAssociatedWith": {
+						"activity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesingestion/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"agent": "default-ingestion"
+					},
+					"wasAttributedTo": {
+						"entity": "dd250ac0-2ac0-47f4-a0de-0e556add777eMountainTopEmployeesingestion/envision/datahub/data/MountaintopEmployeeReviews/60ef9e86-c5bb-48ab-bd06-4d9c53307391.json",
+						"agent": "admin"
+					}
+				}
+			],
+			"isConcept": false
+		}
+	],
+	"facets": {
+		"Collections": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "Employee",
+					"count": 40,
+					"value": "Employee"
+				},
+				{
+					"name": "JobReview",
+					"count": 40,
+					"value": "JobReview"
+				},
+				{
+					"name": "MasterEmployees",
+					"count": 40,
+					"value": "MasterEmployees"
+				},
+				{
+					"name": "sm-Employee-mastered",
+					"count": 40,
+					"value": "sm-Employee-mastered"
+				},
+				{
+					"name": "JobOpening",
+					"count": 20,
+					"value": "JobOpening"
+				}
+			]
+		},
+		"firstName": {
+			"type": "xs:string",
+			"facetValues": [
+				{
+					"name": "Adrianna",
+					"count": 2,
+					"value": "Adrianna"
+				},
+				{
+					"name": "Zola",
+					"count": 2,
+					"value": "Zola"
+				},
+				{
+					"name": "Alina",
+					"count": 1,
+					"value": "Alina"
+				},
+				{
+					"name": "Annnora",
+					"count": 1,
+					"value": "Annnora"
+				},
+				{
+					"name": "Ardeen",
+					"count": 1,
+					"value": "Ardeen"
+				}
+			]
+		}
+	}
+}

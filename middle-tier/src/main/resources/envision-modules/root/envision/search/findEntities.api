@@ -19,10 +19,9 @@
         "name": "sort",
 				"nullable": true
       },
-      {
-				"datatype": "jsonDocument",
-				"name": "entities",
-				"$javaClass": "com.fasterxml.jackson.databind.JsonNode"
+			{
+				"datatype": "string",
+				"name": "searchQuery"
 			}
     ],
     "return": {

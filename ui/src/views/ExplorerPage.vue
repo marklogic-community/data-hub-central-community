@@ -2,7 +2,7 @@
 	<v-container fluid class="ExplorerPage">
 		<v-layout column>
 			<v-layout row class="searchArea">
-				<v-flex md9>
+				<v-flex md8>
 					<form class="ml-input ml-search form-inline" role="search" v-on:submit.prevent="searchText">
 						<v-text-field
 							hide-details
@@ -16,52 +16,78 @@
 						></v-text-field>
 					</form>
 				</v-flex>
-				<v-flex md3>
-					<nested-menu class="sortMenu" :name="currentSort.preview"  :menuItems="sortOptions" @selected="updateSort" />
+				<v-flex md4>
+					<v-flex d-flex flex-row>
+						<v-flex md8 d-flex align-center>
+							<nested-menu class="sortMenu" :name="currentSort.preview"  :menuItems="sortOptions" @selected="updateSort" />
+						</v-flex>
+						<v-flex md4>
+							<v-select
+								:items="databases"
+								data-cy="explore.database"
+								item-text="label"
+								item-value="value"
+								label="Database"
+								v-model="currentDatabase"
+								:menu-props="{ 'content-class': 'databaseArray'}"
+							></v-select>
+						</v-flex>
+					</v-flex>
 				</v-flex>
 			</v-layout>
 			<v-flex md12>
 				<v-layout row class="fullHeight">
-					<v-flex md8 class="graph-container">
-						<div class="pagination-wrapper">
-							<span v-if="searchPending">
-								Searching...
-							</span>
-							<span v-if="!searchPending && totalResults > 0">
-							Showing results {{start}} to {{end}} of {{totalResults}}
-							</span>
-							<span v-if="!searchPending && totalResults <= 0">
-								No Results found
-							</span>
-							<span v-if="currentPage > 1" class="pagination"><a @click="previousPage">&lt;&lt; previous</a></span>
-							<span v-if="currentPage < lastPage" class="pagination"><a @click="nextPage">next &gt;&gt;</a></span>
+					<v-flex :class="['graph-container', currentNode ? 'md8' : 'md12']">
+						<div row>
+							<v-tabs v-if="isFinalDb" v-model="tab" @change="updateRoute" hide-slider>
+								<v-tab data-cy="tabGraph"><v-icon>bubble_chart</v-icon>Graph</v-tab>
+								<v-tab data-cy="tabGrid"><v-icon>reorder</v-icon>Grid</v-tab>
+							</v-tabs>
+							<div class="pagination-wrapper">
+								<span v-if="searchPending">
+									Searching...
+								</span>
+								<span v-if="!searchPending && totalResults > 0">
+								Showing results {{pageStart}} to {{pageEnd}} of {{totalResults}}
+								</span>
+								<span v-if="currentPage > 1" class="pagination"><a @click="previousPage">&lt;&lt; previous</a></span>
+								<span v-if="currentPage < lastPage" class="pagination"><a @click="nextPage">next &gt;&gt;</a></span>
+							</div>
 						</div>
-						<visjs-graph
-							class="graph-wrapper"
-							:nodes="nodes"
-							:edges="edges"
-							:options="graphOptions"
-							layout="standard"
-							:events="graphEvents"
-							ref="graph"
-						></visjs-graph>
+
+						<v-container class="search-area">
+							<v-flex md3 class="scrolly">
+								<ml-facets v-if="facets" :facets="facets" :toggle="toggleFacet" :active-facets="activeFacets" :negate="toggleNegatedFacet" :showMore="showMore"></ml-facets>
+							</v-flex>
+							<v-flex md9 column class="scrolly graph-parent">
+								<v-flex class="no-results" md12 v-if="!searchPending && totalResults <= 0">
+									<h1><v-icon>fa-frown-o</v-icon> No Results found <v-icon>fa-frown-o</v-icon></h1>
+								</v-flex>
+								<template v-else>
+									<visjs-graph
+										v-show="tab === 0 && isFinalDb"
+										class="graph-wrapper"
+										:nodes="nodes"
+										:edges="edges"
+										:options="graphOptions"
+										layout="standard"
+										:events="graphEvents"
+										ref="graph"
+									>
+									</visjs-graph>
+									<div v-show="tab === 0 && isFinalDb" class="text-center">
+										<v-chip v-for="(item, index) in entitiesArray" :key="index" :color="item.bgColor" :style="{border: '2px dashed', borderColor: item.borderColor}" disabled>{{item.label}}</v-chip>
+									</div>
+									<ml-results v-show="tab == 1 || !isFinalDb" :results="results" :currentNode="currentNode" :colors="colors" @select="clickedResult"></ml-results>
+								</template>
+							</v-flex>
+						</v-container>
+
 						<ul class="hideUnlessTesting">
 							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
 						</ul>
 					</v-flex>
-					<v-flex md4 class="right-pane">
-						<v-select
-							v-model="selectedEntities"
-							:items="entitiesArray"
-							item-text="label"
-							item-value="label"
-							multiple
-							label="Show Entities"
-						>
-							<template v-slot:selection="{ item }">
-								<v-chip :color="item.bgColor" :style="{border: '2px dashed', borderColor: item.borderColor}">{{item.label}}</v-chip>
-							</template>
-						</v-select>
+					<v-flex :class="['right-pane', currentNode ? 'md4' : 'nowidth']">
 						<entity-details
 							v-if="currentNode && !currentNode.isConcept"
 							:entity="currentNode"
@@ -125,6 +151,8 @@ import NestedMenu from '@/components/NestedMenu';
 import VisjsGraph from 'grove-vue-visjs-graph';
 import EntityDetails from '@/components/ml-explorer/EntityDetails';
 import Confirm from '@/components/Confirm.vue';
+import mlFacets from '@/components/ml-search/ml-facets.vue';
+import mlResults from '@/components/ml-search/ml-results.vue';
 
 export default {
 	name: 'ExplorePage',
@@ -150,6 +178,17 @@ export default {
 		};
 
 		return {
+			tabPrivate: 0,
+			databases: [
+				{
+					label: 'Final',
+					value: 'final'
+				},
+				{
+					label: 'Staging',
+					value: 'staging'
+				}
+			],
 			currentSort: {
 				preview: 'Default'
 			},
@@ -164,24 +203,11 @@ export default {
 			title: 'Explore',
 			entities: {},
 			colors: {},
-			qtext: '',
 			defaultSortOptions: [
 				{
 					label: 'Default',
 					preview: 'Default',
 					value: 'default',
-					enabled: true
-				},
-				{
-					label: 'Most Connected First',
-					preview: 'Most Connected First',
-					value: 'mostConnected',
-					enabled: true
-				},
-				{
-					label: 'Least Connected First',
-					preview: 'Least Connected First',
-					value: 'leastConnected',
 					enabled: true
 				}
 			],
@@ -241,7 +267,7 @@ export default {
 			},
 			graphEvents: {
 				click: this.onGraphClick,
-				dragStart: this.onGraphClick,
+				dragEnd: this.onGraphDrag,
 				oncontext: this.graphRightClick
 			}
 		};
@@ -250,7 +276,9 @@ export default {
 		VisjsGraph,
 		EntityDetails,
 		Confirm,
-		NestedMenu
+		NestedMenu,
+		mlFacets,
+		mlResults
 	},
 	computed: {
 		...mapState({
@@ -260,13 +288,72 @@ export default {
 			queryText: state => state.explore.qtext,
 			currentPage: state => state.explore.page,
 			lastPage: state => Math.ceil(state.explore.total / state.explore.pageLength),
+			page: state => state.explore.page,
 			start: state => ((state.explore.page - 1) * state.explore.pageLength) + 1,
 			total: state => state.explore.total,
 			pageLength: state => state.explore.pageLength,
 			storeSort: state => state.explore.sort,
 			model: state => state.model.model,
-			activeIndexes: state => state.model.activeIndexes
+			activeIndexes: state => state.model.activeIndexes,
+			facets: state => state.explore.facets,
+			activeFacets: state => state.explore.activeFacets,
+			results: state => state.explore.results,
+			database: state => state.explore.database
 		}),
+		isFinalDb() {
+			return this.currentDatabase === 'final'
+		},
+		tab: {
+			get() {
+				return this.tabPrivate
+			},
+			set(val) {
+				this.tabPrivate = val
+				this.currentNode = null
+			}
+		},
+		currentDatabase: {
+			get() {
+				return this.database
+			},
+			set(val) {
+				if (this.database !== val) {
+					this.currentNode = null
+					this.$store.commit('explore/clearActiveFacets')
+					this.$store.commit('explore/setDatabase', val)
+					this.updateRoute()
+				}
+			}
+		},
+		routeQuery() {
+			let q = {
+				tab: this.tab,
+			}
+			if (this.qtext) {
+				q.q = this.qtext
+			}
+			if (this.currentPage) {
+				q.page = this.currentPage
+			}
+			if (this.currentDatabase) {
+				q.db = this.currentDatabase
+			}
+			return q
+		},
+		qtext: {
+			get() {
+				return this.queryText
+			},
+			set(val) {
+				this.$store.commit('explore/setText', { qtext: val })
+			}
+		},
+		pageStart() {
+      return (this.page - 1) * this.pageLength + 1;
+    },
+		pageEnd() {
+      return Math.min(this.pageStart + this.pageLength - 1, this.total);
+    },
 		sort: {
 			get() {
 				return this.storeSort
@@ -353,24 +440,28 @@ export default {
 			return ents
 		},
 		nodes() {
-			return Object.values(this.nodeMap || {}).map(node => {
-				let color = this.colors[node.entityName.toLowerCase()]
-				let extras = {}
-				if (node.isConcept) {
-					extras = {
-						shapeProperties: {
-							borderDashes: [4,3]
-						},
-						borderWidth: 3
+			const values = Object.values(this.nodeMap || {})
+			if (values.length > 0) {
+				return Object.values(this.nodeMap || {}).map(node => {
+					let color = this.colors[node.entityName.toLowerCase()]
+					let extras = {}
+					if (node.isConcept) {
+						extras = {
+							shapeProperties: {
+								borderDashes: [4,3]
+							},
+							borderWidth: 3
+						}
 					}
-				}
-				return {
-					id: node.id,
-					label: node.label,
-					color: color,
-					...extras
-				}
-			})
+					return {
+						id: node.id,
+						label: node.label,
+						color: color,
+						...extras
+					}
+				})
+			}
+			return []
 		},
 		isLoggedIn() {
 			return this.$store.state.auth.authenticated;
@@ -385,16 +476,61 @@ export default {
 			if (newValue && newValue.name !== oldName) {
 				this.handleModelChange()
 			}
+		},
+		'$route.query'(val, oldVal) {
+			let changed = false
+			if (val.page != oldVal.page) {
+				changed = true
+				this.$store.commit('explore/setPage', val.page ? parseInt(val.page) : 1)
+			}
+
+			if (val.q != oldVal.q) {
+				changed = true
+				this.qtext = val.q || null
+			}
+
+			if (val.db != oldVal.db) {
+				changed = true
+				this.currentDatabase = val.db
+			}
+
+			if (changed) {
+				this.getEntities()
+			}
+		},
+		'$route.query.tab'(val, oldVal) {
+			if (val !== oldVal) {
+				this.tab = val ? parseInt(val) : 0
+
+				// need to refresh the graph if changing to tab 0
+				if (this.tab === 0) {
+					this.$nextTick(() => {
+						this.$refs.graph.graph.network.network.redraw()
+					})
+				}
+			}
 		}
 	},
 	mounted: function() {
-		// work around a bug in visjs where it resizes a lot in firefox
-		this.$refs.graph.graph.network.network.canvas._cleanUp()
-
+		this.tab = this.$route.query.tab ? parseInt(this.$route.query.tab) : 0
+		this.$store.commit('explore/setPage', this.$route.query.page ? parseInt(this.$route.query.page) : 1)
+		this.qtext = this.$route.query.q
+		this.currentDatabase = this.$route.query.db || 'final'
 		this.handleModelChange();
 		this.$store.dispatch('model/getActiveIndexes')
 	},
 	methods: {
+		clickedResult(result) {
+			if (this.isFinalDb) {
+				this.currentNode = result
+			}
+			else {
+				this.$router.push({ name: 'root.details', query: { uri: result.uri, db: this.currentDatabase } })
+			}
+		},
+		updateRoute () {
+			this.$router.push({ name: 'root.explorer', query: this.routeQuery })
+		},
 		updateSort( val ) {
 			this.sort = val.value
 			this.currentSort = val
@@ -467,10 +603,46 @@ export default {
 			}
 			this.getEntities()
 		},
+		showMore(facet, facetName) {
+      if (facet.displayingAll) {
+        return;
+      }
+      this.$store
+        .dispatch('explore/showMore', facetName)
+        .then(() => {
+          this.searchPending = false;
+        });
+    },
+		toggleFacet(facet, type, value) {
+      this.searchPending = true;
+      this.$store
+        .dispatch('explore/toggleFacet', {
+          facet,
+          type,
+          value
+        })
+        .then(() => {
+          this.searchPending = false;
+        });
+    },
+    toggleNegatedFacet(facet, type, value) {
+      this.searchPending = true;
+      this.$store
+        .dispatch('explore/toggleFacet', {
+          facet,
+          type,
+          value,
+          negated: true
+        })
+        .then(() => {
+          this.searchPending = false;
+        });
+    },
 		searchText() {
 			this.currentNode = null
 			this.$store.commit('explore/setText', { qtext: this.qtext })
 			this.$store.commit('explore/setPage', 1)
+			this.updateRoute()
 			this.getEntities()
 		},
 		clearSearch() {
@@ -479,11 +651,11 @@ export default {
 		},
 		previousPage() {
 			this.$store.commit('explore/setPage', this.currentPage - 1)
-			this.getEntities()
+			this.updateRoute()
 		},
 		nextPage() {
 			this.$store.commit('explore/setPage', this.currentPage + 1)
-			this.getEntities()
+			this.updateRoute()
 		},
 		getEntities() {
 			this.searchPending = true
@@ -495,9 +667,13 @@ export default {
 					this.searchPending = false
 				});
 		},
-		onGraphClick(e) {
+		onGraphDrag(e) {
+			// only select if dragging. don't
+			// allow deselect
+			this.onGraphClick(e, true)
+		},
+		onGraphClick(e, isDrag) {
 			let nodeId = e.nodes[0];
-			let edgeId = e.edges[0];
 
 			if (nodeId) {
 				let node = this.nodeMap[nodeId]
@@ -510,9 +686,8 @@ export default {
 						this.currentNode = concept
 					}
 				}
-			} else if (edgeId) {
-				let edge = this.edgeMap[edgeId]
-			} else {
+			} else if (!isDrag) {
+				// only deselect if not dragging
 				this.currentNode = null
 			}
 		},
@@ -599,6 +774,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
+.container {
+	display: flex;
+	flex: 0 1 auto;
+	overflow: hidden;
+	height: 100%;
+}
+
 .graph-controls {
 	display: none !important;
 }
@@ -625,17 +808,25 @@ table {
 	}
 }
 
+.nowidth {
+	max-width: 0%;
+}
+
 .right-pane {
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
-	padding: 20px;
 	margin-top: 0px;
 	position: absolute;
+	padding: 0.25em;
 	top: 0;
 	right: 0;
 	bottom: 0;
+	width: 100%;
 
+	.md4 {
+		padding: 20px;
+	}
 	.v-input--selection-controls {
 		margin: 0px;
 		padding-top: 0px;
@@ -672,11 +863,19 @@ table {
 .graph-container {
 	display: flex;
 	flex-direction: column;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .graph-wrapper {
 	display: flex;
 	flex: 1;
+	border-radius: 4px;
+	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
 }
 
 .relparent {
@@ -686,26 +885,88 @@ table {
 .searchArea {
 	height: auto !important;
 }
-</style>
 
-<style lang="less">
-	.ExplorerPage {
-		vis-network {
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-		}
+.v-item-group,
+.v-tabs {
+	width: auto;
+	display: inline-flex;
+}
 
-		.sortMenu {
-			justify-content: start;
-			align-items: start;
-			text-align: left;
-		}
-	}
+/deep/ .v-slide-group__wrapper {
+	flex: 0 0 auto;
+}
 
-	.sortMenuContent .v-list-group__header {
-		padding: 0 16px 0 0;
-	}
+.pagination-wrapper {
+	line-height: 48px;
+	float: right;
+}
+
+.graph-parent {
+	display: flex;
+	flex-direction: column;
+	padding: 0.25em;
+}
+
+.scrolly {
+	overflow-y: scroll;
+}
+
+/deep/ vis-network {
+	padding-top: 0px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+/deep/ .mlvisjs-graph .vis-network {
+	border: none;
+}
+
+/deep/ .sortMenu {
+	justify-content: start;
+	align-items: start;
+	text-align: left;
+}
+
+.sortMenuContent .v-list-group__header {
+	padding: 0 16px 0 0;
+}
+
+.v-tabs {
+	flex: 0 1 auto;
+}
+
+/deep/ .chiclet {
+	display: inline-block;
+	padding: 5px 10px;
+	border-radius: 5px;
+	background-color: #ccffcc;
+}
+
+.v-chip--disabled {
+	opacity: 1;
+	margin: 5px 2px;
+}
+
+.search-area {
+	padding: 0px;
+}
+
+.v-tab--active {
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+.flex {
+	transition: all 0.5s;
+}
+
+.no-results {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
 </style>

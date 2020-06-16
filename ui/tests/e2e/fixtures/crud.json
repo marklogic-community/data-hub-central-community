@@ -1,0 +1,58 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "MountainTopEmployees"
+				}
+			],
+			"createdOn": "2020-05-28T18:44:08.509551Z",
+			"createdBy": "admin",
+			"createdUsingFile": "/envision/datahub/data/JobOpenings/HR360-JobOpening-CSV.csv"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "JobOpening",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"JobOpening": {
+				"requiredCompetency": "[\"XSLT\", \"Linux\", \"C#\"]",
+				"jobId": "13",
+				"reqStatus": "Active - Regular Exempt (Full-time)",
+				"departmentId": "1",
+				"jobTitle": "Compensation Analyst",
+				"employeeStartDate": "2020-03-27",
+				"focusArea": "accounts receivable"
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [
+						{
+							"name": "MountainTopEmployees"
+						}
+					],
+					"createdOn": "2020-05-28T18:44:08.509551Z",
+					"createdBy": "admin",
+					"createdUsingFile": "/envision/datahub/data/JobOpenings/HR360-JobOpening-CSV.csv"
+				},
+				"triples": [],
+				"instance": {
+					"jobId": "13",
+					"deptId": "1",
+					"jobTitle": "Compensation Analyst",
+					"reqStatus": "OPEN",
+					"startDate": "3/27/2020",
+					"competency": "[\"XSLT\", \"Linux\", \"C#\"]",
+					"competency[3-5]": "",
+					"status": "Active - Regular Exempt (Full-time)",
+					"productFocus": "accounts receivable"
+				},
+				"attachments": null
+			}
+		}
+	}
+}

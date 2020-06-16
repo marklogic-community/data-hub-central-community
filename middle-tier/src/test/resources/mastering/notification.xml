@@ -1,0 +1,12 @@
+<sm:notification xmlns:sm="http://marklogic.com/smart-mastering">
+	<sm:meta>
+		<sm:dateTime>2020-05-28T18:44:17.461166Z</sm:dateTime>
+		<sm:user>admin</sm:user>
+		<sm:status>unread</sm:status>
+	</sm:meta>
+	<sm:threshold-label>Definite Match</sm:threshold-label>
+	<sm:document-uris>
+		<sm:document-uri>/CoastalEmployees/55002.json</sm:document-uri>
+		<sm:document-uri>/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json</sm:document-uri>
+	</sm:document-uris>
+</sm:notification>

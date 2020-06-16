@@ -1,10 +1,20 @@
 <template>
   <v-menu v-model="menuOpen" :class="`menu.${name}`" :offset-x='isOffsetX' :offset-y='isOffsetY' :open-on-hover='isOpenOnHover' :transition='transition'>
-    <template v-slot:activator="{ on }">
-      <v-list-item v-if='isSubMenu' class='d-flex justify-space-between' :data-cy="`menuBtn.${name}`" v-on="on">
+    <template v-slot:activator="{ on: menu }">
+      <v-list-item v-if='isSubMenu' class='d-flex justify-space-between' :data-cy="`menuBtn.${name}`" v-on="{ ...menu }">
         {{ name }}<v-icon>navigate_next</v-icon>
       </v-list-item>
-      <v-btn :data-cy="`menuBtn.${name}`" v-else :color='color' v-on="on" text tile>{{ name }}</v-btn>
+			<template v-else>
+				<div class="btn-wrapper">
+					<label class="menu-label v-label v-label--active theme--light">Sort</label>
+					<v-tooltip top>
+						<template v-slot:activator="{ on: tooltip }">
+							<v-btn :data-cy="`menuBtn.${name}`" :color='color' v-on="{ ...tooltip, ...menu }" text tile>{{ name | truncate(25, '') }}</v-btn>
+						</template>
+						<span>{{name}}</span>
+					</v-tooltip>
+				</div>
+			</template>
     </template>
     <v-list>
       <template v-for="(item, index) in menuItems">
@@ -65,3 +75,17 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.menu-label {
+	left: 15px;
+	right: auto;
+	position: absolute;
+	top: -8px;
+	font-size: 14px;
+}
+
+.btn-wrapper {
+	position: relative;
+}
+</style>

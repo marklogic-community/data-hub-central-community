@@ -11,7 +11,7 @@ xdmp.invokeFunction(function() {
 	declareUpdate();
 	uris.forEach(uri => {
 		if (fn.docAvailable(uri)) {
-			mastering.updateStatus(uri, 'status', status)
+			mastering.updateStatus(uri, status)
 		}
 	});
 });

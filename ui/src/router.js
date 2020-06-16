@@ -265,24 +265,18 @@ const $router = new Router({
     //     requiresUpdates: true
     //   }
     // },
-    // {
-    //   path: '/detail/all/:id',
-    //   name: 'root.view',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
-    //   props($route) {
-    //     return {
-    //       type: 'all',
-    //       id: $route.params.id
-    //     };
-    //   },
-    //   meta: {
-    //     label: 'View',
-    //     navArea: 'document',
-    //     requiresLogin: true
-    //   }
-    // }
+    {
+      path: '/detail',
+      name: 'root.details',
+      // lazy-loading of page
+      component: () => import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
+      meta: {
+        label: 'View',
+        navArea: 'document',
+				requiresLogin: true,
+				checkLogin
+      }
+    }
   ]
 });
 

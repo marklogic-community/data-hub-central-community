@@ -1,0 +1,34 @@
+{
+	"collections": [
+		"MapJobOpenings",
+		"JobOpening"
+	],
+	"permissions": [
+		{
+			"role-name": "rest-writer",
+			"capabilities": [
+				"update"
+			]
+		},
+		{
+			"role-name": "rest-reader",
+			"capabilities": [
+				"read"
+			]
+		}
+	],
+	"properties": {},
+	"quality": 0,
+	"metadataValues": {
+		"datahubCreatedBy": "admin",
+		"datahubCreatedByStep": "entity-services-mapping",
+		"datahubCreatedInFlow": "MountainTopEmployees",
+		"datahubCreatedOn": "2020-05-28T18:44:13.546117Z",
+		"datahubCreatedByJob": "dd250ac0-2ac0-47f4-a0de-0e556add777e"
+	},
+	"contentType": "application/json",
+	"fileName": "de5cc4d6-95b4-4d22-980b-bf3a78769291.json",
+	"format": "JSON",
+	"size": 1136,
+	"uri": "/envision/datahub/data/JobOpenings/de5cc4d6-95b4-4d22-980b-bf3a78769291.json"
+}

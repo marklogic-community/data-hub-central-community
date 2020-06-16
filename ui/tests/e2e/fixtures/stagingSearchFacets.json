@@ -1,0 +1,226 @@
+{
+	"snippet-format": "snippet",
+	"total": 20,
+	"start": 1,
+	"page-length": 10,
+	"results": [
+		{
+			"index": 1,
+			"uri": "/envision/datahub/data/CoastalEmployees/55016.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55016.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55016.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55016.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Inactive Trey Pashen 1983-03-31 90405 Butternut Trail Amarillo TX 79182 1(806)146-9836 Librarian 2017-10-12 trey.pashen@coastal.com BOM BOM CRM..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55016.json"
+		},
+		{
+			"index": 2,
+			"uri": "/envision/datahub/data/CoastalEmployees/55006.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55006.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55006.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55006.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active (Full-time) Saidee McIlreavy 1989-05-12 9920 Carioca Terrace Washington DC 20220 1(202)284-7141 Financial Analyst 2015-07-21..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55006.json"
+		},
+		{
+			"index": 3,
+			"uri": "/envision/datahub/data/CoastalEmployees/55017.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55017.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55017.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55017.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active - Regular Non-Exempt (Full-time) Ilysa Daybell 1976-07-27 30553 Dakota Alley Syracuse NY 13210 1(315)517-3439 Environmental Specialist..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55017.json"
+		},
+		{
+			"index": 4,
+			"uri": "/envision/datahub/data/CoastalEmployees/55010.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55010.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55010.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55010.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active - Regular Non-Exempt (Full-time) Gabrielle McKechnie 1991-11-13 26810 Schlimgen Court Littleton CO 80127 1(720)342-8683 Business Systems..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55010.json"
+		},
+		{
+			"index": 5,
+			"uri": "/envision/datahub/data/CoastalEmployees/55007.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55007.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55007.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55007.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active (Full-time) Ezmeralda Guirau 1956-10-07 49980 Carioca Road Floor 2 Saint Petersburg FL 33737 1(727)409-3867 Mechanical Systems Engineer..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55007.json"
+		},
+		{
+			"index": 6,
+			"uri": "/envision/datahub/data/CoastalEmployees/55018.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55018.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55018.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55018.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active - Regular Non-Exempt (Full-time) Deana Pinnington 1953-11-21 85965 Fallview Point Newark NJ 07188 1(862)399-4175 Quality Engineer..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55018.json"
+		},
+		{
+			"index": 7,
+			"uri": "/envision/datahub/data/CoastalEmployees/55000.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55000.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55000.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55000.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active (Full-time) Adrianna Finn 1978-11-03 7821 Aberg Park Charleston WV 25313 1(914)688-6665 Senior Engineer 2011-09-28..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55000.json"
+		},
+		{
+			"index": 8,
+			"uri": "/envision/datahub/data/CoastalEmployees/55011.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55011.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55011.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55011.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active (Full-time) Moshe Blakeslee 1962-03-29 7 Westend Junction Houston TX 77293 1(281)637-9406 Budget/Accounting Analyst III 2009-08-13..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55011.json"
+		},
+		{
+			"index": 9,
+			"uri": "/envision/datahub/data/CoastalEmployees/55008.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55008.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55008.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55008.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active - Regular Non-Exempt (Full-time) Jenn Pumphreys 1966-11-04 8 Corry Pass Charlotte NC 28284 1(704)382-9107 Help Desk Technician 2004-06-07..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55008.json"
+		},
+		{
+			"index": 10,
+			"uri": "/envision/datahub/data/CoastalEmployees/55019.json",
+			"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55019.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"href": "/v1/documents?uri=%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55019.json",
+			"mimetype": "application/json",
+			"format": "json",
+			"matches": [
+				{
+					"path": "fn:doc(\"/envision/datahub/data/CoastalEmployees/55019.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-05-28T18:44:16.78645Z admin Active (Part-time) Lutero Curwen 1989-10-06 17 Mallory Lane Jackson MS 39236 1(601)291-2194 General Manager 2009-11-25 lutero.curwen@coastal.com..."
+					]
+				}
+			],
+			"id": "%2Fenvision%2Fdatahub%2Fdata%2FCoastalEmployees%2F55019.json"
+		}
+	],
+	"facets": {
+		"Collection": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "CoastalEmployees",
+					"count": 20,
+					"value": "CoastalEmployees"
+				}
+			]
+		}
+	},
+	"metrics": {
+		"query-resolution-time": "PT0.001053S",
+		"facet-resolution-time": "PT0.000485S",
+		"snippet-resolution-time": "PT0.002578S",
+		"total-time": "PT0.006092S"
+	}
+}
