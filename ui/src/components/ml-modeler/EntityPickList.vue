@@ -4,6 +4,7 @@
 			<v-card dark class="white--text abs">
 				<v-card-title primary-title>
 					<div class="headline" v-if="model" data-cy="createModelVue.currentModelLabel">{{model.name}}</div>
+					
 					<v-spacer></v-spacer>
 					<v-menu
 						:close-on-content-click="false"
@@ -32,6 +33,36 @@
 							@save="createModel($event)"
 							@cancel="createModelMenu = false"
 							></create-model>
+					</v-menu>
+
+
+					<v-menu
+						:close-on-content-click="false"
+						:nudge-width="300"
+						offset-x
+						v-model="renameModelMenu">
+						<template v-slot:activator="{ on: menu }">
+							<v-tooltip bottom>
+								<template v-slot:activator="{ on: tooltip }">
+									<v-btn
+										data-cy="cardMenu.renameModelButton"
+										right
+										icon
+										small
+										class="small-btn"
+										v-on="{ ...tooltip, ...menu }"
+									>
+										<v-icon>mdi-rename-box</v-icon>
+									</v-btn>
+								</template>
+								<span>Rename Model</span>
+							</v-tooltip>
+						</template>
+						<rename-model
+							:existingModels="models"
+							@rename="renameModel($event, model.name)"
+							@cancel="renameModelMenu = false"
+							></rename-model>
 					</v-menu>
 					<v-menu
 						:close-on-content-click="false"
@@ -178,6 +209,7 @@ function getId(str) {
 }
 
 import CreateModel from '@/components/CreateModel.vue';
+import RenameModel from '@/components/RenameModel.vue';
 import LoadModel from '@/components/LoadModel.vue';
 import Confirm from '@/components/Confirm.vue';
 import EntityCard from '@/components/ml-modeler/EntityCard.vue';
@@ -196,6 +228,7 @@ export default {
 	},
 	components: {
 		CreateModel,
+		RenameModel,
 		LoadModel,
 		Confirm,
 		EntityCard,
@@ -204,6 +237,7 @@ export default {
 	data() {
 		return {
 			createModelMenu: null,
+			renameModelMenu: null,
 			loadModelsMenu: null,
 			confirmDeleteMenu: null,
 			panel: null,
@@ -297,6 +331,7 @@ export default {
 			}
 		},
 		createModel(modelName) {
+			
 			this.$store.dispatch('model/save', {
 				name: modelName,
 				edges: {},
@@ -304,10 +339,21 @@ export default {
 			})
 			this.createModelMenu = false;
 		},
+		renameModel(newModelName) {
+			console.log ("In rename model with new name " + newModelName)
+
+			this.$store.dispatch('model/rename', {
+				originalname: this.model.name,
+				newname: newModelName,
+				model: this.model
+			})
+			this.renameModelMenu = false;
+		},
 		saveImage() {
 			this.$emit('doAction', 'saveGraphImage');
 		},
 		deleteModel() {
+			this.originalModelName = ''
 			this.$emit('doAction', 'deleteModel')
 			this.confirmDeleteMenu = false
 		},

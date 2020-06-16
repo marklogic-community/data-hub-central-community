@@ -405,7 +405,7 @@ export default {
 			this.doMLSave();
 		},
 		getId(str) {
-			// get a unique ID - perhaps should use some uuid library?
+			// get a unique ID - perhaps should use some uuid library? 
 			return str
 				.trim()
 				.toLowerCase()

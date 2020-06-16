@@ -9,6 +9,7 @@ import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.envision.EntityModeller;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,16 @@ public class ModelService {
 		String fileName = node.get("name").asText().replace(" ", "") + ".json";
 		File jsonFile = new File(modelsDir, fileName);
 		jsonFile.delete();
+	}
+
+	public void renameModel(DatabaseClient client, InputStream stream) throws IOException {
+    	JsonNode node = objectMapper.readTree(stream);
+		String originalModelName = node.get("originalname").asText().replace(" ", "") + ".json";
+
+		File originalModelFile = new File(modelsDir, originalModelName);
+
+		saveModel(client, node.get("model"));
+		originalModelFile.delete();
 	}
 
 	private void deleteAllHubEntities() {

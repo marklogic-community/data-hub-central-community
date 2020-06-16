@@ -51,6 +51,12 @@ public class ModelController extends AbstractController {
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
+	@RequestMapping(value = "/rename", method = RequestMethod.POST)
+	public void renameModeL(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		modelService.renameModel(getFinalClient(), request.getInputStream());
+		response.setStatus(HttpStatus.NO_CONTENT.value());
+	}
+
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void saveModel(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         modelService.saveModel(getFinalClient(), request.getInputStream());

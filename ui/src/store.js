@@ -233,7 +233,13 @@ const model = {
 		},
 		setModels(state, models) {
 			state.models = models;
+		},
+		setModelNewName(state, data) {
+			let myModel = data.model
+			myModel.name = data.newname
+			state.model = myModel
 		}
+
 	},
 	actions: {
 		async init({ commit, state, dispatch }) {
@@ -261,7 +267,7 @@ const model = {
 			catch(err) {
 				await dispatch('save', state.models[0])
 			}
-		},
+		}, 
 		async save({ commit, dispatch }, data) {
 			commit('setModel', data);
 			await modelApi.save(data);
@@ -270,6 +276,12 @@ const model = {
 		async delete({ state, commit, dispatch }, data) {
 			await modelApi.deleteModel(data);
 			dispatch('save', state.models.filter(m => m.name !== data.name)[0]);
+		},
+		async rename({ commit, dispatch }, data) {
+			commit('setModelNewName', data);
+
+			await modelApi.rename(data);
+			return dispatch('getAll');
 		}
 	}
 };

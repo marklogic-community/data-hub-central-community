@@ -34,5 +34,16 @@ export default {
 		console.error('error:', error);
 		return { isError: true, error: error };
 	});
+  },
+  rename(data) {
+	return axios.post('/api/models/rename', data)
+    .then(response => {
+		return { isError: false, response: response.data };
+	})
+    .catch(error => {
+		console.error('error:', error);
+		return { isError: true, error: error };
+	});
+
   }
 };
