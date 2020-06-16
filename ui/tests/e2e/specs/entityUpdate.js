@@ -37,6 +37,18 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('not.contain', 'Test Model')
 	})
 
+	// rename model 
+	it('can rename a model', () => {
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+		cy.route('GET', '/api/models/', [])
+		cy.get('[data-cy="cardMenu.renameModelButton"]').click()
+		cy.get('[data-cy="renameModelVue.renameModelNameField"]').type('A new Model Name')
+		cy.get('[data-cy="renameModelVue.renameSubmitButton"]').click()
+		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('have.text', 'A new Model Name')	
+	})
+
 	//add Customer entity
 	it('can add a new entity', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{}}])

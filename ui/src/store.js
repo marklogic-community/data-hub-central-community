@@ -416,6 +416,11 @@ const model = {
 		},
 		setActiveIndexes(state, indexes) {
 			state.activeIndexes = indexes
+		},
+		setModelNewName(state, data) {
+			let myModel = data.model
+			myModel.name = data.newname
+			state.model = myModel
 		}
 	},
 	actions: {
@@ -457,6 +462,12 @@ const model = {
 		async delete({ state, dispatch }, data) {
 			await modelApi.deleteModel(data);
 			dispatch('save', state.models.filter(m => m.name !== data.name)[0]);
+		},
+		async rename({ commit, dispatch }, data) {
+			commit('setModelNewName', data);
+
+			await modelApi.rename(data);
+			return dispatch('getAll');
 		}
 	}
 };
