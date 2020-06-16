@@ -38,5 +38,17 @@ export default {
 	getActiveIndexes() {
 		return axios.get('/api/models/activeIndexes')
 			.then(response => response.data)
+	},
+
+	rename(data) {
+		return axios.post('/api/models/rename', data)
+		.then(response => {
+			return { isError: false, response: response.data };
+		})
+		.catch(error => {
+			console.error('error:', error);
+			return { isError: true, error: error };
+		});
+	
 	}
 };

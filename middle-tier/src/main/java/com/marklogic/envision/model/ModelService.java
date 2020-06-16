@@ -74,6 +74,16 @@ public class ModelService {
 		jsonFile.delete();
 	}
 
+	public void renameModel(DatabaseClient client, InputStream stream) throws IOException {
+    	JsonNode node = objectMapper.readTree(stream);
+		String originalModelName = node.get("originalname").asText().replace(" ", "") + ".json";
+
+		File originalModelFile = new File(modelsDir, originalModelName);
+
+		saveModel(client, node.get("model"));
+		originalModelFile.delete();
+	}
+
 	private void deleteAllHubEntities() {
 		// delete all entities
 		em.getEntities().forEach(hubEntity -> {
