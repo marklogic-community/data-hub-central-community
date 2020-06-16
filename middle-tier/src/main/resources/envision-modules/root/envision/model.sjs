@@ -3,7 +3,14 @@
  * to provide extra functionality
  */
 function getModel() {
-	const model = cts.doc('model.json').toObject();
+	let model = cts.doc('model.json');
+	if (model) {
+		model = model.toObject();
+	}
+	else {
+		return {};
+	}
+
 	let names = {};
 	Object.keys(model.nodes).forEach(key => {
 		let node = model.nodes[key];

@@ -16,21 +16,10 @@ describe('Mastering', () => {
 		cy.route('PUT', '/api/models/', {})
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
 
-		return cy.readFile('tests/e2e/data/model.json')
-			.then(file => {
-				cy.route('/api/models/model.json', file)
-				cy.route('GET', '/api/models/', [file])
-				return cy.readFile('tests/e2e/data/searchResults.json')
-			})
-			.then(file => {
-				cy.route('POST', '/api/explore/entities', file)
-				return cy.readFile('tests/e2e/data/notificationsPage1.json')
-			})
-			.then(file => {
-				cy.route('POST', '/api/mastering/notifications', file)
-				cy.visit('/')
-				cy.url().should('include', '/model')
-			})
+		cy.route('/api/models/model.json', 'fixture:model.json')
+		cy.route('GET', '/api/models/', 'fixture:models.json')
+		cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
+		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json')
 	})
 
 	it('Has 1 notification badge', () => {

@@ -3,9 +3,8 @@ package com.marklogic.envision.deploy;
 import com.marklogic.appdeployer.AppDeployer;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.envision.commands.DeployEntitiesCommand;
-import com.marklogic.hub.deploy.commands.LoadUserArtifactsCommand;
-import com.marklogic.hub.impl.HubConfigImpl;
 import com.marklogic.envision.commands.DeployEnvisionModulesCommand;
+import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

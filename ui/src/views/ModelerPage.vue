@@ -16,6 +16,9 @@
 						<ul class="hideUnlessTesting">
 							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
 						</ul>
+						<ul class="hideUnlessTesting edges">
+							<li v-for="edge in edges" :key="edge.id" data-cy="edgeList" v-on:click="selectEdge(edge)">{{ edge.id }}</li>
+						</ul>
 					</v-flex>
 					<v-flex md4 class="right-pane">
 						<entity-pick-list
@@ -149,7 +152,7 @@ export default {
           initiallyActive: true,
           addNode: this.graphAddNode,
           addEdge: this.graphAddEdge.bind(this),
-					editEdge: this.graphEditEdge,
+					editEdge: false,
           deleteNode: this.graphDeleteNode,
           deleteEdge: this.graphDeleteEdge
         }
@@ -220,9 +223,41 @@ export default {
 		}
 	},
   methods: {
+		// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
 		selectNode( selectedNode ) {
-			// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
-			this.currentNode = selectedNode.id//this.nodeMap[selectedNode.id]
+			this.$refs.graph.graph.network.network.selectNodes([selectedNode.id])
+			const props = {
+				"pointer": null,
+				"event": null,
+				"nodes": [selectedNode.id],
+				"edges": [],
+				"items": [
+					{
+						"nodeId": selectedNode.id
+					}
+				]
+			}
+			this.$refs.graph.graph.network.network.body.emitter.emit('select', props)
+			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
+		},
+		// called bu Cypress to select an edge, as couldn't find how to make it click the graph directly
+		selectEdge( edge ) {
+			this.$refs.graph.graph.network.network.selectEdges([edge.id])
+			const props = {
+				"pointer": null,
+				"event": null,
+				"nodes": [],
+				"edges": [
+					edge.id
+				],
+				"items": [
+					{
+						"edgeId": edge.id
+					}
+				]
+			}
+			this.$refs.graph.graph.network.network.body.emitter.emit('select', props)
+			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
 		},
     doAction(name, options) {
       // All actions emitted from child components use this method. Functionality also performed by
@@ -246,14 +281,15 @@ export default {
           break;
         case 'deleteNode':
           this.doDeleteNode(options.nodeId);
-			break;
-		case 'saveGraphImage':
-			this.saveGraphImage();
-			break;
-		case 'deleteModel':
-			this.deleteModel();
-        default:
-          console.log('Invalid action sent to ModelerPage.vue');
+					break;
+				case 'saveGraphImage':
+					this.saveGraphImage();
+					break;
+				case 'deleteModel':
+					this.deleteModel();
+					break;
+				default:
+					console.log('Invalid action sent to ModelerPage.vue');
       }
     },
 
@@ -287,8 +323,8 @@ export default {
       let myNodesCache = {};
 
       if (this.showFullEntityNames == true) {
-        for (var node in this.nodesCache) {
-          var thisNode = this.nodesCache[node];
+        for (let node in this.nodesCache) {
+          let thisNode = this.nodesCache[node];
 
           thisNode.label = thisNode.entityName;
           myNodesCache[node] = thisNode;
@@ -296,8 +332,8 @@ export default {
           thisNode.font.size = 10;
         }
       } else {
-        for (var node in this.nodesCache) {
-          var thisNode = this.nodesCache[node];
+        for (let node in this.nodesCache) {
+          let thisNode = this.nodesCache[node];
 
           thisNode.label = thisNode.entityName.substring(0, 2);
           myNodesCache[node] = thisNode;
@@ -353,7 +389,6 @@ export default {
 			}
 		},
 		getNextRoundness( self, toNode, fromNode) {
-			let edgeRoundness = {}  // contains edgeFrom|To: roundness
 			const defaultRoundness = 0.5 // midpoint
 			let roundnessInc = 0.15
 			let roundness = defaultRoundness
@@ -532,21 +567,7 @@ export default {
 				})
 			}
 		},
-		graphEditEdge(edgeData, callback) {
-			let edge = this.edgesCache[this.currentEdge]
-			let cardinality = edge.cardinality || '1:1'
-			let key = edge.key || null
-			this.doSaveEdge({
-				id: edgeData.id,
-				from: edgeData.from,
-				label: edgeData.label,
-				to: edgeData.to,
-				cardinality: cardinality,
-				keyFrom: node.keyFrom,
-				keyTo: node.keyTo
-			});
-		},
-		graphDeleteNode(nodeData, callback) {
+		graphDeleteNode(nodeData, callback) { // eslint-disable-line no-unused-vars
 			// nodeData will be something like:
 			// {"nodes":["node1", ..... ],"edges":["edge1",.....]}
 			// delete all the nodes and edges from our caches and refresh
@@ -557,7 +578,7 @@ export default {
 			this.doUpdateEdges(this.edgesCache);
 			this.doMLSave();
 		},
-		graphDeleteEdge(edgeData, callback) {
+		graphDeleteEdge(edgeData, callback) {  // eslint-disable-line no-unused-vars
 			// edgeData will be something like:
 			// {"nodes":[],"edges":["edge1",.....]}   <<< note that nodes is always empty
 			// delete all the edges from our caches and refresh
@@ -585,9 +606,6 @@ export default {
 		},
 		graphRightClick(e) {
 			e.event.preventDefault()
-			var rect = e.event.target.getBoundingClientRect();
-			var x = e.event.clientX - rect.left; //x position within the element.
-			var y = e.event.clientY - rect.top;
 			this.rightClickPos = {
 				x: e.event.x,
 				y: e.event.y,
@@ -604,7 +622,7 @@ export default {
 				this.rightClickMenu = true;
 			}
 		},
-		runRightclickAction(action, e) {
+		runRightclickAction(action) {
 			if (action === 'addEntity') {
 				let nodeData = {
 					id: "89855843-0ae4-40b7-8a58-6d378f040354",
@@ -644,7 +662,7 @@ export default {
 			this.graphImage = ctx.canvas.toDataURL();
 		},
 		resizedataURL(datas, wantedWidth, wantedHeight) {
-			return new Promise(async (resolve, reject) => {
+			return new Promise(async (resolve) => {
 					var img = document.createElement('img');
 					img.onload = function() {
 							var canvas = document.createElement('canvas');
@@ -691,6 +709,10 @@ table {
 	visibility: hidden;
 	position: absolute;
 	top: 0px;
+
+	&.edges {
+		left: 200px;
+	}
 }
 
 .container--fluid {
