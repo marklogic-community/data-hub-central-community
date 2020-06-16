@@ -71,5 +71,10 @@ public class ModelController extends AbstractController {
 	@RequestMapping(value = "/activeIndexes", method = RequestMethod.GET)
 	public JsonNode getActiveIndexes(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		return modelService.getActiveIndexes(getFinalClient());
+    }
+    @RequestMapping(value = "/rename", method = RequestMethod.POST)
+	public void renameModel(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		modelService.renameModel(getFinalClient(), request.getInputStream());
+		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 }
