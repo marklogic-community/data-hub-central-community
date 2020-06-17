@@ -1,0 +1,31 @@
+{
+    "functionName": "findEntities",
+    "params": [
+      {
+        "datatype": "string",
+        "name": "qtext",
+				"nullable": true
+      },
+			{
+        "datatype": "int",
+        "name": "page"
+      },
+			{
+        "datatype": "int",
+        "name": "pageLength"
+      },
+      {
+        "datatype": "string",
+        "name": "sort",
+				"nullable": true
+      },
+			{
+				"datatype": "string",
+				"name": "searchQuery"
+			}
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}
