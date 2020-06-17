@@ -1,5 +1,5 @@
 <template>
-	<v-container fluid>
+	<v-container fluid class="KnowPage">
 		<v-layout column>
 			<v-flex>
 				<form class="ml-input ml-search form-inline" role="search" v-on:submit.prevent="searchText">
@@ -123,46 +123,7 @@
 import VisjsGraph from 'grove-vue-visjs-graph';
 import 'vis/dist/vis.css';
 import 'ml-visjs-graph/less/ml-visjs-graph.js.less';
-import crudApi from '@/api/CRUDApi.js';
 import { mapState } from 'vuex'
-
-const nodeColors = [
-	{
-		background: '#F5EFFF',
-		highlight: {
-			background: '#F5EFFF'
-		},
-		border: '#DFDAE8',
-	},
-	{
-		background: '#C1CEFE',
-		highlight: {
-			background: '#C1CEFE'
-		},
-		border: '#C1CEFE'
-	},
-	{
-		background: '#CCC9A1',
-		highlight: {
-			background: '#CCC9A1'
-		},
-		border: '#D0CDA9'
-	},
-	{
-		background: '#B8DBD9',
-		highlight: {
-			background: '#B8DBD9'
-		},
-		border: '#BEDEDC',
-	},
-	{
-		background: '#FFA69E',
-		highlight: {
-			background: '#FFA69E'
-		},
-		border: '#FFAEA6'
-	}
-]
 
 export default {
 	name: 'TriplesPage',
@@ -245,9 +206,9 @@ export default {
 			rightClickItems: [],
 			currentTriple: null,
 			title: 'Explore',
-						colors: {},
-						currentDatabase: 'final',
-						currentSort: 'DESC',
+			colors: {},
+			currentDatabase: 'final',
+			currentSort: 'DESC',
 			qtext: '',
 			graphOptions: {
 				autoResize: false,
@@ -326,18 +287,18 @@ export default {
 			return this.start + this.subjectsPerPage - 1
 		},
 		nodes() {
-				return Object.values(this.nodesMap)
-			},
-			edges() {
-				return Object.values(this.edgesMap)
-			},
+			return Object.values(this.nodesMap)
 		},
-		watch: {
-			currentDatabase(newValue, oldValue) {
-				this.getTriples()
-			},
-			currentSort(newVale, oldValue) {
-				this.getTriples()
+		edges() {
+			return Object.values(this.edgesMap)
+		},
+	},
+	watch: {
+		currentDatabase() {
+			this.getTriples()
+		},
+		currentSort() {
+			this.getTriples()
 		}
 	},
 	mounted: function() {
@@ -358,7 +319,7 @@ export default {
 			this.$store.commit('triples/setMaxRelated', e)
 		},
 		searchText() {
-						this.$store.commit('triples/setPage', 1)
+			this.$store.commit('triples/setPage', 1)
 			this.$store.commit('triples/setText', { qtext: this.qtext })
 			this.getTriples()
 		},
@@ -378,9 +339,9 @@ export default {
 			this.currentTriple = null
 			this.$store
 				.dispatch('triples/browse', {
-										database: this.currentDatabase,
-										sort: this.currentSort
-								})
+					database: this.currentDatabase,
+					sort: this.currentSort
+				})
 				.then(() => {
 					this.searchPending = false;
 				});
@@ -436,7 +397,7 @@ export default {
 			let network = this.$refs.graph.graph.network.network
 			let nodeId = network.getNodeAt(e.pointer.DOM)
 			if (nodeId) {
-								let node = this.nodes.find(n => n.id === nodeId)
+				let node = this.nodes.find(n => n.id === nodeId)
 				if (node) {
 					this.rightClickPos = {
 						x: e.event.x,
@@ -462,54 +423,55 @@ export default {
 
 
 					this.rightClickItems = [
-												{
-														label: 'Get Related',
-														action: 'expand',
+						{
+							label: 'Get Related',
+							action: 'expand',
 							node: node,
 							submenu: predicates
-												},
-												{
-														label: 'Hide Everything else',
-														action: 'hideOthers',
-														node: node
-												}
-										]
+						},
+						{
+							label: 'Hide Everything else',
+							action: 'hideOthers',
+							node: node
+						}
+					]
 
 					this.$nextTick(() => {
 						this.rightClickMenu = true;
 					})
 				}
 			}
-				},
-				async contextClick(item) {
+		},
+		async contextClick(item) {
 			this.rightClickMenu = false
-						switch(item.action) {
-								case 'expand':
-										this.expandRelationship(item)
-										break
-								case 'hideOthers':
-										await this.$store.commit('triples/setEdges', {})
-										let nodes = {}
-										nodes[item.node.id] = item.node
-										await this.$store.commit('triples/setNodes', nodes)
-						}
-				},
+			let nodes = {}
+			switch(item.action) {
+				case 'expand':
+					this.expandRelationship(item)
+					break
+				case 'hideOthers':
+					await this.$store.commit('triples/setEdges', {})
+					nodes[item.node.id] = item.node
+					await this.$store.commit('triples/setNodes', nodes)
+					break
+			}
+		},
 		expandRelationship(rel) {
 			this.$store.commit('triples/setText', { qtext: this.qtext })
 			this.$store
 				.dispatch('triples/getRelated', {
-										item: rel.node.orig,
-										itemId: rel.node.id,
-										isIRI: rel.node.isIRI,
+					item: rel.node.orig,
+					itemId: rel.node.id,
+					isIRI: rel.node.isIRI,
 					database: this.currentDatabase,
 					predicate: rel.predicate || null
-								})
+				})
 		}
 	}
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .graph-controls {
 	display: none !important;
 }
@@ -615,4 +577,15 @@ table {
 	display: flex;
 	flex: 1;
 }
+</style>
+
+
+<style lang="less">
+	.KnowPage vis-network {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
 </style>

@@ -20,6 +20,7 @@
 				item-value="value"
 				label="Data Type"
 				v-model="type"
+				:menu-props="{ 'content-class': 'menuDataType'}"
 			></v-select>
 			<v-select
 				v-show="isArray"
@@ -29,6 +30,7 @@
 				item-value="value"
 				label="Array Data Type"
 				v-model="arrayType"
+				:menu-props="{ 'content-class': 'menuDataTypeArray'}"
 			></v-select>
 			<v-expansion-panels v-model="advancedState">
 				<v-expansion-panel data-cy="editProperty.advancedBtn">
@@ -97,7 +99,7 @@ export default {
 	},
 	computed: {
 		isNew() {
-			return !(!!this.prop)
+			return !(this.prop)
 		},
 		isArray() {
 			return this.type === 'Array'

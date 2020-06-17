@@ -1,0 +1,14 @@
+{
+    "functionName": "unBlock",
+    "params": [
+			{
+				"datatype": "array",
+				"name": "uris",
+				"$javaClass": "com.fasterxml.jackson.databind.node.ArrayNode"
+			}
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}

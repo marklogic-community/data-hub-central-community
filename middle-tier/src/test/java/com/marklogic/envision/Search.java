@@ -1,13 +1,22 @@
 package com.marklogic.envision;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.query.QueryManager;
+import com.marklogic.client.query.StructuredQueryDefinition;
+import com.marklogic.envision.dataServices.EntitySearcher;
 import com.marklogic.grove.boot.Application;
-import com.marklogic.grove.boot.model.ModelService;
+import com.marklogic.envision.model.ModelService;
+import com.marklogic.grove.boot.search.SearchService;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,7 +32,18 @@ public class Search extends BaseTest {
 	@Autowired
 	ModelService modelService;
 
+	@Autowired
+	SearchService searchService;
+
 	private JsonNode allCollections;
+
+	private final ObjectMapper om = new ObjectMapper();
+
+	private CustomComparator resultCompare = new CustomComparator(JSONCompareMode.STRICT,
+		new Customization("results[*].confidence", (o1, o2) -> true),
+		new Customization("results[*].fitness", (o1, o2) -> true),
+		new Customization("results[*].score", (o1, o2) -> true)
+	);
 
 	@BeforeEach
 	void setUp() throws IOException {
@@ -49,74 +69,97 @@ public class Search extends BaseTest {
 		installFinalDoc("entities/department4.json", "/departments/department4.json", "Department");
 	}
 
+	private String getFilterString(String filterString, int pageLength, DatabaseClient client) throws IOException {
+		JsonNode filters = om.readTree(filterString);
+		QueryManager mgr = client.newQueryManager();
+		mgr.setPageLength(pageLength);
+		StructuredQueryDefinition query = searchService.buildQueryWithCriteria(mgr.newStructuredQueryBuilder(), filters);
+		return ((StructuredQueryDefinition) query).serialize();
+	}
+
+	// not collection
+	//{"and":[{"type":"queryText","value":""},{"type":"selection","constraint":"Collections","constraintType":"collection","mode":"and","value":[{"not":"MasterEmployees"}]}]}
 	@Test
 	public void noresults() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities("fdljfkladjljad", 1, 5, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/noresults.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		int pageLength = 5;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities("fdljfkladjljad", 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/noresults.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_all() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 30, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		int pageLength = 30;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_noCollections() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 30, "default", om.readTree("[]"));
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		int pageLength = 30;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_onlyEmployee() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 5, "default", om.readTree("[\"Employee\"]"));
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		int pageLength = 5;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Employee\"]}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_onlyDepartment() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 5, "default", om.readTree("[\"Department\"]"));
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		int pageLength = 5;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Department\"]}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void emptySearch_SortDefault_some() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 5, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_some.json"), om.writeValueAsString(found), true);
-	}
-
-	@Test
-	public void emptySearch_SortMostConnected() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 1, "mostConnected", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortMost.json"), om.writeValueAsString(found), true);
-	}
-
-	@Test
-	public void emptySearch_SortLeastConnected() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, 1, 1, "leastConnected", allCollections);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortLeast.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		int pageLength = 5;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_some.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void pagination() throws IOException, JSONException {
 		for (int page = 1; page <= 8; page++) {
-			JsonNode found = EntitySearcher.on(getFinalClient()).findEntities(null, page, 1, "default", allCollections);
-			JSONAssert.assertEquals(getResource("output/pagination" + page + ".json"), om.writeValueAsString(found), true);
+			DatabaseClient client = getFinalClient();
+			int pageLength = 1;
+			String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
+			JsonNode found = EntitySearcher.on(client).findEntities(null, page, pageLength, "default", filterString);
+			JSONAssert.assertEquals(getResource("output/pagination" + page + ".json"), om.writeValueAsString(found), resultCompare);
 		}
 	}
 
 	@Test
 	public void search_hrskill3() throws IOException, JSONException {
-		JsonNode found = EntitySearcher.on(getFinalClient()).findEntities("hrSkill3", 1, 5, "default", allCollections);
-		JSONAssert.assertEquals(getResource("output/hrskill3.json"), om.writeValueAsString(found), true);
+		DatabaseClient client = getFinalClient();
+		String qtext = "hrSkill3";
+		int pageLength = 5;
+		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"" + qtext + "\"}]}", pageLength, client);
+		JsonNode found = EntitySearcher.on(client).findEntities(qtext, 1, pageLength, "default", filterString);
+		JSONAssert.assertEquals(getResource("output/hrskill3.json"), om.writeValueAsString(found), resultCompare);
 	}
 
 	@Test
 	public void getRelated() throws IOException, JSONException {
 		JsonNode found = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "belongsTo", 1, 10);
-		JSONAssert.assertEquals(getResource("output/related-belongs-to.json"), om.writeValueAsString(found), true);
+		JSONAssert.assertEquals(getResource("output/related-belongs-to.json"), om.writeValueAsString(found), resultCompare);
 
 		JsonNode found2 = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "has",1, 10);
-		JSONAssert.assertEquals(getResource("output/related-has.json"), om.writeValueAsString(found2), true);
+		JSONAssert.assertEquals(getResource("output/related-has.json"), om.writeValueAsString(found2), resultCompare);
 	}
 }

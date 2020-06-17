@@ -3,7 +3,7 @@ package com.marklogic.grove.boot.auth;
 import com.marklogic.appdeployer.AppConfig;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.hub.HubConfig;
-import com.marklogic.envision.services.DeployService;
+import com.marklogic.envision.deploy.DeployService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

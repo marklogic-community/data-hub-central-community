@@ -3,117 +3,79 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
-		"/departments/department4.json": {
-			"id": "/departments/department4.json",
-			"uri": "/departments/department4.json",
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
 			"entityName": "Department",
-			"label": "Human Resources",
+			"label": "Marketing",
 			"entity": {
-				"name": "Human Resources",
-				"departmentId": "4",
+				"name": "Marketing",
+				"departmentId": [
+					"2",
+					"22"
+				],
 				"employeeIds": [
-					"55004",
-					"55005"
+					"55002",
+					"5"
 				]
 			},
 			"edgeCounts": {
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
-					"count": 2
+					"count": 1
 				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 2
+					"count": 1
 				}
 			},
 			"prov": [],
 			"isConcept": false
 		},
-		"/MountainTopEmployees/employee4.json": {
-			"id": "/MountainTopEmployees/employee4.json",
-			"uri": "/MountainTopEmployees/employee4.json",
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"entityName": "Employee",
-			"label": "Roberta Jones",
+			"label": "Zola Manchett",
 			"entity": {
-				"name": "Roberta Jones",
-				"departmentId": "4",
-				"employeeId": "55004",
+				"name": "Zola Manchett",
 				"skills": [
-					"hrSkill1",
-					"hrSkill2",
-					"hrSkill3"
+					"general ledger",
+					"procurement"
+				],
+				"departmentId": "2",
+				"employeeId": [
+					"55002",
+					"5"
 				]
 			},
 			"edgeCounts": {
 				"department-hasemployee-employee": {
-					"from":"department",
+					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
 					"count": 1
 				},
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
-				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
-					"to": "employee",
-					"label": "isSkillFor",
-					"count": 3
 				},
 				"employee-has-skill": {
-					"from":"employee",
+					"from": "employee",
 					"to": "skill",
 					"label": "has",
-					"count": 3
-				}
-			},
-			"prov": [],
-			"isConcept": false
-		},
-		"/MountainTopEmployees/employee5.json": {
-			"id": "/MountainTopEmployees/employee5.json",
-			"uri": "/MountainTopEmployees/employee5.json",
-			"entityName": "Employee",
-			"label": "Sam Smith",
-			"entity": {
-				"name": "Sam Smith",
-				"departmentId": "4",
-				"employeeId": "55005",
-				"skills": [
-					"hrSkill1",
-					"hrSkill2"
-				]
-			},
-			"edgeCounts": {
-				"department-hasemployee-employee": {
-					"from":"department",
-					"to": "employee",
-					"label": "hasEmployee",
-					"count": 1
-				},
-				"employee-belongsto-department": {
-					"from":"employee",
-					"to": "department",
-					"label": "belongsTo",
-					"count": 1
-				},
-				"skill-isskillfor-employee": {
-					"from":"skill",
-					"to": "employee",
-					"label": "isSkillFor",
 					"count": 2
 				},
-				"employee-has-skill": {
-					"from":"employee",
-					"to": "skill",
-					"label": "has",
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
 					"count": 2
 				}
 			},
@@ -122,37 +84,105 @@
 		}
 	},
 	"edges": {
-		"/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
-			"from": "/MountainTopEmployees/employee4.json",
-			"to": "/departments/department4.json",
-			"id": "/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
-		"/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json": {
-			"from": "/MountainTopEmployees/employee5.json",
-			"to": "/departments/department4.json",
-			"id": "/MountainTopEmployees/employee5.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department4.json",
-			"label": "belongsTo",
-			"fromType": "employee",
-			"toType": "department"
-		},
-		"/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee4.json": {
-			"from": "/departments/department4.json",
-			"to": "/MountainTopEmployees/employee4.json",
-			"id": "/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee4.json",
+		"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"label": "hasEmployee",
 			"fromType": "department",
 			"toType": "employee"
 		},
-		"/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee5.json": {
-			"from": "/departments/department4.json",
-			"to": "/MountainTopEmployees/employee5.json",
-			"id": "/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/MountainTopEmployees/employee5.json",
-			"label": "hasEmployee",
-			"fromType": "department",
-			"toType": "employee"
+		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json": {
+			"from": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"to": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		}
+	},
+	"results": [
+		{
+			"index": 7,
+			"uri": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"path": "fn:doc(\"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json\")/object-node()",
+					"match-text": [
+						"/MountainTopDepartments/HR360-Department-CSV.csv zxx..."
+					]
+				}
+			],
+			"id": "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json",
+			"entityName": "Department",
+			"label": "Marketing",
+			"entity": {
+				"name": "Marketing",
+				"departmentId": [
+					"2",
+					"22"
+				],
+				"employeeIds": [
+					"55002",
+					"5"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	],
+	"facets": {
+		"Collections": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "Employee",
+					"count": 4,
+					"value": "Employee"
+				},
+				{
+					"name": "MapEmployees",
+					"count": 4,
+					"value": "MapEmployees"
+				},
+				{
+					"name": "MasterEmployees",
+					"count": 4,
+					"value": "MasterEmployees"
+				},
+				{
+					"name": "Department",
+					"count": 3,
+					"value": "Department"
+				},
+				{
+					"name": "MapCoastalEmployees",
+					"count": 1,
+					"value": "MapCoastalEmployees"
+				}
+			]
+		},
+		"firstName": {
+			"type": "xs:string",
+			"facetValues": []
 		}
 	}
 }

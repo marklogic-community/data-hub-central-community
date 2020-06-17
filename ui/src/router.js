@@ -106,6 +106,19 @@ const $router = new Router({
         requiresLogin: true,
         checkLogin
       }
+		},
+		{
+      path: '/explore/compare',  //url path
+      name: 'root.explorer.compare', //use to navigate to page
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "modeler" */ './views/MergedCompare.vue'),
+      meta: {
+        label: 'Compare',
+        // navArea: 'header',
+        requiresLogin: true,
+        checkLogin
+      }
     },
     {
       path: '/know',  //url path
@@ -116,6 +129,32 @@ const $router = new Router({
       meta: {
         label: 'Know',
         navArea: 'header',
+        requiresLogin: true,
+        checkLogin
+      }
+		},
+    {
+      path: '/notifications',  //url path
+      name: 'root.notifications', //use to navigate to page
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "modeler" */ './views/MasteringNotifications.vue'),
+      meta: {
+        label: 'Notifications',
+        // navArea: 'header',
+        requiresLogin: true,
+        checkLogin
+      }
+		},
+    {
+      path: '/notifications/compare',  //url path
+      name: 'root.notifications.compare', //use to navigate to page
+      // lazy-loading of page
+      component: () =>
+        import(/* webpackChunkName: "modeler" */ './views/MasteringNotificationCompare.vue'),
+      meta: {
+        label: 'Compare',
+        // navArea: 'header',
         requiresLogin: true,
         checkLogin
       }
@@ -226,24 +265,18 @@ const $router = new Router({
     //     requiresUpdates: true
     //   }
     // },
-    // {
-    //   path: '/detail/all/:id',
-    //   name: 'root.view',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
-    //   props($route) {
-    //     return {
-    //       type: 'all',
-    //       id: $route.params.id
-    //     };
-    //   },
-    //   meta: {
-    //     label: 'View',
-    //     navArea: 'document',
-    //     requiresLogin: true
-    //   }
-    // }
+    {
+      path: '/detail',
+      name: 'root.details',
+      // lazy-loading of page
+      component: () => import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
+      meta: {
+        label: 'View',
+        navArea: 'document',
+				requiresLogin: true,
+				checkLogin
+      }
+    }
   ]
 });
 

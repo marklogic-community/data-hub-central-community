@@ -1,0 +1,13 @@
+{
+    "functionName": "needsImport",
+    "params": [
+			{
+				"datatype": "array",
+				"name": "models",
+				"$javaClass": "com.fasterxml.jackson.databind.node.ArrayNode"
+			}
+		],
+    "return": {
+      "datatype": "boolean"
+    }
+}

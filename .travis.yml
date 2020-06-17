@@ -1,0 +1,28 @@
+jobs:
+  include:
+    - language: java
+      jdk:
+        - openjdk11
+      services:
+        - docker
+      before_install:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker pull store/marklogicdb/marklogic-server:10.0-4-dev-centos
+        - docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
+        - ./.travis/setup-marklogic.sh
+      sudo: true
+      script:
+        - ./.travis/run-tests.sh
+    - language: node_js
+      node_js:
+        - 10
+      addons:
+        apt:
+          packages:
+          - libgconf-2-4
+      before_install:
+        - cd ui
+      install:
+        - npm install
+      script:
+        - npm run test:e2e:headless
