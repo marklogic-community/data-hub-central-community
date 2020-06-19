@@ -10,4 +10,4 @@ Guides for each of the Envision components follow.  Use of the apps themselves i
 1. Connect
 2. Explore
 3. Know
-4. Notifications and Curation for Smart Mastering
+4. Notification Inbox and Mastering Validation

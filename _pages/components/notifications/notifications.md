@@ -5,13 +5,13 @@ lead_text: ''
 permalink: /components/notifications/
 ---
 
-# Notifications and Curation for Smart Mastering
+# Notification Inbox and Mastering Validation
 
-1. Notifications Pane 
+1. Notification Inbox 
 	* An inbox alerting users which records have been identified as similar by Smart Mastering.
-2. Merge Curation and History Pane 
-	* Choose to merge or block the matches found from being merged for the similar records identified.  
-	* View which documents have been merged to create the mastered document.
+2. Mastering Validation
+	* Choose to merge or block the merge for matches found for the similar records identified.  
+	* Merge history provides the historical view and paper trail of which documents have been merged to create the mastered document.
 
 ### Getting Started
 
@@ -28,7 +28,7 @@ In the Notifications Inbox, choose the record to curate.
 
 ![Notification Inbox](/envision/images/notifications-pane.png)
 
-The Merge Curation and History screen allows you to view the similar records for the notification.  The Flow and Step are reported along with the Entity type that was matched.   Here you can decide whether to merge the records, or block them from matching and merging if this step is ran again in the future in your data hub.
+The Merge Validation and History screen allows you to view the similar records for the notification.  The Flow and Step are reported along with the Entity type that was matched.   Here you can decide whether to merge the records, or block them from matching and merging if this step is ran again in the future in your data hub.
 
 ![Merge Curation and History](/envision/images/merge-curation.png)
 
