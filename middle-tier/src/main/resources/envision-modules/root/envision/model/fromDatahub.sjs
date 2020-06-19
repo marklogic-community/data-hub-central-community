@@ -6,8 +6,6 @@ function getTypeName(type) {
 			return 'String'
 		case 'boolean':
 			return 'Boolean'
-		case 'string':
-			return 'String'
 		case 'integer':
 			return 'Integer'
 		case 'decimal':
