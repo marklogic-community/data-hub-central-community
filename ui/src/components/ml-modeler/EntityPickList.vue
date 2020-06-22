@@ -33,6 +33,37 @@
 							@cancel="createModelMenu = false"
 							></create-model>
 					</v-menu>
+
+					<v-menu
+						:close-on-content-click="false"
+						:nudge-width="300"
+						offset-x
+						v-model="renameModelMenu">
+						<template v-slot:activator="{ on: menu }">
+							<v-tooltip bottom>
+								<template v-slot:activator="{ on: tooltip }">
+									<v-btn
+										data-cy="cardMenu.renameModelButton"
+										right
+										icon
+										small
+										class="small-btn"
+										v-on="{ ...tooltip, ...menu }"
+									>
+										<v-icon>mdi-rename-box</v-icon>
+									</v-btn>
+								</template>
+								<span>Rename Model</span>
+							</v-tooltip>
+						</template>
+						<rename-model
+							:existingModels="models"
+							@rename="renameModel($event, model.name)"
+							@cancel="renameModelMenu = false"
+							></rename-model>
+					</v-menu>
+
+
 					<v-menu
 						:close-on-content-click="false"
 						:nudge-width="300"
@@ -172,12 +203,8 @@
 </template>
 
 <script>
-function getId(str) {
-	// get a unique ID - perhaps should use some uuid library?
-	return (str).trim().toLowerCase().replace(/ /g, "_")
-}
-
 import CreateModel from '@/components/CreateModel.vue';
+import RenameModel from '@/components/RenameModel.vue';
 import LoadModel from '@/components/LoadModel.vue';
 import Confirm from '@/components/Confirm.vue';
 import EntityCard from '@/components/ml-modeler/EntityCard.vue';
@@ -196,6 +223,7 @@ export default {
 	},
 	components: {
 		CreateModel,
+		RenameModel,
 		LoadModel,
 		Confirm,
 		EntityCard,
@@ -204,6 +232,7 @@ export default {
 	data() {
 		return {
 			createModelMenu: null,
+			renameModelMenu: null,
 			loadModelsMenu: null,
 			confirmDeleteMenu: null,
 			panel: null,
@@ -277,14 +306,12 @@ export default {
 				this.currentItem = newVal.entityName;
 				//turn on the correct button
 				this.panel = this.nodeLabels.findIndex(v => v == this.currentItem)
-				let item = this.nodeLabels[this.panel];
 				this.activeTab = 0;
 			}
 		},
 		edge(newVal) {
 			if (newVal) {
 				this.panel = this.nodeLabels.findIndex(v => v.toLowerCase() == newVal.from)
-				let item = this.nodeLabels[this.panel];
 				this.activeTab = 1;
 			}
 		}
@@ -304,6 +331,16 @@ export default {
 			})
 			this.createModelMenu = false;
 		},
+		renameModel(newModelName) {
+			console.log ("In rename model with new name " + newModelName)
+
+			this.$store.dispatch('model/rename', {
+				originalname: this.model.name,
+				newname: newModelName,
+				model: this.model
+			})
+			this.renameModelMenu = false;
+		},
 		saveImage() {
 			this.$emit('doAction', 'saveGraphImage');
 		},
@@ -314,7 +351,7 @@ export default {
 		onDeleteEdge(edge) {
 			this.$emit('doAction', 'deleteEdge', {edge})
 		},
-		onSaveEdge({item, relInfo}) {
+		onSaveEdge({relInfo}) {
 			this.$emit ("doAction", 'saveEdge', {
 				id: relInfo.id,
 				from: relInfo.from,
@@ -325,12 +362,11 @@ export default {
 				keyTo: relInfo.keyTo
 			})
 		},
-		onUpdateModel(item) {
+		onUpdateModel() {
 			this.$emit ("doAction", 'saveToML')
 		},
 		onAddProperties({item, propInfo}) {
 			let entity = this.entities[item]
-			let nodeId = getId(entity.entityName)
 			entity.properties.push(propInfo)
 
 			this.$emit ("doAction", 'updateNodes', { nodesCache: this.nodesCache })

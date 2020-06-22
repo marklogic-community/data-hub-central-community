@@ -47,13 +47,13 @@
 					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
-					"count": 3
+					"count": 1
 				},
 				"employee-belongsto-department": {
 					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 3
+					"count": 1
 				},
 				"skill-isskillfor-employee": {
 					"from": "skill",
@@ -90,13 +90,13 @@
 					"from": "department",
 					"to": "employee",
 					"label": "hasEmployee",
-					"count": 3
+					"count": 1
 				},
 				"employee-belongsto-department": {
 					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
-					"count": 3
+					"count": 1
 				},
 				"skill-isskillfor-employee": {
 					"from": "skill",

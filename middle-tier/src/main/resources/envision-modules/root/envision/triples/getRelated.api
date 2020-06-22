@@ -1,0 +1,35 @@
+{
+    "functionName": "getRelated",
+    "params": [
+        {
+            "datatype": "string",
+            "name": "item"
+        },
+        {
+            "datatype": "string",
+            "name": "itemId"
+        },
+        {
+            "datatype": "boolean",
+            "name": "isIRI"
+        },
+        {
+            "datatype": "string",
+            "name": "qtext",
+            "nullable": true
+        },
+        {
+            "datatype": "string",
+            "name": "predicate",
+            "nullable": true
+        },
+        {
+            "datatype": "int",
+            "name": "maxRelated"
+        }
+    ],
+    "return": {
+        "datatype": "jsonDocument",
+        "$javaClass": "com.fasterxml.jackson.databind.JsonNode"
+    }
+}

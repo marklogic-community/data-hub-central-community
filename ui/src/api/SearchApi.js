@@ -5,6 +5,7 @@ export default {
 	name: 'SearchApi',
 
 	cancelEntities: null,
+	cancelValues: null,
 	getFacets(searchType, qtext, activeFacets) {
 		searchType = searchType !== undefined ? searchType : 'all';
 		qtext = qtext !== undefined ? qtext : '';
@@ -134,7 +135,65 @@ export default {
 				return error;
 			});
 	},
-	getEntities(entities, qtext, page, pageLength, sort) {
+	buildFilters(qtext, activeFacets) {
+		const facets = Object.keys(activeFacets || {}).map(function(facetName) {
+			var constraintType = activeFacets[facetName].type;
+			if (constraintType && constraintType.substring(0, 3) === 'xs:') {
+				constraintType = 'range';
+			}
+			return {
+				type: 'selection',
+				constraint: facetName,
+				constraintType: constraintType,
+				mode: 'and',
+				value: activeFacets[facetName].values.map(function(facetValue) {
+					if (facetValue.negated) {
+						return { not: facetValue.value };
+					} else {
+						return facetValue.value;
+					}
+				})
+			};
+		});
+
+		return {
+			and: [
+				{
+					type: 'queryText',
+					value: qtext || ''
+				}
+			].concat(facets)
+		}
+	},
+	getValues(database, activeFacets, qtext, facetName) {
+		qtext = qtext !== undefined ? qtext : '';
+
+		if (this.cancelValues) {
+			this.cancelValues()
+		}
+
+		return axios.post(
+			'/api/explore/values',
+			{
+				filters: this.buildFilters(qtext, activeFacets),
+				qtext,
+				database,
+				facetName
+			},
+			{
+				cancelToken: new CancelToken(c => this.cancelValues = c)
+			}
+		)
+		.then(response => {
+			this.cancelValues = null
+			return response.data
+		})
+		.catch(error => {
+			console.error('error:', error);
+			return error;
+		});
+	},
+	getEntities(database, activeFacets, qtext, page, pageLength, sort) {
 		qtext = qtext !== undefined ? qtext : '';
 
 		if (this.cancelEntities) {
@@ -144,11 +203,12 @@ export default {
 		return axios.post(
 			'/api/explore/entities/',
 			{
+				filters: this.buildFilters(qtext, activeFacets),
 				qtext,
-				entities,
+				database,
 				page,
 				pageLength,
-				sort
+				sort: (sort instanceof Object) ? JSON.stringify(sort) : sort
 			},
 			{
 				cancelToken: new CancelToken(c => this.cancelEntities = c)

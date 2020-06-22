@@ -3,5 +3,42 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {},
-	"edges": {}
+	"edges": {},
+	"results": [],
+	"facets": {
+		"Collections": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "Employee",
+					"count": 4,
+					"value": "Employee"
+				},
+				{
+					"name": "MapEmployees",
+					"count": 4,
+					"value": "MapEmployees"
+				},
+				{
+					"name": "MasterEmployees",
+					"count": 4,
+					"value": "MasterEmployees"
+				},
+				{
+					"name": "Department",
+					"count": 3,
+					"value": "Department"
+				},
+				{
+					"name": "MapCoastalEmployees",
+					"count": 1,
+					"value": "MapCoastalEmployees"
+				}
+			]
+		},
+		"firstName": {
+			"type": "xs:string",
+			"facetValues": []
+		}
+	}
 }

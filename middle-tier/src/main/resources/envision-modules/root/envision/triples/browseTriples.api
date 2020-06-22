@@ -1,0 +1,31 @@
+{
+    "functionName": "browseTriples",
+    "params": [
+      {
+        "datatype": "string",
+        "name": "qtext",
+		    "nullable": true
+      },
+		  {
+        "datatype": "int",
+        "name": "page"
+      },
+			{
+        "datatype": "int",
+        "name": "subjectsPerPage"
+      },
+      {
+        "datatype": "int",
+        "name": "linksPerSubject",
+        "nullable": true
+      },
+      {
+        "datatype": "string",
+        "name": "sort"
+      }
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}

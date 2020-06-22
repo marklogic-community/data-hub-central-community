@@ -19,7 +19,7 @@ package com.marklogic.grove.boot.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.hub.HubProject;
 import com.marklogic.hub.impl.HubConfigImpl;
-import com.marklogic.envision.services.DeployService;
+import com.marklogic.envision.deploy.DeployService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
