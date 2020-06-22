@@ -160,13 +160,13 @@ const $router = new Router({
       }
     },
     {
-      path: '/dhs',  //url path
-      name: 'root.dhs', //use to navigate to page
+      path: '/deploy',  //url path
+      name: 'root.deploy', //use to navigate to page
       // lazy-loading of page
       component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/DHSPage.vue'),
+        import(/* webpackChunkName: "modeler" */ './views/DeployPage.vue'),
       meta: {
-        label: 'DHS',
+        label: 'Deploy',
         navArea: 'header',
         requiresLogin: true,
         checkLogin
