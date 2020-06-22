@@ -274,8 +274,8 @@ public class OSController extends AbstractController {
 	}
 
 //DMSDK approach to ingestion
-//TODO --
-//file uploader file being uploaded, name of flow/step
+//TODO file uploader for Envision at a url 
+//file being uploaded, name of flow/step
 //write to tmp
 //kick off nifi/etc to run ingest/harmonize
 //S3 upload?
