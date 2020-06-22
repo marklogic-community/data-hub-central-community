@@ -89,3 +89,13 @@ If you also need to specify a different models directory:
 And if you need to specify the Data Hub Framework environment (it defaults to local):
 
 `java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
+
+#### Troubleshooting
+
+##### Missing/Incorrect Concept Connector Model
+
+* Are you seeing URIs on the Explore tab instead of meaningful labels?  
+* Is the merge screen showing `   ,   ` instead of `Finn, Finn`?
+
+You have not loaded the proper concept connector model for current dataset in the Data Hib.  To get working again, navigate to the "Connect" tab.  On the right panel, select "Load Model" and select the proper model for your dataset.  For the standard HR demo, pick "HR Employee 360".    
+
