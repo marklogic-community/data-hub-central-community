@@ -1,0 +1,105 @@
+{
+  "info" : {
+    "title" : "MegaCorp",
+    "version" : "0.0.1",
+    "baseUri" : "http://marklogic.com/envision/"
+  },
+  "definitions" : {
+    "MegaCorp" : {
+      "primaryKey": "isPrimaryKey",
+			"required": [
+				"isRequired1",
+				"isRequired2"
+			],
+			"pii": [
+				"isPii1",
+				"isPii2"
+			],
+			"elementRangeIndex": [
+				"isElementRangeIndex1",
+				"isElementRangeIndex2"
+			],
+			"rangeIndex": [
+				"isRangeIndex1",
+				"isRangeIndex2"
+			],
+			"wordLexicon": [
+				"isWordLexicon1",
+				"isWordLexicon2"
+			],
+			"properties": {
+				"isPrimaryKey": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isElementRangeIndex1": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isElementRangeIndex2": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isRangeIndex1": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isRangeIndex2": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isWordLexicon1": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isWordLexicon2": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isPii1": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isPii2": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isRequired1": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isRequired2": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"isArray": {
+					"datatype": "array",
+					"items": {
+						"datatype": "string",
+						"collation": "http://marklogic.com/collation/codepoint"
+					}
+				},
+				"crazyCollation": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/fr/S1/T0020/AS/MO"
+				},
+				"hasDesc": {
+					"datatype": "string",
+					"description": "has a desc",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"existsOn": {
+					"$ref": "#/definitions/Planet"
+				}
+			}
+    },
+    "Planet" : {
+      "required" : [ ],
+      "pii" : [ ],
+      "elementRangeIndex" : [ ],
+      "rangeIndex" : [ ],
+      "wordLexicon" : [ ],
+      "properties" : { }
+    }
+  }
+}
