@@ -10,6 +10,7 @@ Object.keys(model.nodes).forEach(key => {
 	let node = model.nodes[key];
 
 	if (node.type === 'entity') {
+		let primaryKey = null;
 		let properties = {};
 		let required = {};
 		let pii = {};
@@ -17,6 +18,9 @@ Object.keys(model.nodes).forEach(key => {
 		let rangeIndex = {};
 		let wordLexicon = {};
 		node.properties.forEach(p => {
+			if (p.isPrimaryKey) {
+				primaryKey = p.name
+			}
 			if (p.isRequired) {
 				required[p.name] = true
 			}
@@ -51,7 +55,7 @@ Object.keys(model.nodes).forEach(key => {
 			}
 		});
 		let definition = {
-			"primaryKey": null,
+			"primaryKey": primaryKey,
 			"required": Object.keys(required),
 			"pii": Object.keys(pii),
 			"elementRangeIndex": Object.keys(elementRangeIndex),
@@ -92,9 +96,19 @@ Object.keys(model.edges).forEach(key => {
 				}
 			};
 		}
-
-		entities[edge.from].definitions[nameTo] = entities[edge.to].definitions[nameTo]
 	}
+
+	Object.keys(model.edges).forEach(key => {
+		let edge = model.edges[key];
+		if (model.nodes[edge.from].type === 'entity' && model.nodes[edge.to].type === 'entity') {
+			const defs = entities[edge.to].definitions
+			if (defs) {
+				for (let key in defs) {
+					entities[edge.from].definitions[key] = defs[key]
+				}
+			}
+		}
+	})
 });
 
 entities;
