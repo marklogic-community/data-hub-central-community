@@ -1,7 +1,0 @@
-{
-    "functionName": "removeAllEntities",
-    "params": [],
-    "return": {
-      "datatype": "boolean"
-    }
-}
