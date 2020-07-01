@@ -12,78 +12,78 @@
 				"properties": [
 					{
 						"name": "address",
-						"type": "String",
+						"type": "string",
 						"_propId": "a5ab6f7f-2e5f-4f61-917c-5b507d1794a0"
 					},
 					{
 						"name": "age",
-						"type": "Integer",
+						"type": "integer",
 						"_propId": "0ba86da4-36d9-4c8c-b100-013da3a02837",
 						"isElementRangeIndex": true
 					},
 					{
 						"name": "city",
-						"type": "String",
+						"type": "string",
 						"_propId": "1c091c89-d60c-4199-a764-deaab7dc6059"
 					},
 					{
 						"name": "customerId",
-						"type": "String",
+						"type": "string",
 						"_propId": "10cdfb40-0947-4b1b-b94f-71375efde619"
 					},
 					{
 						"name": "email",
-						"type": "String",
+						"type": "string",
 						"_propId": "5d07c3d1-135e-4919-9a85-ed15cb7373af"
 					},
 					{
 						"name": "estIncomeHHLD",
-						"type": "Decimal",
+						"type": "decimal",
 						"_propId": "777e2895-6712-428a-8a0e-9ec2a1a2a9d2"
 					},
 					{
 						"name": "favoriteStoreType",
-						"type": "String",
+						"type": "string",
 						"_propId": "1c64be05-ac11-4633-9ca0-93da3a8b8d1a"
 					},
 					{
 						"name": "firstName",
-						"type": "String",
+						"type": "string",
 						"_propId": "b966273c-40e6-4187-b8ce-adf6f0ecfdf8"
 					},
 					{
 						"name": "gender",
-						"type": "String",
+						"type": "string",
 						"_propId": "79bab1c7-d9cb-440c-b910-594bd06102f1"
 					},
 					{
 						"name": "lastName",
-						"type": "String",
+						"type": "string",
 						"_propId": "a26af11a-dbb0-423d-9981-8280cf6f857e"
 					},
 					{
 						"name": "numberMinorsHHLD",
-						"type": "String",
+						"type": "string",
 						"_propId": "0b911e9d-67c4-4dfc-9cb2-a66b4c3b1a73"
 					},
 					{
 						"name": "phoneNumber",
-						"type": "String",
+						"type": "string",
 						"_propId": "556c3d6f-ac82-4383-a233-ed3108e7ae55"
 					},
 					{
 						"name": "postalCode",
-						"type": "String",
+						"type": "string",
 						"_propId": "371a6037-093a-4392-84ed-50d7a9d77057"
 					},
 					{
 						"name": "segment",
-						"type": "String",
+						"type": "string",
 						"_propId": "235cfd31-1c13-4032-907b-96598ea54b1e"
 					},
 					{
 						"name": "state",
-						"type": "String",
+						"type": "string",
 						"_propId": "b36a1db2-2396-418b-8993-815f1eb783c5"
 					}
 				],
@@ -101,39 +101,39 @@
 				"properties": [
 					{
 						"name": "creditCardType",
-						"type": "String",
+						"type": "string",
 						"_propId": "a3966ee5-280e-4859-8af5-3f856d256de1"
 					},
 					{
 						"name": "customerId",
-						"type": "String",
+						"type": "string",
 						"_propId": "1f0de5c1-ab24-4726-8d09-540598c5b313"
 					},
 					{
 						"name": "orderDate",
-						"type": "Date",
+						"type": "date",
 						"_propId": "8b573710-725c-4ddb-b929-7a04f836110f",
 						"isElementRangeIndex": true
 					},
 					{
 						"_propId": "360c932a-3f3c-4030-b949-ae3cb1b37b69",
 						"name": "orderId",
-						"type": "String"
+						"type": "string"
 					},
 					{
 						"name": "pricePaid",
-						"type": "Decimal",
+						"type": "decimal",
 						"_propId": "df559744-1832-4675-85c4-bbf6cd9f1ff2"
 					},
 					{
 						"name": "shipDate",
-						"type": "Date",
+						"type": "date",
 						"_propId": "f88704a5-417a-4224-b712-b2816caf876e"
 					},
 					{
 						"_propId": "2c887d74-1e1a-4768-b19d-b72aae6bff74",
 						"name": "status",
-						"type": "String"
+						"type": "string"
 					}
 				],
 				"labelField": "orderId",
@@ -150,47 +150,47 @@
 				"properties": [
 					{
 						"name": "brandName",
-						"type": "String",
+						"type": "string",
 						"_propId": "a5490612-1c2c-4c00-8696-6977f80e9624"
 					},
 					{
 						"name": "category",
-						"type": "String",
+						"type": "string",
 						"_propId": "ad29499f-7a66-426a-9f31-7bc7007593ff"
 					},
 					{
 						"name": "color",
-						"type": "String",
+						"type": "string",
 						"_propId": "3a8d7e38-bada-4c6a-a375-d8849f693395"
 					},
 					{
 						"name": "name",
-						"type": "String",
+						"type": "string",
 						"_propId": "686f3b9a-2a42-4c1e-a0b0-9e2305436cda"
 					},
 					{
 						"name": "orderId",
-						"type": "String",
+						"type": "string",
 						"_propId": "6b6258ad-62f4-4307-b432-d6e9142c7f91"
 					},
 					{
 						"name": "productId",
-						"type": "String",
+						"type": "string",
 						"_propId": "d1b8a4fc-d32f-4064-bcff-d2788d52d563"
 					},
 					{
 						"name": "size",
-						"type": "String",
+						"type": "string",
 						"_propId": "f0ffea87-3f72-4ac0-ba24-84805aa8a622"
 					},
 					{
 						"name": "sku",
-						"type": "String",
+						"type": "string",
 						"_propId": "15a1abcd-dd68-409c-91de-dd176d5451b1"
 					},
 					{
 						"name": "texture",
-						"type": "String",
+						"type": "string",
 						"_propId": "389e4b57-f3e3-4656-8592-5b0ec0712acb"
 					}
 				],

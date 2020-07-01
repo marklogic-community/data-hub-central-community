@@ -13,7 +13,7 @@
 					label="Model Name"
 					v-model="modelName"
 				></v-text-field>
-				
+
 			</v-container>
 			<v-card-actions>
 				<v-spacer></v-spacer>
@@ -26,7 +26,7 @@
 
 <script>
 export default {
-	props: { 
+	props: {
 		existingModels: { type: Array }
 	},
 	data: () => ({
@@ -42,7 +42,6 @@ export default {
 			this.error = false
 			this.errorMsg = []
 			this.modelName = null
-			this.dataType = 'String'
 		},
 		rename() {
 			if (!this.modelName || this.modelName.length === 0) {

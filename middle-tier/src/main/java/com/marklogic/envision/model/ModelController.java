@@ -28,7 +28,7 @@ public class ModelController extends AbstractController {
     ModelService modelService;
 
     @RequestMapping(value = "/{modelName}", method = RequestMethod.GET)
-    public String getModel(HttpSession session, @PathVariable String modelName) {
+    public String getModel(@PathVariable String modelName) {
         DatabaseClient client = getFinalClient();
         DocumentPage page = client.newDocumentManager().read(modelName);
 

@@ -1,22 +1,5 @@
 'use strict';
 
-function getTypeName(type) {
-	switch(type) {
-		case 'string':
-			return 'String'
-		case 'boolean':
-			return 'Boolean'
-		case 'integer':
-			return 'Integer'
-		case 'decimal':
-			return 'Decimal'
-		case 'date':
-			return 'Date'
-		default:
-			return type;
-	}
-}
-
 let entities = fn.collection('http://marklogic.com/entity-services/models').toArray().map(e => e.toObject())
 
 let edges = {}
@@ -45,7 +28,7 @@ entities.forEach(e => {
 		}
 		return {
 			name: propName,
-			type: (prop.datatype === 'array' && prop.items && prop.items.datatype) ? getTypeName(prop.items.datatype) : getTypeName(prop.datatype),
+			type: (prop.datatype === 'array' && prop.items && prop.items.datatype) ? prop.items.datatype : prop.datatype,
 			isArray: prop.datatype === 'array',
 			isRequired: entity.required.indexOf(propName) >= 0,
 			isPii: entity.pii.indexOf(propName) >= 0,

@@ -102,10 +102,18 @@ export default {
 			return !(this.prop)
 		},
 		isArray() {
-			return this.type === 'Array'
+			return this.type === 'array'
+		},
+		dataTypes() {
+			return this.rawDataTypes.map(t => {
+				return {
+					text: t,
+					value: t
+				}
+			})
 		},
 		dataTypeWithArray() {
-			return this.dataTypes.concat([{ text: "Array", value: "Array" }])
+			return [{ text: "array", value: "array" }].concat(this.dataTypes)
 		}
 	},
 	data: () => ({
@@ -117,13 +125,17 @@ export default {
 		],
 		name: null,
 		type: null,
-		arrayType: 'String',
-		dataTypes: [
-			{ text: "Boolean", value: "Boolean" },
-			{ text: "String", value: "String" },
-			{ text: "Integer", value: "Integer" },
-			{ text: "Decimal", value: "Decimal" },
-			{ text: "Date", value: "Date" }
+		arrayType: 'string',
+		rawDataTypes: [
+			'anyURI', 'base64Binary' , 'boolean' , 'byte',
+			'dateTime', 'date', 'dayTimeDuration', 'decimal',
+			'double', 'duration', 'float', 'gDay', 'gMonth',
+			'gMonthDay', 'gYear', 'gYearMonth', 'hexBinary',
+			'int', 'integer', 'long', 'negativeInteger',
+			'nonNegativeInteger', 'nonPositiveInteger',
+			'positiveInteger', 'string', 'short', 'time',
+			'unsignedByte', 'unsignedInt', 'unsignedLong',
+			'unsignedShort', 'yearMonthDuration', 'iri'
 		],
 		isRequired: false,
 		isPii: false,
@@ -136,7 +148,7 @@ export default {
 		reset() {
 			this.advancedState = 0
 			this.name = null
-			this.type = 'String'
+			this.type = 'string'
 			this.error = false
 			this.errorMsg = null
 			this.updateValues()
@@ -159,7 +171,7 @@ export default {
 				this.isWordLexicon = this.prop.isWordLexicon
 
 				if (this.prop.isArray) {
-					this.type = 'Array'
+					this.type = 'array'
 					this.arrayType = this.prop.type
 				}
 				else {
@@ -167,7 +179,7 @@ export default {
 				}
 			}
 			else {
-				this.type = 'String'
+				this.type = 'string'
 			}
 		},
 		save() {

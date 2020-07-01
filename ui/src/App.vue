@@ -1,9 +1,9 @@
 <template>
 	<v-app>
 		<Header v-if="isLoggedIn && !needsInstall"/>
-		<v-content>
+		<v-main>
           <router-view/>
-		</v-content>
+		</v-main>
     <ml-footer/>
 	</v-app>
 </template>

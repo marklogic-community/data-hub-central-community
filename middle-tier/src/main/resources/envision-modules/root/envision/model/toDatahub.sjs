@@ -41,14 +41,14 @@ Object.keys(model.nodes).forEach(key => {
 					datatype: "array",
 					description: p.description,
 					items: {
-						datatype: p.type.toLowerCase(),
+						datatype: p.type,
 						collation: p.collation || "http://marklogic.com/collation/codepoint"
 					}
 				};
 			}
 			else {
 				properties[p.name] = {
-					datatype: p.type.toLowerCase(),
+					datatype: p.type,
 					description: p.description,
 					collation: p.collation || "http://marklogic.com/collation/codepoint"
 				};
