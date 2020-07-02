@@ -13,7 +13,7 @@
 				label="Property Name"
 				v-model="name"
 			></v-text-field>
-			<v-select
+			<v-autocomplete
 				:items="dataTypeWithArray"
 				data-cy="editProperty.dataType"
 				item-text="text"
@@ -21,8 +21,8 @@
 				label="Data Type"
 				v-model="type"
 				:menu-props="{ 'content-class': 'menuDataType'}"
-			></v-select>
-			<v-select
+			></v-autocomplete>
+			<v-autocomplete
 				v-show="isArray"
 				:items="dataTypes"
 				data-cy="editProperty.arrayDataType"
@@ -31,7 +31,7 @@
 				label="Array Data Type"
 				v-model="arrayType"
 				:menu-props="{ 'content-class': 'menuDataTypeArray'}"
-			></v-select>
+			></v-autocomplete>
 			<v-expansion-panels v-model="advancedState">
 				<v-expansion-panel data-cy="editProperty.advancedBtn">
 					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
@@ -91,6 +91,7 @@ import uuidv4 from 'uuid/v4';
 
 export default {
 	props: {
+		entityName: {type: String},
 		adding: {type: String},
 		existingProperties: {type: Array},
 		prop: {type: Object},
@@ -127,13 +128,14 @@ export default {
 		type: null,
 		arrayType: 'string',
 		rawDataTypes: [
-			'anyURI', 'base64Binary' , 'boolean' , 'byte',
-			'dateTime', 'date', 'dayTimeDuration', 'decimal',
+			'string', 'decimal', 'date', 'dateTime', 'integer', 'boolean',
+			'anyURI', 'base64Binary', 'byte',
+			'dayTimeDuration',
 			'double', 'duration', 'float', 'gDay', 'gMonth',
 			'gMonthDay', 'gYear', 'gYearMonth', 'hexBinary',
-			'int', 'integer', 'long', 'negativeInteger',
+			'int', 'long', 'negativeInteger',
 			'nonNegativeInteger', 'nonPositiveInteger',
-			'positiveInteger', 'string', 'short', 'time',
+			'positiveInteger','short', 'time',
 			'unsignedByte', 'unsignedInt', 'unsignedLong',
 			'unsignedShort', 'yearMonthDuration', 'iri'
 		],
@@ -188,6 +190,12 @@ export default {
 				this.errorMsg = ['Property name is required']
 				return
 			}
+			if (this.name === this.entityName) {
+				this.error = true
+				this.errorMsg = ['Property name cannot be the same as the Entity Name']
+				return
+			}
+
 			if (this.name && this.name.match(/^[a-zA-Z0-9_]+$/) == null) {
 				this.error = true
 				this.errorMsg = ['Property name cannot contain spaces. Only letters, numbers, and underscore']

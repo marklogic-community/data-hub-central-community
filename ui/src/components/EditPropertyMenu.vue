@@ -14,6 +14,7 @@
 			:visible="!!showMe"
 			:existingProperties="existingProperties"
 			:prop="prop"
+			:entityName="entityName"
 			@save="save(prop, $event)"
 			@cancel="cancel()"
 		></edit-property>
@@ -30,6 +31,7 @@ export default {
 	},
 	props: {
 		prop: {type: Object},
+		entityName: {type: String},
 		existingProperties: {type: Array}
 	},
 	data() {
