@@ -49,7 +49,44 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('have.text', 'A new Model Name')
 	})
 
-	//add Customer entity
+	// add Customer entity
+	it('cannot add a new entity with invalid name', () => {
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+
+		cy.get('.v-messages__message').should('not.contain', 'Entity name is required')
+		cy.get('.v-messages__message').should('not.contain', 'Entity Name cannot contain spaces. Only letters, numbers, and underscore')
+		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
+		cy.get('[data-cy="addEntity.entityNameField"]').clear()
+		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+		cy.get('.v-messages__message').should('contain', 'Entity name is required')
+
+		cy.get('[data-cy="addEntity.entityNameField"]').clear().type('A Poet')
+		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+		cy.get('.v-messages__message').should('contain', 'Entity Name cannot contain spaces. Only letters, numbers, and underscore')
+
+		cy.get('[data-cy="addEntity.entityNameField"]').clear().type('Poet')
+		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+		cy.get('.v-messages__message').should('contain', 'Entity already exists')
+	})
+
+	it('cannot add a new entity with invalid iri', () => {
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{}}])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+
+		cy.get('.v-messages__message').should('not.contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
+		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
+		cy.get('[data-cy="addEntity.entityNameField"]').type('Poet')
+		cy.get('[data-cy="addEntity.advancedBtn"]').click()
+		cy.get('[data-cy="addEntity.iriField"]').clear().type('http://blah')
+		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+
+		cy.get('.v-messages__message').should('contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
+	})
+
 	it('can add a new entity', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{}}])
 		cy.visit('/')
@@ -59,6 +96,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
 		cy.get('[data-cy="addEntity.entityNameField"]').type('Poet')
 		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+
 		//see if the entity appears
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('contain', 'Test Model')
 		cy.get('[data-cy="entityPickList.addPropertyBtn"]').click()
@@ -229,5 +267,20 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="editProperty.advancedBtn"]').click()
 		cy.get('[data-cy="prop.isPrimaryKey"]').parentsUntil('.v-input__slot').click()
 		cy.get('[data-cy="editProperty.createBtn"]').click()
+	})
+
+	it('can not edit Info.iri with invalid stuff', () => {
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+
+		cy.get('.v-messages__message').should('not.contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("poet").click()
+		cy.get('.v-tab').contains('Info').click()
+		cy.get('[data-cy="infoPane.baseUri"]').clear().type('http://blah')
+		cy.get('.v-messages__message').should('contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
+		cy.get('[data-cy="infoPane.baseUri"]').clear().type('http://blah.com/')
+		cy.get('.v-messages__message').should('not.contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
 	})
 })

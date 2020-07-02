@@ -20,7 +20,30 @@
 				v-model="entityName"
 				data-cy="addEntity.entityNameField"
 			></v-text-field>
+				<v-expansion-panels v-model="advancedState">
+				<v-expansion-panel data-cy="addEntity.advancedBtn">
+					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
+					<v-expansion-panel-content>
+						<v-text-field
+							v-if = "this.type === 'entity'"
+							label="version"
+							v-model="version"
+							data-cy="addEntity.versionField"
+							>
+						</v-text-field>
+						<v-text-field
+							label="IRI"
+							v-model="iri"
+							:error="errorIRI"
+							:error-messages="errorMsgIRI"
+							data-cy="addEntity.iriField"
+						>
+						</v-text-field>
+					</v-expansion-panel-content>
+				</v-expansion-panel>
+			</v-expansion-panels>
 		</v-container>
+
 		<v-card-actions>
 			<v-spacer></v-spacer>
 			<v-btn text color="secondary" @click="cancel">Cancel</v-btn>
@@ -31,15 +54,21 @@
 </template>
 
 <script>
+const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+(\/)$/
 export default {
 	props: {
 		existingEntityNames: {type: Array}
 	},
 	data: () => ({
+		advancedState: null,
+		iri: "http://marklogic.envision.com/",
+		version: "0.0.1",
 		type: 'entity',
 		entityName: null,
 		error: false,
 		errorMsg: null,
+		errorIRI: false,
+		errorMsgIRI: null,
 		rules: [
 			value => !!value || 'Required.'
 		],
@@ -60,7 +89,12 @@ export default {
 			this.type = 'entity'
 			this.error = false
 			this.errorMsg = []
+			this.errorIRI = false
+			this.errorMsgIRI = []
 			this.entityName = null
+			this.advancedState = null
+			this.iri = "http://marklogic.envision.com/"
+			this.version = "0.0.1"
 		},
 		save() {
 			if (!this.entityName || this.entityName.length === 0) {
@@ -73,13 +107,17 @@ export default {
 				this.errorMsg = [`${this.typeLabel} cannot contain spaces. Only letters, numbers, and underscore`]
 				return
 			}
-
+			if (!(this.iri && BASE_URI_REGEX.test(this.iri))) {
+				this.errorIRI = true
+				this.errorMsgIRI = ['A valid IRI is required, e.g. http://marklogic.envision.com/']
+				return
+			}
 			if (this.existingEntityNames.indexOf(this.entityName.toLowerCase()) >= 0) {
 				this.error = true
 				this.errorMsg = ['Entity already exists']
 				return
 			}
-			this.$emit('save', { type: this.type, name: this.entityName})
+			this.$emit('save', { type: this.type, name: this.entityName, iri: this.iri, version: this.version})
 		},
 		cancel() {
 			this.$emit('cancel')
