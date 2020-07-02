@@ -20,11 +20,8 @@ for (let key in model.edges) {
 	let concept = null
 	let conceptType = null
 	if (hasConcept) {
-		console.log("HERE-------------",fromNode.baseUri, toNode.baseUri)
 		if (fromNode.type === 'entity') {
 			node = fromNode
-			//Customer#11 - today
-			//http://marklogic.envision.com/Customer#11 - tomorrow
 			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${edge.from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')))`
 			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${edge.to}#", xs:string(.)))`
 			subTempKey = `./${edge.keyTo}`
