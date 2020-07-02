@@ -28,11 +28,16 @@
 							v-if = "this.type === 'entity'"
 							label="version"
 							v-model="version"
+							data-cy="addEntity.versionField"
 							>
 						</v-text-field>
 						<v-text-field
 							label="IRI"
-							v-model="iri">
+							v-model="iri"
+							:error="errorIRI"
+							:error-messages="errorMsgIRI"
+							data-cy="addEntity.iriField"
+						>
 						</v-text-field>
 					</v-expansion-panel-content>
 				</v-expansion-panel>
@@ -49,6 +54,7 @@
 </template>
 
 <script>
+const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+(\/)$/
 export default {
 	props: {
 		existingEntityNames: {type: Array}
@@ -61,6 +67,8 @@ export default {
 		entityName: null,
 		error: false,
 		errorMsg: null,
+		errorIRI: false,
+		errorMsgIRI: null,
 		rules: [
 			value => !!value || 'Required.'
 		],
@@ -81,6 +89,8 @@ export default {
 			this.type = 'entity'
 			this.error = false
 			this.errorMsg = []
+			this.errorIRI = false
+			this.errorMsgIRI = []
 			this.entityName = null
 			this.advancedState = null
 			this.iri = "http://marklogic.envision.com/"
@@ -97,7 +107,11 @@ export default {
 				this.errorMsg = [`${this.typeLabel} cannot contain spaces. Only letters, numbers, and underscore`]
 				return
 			}
-
+			if (!(this.iri && BASE_URI_REGEX.test(this.iri))) {
+				this.errorIRI = true
+				this.errorMsgIRI = ['A valid IRI is required, e.g. http://marklogic.envision.com/']
+				return
+			}
 			if (this.existingEntityNames.indexOf(this.entityName.toLowerCase()) >= 0) {
 				this.error = true
 				this.errorMsg = ['Entity already exists']

@@ -144,6 +144,24 @@
 					@change="btnUpdateModel(entity)"
 					outlined
 				></v-select>
+				<v-text-field
+					outlined
+					required
+					color="primary"
+					label="Version"
+					v-model="version"
+					data-cy="infoPane.version"
+				></v-text-field>
+				<v-text-field
+					outlined
+					required
+					color="primary"
+					label="IRI"
+					v-model="baseUri"
+					data-cy="infoPane.baseUri"
+					:error="errorIRI"
+					:error-messages="errorMsgIRI"
+				></v-text-field>
 			</v-tab-item>
 		</v-tabs-items>
 	</v-card>
@@ -152,6 +170,8 @@
 <script>
 import EditRelationship from '@/components/EditRelationship.vue';
 import EditPropertyMenu from '@/components/EditPropertyMenu.vue'
+
+const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+(\/)$/
 
 export default {
 	name: 'entity-card',
@@ -167,10 +187,39 @@ export default {
 		EditRelationship,
 		EditPropertyMenu
 	},
+	computed: {
+		baseUri: {
+			get() {
+				return this.entities[this.entity].baseUri || 'http://marklogic.envision.com/'
+			},
+			set(val) {
+				if (val && BASE_URI_REGEX.test(val)) {
+					this.errorIRI = false
+					this.errorMsgIRI = []
+					this.entities[this.entity].baseUri = val
+					this.btnUpdateModel()
+				}
+				else {
+					this.errorIRI = true
+					this.errorMsgIRI = ['A valid IRI is required, e.g. http://marklogic.envision.com/']
+				}
+			}
+		},
+		version: {
+			get() {
+				return this.entities[this.entity].version || '0.0.1'
+			},
+			set(val) {
+				this.entities[this.entity].version = val
+			}
+		}
+	},
 	data() {
 		return {
 			relationshipsPopover: {},
-			whichTab: null
+			whichTab: null,
+			errorIRI: false,
+			errorMsgIRI: null
 		}
 	},
 	watch: {
