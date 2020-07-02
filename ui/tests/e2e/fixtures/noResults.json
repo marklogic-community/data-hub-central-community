@@ -9,10 +9,6 @@
 		"Collections": {
 			"type": "collection",
 			"facetValues": []
-		},
-		"firstName": {
-			"type": "xs:string",
-			"facetValues": []
 		}
 	}
 }

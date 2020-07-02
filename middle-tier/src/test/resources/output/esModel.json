@@ -11,7 +11,7 @@
 			"properties": [
 				{
 					"name": "isPrimaryKey",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -25,7 +25,7 @@
 				},
 				{
 					"name": "isElementRangeIndex1",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -39,7 +39,7 @@
 				},
 				{
 					"name": "isElementRangeIndex2",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -53,7 +53,7 @@
 				},
 				{
 					"name": "isRangeIndex1",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -67,7 +67,7 @@
 				},
 				{
 					"name": "isRangeIndex2",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -81,7 +81,7 @@
 				},
 				{
 					"name": "isWordLexicon1",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -95,7 +95,7 @@
 				},
 				{
 					"name": "isWordLexicon2",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -109,7 +109,7 @@
 				},
 				{
 					"name": "isPii1",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": true,
@@ -123,7 +123,7 @@
 				},
 				{
 					"name": "isPii2",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": true,
@@ -137,7 +137,7 @@
 				},
 				{
 					"name": "isRequired1",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": true,
 					"isPii": false,
@@ -151,7 +151,7 @@
 				},
 				{
 					"name": "isRequired2",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": true,
 					"isPii": false,
@@ -165,7 +165,7 @@
 				},
 				{
 					"name": "isArray",
-					"type": "String",
+					"type": "string",
 					"isArray": true,
 					"isRequired": false,
 					"isPii": false,
@@ -179,7 +179,7 @@
 				},
 				{
 					"name": "crazyCollation",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -193,7 +193,7 @@
 				},
 				{
 					"name": "hasDesc",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -217,7 +217,7 @@
 			"properties": [
 				{
 					"name": "departmentId",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -230,7 +230,7 @@
 				},
 				{
 					"name": "employeeId",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -243,7 +243,7 @@
 				},
 				{
 					"name": "name",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -256,7 +256,7 @@
 				},
 				{
 					"name": "skills",
-					"type": "String",
+					"type": "string",
 					"isArray": true,
 					"isRequired": false,
 					"isPii": false,
@@ -297,7 +297,7 @@
 			"properties": [
 				{
 					"name": "departmentId",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,
@@ -310,7 +310,7 @@
 				},
 				{
 					"name": "employeeIds",
-					"type": "String",
+					"type": "string",
 					"isArray": true,
 					"isRequired": false,
 					"isPii": false,
@@ -323,7 +323,7 @@
 				},
 				{
 					"name": "name",
-					"type": "String",
+					"type": "string",
 					"isArray": false,
 					"isRequired": false,
 					"isPii": false,

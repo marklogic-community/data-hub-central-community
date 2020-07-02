@@ -495,10 +495,6 @@
           "value": "sm-Department-merged"
         }
       ]
-    },
-    "firstName": {
-      "type": "xs:string",
-      "facetValues": []
     }
   }
 }

@@ -246,10 +246,6 @@
 					"value": "MasterEmployees"
 				}
 			]
-		},
-		"firstName": {
-			"type": "xs:string",
-			"facetValues": []
 		}
 	}
 }
