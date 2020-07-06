@@ -340,7 +340,6 @@ public class OSController extends AbstractController {
 	}
 
 	private void runFlow(String flowName) {
-		//FlowRunner flowRunner = new FlowRunnerImpl(hubConfig.getHost(), hubConfig.getMlUsername(), hubConfig.getMlPassword());
 		FlowRunner flowRunner = new FlowRunnerImpl(hubConfig);
 		System.out.println("Running flow: " + flowName);
 		FlowInputs inputs = new FlowInputs(flowName);
@@ -348,19 +347,6 @@ public class OSController extends AbstractController {
 		flowRunner.awaitCompletion();
 		System.out.println("Response: " + response);
 	}
-
-	static void runFlow(FlowRunner flowRunner, String inputFilePath) {
-		final String flowName = "ingestion_mapping_mastering-flow";
-		FlowInputs inputs = new FlowInputs(flowName);
-		// This is needed so that an absolute file path is used
-		inputs.setInputFilePath(inputFilePath);
-
-		System.out.println("Running flow: " + flowName);
-		RunFlowResponse response = flowRunner.runFlow(inputs);
-		flowRunner.awaitCompletion();
-		System.out.println("Response: " + response);
-	}
-
 }
 
 
