@@ -1,7 +1,3 @@
-function deploy(path, params) {
-	console.log('In osAPI deploy function');
-}
-
 import axios from 'axios';
 
 export default {
@@ -34,11 +30,11 @@ export default {
 				return error;
 			});
 	},
-	deployToDHS() {
+	deployToDH() {
 		console.log('In deloyToDHS');
 
 		return axios
-			.get('/api/os/deployToDHS/')
+			.get('/api/os/deployToDH/')
 			.then(response => {
 				console.log('Returning ' + response.data);
 				return { response: response.data };
@@ -71,26 +67,6 @@ export default {
 			})
 			.catch(error => {
 				console.error('Error getting DHS config:', error);
-				return error;
-			});
-	},
-	setGradleProperties(props) {
-		console.log('In OS API setGradleProperties , props=' + props);
-		var config = {
-			headers: {
-				'Content-Length': 0,
-				'Content-Type': 'text/plain'
-			},
-			responseType: 'text'
-		};
-		return axios
-			.post('/api/os/setGradleProps/', props, config)
-			.then(response => {
-				console.log('Returning ' + response.data);
-				return { response: response.data };
-			})
-			.catch(error => {
-				console.error('error:', error);
 				return error;
 			});
 	}
