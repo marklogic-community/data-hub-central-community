@@ -103,7 +103,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="editProperty.propName"]').type('id')
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'String')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 	})
 
 	it('can delete an entity', () => {
@@ -150,7 +150,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="editProperty.propName"]').type('firstName')
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'firstName')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'String')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 	})
 
 	it('can add a new Array property', () => {
@@ -163,10 +163,10 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('[data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('[data-cy="editProperty.propName"]').type('arrayProp')
-		cy.get('[data-cy="editProperty.dataType"]').parentsUntil('.v-select__slot').click()
-		cy.get('.menuDataType .v-list-item').contains('Array').parentsUntil('.v-list-item').click()
-		cy.get('[data-cy="editProperty.arrayDataType"]').parentsUntil('.v-select__slot').click()
-		cy.get('.menuDataTypeArray .v-list-item').contains('Boolean').parentsUntil('.v-list-item').click()
+		cy.get('[data-cy="editProperty.dataType"]').click()
+		cy.get('.v-list-item__title:visible').contains('array').parentsUntil('.v-list-item').click()
+		cy.get('[data-cy="editProperty.arrayDataType"]').click()
+		cy.get('.v-list-item:visible').contains('boolean').parentsUntil('.v-list-item').click()
 		cy.get('[data-cy="editProperty.advancedBtn"]').click()
 		cy.get('[data-cy="prop.isPii"]').should('not.be.checked')
 		cy.get('[data-cy="prop.isPrimaryKey"]').should('not.be.checked')
@@ -177,11 +177,11 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'arrayProp')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'Boolean[]')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'boolean[]')
 	})
 
 	it('can delete a property', () => {
-		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "String" }]}}}])
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
 
@@ -189,16 +189,16 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'address')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'String')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 
 		cy.get('[data-cy="entityPickList.deletePropertyBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('not.contain', 'address')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('not.contain', 'String')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('not.contain', 'string')
 		cy.contains('No properties')
 	})
 
 	it('can edit a property', () => {
-		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "String"},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "String" }]}}}])
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string"},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
 
@@ -206,23 +206,23 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').first().should('have.text', 'address')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'String')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'string')
 
 		cy.get('[data-cy="entityPickList.editPropertyBtn"]').first().click()
 		cy.get('[data-cy="editProperty.propName"]').clear().type('arrayProp')
-		cy.get('[data-cy="editProperty.dataType"]').parentsUntil('.v-select__slot').click()
-		cy.get('.v-menu__content:visible .v-list-item').contains('Array').parentsUntil('.v-list-item').click()
+		cy.get('[data-cy="editProperty.dataType"]').click()
+		cy.contains('.v-menu__content:visible .v-list-item', 'array').click()
 		cy.wait(1000)
-		cy.get('[data-cy="editProperty.arrayDataType"]').parentsUntil('.v-select__slot').click()
-		cy.get('.v-menu__content:visible').last().find('.v-list-item').contains('Boolean').parentsUntil('.v-list-item').click()
+		cy.get('[data-cy="editProperty.arrayDataType"]').click()
+		cy.get('.v-menu__content:visible .v-list-item:visible').contains('boolean').parentsUntil('.v-list-item').click()
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').first().should('have.text', 'arrayProp')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'Boolean[]')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'boolean[]')
 	})
 
 	// TODO: FIX THIS
 	it('can not edit a property to an existing one', () => {
-		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "String"},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "String" }]}}}])
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string"},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
 
@@ -230,7 +230,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').first().should('have.text', 'address')
-		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'String')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').first().should('have.text', 'string')
 
 		cy.get('[data-cy="entityPickList.editPropertyBtn"]').first().click()
 		cy.get('[data-cy="editProperty.propName"]').clear().type('id')
@@ -239,7 +239,7 @@ describe('End to end test to create and update model', () => {
 	})
 
 	it('can show advanced property features', () => {
-		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "String", "isPrimaryKey": true, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "String" }]}}}])
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": true, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
 
@@ -257,7 +257,7 @@ describe('End to end test to create and update model', () => {
 
 	// TODO: FIX THIS
 	it('can only have one primary key', () => {
-		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "String", "isPrimaryKey": true, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "String" }]}}}])
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": true, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
 

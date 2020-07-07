@@ -27,14 +27,8 @@ echo "{
 		\"prefix\" : \"es\",
 		\"namespace-uri\" : \"http://marklogic.com/entity-services\"
 	} ],
-	\"range-element-index\" : [ {
-		\"invalid-values\" : \"reject\",
-		\"localname\" : \"firstName\",
-		\"namespace-uri\" : null,
-		\"range-value-positions\" : false,
-		\"scalar-type\" : \"string\",
-		\"collation\" : \"http://marklogic.com/collation/codepoint\"
-	} ],
+	\"range-element-index\" : [
+	],
 	\"database-name\" : \"%%mlFinalDbName%%\"
 }
 "  > src/main/entity-config/databases/final-database.json

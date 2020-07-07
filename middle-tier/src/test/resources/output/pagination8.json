@@ -35,10 +35,6 @@
 					"value": "MapCoastalEmployees"
 				}
 			]
-		},
-		"firstName": {
-			"type": "xs:string",
-			"facetValues": []
 		}
 	}
 }

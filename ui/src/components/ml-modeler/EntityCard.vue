@@ -28,7 +28,7 @@
 							<td class="action">
 								<edit-property-menu
 									:prop="Object.assign({}, prop)"
-									:entity="entity"
+									:entityName="entity"
 									:existingProperties="entities[entity].properties"
 									@save="btnSaveProperty(entity, $event)">
 									<button data-cy="entityPickList.editPropertyBtn" class="fa fa-pencil" aria-label="Edit Property" />
@@ -45,6 +45,7 @@
 				<p class="grey--text darken-4" v-else>No properties</p>
 				<edit-property-menu
 					:existingProperties="entities[entity].properties"
+					:entityName="entity"
 					@save="btnSaveProperty(entity, $event)">
 					<v-btn
 						color="primary"

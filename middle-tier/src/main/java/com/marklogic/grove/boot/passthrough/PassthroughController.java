@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/resources")
 public class PassthroughController extends AbstractController {
 
-    @RequestMapping(value = "/{resource}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{resource}", method = {RequestMethod.GET, RequestMethod.POST})
     void getDoc(@PathVariable String resource, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
         DatabaseClient client = getFinalClient();
 

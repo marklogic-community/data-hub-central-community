@@ -41,7 +41,6 @@ export default {
 			this.error = false
 			this.errorMsg = []
 			this.modelName = null
-			this.dataType = 'String'
 		},
 		save() {
 			if (!this.modelName || this.modelName.length === 0) {

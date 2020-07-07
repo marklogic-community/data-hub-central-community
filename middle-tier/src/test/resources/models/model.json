@@ -104,25 +104,25 @@
 				{
 					"_propId": "611f2987-6652-4d00-90d3-b557a74eea3b",
 					"name": "departmentId",
-					"type": "String",
+					"type": "string",
 					"isArray": false
 				},
 				{
 					"_propId": "6074d7e7-5ad2-4a1f-bf52-6568b5842f1d",
 					"name": "employeeId",
-					"type": "String",
+					"type": "string",
 					"isArray": false
 				},
 				{
 					"_propId": "b904d6b4-5aa4-4498-8952-5a13a26c37d0",
 					"name": "name",
-					"type": "String",
+					"type": "string",
 					"isArray": false
 				},
 				{
 					"_propId": "3da018d0-6466-41af-bd1c-b19c00077044",
 					"name": "skills",
-					"type": "String",
+					"type": "string",
 					"isArray": true
 				}
 			],
@@ -140,19 +140,19 @@
 				{
 					"_propId": "9b6e57d2-5888-4117-a742-a34d6138038a",
 					"name": "departmentId",
-					"type": "String",
+					"type": "string",
 					"isArray": false
 				},
 				{
 					"_propId": "d7bcf2ab-ae04-49ae-b63e-5364b85249f2",
 					"name": "employeeIds",
-					"type": "String",
+					"type": "string",
 					"isArray": true
 				},
 				{
 					"_propId": "9643395b-cca7-44d7-a3fe-326d00d0ef23",
 					"name": "name",
-					"type": "String",
+					"type": "string",
 					"isArray": false
 				}
 			],
@@ -200,85 +200,85 @@
 			"properties": [
 				{
 					"name": "isPrimaryKey",
-					"type": "String",
+					"type": "string",
 					"isPrimaryKey": true,
 					"_propId": "e29871c7-877e-4b16-a450-a96de78ad201"
 				},
 				{
 					"name": "isElementRangeIndex1",
-					"type": "String",
+					"type": "string",
 					"isElementRangeIndex": true,
 					"_propId": "c2b83ba2-a433-43cc-8818-8d06f3db97b4"
 				},
 				{
 					"name": "isElementRangeIndex2",
-					"type": "String",
+					"type": "string",
 					"isElementRangeIndex": true,
 					"_propId": "d86ea90f-9417-4026-8f26-c46cc8319d89"
 				},
 				{
 					"name": "isRangeIndex1",
-					"type": "String",
+					"type": "string",
 					"isRangeIndex": true,
 					"_propId": "7f4a961a-e74c-4aea-b40c-c2953ac9c31e"
 				},
 				{
 					"name": "isRangeIndex2",
-					"type": "String",
+					"type": "string",
 					"isRangeIndex": true,
 					"_propId": "2f03b8a9-7edd-4e6f-8f6e-7c13ec3f8c85"
 				},
 				{
 					"name": "isWordLexicon1",
-					"type": "String",
+					"type": "string",
 					"isWordLexicon": true,
 					"_propId": "72de5e9b-3edc-4265-8ef8-7dcfa516bc57"
 				},
 				{
 					"name": "isWordLexicon2",
-					"type": "String",
+					"type": "string",
 					"isWordLexicon": true,
 					"_propId": "1b97644c-66f2-4a38-9275-f8c2198f80e7"
 				},
 				{
 					"name": "isPii1",
-					"type": "String",
+					"type": "string",
 					"isPii": true,
 					"_propId": "3512a13f-b1d8-49ed-9924-33294fa44b5c"
 				},
 				{
 					"name": "isPii2",
-					"type": "String",
+					"type": "string",
 					"isPii": true,
 					"_propId": "425e7947-8e88-423a-af51-23967184110c"
 				},
 				{
 					"name": "isRequired1",
-					"type": "String",
+					"type": "string",
 					"isRequired": true,
 					"_propId": "9d3f7b47-ca67-4c30-8b73-ca6c90a8a762"
 				},
 				{
 					"name": "isRequired2",
-					"type": "String",
+					"type": "string",
 					"isRequired": true,
 					"_propId": "5949c154-3468-4d19-9c30-533d2b33e9d1"
 				},
 				{
 					"name": "isArray",
-					"type": "String",
+					"type": "string",
 					"isArray": true,
 					"_propId": "07d4cb89-cecc-4d3f-a55b-285ac92fcc31"
 				},
 				{
 					"name": "crazyCollation",
-					"type": "String",
+					"type": "string",
 					"_propId": "f61c18c6-e15e-4e42-a5ac-1ad8abbd97f7",
 					"collation": "http://marklogic.com/collation/fr/S1/T0020/AS/MO"
 				},
 				{
 					"name": "hasDesc",
-					"type": "String",
+					"type": "string",
 					"_propId": "b37c1d05-53fa-4973-82a6-af0667af231d",
 					"description": "has a desc"
 				}

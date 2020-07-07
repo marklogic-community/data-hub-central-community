@@ -766,10 +766,6 @@
           "value": "sm-Employee-mastered"
         }
       ]
-    },
-    "firstName": {
-      "type": "xs:string",
-      "facetValues": []
     }
   }
 }

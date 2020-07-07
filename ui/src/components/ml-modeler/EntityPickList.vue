@@ -432,6 +432,6 @@ export default {
 
 .v-expansion-panels {
 	display: flex;
-	justify-content: start;
+	justify-content: flex-start;
 }
 </style>

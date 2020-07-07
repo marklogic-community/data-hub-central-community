@@ -2,11 +2,7 @@ package com.marklogic.envision.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.document.DocumentPage;
-import com.marklogic.client.document.DocumentRecord;
-import com.marklogic.client.io.StringHandle;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.grove.boot.error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,15 +24,9 @@ public class ModelController extends AbstractController {
     ModelService modelService;
 
     @RequestMapping(value = "/{modelName}", method = RequestMethod.GET)
-    public String getModel(HttpSession session, @PathVariable String modelName) {
+    public JsonNode getModel(@PathVariable String modelName) {
         DatabaseClient client = getFinalClient();
-        DocumentPage page = client.newDocumentManager().read(modelName);
-
-        if (!page.hasNext()) {
-            throw new NotFoundException();
-        }
-        DocumentRecord documentRecord = page.next();
-        return documentRecord.getContent(new StringHandle()).get();
+        return modelService.getModel(client, modelName);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
