@@ -159,19 +159,19 @@ const $router = new Router({
         checkLogin
       }
     },
-    {
-      path: '/deploy',  //url path
-      name: 'root.deploy', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/DeployPage.vue'),
-      meta: {
-        label: 'Deploy',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
+    // {
+    //   path: '/deploy',  //url path
+    //   name: 'root.deploy', //use to navigate to page
+    //   // lazy-loading of page
+    //   component: () =>
+    //     import(/* webpackChunkName: "modeler" */ './views/DeployPage.vue'),
+    //   meta: {
+    //     label: 'Deploy',
+    //     navArea: 'header',
+    //     requiresLogin: true,
+    //     checkLogin
+    //   }
+    // },
     /*{
       path: '/map',  //url path
       name: 'root.mapper', //use to navigate to page

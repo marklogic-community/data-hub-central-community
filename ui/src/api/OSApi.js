@@ -2,25 +2,11 @@ import axios from 'axios';
 
 export default {
 	name: 'OSApi',
-	dhsRunFlows() {
+	runFlows() {
 		console.log('In OS API runFlows ');
 
 		return axios
-			.get('/api/os/runFlowsWithoutIngestionSteps/')
-			.then(response => {
-				console.log('Returning ' + response.data);
-				return { response: response.data };
-			})
-			.catch(error => {
-				console.error('error:', error);
-				return error;
-			});
-	},
-	runIngestSteps() {
-		console.log('In OS API runIngestSteps ');
-
-		return axios
-			.get('/api/os/runIngestSteps/')
+			.get('/api/os/runFlows/')
 			.then(response => {
 				console.log('Returning ' + response.data);
 				return { response: response.data };
