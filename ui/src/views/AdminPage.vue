@@ -1,37 +1,71 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 <script>
 import axios from 'axios';
+import OSApi from '@/api/OSApi.js';
 
 export default {
-    data: function() {
-        return {
-            msg1: '',
-            error1: ''
-        }
-    } ,
+    name:'AdminPage',
+    data: ()=> ({
+        msg1: '',
+        error1: '' ,
+        datahub: {}  
+    }),
+    
     methods: {
         async resetDemo() {
             this.msg1 = ""
             this.error1 = ""
-
-						try {
-							let response = await axios.post("/api/system/reset")
-							if (response.data.success) {
-								this.msg1 = "Data reset."
-							}
-							else {
-								this.error1 = response.data.error
-							}
-						}
-						catch(error) {
-							this.error1= error
-						}
+            try {
+                let response = await axios.post("/api/system/reset")
+                if (response.data.success) {
+                    this.msg1 = "Data reset."
+                }
+                else {
+                    this.error1 = response.data.error
+                }
+            }
+            catch(error) {
+                this.error1= error
+            }
+        },
+        getDataHubConfig() {
+            this.datahub = OSApi.getDataHubConfig();
+        },
+        deployRunFlows(){
+            OSApi.runFlows();
+        },
+        mounted: function() {
+            this.getDataHubConfig();
         }
     }
 }
 </script>
+
 <template>
     <div id="adminContainer">
         <h1>Envision Admin Page</h1>
+        <fieldset class="col-sm-9">
+            <legend>Data Hub</legend>
+             <p>These are the properties of your Data Hub.</p>
+            <v-simple-table>
+                <thead>
+                    <tr>
+                        <th class="primary--text">Name</th>
+                        <th class="primary--text">Value</th>
+                     </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="prop in datahub" :key="prop.name">
+                        <td >{{prop.name}}</td>
+                        <td >{{prop.type}}{{prop.isArray ? '[]' : ''}}</td>
+                        <td class="action"></td>
+                    </tr>
+                </tbody>
+            </v-simple-table>
+            <p class="error">{{ error1 }}</p>
+            <p class="success">{{ msg1 }}</p>
+            <v-btn color="primary" class="right" v-on:click="deployRunFlows" aria-label="Run flows.">Run Flows</v-btn> 
+        </fieldset>
         <fieldset class="col-sm-9">
             <legend>Reset</legend>
             <v-btn color="primary" class="right" v-on:click="resetDemo">Reset</v-btn>
