@@ -254,8 +254,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="prop.isRangeIndex"]').should('not.be.checked')
 		cy.get('[data-cy="prop.isWordLexicon"]').should('not.be.checked')
 	})
-
-	// TODO: FIX THIS
+ 
 	it('can only have one primary key', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": true, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')
@@ -263,10 +262,44 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.get('[data-cy=nodeList]').contains("poet").click()
-		cy.get('[data-cy="entityPickList.editPropertyBtn"]').first().click()
+
+		// Starting point has 'id' as the primary key. 'address' is the first property in the display (assumed alpha
+		// order). Clicking the pk button for the 'address' property should make it the pk and the pk attribute should 
+		// be removed from the 'id' prop
+
+		cy.log("id (the last attribute in the list) should have pk selected")
+		cy.get('[data-cy="entityPickList.editPropertyBtn"]').last().click()
 		cy.get('[data-cy="editProperty.advancedBtn"]').click()
-		cy.get('[data-cy="prop.isPrimaryKey"]').parentsUntil('.v-input__slot').click()
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').should('be.checked')
+		cy.get('[data-cy="editProperty.cancelBtn"]').click()
+
+		cy.log("make address the PK then check that the id attr does not have pk selected")
+		cy.get('[data-cy="entityPickList.editPropertyBtn"]').first().click()
+		cy.get('[data-cy="editProperty.advancedBtn"]').last().click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('not.be.checked')
+		cy.get('[data-cy="prop.isPrimaryKey"]').last().parentsUntil('.v-input__slot').first().click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('be.checked')
+		cy.get('[data-cy="editProperty.createBtn"]').last().click()
+		// check id attr
+		cy.get('[data-cy="entityPickList.editPropertyBtn"]').last().click()
+		cy.get('[data-cy="editProperty.advancedBtn"]').first().click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').first().should('not.be.checked')
+		cy.get('[data-cy="editProperty.cancelBtn"]').first().click()
+
+		cy.log("check we can unselect the PK, so nothing has a PK")
+		cy.get('[data-cy="entityPickList.editPropertyBtn"]').first().click()
+		cy.get('[data-cy="editProperty.advancedBtn"]').last().click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('be.checked')
+		cy.get('[data-cy="prop.isPrimaryKey"]').last().parentsUntil('.v-input__slot').first().click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('not.be.checked')
+		cy.get('[data-cy="editProperty.createBtn"]').last().click()
+		// check id attr
+		cy.get('[data-cy="entityPickList.editPropertyBtn"]').last().click()
+		cy.get('[data-cy="editProperty.advancedBtn"]').first().click()
+		cy.get('[data-cy="prop.isPrimaryKey"]').first().should('not.be.checked')
+		cy.get('[data-cy="editProperty.cancelBtn"]').first().click()
+
+		
 	})
 
 	it('can not edit Info.iri with invalid stuff', () => {
