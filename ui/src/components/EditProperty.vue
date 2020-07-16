@@ -55,20 +55,7 @@
 								></v-checkbox>
 							</v-flex>
 							<v-flex md6>
-								<!--
-								<v-checkbox
-									v-if="primaryKey == '' || (prop && primaryKey == prop.name) "
-									data-cy="prop.isPrimaryKey"
-									v-model="isPrimaryKey"
-									label="Primary Key"
-								></v-checkbox>
-								<v-checkbox
-									v-else
-									data-cy="prop.isPrimaryKey"
-									:label="'Primary Key is ' + primaryKey"
-									value disabled
-								></v-checkbox>
-								-->
+								
 								<v-checkbox
 									v-if="primaryKey == '' || (prop && primaryKey == prop.name) "
 									data-cy="prop.isPrimaryKey"
