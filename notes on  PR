@@ -1,0 +1,14 @@
+Want host, environment name on table
+listener- need to use web sockets? need some feedback when run flows is passed
+vutify alert is https://vuetifyjs.com/en/components/alerts/
+Reset button makes green bar appear in Data Hub panel
+error reporting
+
+Using HR360 cooking show data set with 5.2.1 DHF, ML 10.0-4
+ 
+·        On admin page :
+o   name and value columns, but no values
+o   click run flows, no indicator that anything's occurred
+§  all flows run and complete successfully, with one caveat
+·        EmployeesMastering flow completes "succesfully", but no notify for the mastering step
+·        reset bar for reset appears in data hub section as well.

@@ -64,9 +64,11 @@ public class OSController extends AbstractController {
 
 		// Does grade-dhs.properties exists in the datahub project dir?
 		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
-		final File dhsConfigFile = new File(dhfDir + "/gradle-dhs.properties");
-		config.put("dhsConfigFileExists", dhsConfigFile.exists());
+		config.put("project", dhfDir);
 
+		final String myHostName =  hubConfig.getHost();
+		config.put("host", myHostName);
+		
 		// get flows
 		final ArrayList<String> arrFlows = new ArrayList<String>();
 
@@ -103,7 +105,7 @@ public class OSController extends AbstractController {
 	//could do in naive way- json, xml, csv
 	//no need to specify a flow, just target collection-
 	//custom ui for loading data flow
-	@RequestMapping(value = "/runFlows", method = RequestMethod.GET)
+	@RequestMapping(value = "/runFlows", method = RequestMethod.POST)
 	public String runFlows()  {
 		//TODO This return variable has no value
 		String output = "";

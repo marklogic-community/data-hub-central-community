@@ -6,7 +6,7 @@ export default {
 		console.log('In OS API runFlows ');
 
 		return axios
-			.get('/api/os/runFlows/')
+			.post('/api/os/runFlows/')
 			.then(response => {
 				console.log('Returning ' + response.data);
 				return { response: response.data };
@@ -44,7 +44,7 @@ export default {
 				return error;
 			});
 	},
-	getDHprojectConfig() {
+	getDataHubConfig() {
 		return axios
 			.get('/api/os/getDHprojectConfig/')
 			.then(response => {
