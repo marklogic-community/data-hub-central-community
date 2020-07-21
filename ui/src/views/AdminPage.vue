@@ -1,7 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 <script>
 import axios from 'axios';
-import OSApi from '@/api/OSApi.js';
 
 export default {
     name:'AdminPage',
@@ -9,10 +8,20 @@ export default {
         msg1: '',
         error1: '' ,
         flowMsg: '',
-        flowError: '' ,
-        datahub: ''  
+        flowError: '',
+        datahub: '',
+        flows: '',
+        headers: [
+          {
+            text: 'Property',
+            align: 'start',
+            sortable: false,
+            value: 'prop',
+          },
+          { text: 'Setting', value: 'val' }
+        ],
     }),
-    
+
     methods: {
         async resetDemo() {
             this.msg1 = ""
@@ -31,19 +40,32 @@ export default {
             }
         },
         getDataHubConfig() {
-            return axios
+			return axios
 			.get('/api/os/getDHprojectConfig/')
 			.then(response => {
-                console.log('Returning ' + response.data);
-                this.datahub=response.data;
-				return response.data;
+            console.log('Returning ' + response.data);
+            this.datahub= response.data;
+			return response.data;
 			})
 			.catch(error => {
 				console.error('Error getting DHS config:', error);
 				return error;
 			});
         },
-        async deployRunFlows(){
+        getFlowNames() {
+			return axios
+			.get('/api/os/getFlowNames/')
+			.then(response => {
+                console.log('Returning ' + response.data);
+                this.flows=response.data;
+				return response.data;
+			})
+			.catch(error => {
+				console.error('Error getting flows:', error);
+				return error;
+			});
+        },
+        async runFlows(){
             this.flowMsg = "Running flows."
             this.flowError = ""
             axios.post("/api/os/runFlows/")
@@ -56,9 +78,30 @@ export default {
                 this.flowError = error
                 return error;
             });
+        },
+        async runFlow(flowName){
+            this.flowMsg = "Running flow " + flowName + "."
+            this.flowError = ""
+            axios.post("/api/os/runFlow/", null, {params: {flowName}})
+            .then(response => {
+                this.flowMsg =response.statusText
+                return response.data
+            })
+            .catch(error => {
+                console.error('error:', error);
+                this.flowError = error
+                return error;
+            });
+        },
+        runFlowsSequence(){
+            
+        },
+        handleDataHubTableClick(event){
+            console.log(event);
         }},
     mounted() {
         this.getDataHubConfig();
+        this.getFlowNames();
     }
 }
 
@@ -69,22 +112,34 @@ export default {
         <h1>Envision Admin Page</h1>
         <fieldset class="col-sm-9">
             <legend>Data Hub</legend>
-             <p>These are the properties of your Data Hub:</p>
-            <v-data-table
+            <p>These are the properties of your Data Hub:</p>
+            <v-data-table dense 
+                :headers="headers"
                 :items="datahub"
+                :items-per-page="5"
             ></v-data-table>
+            <!-- <v-data-table dense 
+                :items="datahub" disable-filtering disable-pagination hide-default-footer item-key="prop">
+                <template v-slot:body="{ datahub }">
+                    <tbody>
+                        <tr v-for="dhprop in datahub" :key="dhprop.prop">
+                            <td>{{ dhprop.prop }}</td>
+                            <td>{{ dhprop.val }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+            </v-data-table> -->
             <v-simple-table dense>
                  <tbody>
-                    <tr v-for="(value, key) in datahub" >
-                        <td >{{key}}</td>
-                        <td >{{value}}</td>
-                        <td class="action"></td>
+                    <tr v-for="dhprop in datahub" :key="dhprop.prop" class='clickable-row' @click="handleDataHubTableClick(dhprop)">
+                        <td >{{dhprop.prop}}</td>
+                        <td >{{dhprop.val}}</td>
                     </tr>
                 </tbody>
             </v-simple-table>
             <p class="error">{{ flowError }}</p>
             <p class="success">{{ flowMsg }}</p>
-            <v-btn color="primary" class="right" v-on:click="deployRunFlows" aria-label="Run flows.">Run Flows</v-btn> 
+            <v-btn color="primary" class="right" v-on:click="runFlows" aria-label="Run flows.">Run Flows</v-btn>
         </fieldset>
         <fieldset class="col-sm-9">
             <legend>Reset</legend>
@@ -95,44 +150,10 @@ export default {
             <p class="error">{{ error1 }}</p>
             <p class="success">{{ msg1 }}</p>
         </fieldset>
-
-        <fieldset class="col-sm-9">
-            <legend>Backup and Restore</legend>
-            <p>Run the commands below from your host operating system</p>
-            <p><em>Backup:</em> the commands below will create a file in your current directory called EnvisionBackup.zip.
-                (It will overwrite this file if it exists, so be careful).
-                The file contains the Data Hub entities and flows, and the model.json file used by Envision.
-            </p>
-            <p class="code">
-                docker exec -it envision_datahub_1 /bin/sh /envision/datahub/gradlew EnvisionBackup <br/>
-                docker cp envision_datahub_1:/tmp/backup/EnvisionBackup.zip .
-            </p>
-            <hr>
-            <p></p>
-            <p><em>Restore:</em> the commands below will restore your Envision.
-                The file we restore from must be called EnvisionBackup.zip and should be in your current directory.
-            </p>
-            <p class="code">
-                docker cp EnvisionBackup.zip envision_datahub_1:/tmp<br/>
-                docker exec -it envision_datahub_1 /bin/sh /envision/datahub/gradlew TGrestore
-          </p>
-          <p>After doing a restore you will need to refresh the Envision window to see your changes</p>
-        </fieldset>
-        <fieldset class="col-sm-9">
-            <legend>Sashenka</legend>
-            <p>Can't remember how to spell Sashenka? If you are running Envision using Docker (i.e. not in development mode),
-                run the command below from your Mac/PC terminal to change Sashenka to an easier to remember name, such as
-                Jane in this example.</p>
-            <p class="code">
-                docker exec -it envision_envision_1 sh -c
-                "sed -i 's/Sashenka/Jane/g' /envision/datahub/data/BrandACustomers/CC-BrandA-Customers.csv &&
-                 sed -i 's/Sashenka/Jane/g' /envision/datahub/data/BrandBCustomers/CC-BrandB-Customers.csv ;"
-            </p>
-       </fieldset>
-				<fieldset class="col-sm-9">
-						<legend>Enhancements</legend>
-						<p>Contact the Envision team if you'd like other admin type features that would make all our lives easier!</p>
-				</fieldset>
+ 		<fieldset class="col-sm-9">
+			<legend>Enhancements</legend>
+			<p>Contact the Envision team if you'd like other admin type features that would make all our lives easier!</p>
+		</fieldset>
     </div>
 </template>
 
@@ -173,5 +194,7 @@ export default {
         font-size: 1.1em;
         color: darkred;
     }
-
+    .clickable-row {
+        cursor: pointer;
+    }
 </style>

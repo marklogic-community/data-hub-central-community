@@ -2,9 +2,18 @@ import axios from 'axios';
 
 export default {
 	name: 'OSApi',
+	getFlowNames() {
+		return axios
+		.get('/api/os/getFlowNames/')
+		.then(response => {
+			return { response: response.data };
+		})
+		.catch(error => {
+			console.error('error:', error);
+			return error;
+		});
+	},
 	runFlows() {
-		console.log('In OS API runFlows ');
-
 		return axios
 			.post('/api/os/runFlows/')
 			.then(response => {

@@ -9,7 +9,6 @@ import com.marklogic.hub.deploy.util.HubDeployStatusListener;
 import com.marklogic.hub.dhs.DhsDeployer;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.impl.*;
-import com.marklogic.hub.step.StepDefinitionProvider;
 import com.marklogic.hub.util.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,13 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.marklogic.grove.boot.AbstractController;
 
-import java.io.*;
 import java.util.*;
 
 import com.marklogic.hub.entity.HubEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 @RestController
 @RequestMapping("/api/os/")
@@ -45,92 +42,106 @@ public class OSController extends AbstractController {
 	EntityManagerImpl entityManager;
 
 	@Autowired
-	FlowRunner fr;
-
-	@Autowired
 	DeployHubService deployService;
-
-	//support for hub step runner
-	private int batchSize = 100;
-    private int threadCount = 4;
-    private String sourceDatabase;
-    private String targetDatabase;
-	private StepDefinitionProvider stepDefinitionProvider;
 
 	// returns JSON (or string) containining details of the DH project config
 	@RequestMapping(value = "/getDHprojectConfig", method = RequestMethod.GET)
 	public String getDHprojectConfig()  {
-		final JSONObject config = new JSONObject();
+		ArrayList<JSONObject> config = new ArrayList<JSONObject>();
 
-		// Does grade-dhs.properties exists in the datahub project dir?
+		final JSONObject dirObj = new JSONObject();
 		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
-		config.put("project", dhfDir);
+		dirObj.put("prop", "Project");
+		dirObj.put("val", dhfDir);
 
-		final String myHostName =  hubConfig.getHost();
-		config.put("host", myHostName);
-		
+		config.add(dirObj);
+
+		final JSONObject hostObj = new JSONObject();
+		final String myHostName = hubConfig.getHost();
+		hostObj.put("prop", "Host");
+		hostObj.put("val", myHostName);
+
+		config.add(hostObj);
+
 		// get flows
+		final JSONObject flowsObj = new JSONObject();
 		final ArrayList<String> arrFlows = new ArrayList<String>();
-
 		final List<Flow> flows = flowManager.getFlows();
-		for(final Flow flow : flows) {
-			System.out.println("DGB got flow: " + flow.getName());
+		for (final Flow flow : flows) {
 			arrFlows.add(flow.getName());
 		}
-		config.put("flows", arrFlows.toString());
+		flowsObj.put("prop", "Flows");
+		flowsObj.put("val", arrFlows.toString() );
+
+		config.add(flowsObj);
 
 		// get Entities
+		final JSONObject entitiesObj = new JSONObject();
 		final ArrayList<String> arrEntities = new ArrayList<String>();
 		final List<HubEntity> entities = entityManager.getEntities();
-		for(final HubEntity entity : entities) {
-			System.out.println("DGB got entity: " + entity.getInfo().getTitle() );
+		for (final HubEntity entity : entities) {
 			arrEntities.add(entity.getInfo().getTitle());
 		}
-		config.put("entities", arrEntities.toString());
+		entitiesObj.put("prop", "Entities");
+		entitiesObj.put("val", arrEntities.toString() );
 
+		config.add(entitiesObj);
 
-		System.out.println("DGB returning: " + config.toString() );
-		return config.toString() ;
+		return config.toString();
 	}
 
-	//DMSDK approach to ingestion
-	//TODO file uploader for Envision at a url
-	//file being uploaded, name of flow/step
-	//write to tmp
-	//kick off nifi/etc to run ingest/harmonize
-	//S3 upload?
-	//Rest service in spring boot- will collect all files in tmp
-	//real way - write own custom ui for uploadin 1-n file
-	//automagically determine file type
-	//could do in naive way- json, xml, csv
-	//no need to specify a flow, just target collection-
-	//custom ui for loading data flow
 	@RequestMapping(value = "/runFlows", method = RequestMethod.POST)
-	public String runFlows()  {
-		//TODO This return variable has no value
+	public String runFlows() {
 		String output = "";
 		// get Ingestion flows
 		final List<Flow> flows = flowManager.getFlows();
 
 		for (final Flow flow : flows) {
 			try {
-				runFlow(flow.getName());
-				output = "Ran flow " + flow.getName();
-			}catch(final Error e){
+				_runFlow(flow.getName());
+				output += "Ran flow " + flow.getName() + " ";
+			} catch (final Error e) {
 				System.out.println("Cannot run flow " + flow.getName());
-				output = "Error running flow " + flow.getName();
+				output += "Error running flow " + flow.getName() + " ";
 			}
 		}
 		return output;
 	}
 
-	private	HubDeployStatusListener getListener() {
+	@RequestMapping(value = "/getFlowNames", method = RequestMethod.GET)
+	public String getFlowNames() {
+		final JSONObject flowNames = new JSONObject();
+		// get flows
+		final ArrayList<String> arrFlows = new ArrayList<String>();
+
+		final List<Flow> flows = flowManager.getFlows();
+		for (final Flow flow : flows) {
+			arrFlows.add(flow.getName());
+		}
+		flowNames.put("flows", arrFlows.toString());
+		return flowNames.toString();
+	}
+
+	@RequestMapping(value = "/runFlow", method = RequestMethod.POST)
+	public String runFlow(final String flowName)  {
+		String output = "";
+		try {
+				_runFlow(flowName);
+				output = "Ran flow " + flowName;
+			}catch(final Error e){
+				System.out.println("Cannot run flow " + flowName);
+				output = "Error running flow " + flowName;
+			}
+		return output;
+	}
+
+	private HubDeployStatusListener getListener() {
 		// callback for status updates
 		HubDeployStatusListener listener;
 		listener = new HubDeployStatusListener() {
 			@Override
 			public void onStatusChange(final int percentComplete, final String message) {
-				//TODO access view's progress indicator
+				// TODO access view's progress indicator
 				System.out.println(message + " complete:" + percentComplete);
 			}
 
@@ -145,26 +156,26 @@ public class OSController extends AbstractController {
 	// Deploy entities and flows to DH
 	@RequestMapping(value = "/deployToDH", method = RequestMethod.GET)
 	public String deployToDH() {
-			//if is provisioned environment we are deploying to the cloud
-			if(hubConfig.getIsProvisionedEnvironment()){
-				try {
-					this.deployToDHS();
-				} catch (final Exception e) {
-					System.out.println("Cannot deploy to DHS");
-				}
-			}else{
-				try{
-					this.deployToNonProvisioned();
-				} catch (final Exception e) {
-					System.out.println("Cannot deploy to non-provisioned environment");
-				}
+		// if is provisioned environment we are deploying to the cloud
+		if (hubConfig.getIsProvisionedEnvironment()) {
+			try {
+				this.deployToDHS();
+			} catch (final Exception e) {
+				System.out.println("Cannot deploy to DHS");
 			}
-			return new String("Hub deployed.");
+		} else {
+			try {
+				this.deployToNonProvisioned();
+			} catch (final Exception e) {
+				System.out.println("Cannot deploy to non-provisioned environment");
+			}
+		}
+		return new String("Hub deployed.");
 	}
 
-	//dispatch to DHSDeployer
+	// dispatch to DHSDeployer
 	private void deployToDHS() {
-		DhsDeployer dhsDeployer = new DhsDeployer();
+		final DhsDeployer dhsDeployer = new DhsDeployer();
 
 		dhsDeployer.deployAsSecurityAdmin(hubConfig);
 		dhsDeployer.deployAsDeveloper(hubConfig);
@@ -172,20 +183,20 @@ public class OSController extends AbstractController {
 
 	private boolean deployToNonProvisioned() {
 		boolean result = false;
-		HubDeployStatusListener listener = getListener();
+		final HubDeployStatusListener listener = getListener();
 		try {
 			result = deployService.deployHubInstall(listener);
-		} catch (Error error) {
+		} catch (final Error error) {
 			error.printStackTrace();
 		}
 		return result;
 	}
 
-	private void runFlow(String flowName) {
-		FlowRunner flowRunner = new FlowRunnerImpl(hubConfig);
+	private void _runFlow(final String flowName) {
+		final FlowRunner flowRunner = new FlowRunnerImpl(hubConfig);
 		System.out.println("Running flow: " + flowName);
-		FlowInputs inputs = new FlowInputs(flowName);
-		RunFlowResponse response = flowRunner.runFlow(inputs);
+		final FlowInputs inputs = new FlowInputs(flowName);
+		final RunFlowResponse response = flowRunner.runFlow(inputs);
 		flowRunner.awaitCompletion();
 		System.out.println("Response: " + response);
 	}

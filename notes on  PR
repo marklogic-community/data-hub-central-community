@@ -12,3 +12,17 @@ o   click run flows, no indicator that anything's occurred
 §  all flows run and complete successfully, with one caveat
 ·        EmployeesMastering flow completes "succesfully", but no notify for the mastering step
 ·        reset bar for reset appears in data hub section as well.
+
+
+// DMSDK approach to ingestion
+	// TODO file uploader for Envision at a url
+	// file being uploaded, name of flow/step
+	// write to tmp
+	// kick off nifi/etc to run ingest/harmonize
+	// S3 upload?
+	// Rest service in spring boot- will collect all files in tmp
+	// real way - write own custom ui for uploadin 1-n file
+	// automagically determine file type
+	// could do in naive way- json, xml, csv
+	// no need to specify a flow, just target collection-
+	// custom ui for loading data flow
