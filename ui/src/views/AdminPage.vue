@@ -101,11 +101,10 @@ export default {
         runFlowsSequence(){
             this.flowMsg = "Running flows " + this.flows + "."
             this.showFlowStatus = true;
-            const myContext = this;
-            this.flows.forEach(function(flow){
-                myContext.flowMsg = "Running flow " + flow + "."
-                myContext.showFlowStatus = true;
-                myContext.runFlow(flow); 
+            this.flows.forEach(flow=>{
+                this.flowMsg = "Running flow " + flow + "."
+                this.showFlowStatus = true;
+                this.runFlow(flow); 
             });
         },
         handleDataHubTableClick(event){
