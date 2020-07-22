@@ -1,5 +1,6 @@
 package com.marklogic.grove.boot.OS;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.FlowRunner;
 import com.marklogic.hub.flow.RunFlowResponse;
@@ -10,6 +11,7 @@ import com.marklogic.hub.dhs.DhsDeployer;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.impl.*;
 import com.marklogic.hub.util.json.JSONObject;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -108,18 +110,16 @@ public class OSController extends AbstractController {
 		return output;
 	}
 
-	@RequestMapping(value = "/getFlowNames", method = RequestMethod.GET)
-	public String getFlowNames() {
-		final JSONObject flowNames = new JSONObject();
+	@RequestMapping(value = "/getFlowNames", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ArrayList<String> getFlowNames() {
 		// get flows
-		final ArrayList<String> arrFlows = new ArrayList<String>();
+		ArrayList<String> arrFlows = new ArrayList<String>();
 
 		final List<Flow> flows = flowManager.getFlows();
 		for (final Flow flow : flows) {
 			arrFlows.add(flow.getName());
 		}
-		flowNames.put("flows", arrFlows.toString());
-		return flowNames.toString();
+		return arrFlows;
 	}
 
 	@RequestMapping(value = "/runFlow", method = RequestMethod.POST)

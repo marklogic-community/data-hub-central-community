@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 <script>
 import axios from 'axios';
 
@@ -11,6 +10,7 @@ export default {
         flowError: '',
         datahub: '',
         flows: '',
+        showFlowStatus:false,
         headers: [
           {
             text: 'Property',
@@ -24,19 +24,21 @@ export default {
 
     methods: {
         async resetDemo() {
-            this.msg1 = ""
-            this.error1 = ""
+            this.flowMsg = ""
+            this.flowError = ""
             try {
                 let response = await axios.post("/api/system/reset")
                 if (response.data.success) {
-                    this.msg1 = "Data reset."
+                    this.flowMsg = "Data reset."
+                    this.showFlowStatus=true;
                 }
                 else {
-                    this.error1 = response.data.error
+                    this.flowError = response.data.error
+                    this.showFlowStatus=true;
                 }
-            }
-            catch(error) {
-                this.error1= error
+            }catch(error) {
+                this.flowError= error
+                this.showFlowStatus=true;
             }
         },
         getDataHubConfig() {
@@ -82,19 +84,29 @@ export default {
         async runFlow(flowName){
             this.flowMsg = "Running flow " + flowName + "."
             this.flowError = ""
+            this.showFlowStatus = true;
             axios.post("/api/os/runFlow/", null, {params: {flowName}})
             .then(response => {
                 this.flowMsg =response.statusText
+                this.showFlowStatus = true;
                 return response.data
             })
             .catch(error => {
                 console.error('error:', error);
                 this.flowError = error
+                this.showFlowStatus = true;
                 return error;
             });
         },
         runFlowsSequence(){
-            
+            this.flowMsg = "Running flows " + this.flows + "."
+            this.showFlowStatus = true;
+            const myContext = this;
+            this.flows.forEach(function(flow){
+                myContext.flowMsg = "Running flow " + flow + "."
+                myContext.showFlowStatus = true;
+                myContext.runFlow(flow); 
+            });
         },
         handleDataHubTableClick(event){
             console.log(event);
@@ -109,15 +121,32 @@ export default {
 
 <template>
     <div id="adminContainer">
+        <v-snackbar
+            v-model="showFlowStatus"
+            :bottom=false
+            :color="color"
+            :left=false
+            :right=true
+            :timeout="timeout"
+            :top=true
+        >
+            {{ flowMsg + " " + flowError }}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                color="red"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+                >
+                Close
+                </v-btn>
+            </template>
+        </v-snackbar>
         <h1>Envision Admin Page</h1>
         <fieldset class="col-sm-9">
             <legend>Data Hub</legend>
             <p>These are the properties of your Data Hub:</p>
-            <v-data-table dense 
-                :headers="headers"
-                :items="datahub"
-                :items-per-page="5"
-            ></v-data-table>
             <!-- <v-data-table dense 
                 :items="datahub" disable-filtering disable-pagination hide-default-footer item-key="prop">
                 <template v-slot:body="{ datahub }">
@@ -137,20 +166,16 @@ export default {
                     </tr>
                 </tbody>
             </v-simple-table>
-            <p class="error">{{ flowError }}</p>
-            <p class="success">{{ flowMsg }}</p>
-            <v-btn color="primary" class="right" v-on:click="runFlows" aria-label="Run flows.">Run Flows</v-btn>
+            <v-btn color="primary" class="right" v-on:click="runFlowsSequence" aria-label="Run flows.">Run Flows</v-btn>
         </fieldset>
         <fieldset class="col-sm-9">
             <legend>Reset</legend>
-            <v-btn color="primary" class="right" v-on:click="resetDemo">Reset</v-btn>
             <p>Press the reset button to delete documents created while demonstrating. This button clears the Jobs
                 database but does not delete any documents in data-hub-STAGING/FINAL that are assiciated
                 with entity services, flows, steps etc.</p>
-            <p class="error">{{ error1 }}</p>
-            <p class="success">{{ msg1 }}</p>
+            <v-btn color="primary" class="right" v-on:click="resetDemo">Reset</v-btn>    
         </fieldset>
- 		<fieldset class="col-sm-9">
+		<fieldset class="col-sm-9">
 			<legend>Enhancements</legend>
 			<p>Contact the Envision team if you'd like other admin type features that would make all our lives easier!</p>
 		</fieldset>
