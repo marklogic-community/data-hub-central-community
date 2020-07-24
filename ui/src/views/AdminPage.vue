@@ -2,83 +2,182 @@
 import axios from 'axios';
 
 export default {
-    data: function() {
-        return {
-            msg1: '',
-            error1: ''
-        }
-    } ,
+    name:'AdminPage',
+    data: ()=> ({
+        msg1: '',
+        error1: '' ,
+        flowMsg: '',
+        flowError: '',
+        datahub: '',
+        flows: '',
+        showFlowStatus:false,
+        headers: [
+          {
+            text: 'Property',
+            align: 'start',
+            sortable: false,
+            value: 'prop',
+          },
+          { text: 'Setting', value: 'val' }
+        ],
+    }),
+
     methods: {
         async resetDemo() {
-            this.msg1 = ""
-            this.error1 = ""
-
-						try {
-							let response = await axios.post("/api/system/reset")
-							if (response.data.success) {
-								this.msg1 = "Data reset."
-							}
-							else {
-								this.error1 = response.data.error
-							}
-						}
-						catch(error) {
-							this.error1= error
-						}
-        }
+            this.flowMsg = ""
+            this.flowError = ""
+            try {
+                let response = await axios.post("/api/system/reset")
+                if (response.data.success) {
+                    this.flowMsg = "Data reset."
+                    this.showFlowStatus=true;
+                }
+                else {
+                    this.flowError = response.data.error
+                    this.showFlowStatus=true;
+                }
+            }catch(error) {
+                this.flowError= error
+                this.showFlowStatus=true;
+            }
+        },
+        getDataHubConfig() {
+			return axios
+			.get('/api/os/getDHprojectConfig/')
+			.then(response => {
+            console.log('Returning ' + response.data);
+            this.datahub= response.data;
+			return response.data;
+			})
+			.catch(error => {
+				console.error('Error getting DHS config:', error);
+				return error;
+			});
+        },
+        getFlowNames() {
+			return axios
+			.get('/api/os/getFlowNames/')
+			.then(response => {
+                console.log('Returning ' + response.data);
+                this.flows=response.data;
+				return response.data;
+			})
+			.catch(error => {
+				console.error('Error getting flows:', error);
+				return error;
+			});
+        },
+        async runFlows(){
+            this.flowMsg = "Running flows."
+            this.flowError = ""
+            axios.post("/api/os/runFlows/")
+            .then(response => {
+                this.flowMsg =response.statusText
+                return response.data
+            })
+            .catch(error => {
+                console.error('error:', error);
+                this.flowError = error
+                return error;
+            });
+        },
+        async runFlow(flowName){
+            this.flowMsg = "Running flow " + flowName + "."
+            this.flowError = ""
+            this.showFlowStatus = true;
+            axios.post("/api/os/runFlow/", null, {params: {flowName}})
+            .then(response => {
+                this.flowMsg =response.statusText
+                this.showFlowStatus = true;
+                return response.data
+            })
+            .catch(error => {
+                console.error('error:', error);
+                this.flowError = error
+                this.showFlowStatus = true;
+                return error;
+            });
+        },
+        runFlowsSequence(){
+            this.flowMsg = "Running flows " + this.flows + "."
+            this.showFlowStatus = true;
+            this.flows.forEach(flow=>{
+                this.flowMsg = "Running flow " + flow + "."
+                this.showFlowStatus = true;
+                this.runFlow(flow); 
+            });
+        },
+        handleDataHubTableClick(event){
+            console.log(event);
+        }},
+    mounted() {
+        this.getDataHubConfig();
+        this.getFlowNames();
     }
 }
+
 </script>
+
 <template>
     <div id="adminContainer">
+        <v-snackbar
+            v-model="showFlowStatus"
+            :bottom=false
+            :color="color"
+            :left=false
+            :right=true
+            :timeout="timeout"
+            :top=true
+        >
+            {{ flowMsg + " " + flowError }}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                color="red"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+                >
+                Close
+                </v-btn>
+            </template>
+        </v-snackbar>
         <h1>Envision Admin Page</h1>
         <fieldset class="col-sm-9">
+            <legend>Data Hub</legend>
+            <p>These are the properties of your Data Hub:</p>
+            <!-- <v-data-table dense 
+                :items="datahub" disable-filtering disable-pagination hide-default-footer item-key="prop">
+                <template v-slot:body="{ datahub }">
+                    <tbody>
+                        <tr v-for="dhprop in datahub" :key="dhprop.prop">
+                            <td>{{ dhprop.prop }}</td>
+                            <td>{{ dhprop.val }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+            </v-data-table> -->
+            <v-simple-table dense>
+                 <tbody>
+                    <tr v-for="dhprop in datahub" :key="dhprop.prop" class='clickable-row' @click="handleDataHubTableClick(dhprop)">
+                        <td >{{dhprop.prop}}</td>
+                        <td >{{dhprop.val}}</td>
+                    </tr>
+                </tbody>
+            </v-simple-table>
+            <v-btn color="primary" class="right" v-on:click="runFlowsSequence" aria-label="Run flows.">Run Flows</v-btn>
+        </fieldset>
+        <fieldset class="col-sm-9">
             <legend>Reset</legend>
-            <v-btn color="primary" class="right" v-on:click="resetDemo">Reset</v-btn>
             <p>Press the reset button to delete documents created while demonstrating. This button clears the Jobs
                 database but does not delete any documents in data-hub-STAGING/FINAL that are assiciated
                 with entity services, flows, steps etc.</p>
-            <p class="error">{{ error1 }}</p>
-            <p class="success">{{ msg1 }}</p>
+            <v-btn color="primary" class="right" v-on:click="resetDemo">Reset</v-btn>    
         </fieldset>
-
-        <fieldset class="col-sm-9">
-            <legend>Backup and Restore</legend>
-            <p>Run the commands below from your host operating system</p>
-            <p><em>Backup:</em> the commands below will create a file in your current directory called EnvisionBackup.zip.
-                (It will overwrite this file if it exists, so be careful).
-                The file contains the Data Hub entities and flows, and the model.json file used by Envision.
-            </p>
-            <p class="code">
-                docker exec -it envision_datahub_1 /bin/sh /envision/datahub/gradlew EnvisionBackup <br/>
-                docker cp envision_datahub_1:/tmp/backup/EnvisionBackup.zip .
-            </p>
-            <hr>
-            <p></p>
-            <p><em>Restore:</em> the commands below will restore your Envision.
-                The file we restore from must be called EnvisionBackup.zip and should be in your current directory.
-            </p>
-            <p class="code">
-                docker cp EnvisionBackup.zip envision_datahub_1:/tmp<br/>
-                docker exec -it envision_datahub_1 /bin/sh /envision/datahub/gradlew TGrestore
-          </p>
-          <p>After doing a restore you will need to refresh the Envision window to see your changes</p>
-        </fieldset>
-        <fieldset class="col-sm-9">
-            <legend>Sashenka</legend>
-            <p>Can't remember how to spell Sashenka? If you are running Envision using Docker (i.e. not in development mode),
-                run the command below from your Mac/PC terminal to change Sashenka to an easier to remember name, such as
-                Jane in this example.</p>
-            <p class="code">
-                docker exec -it envision_envision_1 sh -c
-                "sed -i 's/Sashenka/Jane/g' /envision/datahub/data/BrandACustomers/CC-BrandA-Customers.csv &&
-                 sed -i 's/Sashenka/Jane/g' /envision/datahub/data/BrandBCustomers/CC-BrandB-Customers.csv ;"
-            </p>
-       </fieldset>
-				<fieldset class="col-sm-9">
-						<legend>Enhancements</legend>
-						<p>Contact the Envision team if you'd like other admin type features that would make all our lives easier!</p>
-				</fieldset>
+		<fieldset class="col-sm-9">
+			<legend>Enhancements</legend>
+			<p>Contact the Envision team if you'd like other admin type features that would make all our lives easier!</p>
+		</fieldset>
     </div>
 </template>
 
@@ -119,5 +218,7 @@ export default {
         font-size: 1.1em;
         color: darkred;
     }
-
+    .clickable-row {
+        cursor: pointer;
+    }
 </style>

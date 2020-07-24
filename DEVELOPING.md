@@ -50,6 +50,18 @@ http://localhost:9999
 
 You can log in with your MarkLogic username and password.
 
+If you want to debug the middle tier while you run the ui in development mode, you might want to use a port for the middle tier other than the default.
+Say you you want to run the middle tier at 9004 by using -Dserver.port=9004 when you run bootRun.
+
+First, edit ui/.env:
+VUE_APP_MIDDLETIER_PORT=9004
+
+Open two terminal windows. In one run the middle tier at the port you like (in this case, 9004):
+`gradlew -Dserver.port=9004 -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -DdhfEnv=yourEnvironment bootRun`
+
+In the other run the ui, as above:
+`gradlew runui`
+
 #### Running End to End UI Tests
 Open a terminal in the top level envision directory.
 

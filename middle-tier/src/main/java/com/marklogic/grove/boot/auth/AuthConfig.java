@@ -135,6 +135,7 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
             "/explore",
 			"/explore/compare",
             "/know",
+            "/deploy",
 			"/detail",
 			"/notifications",
 			"/notifications/compare",
