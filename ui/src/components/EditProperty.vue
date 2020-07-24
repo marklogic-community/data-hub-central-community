@@ -55,11 +55,21 @@
 								></v-checkbox>
 							</v-flex>
 							<v-flex md6>
+								
 								<v-checkbox
+									v-if="primaryKey == '' || (prop && primaryKey == prop.name) "
 									data-cy="prop.isPrimaryKey"
 									v-model="isPrimaryKey"
 									label="Primary Key"
 								></v-checkbox>
+								<v-checkbox
+									v-else
+									data-cy="prop.isPrimaryKey"
+									:label="'Change Primary Key from ' + primaryKey"
+									v-model="isPrimaryKey"
+									v-on:click="removeOldPK"
+								></v-checkbox>
+
 								<v-checkbox
 									data-cy="prop.isRequired"
 									v-model="isRequired"
@@ -79,7 +89,7 @@
 		</v-container>
 		<v-card-actions>
 			<v-spacer></v-spacer>
-			<v-btn text color="secondary" @click="cancel">Cancel</v-btn>
+			<v-btn data-cy="editProperty.cancelBtn"text color="secondary" @click="cancel">Cancel</v-btn>
 			<v-btn data-cy="editProperty.createBtn" type="submit" text color="primary">Save</v-btn>
 		</v-card-actions>
 	</v-card>
@@ -115,6 +125,17 @@ export default {
 		},
 		dataTypeWithArray() {
 			return [{ text: "array", value: "array" }].concat(this.dataTypes)
+		},
+		primaryKey() { 
+			// feature/issue-12 - check to see if any prop is defined as a primary key
+			if (this.existingProperties) {
+				for (var i=0; i<this.existingProperties.length; i++) {
+					if ( this.existingProperties[i].isPrimaryKey) {
+						return this.existingProperties[i].name
+					}
+				}
+			}
+			return ""
 		}
 	},
 	data: () => ({
@@ -147,6 +168,16 @@ export default {
 		isWordLexicon: false
 	}),
 	methods: {
+		removeOldPK(){
+			if (this.existingProperties) {
+				for (var i=0; i<this.existingProperties.length; i++) {
+					if (this.existingProperties[i].name != this.name ) {
+						this.existingProperties[i].isPrimaryKey = false
+					}	
+				}
+			}
+			this.isPrimaryKey = true
+		},
 		reset() {
 			this.advancedState = 0
 			this.name = null
@@ -181,8 +212,17 @@ export default {
 				}
 			}
 			else {
+				// feature/issue-12 - reset all values
 				this.type = 'string'
+				this.name = ""
+				this.isRequired = false
+				this.isPii = false
+				this.isPrimaryKey = false
+				this.isElementRangeIndex = false
+				this.isRangeIndex = false
+				this.isWordLexicon = false
 			}
+
 		},
 		save() {
 			if (!this.name || this.name.length === 0) {
