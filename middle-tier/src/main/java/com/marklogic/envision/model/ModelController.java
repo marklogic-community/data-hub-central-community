@@ -3,6 +3,7 @@ package com.marklogic.envision.model;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +21,13 @@ import java.util.List;
 @RequestMapping("/api/models")
 public class ModelController extends AbstractController {
 
+    final private ModelService modelService;
+
     @Autowired
-    ModelService modelService;
+	ModelController(HubConfigImpl hubConfig, ModelService modelService) {
+    	super(hubConfig);
+    	this.modelService = modelService;
+	}
 
     @RequestMapping(value = "/{modelName}", method = RequestMethod.GET)
     public JsonNode getModel(@PathVariable String modelName) {

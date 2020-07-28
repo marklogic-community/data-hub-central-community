@@ -726,7 +726,8 @@ table {
 .modeler {
 	.layout.column,
 	.layout.row,
-	.mlvisjs-graph,
+	/deep/ .mlvisjs-graph,
+	.graph-container,
 	.graph-container div {
 		height: 100%
 	}

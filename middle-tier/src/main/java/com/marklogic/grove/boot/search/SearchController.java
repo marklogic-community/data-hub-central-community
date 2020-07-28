@@ -7,6 +7,7 @@ import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,13 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/search")
 public class SearchController extends AbstractController {
 
+	final private SearchService searchService;
+
 	@Autowired
-	SearchService searchService;
+	SearchController(HubConfigImpl hubConfig, SearchService searchService) {
+		super(hubConfig);
+		this.searchService = searchService;
+	}
 
 	@RequestMapping(value = "/{type}", method = RequestMethod.POST)
 	public JsonNode search(@PathVariable String type, @RequestBody ObjectNode searchRequest, HttpSession session) {

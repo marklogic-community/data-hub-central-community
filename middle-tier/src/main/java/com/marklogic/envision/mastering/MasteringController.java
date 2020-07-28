@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.dataServices.Mastering;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,13 @@ import java.io.IOException;
 @RequestMapping("/api/mastering")
 public class MasteringController extends AbstractController {
 
+	final private MasteringService masteringService;
+
 	@Autowired
-	private MasteringService masteringService;
+	MasteringController(HubConfigImpl hubConfig, MasteringService masteringService) {
+		super(hubConfig);
+		this.masteringService = masteringService;
+	}
 
 	private ObjectMapper om = new ObjectMapper();
 

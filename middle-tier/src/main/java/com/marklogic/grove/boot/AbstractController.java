@@ -13,8 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractController {
 
+	final private HubConfigImpl hubConfig;
+
 	@Autowired
-	private HubConfigImpl hubConfig;
+	public AbstractController(HubConfigImpl hubConfig) {
+		this.hubConfig = hubConfig;
+	}
 
 	public HubConfigImpl getHubConfig() {
 		if (hubConfig != null) {

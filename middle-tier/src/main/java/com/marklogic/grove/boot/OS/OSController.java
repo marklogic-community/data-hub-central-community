@@ -1,65 +1,59 @@
 package com.marklogic.grove.boot.OS;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marklogic.envision.deploy.DeployHubService;
+import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.deploy.util.HubDeployStatusListener;
+import com.marklogic.hub.dhs.DhsDeployer;
+import com.marklogic.hub.entity.HubEntity;
+import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.FlowRunner;
 import com.marklogic.hub.flow.RunFlowResponse;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
-import com.marklogic.envision.deploy.DeployHubService;
-import com.marklogic.hub.deploy.util.HubDeployStatusListener;
-import com.marklogic.hub.dhs.DhsDeployer;
-import com.marklogic.hub.flow.Flow;
-import com.marklogic.hub.impl.*;
+import com.marklogic.hub.impl.EntityManagerImpl;
+import com.marklogic.hub.impl.FlowManagerImpl;
+import com.marklogic.hub.impl.HubConfigImpl;
 import com.marklogic.hub.util.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.marklogic.grove.boot.AbstractController;
-
-import java.util.*;
-
-import com.marklogic.hub.entity.HubEntity;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/os/")
 
 public class OSController extends AbstractController {
 
-	boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
+	private final FlowManagerImpl flowManager;
+	private final EntityManagerImpl entityManager;
+	private final DeployHubService deployService;
 
 	@Autowired
-	HubConfigImpl hubConfig;
-
-	@Autowired
-	DataHubImpl datahub;
-
-	@Autowired
-	FlowManagerImpl flowManager;
-
-	@Autowired
-	EntityManagerImpl entityManager;
-
-	@Autowired
-	DeployHubService deployService;
+	OSController(HubConfigImpl hubConfig, FlowManagerImpl flowManager, EntityManagerImpl entityManager, DeployHubService deployService) {
+		super(hubConfig);
+		this.flowManager = flowManager;
+		this.entityManager = entityManager;
+		this.deployService = deployService;
+	}
 
 	// returns JSON (or string) containining details of the DH project config
 	@RequestMapping(value = "/getDHprojectConfig", method = RequestMethod.GET)
 	public String getDHprojectConfig()  {
-		ArrayList<JSONObject> config = new ArrayList<JSONObject>();
+		ArrayList<JSONObject> config = new ArrayList<>();
 
 		final JSONObject dirObj = new JSONObject();
-		final String dhfDir = hubConfig.getHubProject().getProjectDirString();
+		final String dhfDir = getHubConfig().getHubProject().getProjectDirString();
 		dirObj.put("prop", "Project");
 		dirObj.put("val", dhfDir);
 
 		config.add(dirObj);
 
 		final JSONObject hostObj = new JSONObject();
-		final String myHostName = hubConfig.getHost();
+		final String myHostName = getHubConfig().getHost();
 		hostObj.put("prop", "Host");
 		hostObj.put("val", myHostName);
 
@@ -67,7 +61,7 @@ public class OSController extends AbstractController {
 
 		// get flows
 		final JSONObject flowsObj = new JSONObject();
-		final ArrayList<String> arrFlows = new ArrayList<String>();
+		final ArrayList<String> arrFlows = new ArrayList<>();
 		final List<Flow> flows = flowManager.getFlows();
 		for (final Flow flow : flows) {
 			arrFlows.add(flow.getName());
@@ -79,7 +73,7 @@ public class OSController extends AbstractController {
 
 		// get Entities
 		final JSONObject entitiesObj = new JSONObject();
-		final ArrayList<String> arrEntities = new ArrayList<String>();
+		final ArrayList<String> arrEntities = new ArrayList<>();
 		final List<HubEntity> entities = entityManager.getEntities();
 		for (final HubEntity entity : entities) {
 			arrEntities.add(entity.getInfo().getTitle());
@@ -94,26 +88,26 @@ public class OSController extends AbstractController {
 
 	@RequestMapping(value = "/runFlows", method = RequestMethod.POST)
 	public String runFlows() {
-		String output = "";
+		StringBuilder output = new StringBuilder();
 		// get Ingestion flows
 		final List<Flow> flows = flowManager.getFlows();
 
 		for (final Flow flow : flows) {
 			try {
 				_runFlow(flow.getName());
-				output += "Ran flow " + flow.getName() + " ";
+				output.append("Ran flow ").append(flow.getName()).append(" ");
 			} catch (final Error e) {
 				System.out.println("Cannot run flow " + flow.getName());
-				output += "Error running flow " + flow.getName() + " ";
+				output.append("Error running flow ").append(flow.getName()).append(" ");
 			}
 		}
-		return output;
+		return output.toString();
 	}
 
 	@RequestMapping(value = "/getFlowNames", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ArrayList<String> getFlowNames() {
 		// get flows
-		ArrayList<String> arrFlows = new ArrayList<String>();
+		ArrayList<String> arrFlows = new ArrayList<>();
 
 		final List<Flow> flows = flowManager.getFlows();
 		for (final Flow flow : flows) {
@@ -124,7 +118,7 @@ public class OSController extends AbstractController {
 
 	@RequestMapping(value = "/runFlow", method = RequestMethod.POST)
 	public String runFlow(final String flowName)  {
-		String output = "";
+		String output;
 		try {
 				_runFlow(flowName);
 				output = "Ran flow " + flowName;
@@ -157,7 +151,7 @@ public class OSController extends AbstractController {
 	@RequestMapping(value = "/deployToDH", method = RequestMethod.GET)
 	public String deployToDH() {
 		// if is provisioned environment we are deploying to the cloud
-		if (hubConfig.getIsProvisionedEnvironment()) {
+		if (getHubConfig().getIsProvisionedEnvironment()) {
 			try {
 				this.deployToDHS();
 			} catch (final Exception e) {
@@ -170,13 +164,14 @@ public class OSController extends AbstractController {
 				System.out.println("Cannot deploy to non-provisioned environment");
 			}
 		}
-		return new String("Hub deployed.");
+		return "Hub deployed.";
 	}
 
 	// dispatch to DHSDeployer
 	private void deployToDHS() {
 		final DhsDeployer dhsDeployer = new DhsDeployer();
 
+		HubConfigImpl hubConfig = getHubConfig();
 		dhsDeployer.deployAsSecurityAdmin(hubConfig);
 		dhsDeployer.deployAsDeveloper(hubConfig);
 	}
@@ -193,7 +188,7 @@ public class OSController extends AbstractController {
 	}
 
 	private void _runFlow(final String flowName) {
-		final FlowRunner flowRunner = new FlowRunnerImpl(hubConfig);
+		final FlowRunner flowRunner = new FlowRunnerImpl(getHubConfig());
 		System.out.println("Running flow: " + flowName);
 		final FlowInputs inputs = new FlowInputs(flowName);
 		final RunFlowResponse response = flowRunner.runFlow(inputs);

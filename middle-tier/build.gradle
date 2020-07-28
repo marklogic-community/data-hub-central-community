@@ -19,8 +19,8 @@ apply plugin: "io.spring.dependency-management"
 apply plugin: "com.moowork.node"
 apply plugin: 'idea'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "9"
+targetCompatibility = "9"
 
 ext {
 	taskGroup = "Envision UI"

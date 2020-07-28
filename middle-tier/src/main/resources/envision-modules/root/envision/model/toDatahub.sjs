@@ -63,11 +63,15 @@ Object.keys(model.nodes).forEach(key => {
 			"wordLexicon": Object.keys(wordLexicon),
 			"properties": properties
 		};
+		let baseUri = node.baseUri || "http://marklogic.com/envision/"
+		if (!baseUri.endsWith('/')) {
+			baseUri += '/'
+		}
 		entities[key] = {
 			"info": {
 				"title": node.entityName,
 				"version": node.version || "0.0.1",
-				"baseUri": node.baseUri || "http://marklogic.com/envision/",
+				"baseUri": baseUri,
 				"description": node.description
 			},
 			"definitions": {}
@@ -83,32 +87,37 @@ Object.keys(model.edges).forEach(key => {
 	let nameFrom = model.getName(edge.from);
 	let nameTo = model.getName(edge.to);
 	if (model.nodes[edge.from] && model.nodes[edge.from].type === 'entity' && model.nodes[edge.to] && model.nodes[edge.to].type === 'entity') {
+		const toEntity = entities[edge.to]
+		const baseUri = toEntity.info.baseUri
+		const version = toEntity.info.version
+		const title = toEntity.info.title
 		if (edge.cardinality === '1:1') {
 			entities[edge.from].definitions[nameFrom].properties[edge.label] = {
-				"$ref": "#/definitions/" + nameTo
+				"$ref": `${baseUri}${title}-${version}/${title}`
 			};
 		}
 		else {
 			entities[edge.from].definitions[nameFrom].properties[edge.label] = {
 				"datatype": "array",
 				"items": {
-					"$ref": "#/definitions/" + nameTo
+					"$ref": `${baseUri}${title}-${version}/${title}`
 				}
 			};
 		}
 	}
 
-	Object.keys(model.edges).forEach(key => {
-		let edge = model.edges[key];
-		if (model.nodes[edge.from].type === 'entity' && model.nodes[edge.to].type === 'entity') {
-			const defs = entities[edge.to].definitions
-			if (defs) {
-				for (let key in defs) {
-					entities[edge.from].definitions[key] = defs[key]
-				}
-			}
-		}
-	})
+	// not needed for external refs
+	// Object.keys(model.edges).forEach(key => {
+	// 	let edge = model.edges[key];
+	// 	if (model.nodes[edge.from].type === 'entity' && model.nodes[edge.to].type === 'entity') {
+	// 		const defs = entities[edge.to].definitions
+	// 		if (defs) {
+	// 			for (let key in defs) {
+	// 				entities[edge.from].definitions[key] = defs[key]
+	// 			}
+	// 		}
+	// 	}
+	// })
 });
 
 entities;

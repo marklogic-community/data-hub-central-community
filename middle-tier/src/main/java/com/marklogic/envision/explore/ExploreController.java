@@ -24,13 +24,14 @@ import java.io.IOException;
 @RequestMapping("/api/explore")
 public class ExploreController extends AbstractController {
 
+	final private ObjectMapper om = new ObjectMapper();
+	final private SearchService searchService;
+
 	@Autowired
-	private SearchService searchService;
-
-    @Autowired
-    private HubConfigImpl hubConfig;
-
-    ObjectMapper om = new ObjectMapper();
+	ExploreController(HubConfigImpl hubConfig, SearchService searchService) {
+		super(hubConfig);
+		this.searchService = searchService;
+	}
 
     @RequestMapping(value = "/entities", method = RequestMethod.POST)
     JsonNode getEntities(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
