@@ -3,8 +3,10 @@ package com.marklogic.envision.explore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.envision.dataServices.Triples;
+import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.impl.HubConfigImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,12 @@ import java.io.IOException;
 @RequestMapping("/api/triples")
 public class TriplesController extends AbstractController {
 
-	ObjectMapper om = new ObjectMapper();
+	private final ObjectMapper om = new ObjectMapper();
+
+	@Autowired
+	TriplesController(HubConfigImpl hubConfig) {
+		super(hubConfig);
+	}
 
 	@RequestMapping(value = "/browse", method = RequestMethod.POST)
 	JsonNode getTriples(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -4,6 +4,7 @@ import com.marklogic.appdeployer.AppConfig;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.hub.HubConfig;
 import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,8 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController extends AbstractController {
 
+	final private DeployService deployService;
+
 	@Autowired
-	private DeployService deployService;
+	AuthController(HubConfigImpl hubConfig, DeployService deployService) {
+		super(hubConfig);
+		this.deployService = deployService;
+	}
 
 	@RequestMapping(value = "/status", method = RequestMethod.GET)
 	public SessionStatus status() {

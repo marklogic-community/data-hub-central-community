@@ -94,11 +94,13 @@ const mastering = {
 				commit('setBlocks', blocks)
 			})
 		},
-		getDocs({ commit }, uris) {
+		getDocs({ state, commit }, uris) {
 			uris.forEach(uri => {
+				if (!state.docs[uri]) {
 				masteringApi.getDoc(uri).then(doc => {
 					commit('setDoc', { uri, doc })
 				})
+				}
 			})
 		},
 		merge({ commit }, { uris, flowName, stepNumber, preview }) {
@@ -153,7 +155,7 @@ const auth = {
 	},
 	actions: {
 		init({ commit, dispatch }) {
-			return authApi.status().then(result => {
+			return authApi.status().then(async result => {
 				if (result.isError) {
 					// error
 					return result;
@@ -163,7 +165,7 @@ const auth = {
 						authenticated: result.authenticated
 					});
 					if (result.authenticated) {
-						dispatch(
+						await dispatch(
 							'loggedIn',
 							{
 								username: result.username,
@@ -171,7 +173,7 @@ const auth = {
 							},
 							{ root: true }
 						);
-						dispatch('getProfile')
+						return dispatch('getProfile')
 					}
 				}
 			});
@@ -446,12 +448,14 @@ const model = {
 				if (model && state.models.findIndex(m => m.name === model.name) >= 0) {
 					commit('setModel', model);
 				}
-				else {
+				else if (state.models.length > 0) {
 					await dispatch('save', state.models[0])
 				}
 			}
 			catch(err) {
+				if (state.models.length > 0) {
 				await dispatch('save', state.models[0])
+			}
 			}
 		},
 		async save({ commit, dispatch }, data) {

@@ -4,7 +4,7 @@
         <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <v-btn color="secondary" text @click.native="cancel">Cancel</v-btn>
-        <v-btn color="primary" text @click.native="confirm">{{ confirmText || 'Confirm' }}</v-btn>
+		<v-btn :disabled="disabled" color="primary" text @click.native="confirm">{{ confirmText || 'Confirm' }}</v-btn>
         </v-card-actions>
     </v-card>
 </template>
@@ -12,6 +12,7 @@
 <script>
 export default {
     props: {
+		disabled: { type: Boolean, default: false },
         message: {type: String},
         confirmText: {type: String}
 	},

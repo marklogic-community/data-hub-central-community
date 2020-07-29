@@ -80,4 +80,14 @@ export default {
 .mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover::before {
 	color: #0511e6;
 }
+
+#app,
+.v-application--wrap {
+	height: 100vh;
+}
+
+.v-main {
+	overflow: auto;
+	flex: 1 1 auto;
+}
 </style>

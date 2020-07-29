@@ -23,7 +23,9 @@ import java.net.URLDecoder;
 public class CrudController extends AbstractController {
 
     @Autowired
-    private HubConfigImpl hubConfig;
+	CrudController(HubConfigImpl hubConfig) {
+		super(hubConfig);
+	}
 
     @RequestMapping(method = RequestMethod.GET)
     void getDoc(@RequestParam String uri, @RequestParam String database, HttpServletResponse response) throws IOException {
