@@ -101,6 +101,7 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
         http
             .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
             .and().cors()
+			.and().headers().frameOptions().disable()
             .and().csrf().disable().authorizeRequests()
             .antMatchers(getAlwaysPermittedPatterns()).permitAll()
             .anyRequest().authenticated()

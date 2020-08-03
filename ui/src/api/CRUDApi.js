@@ -10,7 +10,7 @@ export default {
 				return error;
 			})
 	},
-	doc(uri, db) {
+	doc(uri, db='final') {
 		return axios.get(`/api/crud?uri=${encodeURIComponent(uri)}&database=${db}`)
       .then(response => {
 				return response.data
@@ -19,5 +19,12 @@ export default {
 				console.error('error:', error);
 				return error;
 			})
+	},
+	binaryDoc(uri, db='final') {
+		return axios({
+			method: 'get',
+			url: `/api/crud?uri=${encodeURIComponent(uri)}&database=${db}`,
+			responseType: 'arraybuffer'
+		})
 	}
 };

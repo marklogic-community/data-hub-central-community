@@ -79,14 +79,29 @@
 								<tr :key="index">
 									<td>{{prop.label}}</td>
 									<td>
-										<template v-if="prop.value && prop.value.length > 100 && !expandedProperty[prop.label]">
-											<span>{{prop.value | truncate(100, '')}}</span>
-											<a class="more-less" @click="$set(expandedProperty, prop.label, true)">(more...)</a>
-										</template>
-										<template v-else>
-											<span>{{prop.value}}</span>
-											<a class="more-less" v-if="prop.value && prop.value.length > 100" @click="$set(expandedProperty, prop.label, false)">(less...)</a>
-										</template>
+										<div v-for="(value, idx) in asArray(prop.value)" :key="idx">
+											<template v-if="value.contentType">
+												<v-tooltip bottom>
+													<template v-slot:activator="{ on: tooltip }">
+														<span class="clickable-binary"
+															v-on="{ ...tooltip }"
+															@click="showBinary(value)">
+															<i :class="typeIcon(value.contentType)"></i>
+															<span>{{value.value}}</span>
+														</span>
+													</template>
+													<span>Preview {{value.value}}</span>
+												</v-tooltip>
+											</template>
+											<template v-else-if="value && value.length > 100 && !expandedProperty[prop.label]">
+												<span>{{value | truncate(100, '')}}</span>
+												<a class="more-less" @click="$set(expandedProperty, prop.label, true)">(more...)</a>
+											</template>
+											<template v-else>
+												<span>{{value}}</span>
+												<a class="more-less" v-if="value && value.length > 100" @click="$set(expandedProperty, prop.label, false)">(less...)</a>
+											</template>
+										</div>
 									</td>
 								</tr>
 							</template>
@@ -186,13 +201,21 @@
 				</v-tab-item>
 			</v-tabs>
 		</v-card-text>
+		<binary-view-dialog
+			v-if="currentBinary"
+			:showDialog="!!currentBinary"
+			:uri="currentBinary.value"
+			:contentType="currentBinary.contentType"
+			:fileName="currentBinary.value"
+			@closed="currentBinary = null"></binary-view-dialog>
 	</v-card><!--end of panel-->
 </template>
 
 <script>
 
-import Confirm from '@/components/Confirm.vue';
-import _ from 'lodash';
+import Confirm from '@/components/Confirm.vue'
+import BinaryViewDialog from '@/components/BinaryViewDialog.vue'
+import _ from 'lodash'
 
 export default {
 	name: 'entity-details',
@@ -200,7 +223,8 @@ export default {
 		entity: {type: Object}
 	},
 	components: {
-		Confirm
+		Confirm,
+		BinaryViewDialog
 	},
 	data() {
 		return {
@@ -210,7 +234,8 @@ export default {
 			provExpanded: {},
 			expandedProv: null,
 			confirmUnmergeMenu: null,
-			expandedProperty: {}
+			expandedProperty: {},
+			currentBinary: null
 		}
 	},
 	computed: {
@@ -255,6 +280,28 @@ export default {
 		}
 	},
 	methods: {
+		asArray(prop) {
+			if (prop instanceof Array) {
+				return prop
+			}
+			return [prop]
+		},
+		typeIcon(type) {
+			let icon = null
+			if (type.match('application/pdf')) {
+				icon = "fa fa-file-pdf-o"
+			}
+			else if (type.match(/^audio\//)) {
+				icon = "fa fa-file-audio-o"
+			}
+			else if (type.match(/^video\//)) {
+				icon = "fa fa-file-video-o"
+			}
+			else if (type.match(/^image\//)) {
+				icon = "fa fa-file-image-o"
+			}
+			return icon
+		},
 		unmerge() {
 			this.$emit('unmerge', this.entity.uri);
 			this.confirmUnmergeMenu = false;
@@ -281,6 +328,9 @@ export default {
 				uri: this.entity.uri,
 				label: link.label
 			});
+		},
+		showBinary(meta) {
+			this.currentBinary = meta
 		}
 	}
 } //end of export
@@ -299,7 +349,7 @@ export default {
 
 .mlLabel {
 	color: #343579;
-	font-family:"Helvetica Neue",  "Roboto", "Arial", sans-serif
+	font-family:"Helvetica Neue", "Roboto", "Arial", sans-serif
 }
 
 .tabcontent {
@@ -445,4 +495,19 @@ th {
 .v-input {
 	flex: 0 0 auto;
 }
+
+.fa {
+	font-size: 24px;
+}
+
+span.clickable-binary {
+	i {
+		margin-right: 5px;
+	}
+	span {
+		font-size: 10px;
+	}
+	cursor: pointer;
+}
+
 </style>
