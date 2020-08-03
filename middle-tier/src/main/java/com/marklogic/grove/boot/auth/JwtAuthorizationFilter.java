@@ -15,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,22 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(SecurityConstants.TOKEN_HEADER);
+        if (token == null) {
+        	// allow us to pass in the token via url query param
+			// this is useful for cases where we are getting binaries out of MarkLogic
+        	String queryString = request.getQueryString();
+			String[] splits = queryString.split("&");
+			for(String split: splits) {
+				String[] kv = split.split("=");
+				if (kv[0].equals("token")) {
+					try {
+						token = URLDecoder.decode(kv[1], "UTF-8");
+						break;
+					}
+					catch(UnsupportedEncodingException e) {}
+				}
+			}
+		}
         if (StringUtils.isNotEmpty(token) && token.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             try {
                 byte[] signingKey = SecurityConstants.JWT_SECRET.getBytes();

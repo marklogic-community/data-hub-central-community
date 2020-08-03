@@ -28,7 +28,7 @@ public class CrudController extends AbstractController {
 	}
 
     @RequestMapping(method = RequestMethod.GET)
-    void getDoc(@RequestParam String uri, @RequestParam String database, HttpServletResponse response) throws IOException {
+    void getDoc(@RequestParam String uri, @RequestParam(defaultValue = "final") String database, HttpServletResponse response) throws IOException {
 		DatabaseClient client;
 		if (database.equals("staging")) {
 			client = getStagingClient();
@@ -36,19 +36,20 @@ public class CrudController extends AbstractController {
 		else {
 			client = getFinalClient();
 		}
-        DocumentPage page = client.newDocumentManager().read(new ServerTransform("prettifyXML"), URLDecoder.decode(uri, "UTF-8"));
+		DocumentPage page = client.newBinaryDocumentManager().read(new ServerTransform("prettifyXML"), uri);
 
         if (!page.hasNext()) {
             throw new NotFoundException();
         }
         DocumentRecord documentRecord = page.next();
-        String mime = documentRecord.getFormat().getDefaultMimetype();
+		String mime = documentRecord.getMimetype();
         response.setContentType(mime);
-        response.getWriter().write(documentRecord.getContent(new StringHandle()).get());
+		byte[] bytes = documentRecord.getContent(new BytesHandle()).get();
+		response.getOutputStream().write(bytes);
     }
 
     @RequestMapping(value = "/metadata", method = RequestMethod.GET)
-    void getDocMetadata(@RequestParam String uri, @RequestParam String database, HttpServletResponse response) throws IOException {
+    void getDocMetadata(@RequestParam String uri, @RequestParam(defaultValue = "final") String database, HttpServletResponse response) throws IOException {
         DatabaseClient client;
         if (database.equals("staging")) {
         	client = getStagingClient();
@@ -58,9 +59,8 @@ public class CrudController extends AbstractController {
 		}
         GenericDocumentManager documentManager = client.newDocumentManager();
         documentManager.setNonDocumentFormat(Format.JSON);
-        String docUri = URLDecoder.decode(uri, "UTF-8");
-        DocumentPage metaPage = documentManager.readMetadata(docUri);
-        DocumentPage contentPage = documentManager.read(docUri);
+        DocumentPage metaPage = documentManager.readMetadata(uri);
+        DocumentPage contentPage = documentManager.read(uri);
 
         if (!metaPage.hasNext() || !contentPage.hasNext()) {
             throw new NotFoundException();
@@ -69,24 +69,24 @@ public class CrudController extends AbstractController {
         DocumentRecord metaRecord = metaPage.next();
         DocumentRecord contentRecord = contentPage.next();
 
-		String mimeType = contentRecord.getFormat().getDefaultMimetype();
+		String mimeType = contentRecord.getMimetype();
 
         ObjectNode node = (ObjectNode)metaRecord.getMetadata(new JacksonHandle()).get();
         node.put("contentType", mimeType);
 
 
-        metaPage = documentManager.read(docUri);
+        metaPage = documentManager.read(uri);
         if (!metaPage.hasNext()) {
             throw new NotFoundException();
         }
         metaRecord = metaPage.next();
 
-        String[] splits = docUri.split("/");
+        String[] splits = uri.split("/");
         String fileName = splits[splits.length - 1];
         node.put("fileName", fileName);
         node.put("format", metaRecord.getFormat().name());
         node.put("size",  metaRecord.getContent(new StringHandle()).get().length());
-        node.put("uri", docUri);
+        node.put("uri", uri);
         ObjectMapper om = new ObjectMapper();
         response.setContentType(mimeType);
         response.getWriter().write(om.writeValueAsString(node));
