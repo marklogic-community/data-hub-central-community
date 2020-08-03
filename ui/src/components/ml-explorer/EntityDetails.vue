@@ -80,7 +80,7 @@
 									<td>{{prop.label}}</td>
 									<td>
 										<div v-for="(value, idx) in asArray(prop.value)" :key="idx">
-											<template v-if="value.contentType">
+											<template v-if="value && value.contentType">
 												<v-tooltip bottom>
 													<template v-slot:activator="{ on: tooltip }">
 														<span class="clickable-binary"
