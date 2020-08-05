@@ -47,15 +47,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         	// allow us to pass in the token via url query param
 			// this is useful for cases where we are getting binaries out of MarkLogic
         	String queryString = request.getQueryString();
-			String[] splits = queryString.split("&");
-			for(String split: splits) {
-				String[] kv = split.split("=");
-				if (kv[0].equals("token")) {
-					try {
-						token = URLDecoder.decode(kv[1], "UTF-8");
-						break;
+        	if (queryString != null) {
+				String[] splits = queryString.split("&");
+				for (String split : splits) {
+					String[] kv = split.split("=");
+					if (kv[0].equals("token")) {
+						try {
+							token = URLDecoder.decode(kv[1], "UTF-8");
+							break;
+						} catch (UnsupportedEncodingException e) {
+						}
 					}
-					catch(UnsupportedEncodingException e) {}
 				}
 			}
 		}
