@@ -28,9 +28,9 @@ import java.util.*;
 @Service
 public class ModelService {
 
-    private EntityManager em;
+    private final EntityManager em;
 
-    private DeployService deployService;
+    private final DeployService deployService;
 
     @Autowired
 	ModelService(EntityManager em, DeployService deployService) {
@@ -44,7 +44,9 @@ public class ModelService {
 			this.modelsDir = modelsDir.getCanonicalFile();
 			System.out.println("modelsDir: " + this.modelsDir.toString());
 		}
-		catch(Exception e) {}
+		catch(Exception e) {
+			throw new RuntimeException(e);
+		}
 		if (!modelsDir.exists()) {
 			modelsDir.mkdirs();
 		}
@@ -52,7 +54,7 @@ public class ModelService {
 
 	private File modelsDir;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void toDataHub(DatabaseClient client ) {
         JsonNode node = EntityModeller.on(client).toDatahub();
@@ -74,7 +76,7 @@ public class ModelService {
 		deleteExtraHubentities(fieldNames);
     }
 
-    public void deleteModel(DatabaseClient client, InputStream stream) throws IOException {
+    public void deleteModel(InputStream stream) throws IOException {
 		JsonNode node = objectMapper.readTree(stream);
 		String fileName = node.get("name").asText().replace(" ", "") + ".json";
 		File jsonFile = new File(modelsDir, fileName);
@@ -89,17 +91,6 @@ public class ModelService {
 
 		saveModel(client, node.get("model"));
 		originalModelFile.delete();
-	}
-
-	private void deleteAllHubEntities() {
-		// delete all entities
-		em.getEntities().forEach(hubEntity -> {
-			try {
-				em.deleteEntity(hubEntity.getInfo().getTitle());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
 	}
 
 	private void deleteExtraHubentities(List<String> legitEntities) {
@@ -153,21 +144,21 @@ public class ModelService {
 		return updateLegacyModel(model);
 	}
 	public List<JsonNode> getAllModels(DatabaseClient client) throws IOException {
-		List<JsonNode> names = listAllModels(client);
+		List<JsonNode> names = listAllModels();
 
 		ArrayNode models = objectMapper.convertValue(names, ArrayNode.class);
 		if (EntityModeller.on(client).needsImport(models)) {
 			this.importModel(client);
-			names = listAllModels(client);
+			names = listAllModels();
 		}
 		return names;
 	}
 
-	public JsonNode getActiveIndexes(DatabaseClient client) throws IOException {
+	public JsonNode getActiveIndexes(DatabaseClient client) {
 		return EntityModeller.on(client).getActiveIndexes();
 	}
 
-	private List<JsonNode> listAllModels(DatabaseClient client) throws IOException {
+	private List<JsonNode> listAllModels() {
 		List<JsonNode> names = new ArrayList<>();
 		File[] modelFiles = modelsDir.listFiles(pathname -> pathname.toString().endsWith(".json"));
 		if (modelFiles!= null) {

@@ -1,4 +1,6 @@
 {
 	"pluginsFile": "tests/e2e/plugins/index.js",
-	"watchForFileChanges": true
+	"watchForFileChanges": true,
+	"viewportHeight": 800,
+	"viewportWidth": 1200
 }

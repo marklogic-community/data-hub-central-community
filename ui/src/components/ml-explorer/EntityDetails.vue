@@ -75,36 +75,38 @@
 							</tr>
 						</thead>
 						<tbody>
-							<template v-for="(prop, index) in filteredProperties">
-								<tr :key="index">
-									<td>{{prop.label}}</td>
-									<td>
-										<div v-for="(value, idx) in asArray(prop.value)" :key="idx">
-											<template v-if="value && value.contentType">
-												<v-tooltip bottom>
-													<template v-slot:activator="{ on: tooltip }">
-														<span class="clickable-binary"
-															v-on="{ ...tooltip }"
-															@click="showBinary(value)">
-															<i :class="typeIcon(value.contentType)"></i>
-															<span>{{value.value}}</span>
-														</span>
-													</template>
-													<span>Preview {{value.value}}</span>
-												</v-tooltip>
-											</template>
-											<template v-else-if="value && value.length > 100 && !expandedProperty[prop.label]">
-												<span>{{value | truncate(100, '')}}</span>
-												<a class="more-less" @click="$set(expandedProperty, prop.label, true)">(more...)</a>
-											</template>
-											<template v-else>
-												<span>{{value}}</span>
-												<a class="more-less" v-if="value && value.length > 100" @click="$set(expandedProperty, prop.label, false)">(less...)</a>
-											</template>
-										</div>
-									</td>
-								</tr>
-							</template>
+							<draggable v-bind="dragOptions" v-model="filteredProperties" draggable=".dragrow">
+								<transition-group type="transition" tag="div">
+									<tr class="dragrow" v-for="(prop, index) in filteredProperties" :key="index">
+										<td>{{prop.label}}</td>
+										<td>
+											<div v-for="(value, idx) in asArray(prop.value)" :key="idx">
+												<template v-if="value && value.contentType">
+													<v-tooltip bottom>
+														<template v-slot:activator="{ on: tooltip }">
+															<span class="clickable-binary"
+																v-on="{ ...tooltip }"
+																@click="showBinary(value)">
+																<i :class="typeIcon(value.contentType)"></i>
+																<span>{{value.value}}</span>
+															</span>
+														</template>
+														<span>Preview {{value.value}}</span>
+													</v-tooltip>
+												</template>
+												<template v-else-if="value && value.length > 100 && !expandedProperty[prop.label]">
+													<span>{{value | truncate(100, '')}}</span>
+													<a class="more-less" @click="$set(expandedProperty, prop.label, true)">(more...)</a>
+												</template>
+												<template v-else>
+													<span>{{value}}</span>
+													<a class="more-less" v-if="value && value.length > 100" @click="$set(expandedProperty, prop.label, false)">(less...)</a>
+												</template>
+											</div>
+										</td>
+									</tr>
+								</transition-group>
+							</draggable>
 						</tbody>
 					</v-simple-table>
 				</v-tab-item>
@@ -213,6 +215,7 @@
 
 <script>
 
+import draggable from 'vuedraggable'
 import Confirm from '@/components/Confirm.vue'
 import BinaryViewDialog from '@/components/BinaryViewDialog.vue'
 import _ from 'lodash'
@@ -223,6 +226,7 @@ export default {
 		entity: {type: Object}
 	},
 	components: {
+		draggable,
 		Confirm,
 		BinaryViewDialog
 	},
@@ -235,7 +239,10 @@ export default {
 			expandedProv: null,
 			confirmUnmergeMenu: null,
 			expandedProperty: {},
-			currentBinary: null
+			currentBinary: null,
+			dragOptions: {
+				animation: 200
+			}
 		}
 	},
 	computed: {
@@ -256,16 +263,18 @@ export default {
 				.sort((a, b) => this.$moment(a.entity.time).diff(this.$moment(b.entity.time)))
 				.reverse()
 		},
-		filteredProperties() {
-			let props = []
-			for (let key in this.entity.entity) {
-				props.push({
-					label: key,
-					value: this.entity.entity[key]
-				})
-			}
-			props.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()))
-			return props
+		filteredProperties: {
+			get() {
+				let props = []
+				for (let key in this.entity.entity) {
+					props.push({
+						label: key,
+						value: this.entity.entity[key]
+					})
+				}
+				return props
+			},
+			set() {}
 		},
 		advancedProperties() {
 			return _.pickBy(this.entity, (v, k) => {

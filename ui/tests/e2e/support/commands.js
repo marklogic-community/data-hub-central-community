@@ -23,3 +23,7 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+import { dropCommand, moveCommand } from './draggable'
+Cypress.Commands.add('drop', { prevSubject: 'element' }, dropCommand)
+Cypress.Commands.add('move', { prevSubject: 'element' }, moveCommand)

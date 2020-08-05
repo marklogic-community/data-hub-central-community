@@ -110,7 +110,7 @@ const mastering = {
 				}
 			})
 		},
-		unmerge({ commit }, doc) {
+		unmerge(doc) {
 			return masteringApi.unmerge(doc)
 		}
 	}
