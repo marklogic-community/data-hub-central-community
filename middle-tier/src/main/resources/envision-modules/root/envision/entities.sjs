@@ -2,10 +2,23 @@ const provHelper = require('/envision/prov-helper.xqy');
 const model = require('/envision/model.sjs');
 const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
-const searchImpl = require('/MarkLogic/appservices/search/search-impl.xqy');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
+const extensions = xdmp.mimetypes()
+	.filter(m => m.format === 'binary' && !!m.extensions)
+	.map(m => m.extensions.split(' '))
+	.reduce((acc, val) => acc.concat(val), [])
+	.join('|')
 
+function enrichValue(value) {
+	if (value && value.toLowerCase().match(`^.+(${extensions})$`) && fn.docAvailable(value)) {
+		return {
+			value: value,
+			contentType: xdmp.uriContentType(value)
+		}
+	}
+	return value
+}
 /**
  * This method takes a given array of uris and returns the # of edges
  * for each uri
@@ -180,13 +193,29 @@ function getEntities(uris, opts) {
 				return item;
 			}, {})
 		}
+		else {
+			entity = entity.toObject()
+		}
+
+		let enrichedEntity = {}
+		for (let key in entity) {
+			let value = entity[key]
+			if (value instanceof Array) {
+				value = value.map(v => enrichValue(v))
+			}
+			else {
+				value = enrichValue(value)
+			}
+
+			enrichedEntity[key] = value
+		}
 
 		resp.nodes[uri] = {
 			id: uri,
 			uri: uri,
 			entityName: entityName,
 			label: label,
-			entity: entity,
+			entity: enrichedEntity,
 			edgeCounts: edgeCounts[uri] || {},
 
 			// grab the DHF provenance data out of the jobs db
