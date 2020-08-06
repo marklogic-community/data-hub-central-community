@@ -135,7 +135,7 @@ export default {
 			return null
 		},
 		entity() {
-			return this.entityType ? this.model.nodes[this.entityType.toLowerCase()] : null
+			return (this.entityType && this.model && this.model.nodes) ? this.model.nodes[this.entityType.toLowerCase()] : null
 		},
 		props() {
 			return this.entity ? this.entity.properties.map(p => p.name) : []
@@ -178,11 +178,11 @@ export default {
 		}
 	},
 	mounted: function() {
-		this.$store.dispatch('mastering/getDocs', this.uris)
+		this.$store.dispatch('mastering/getDocs', this.uris.slice(0, 6))
 	},
 	watch: {
 		uris() {
-			this.$store.dispatch('mastering/getDocs', this.uris)
+			this.$store.dispatch('mastering/getDocs', this.uris.slice(0, 6))
 		}
 	}
 }

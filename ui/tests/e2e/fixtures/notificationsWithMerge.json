@@ -10,7 +10,7 @@
 				"user": "admin",
 				"uri": "/note1.xml",
 				"status": "unread",
-				"merged": false,
+				"merged": true,
 				"blocked": true
 			},
 			"flowInfo": {

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import UserMenu from '@/components/UserMenu.vue';
+import UserMenu from '@/components/UserMenu.vue'
 
 export default {
   name: 'Header',
