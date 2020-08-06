@@ -1,5 +1,3 @@
-const { before } = require("lodash")
-
 describe('End to end test to create and update model', () => {
 	beforeEach(() => {
 		cy.server()
@@ -20,7 +18,7 @@ describe('End to end test to create and update model', () => {
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
 		cy.route('/api/models/model.json', 'fixture:model.json')
 		cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
-		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json')
+		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json').as('getNotifications')
 	})
 
 	//create new 'Test Model'
@@ -28,6 +26,7 @@ describe('End to end test to create and update model', () => {
 		cy.visit('/')
 		cy.url().should('include', '/model')
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{}}])
+		cy.wait('@getNotifications')
 		cy.get('[data-cy="cardMenu.createModelButton"]').click()
 		cy.wait(1000)
 		cy.get('[data-cy="createModelVue.createModelNameField"]').type('Test Model')
@@ -69,11 +68,12 @@ describe('End to end test to create and update model', () => {
 	})
 
 	// rename model
-	it('can rename a model', () => {
+	it.only('can rename a model', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
 		cy.visit('/')
 		cy.url().should('include', '/model')
 		cy.route('GET', '/api/models/', [])
+		cy.wait('@getNotifications')
 		cy.get('[data-cy="cardMenu.renameModelButton"]').click()
 		cy.wait(1000)
 		cy.get('[data-cy="renameModelVue.renameModelNameField"]').type('A new Model Name')
