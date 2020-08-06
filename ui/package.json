@@ -11,7 +11,7 @@
     "lint:fix": "vue-cli-service lint --fix",
     "start": "npm run serve",
     "cypress:run": "vue-cli-service test:e2e --url http://localhost:9999",
-    "cypress:run:headless": "vue-cli-service test:e2e --headless --url http://localhost:9999",
+    "cypress:run:headless": "vue-cli-service test:e2e --headless --url http://localhost:9999 --record --key b5568640-4658-4ed0-8fb3-b78bea0953eb",
     "test:e2e": "start-server-and-test serve:no:open http-get://localhost:9999 cypress:run",
     "test:e2e:headless": "start-server-and-test serve:no:open http-get://localhost:9999 cypress:run:headless",
     "test:e2e:prod": "vue-cli-service test:e2e --url http://localhost:9003",
