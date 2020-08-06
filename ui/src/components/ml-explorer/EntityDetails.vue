@@ -213,6 +213,7 @@
 
 import Confirm from '@/components/Confirm.vue'
 import BinaryViewDialog from '@/components/BinaryViewDialog.vue'
+import { mapState } from 'vuex'
 import _ from 'lodash'
 
 export default {
@@ -257,18 +258,13 @@ export default {
 				.sort((a, b) => this.$moment(a.entity.time).diff(this.$moment(b.entity.time)))
 				.reverse()
 		},
-		filteredProperties: {
-			get() {
-				let props = []
-				for (let key in this.entity.entity) {
-					props.push({
-						label: key,
-						value: this.entity.entity[key]
-					})
+		filteredProperties() {
+			return this.entityDef ? this.entityDef.properties.map(p => {
+				return {
+					label: p.name,
+					value: this.entity.entity[p.name]
 				}
-				return props
-			},
-			set() {}
+			}) : []
 		},
 		advancedProperties() {
 			return _.pickBy(this.entity, (v, k) => {
@@ -280,7 +276,13 @@ export default {
 				return Object.keys(this.entity)
 			}
 			return []
-		}
+		},
+		entityDef() {
+			return (this.model && this.entity) ? this.model.nodes[this.entity.entityName.toLowerCase()] : null
+		},
+		...mapState({
+			model: state => state.model.model
+		}),
 	},
 	methods: {
 		asArray(prop) {
