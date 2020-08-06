@@ -2,23 +2,10 @@ const provHelper = require('/envision/prov-helper.xqy');
 const model = require('/envision/model.sjs');
 const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
+const searchImpl = require('/MarkLogic/appservices/search/search-impl.xqy');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
-const extensions = xdmp.mimetypes()
-	.filter(m => m.format === 'binary' && !!m.extensions)
-	.map(m => m.extensions.split(' '))
-	.reduce((acc, val) => acc.concat(val), [])
-	.join('|')
 
-function enrichValue(value) {
-	if (value && value.toLowerCase().match(`^.+(${extensions})$`) && fn.docAvailable(value)) {
-		return {
-			value: value,
-			contentType: xdmp.uriContentType(value)
-		}
-	}
-	return value
-}
 /**
  * This method takes a given array of uris and returns the # of edges
  * for each uri
@@ -129,7 +116,9 @@ function getEntities(uris, opts) {
 			toType: t.toType
 		}
 
+
 		if (t.isConcept) {
+		/*
 			// determine which "side" (from or to) has the concept
 			if (fn.head(t.fromUri)) {
 				// to side has concept
@@ -138,7 +127,7 @@ function getEntities(uris, opts) {
 					label: t.to.toString().replace(/(.+)#(.+)/, '$2'),
 					entityName: model.getName(t.toType),
 					isConcept: true,
-					edgeCounts: {}
+					edgeCounts: edgeCounts[uri] || {} // DGB here and below to do differently
 				}
 			}
 			else {
@@ -148,11 +137,11 @@ function getEntities(uris, opts) {
 					label: t.from.toString().replace(/(.+)#(.+)/, '$2'),
 					entityName: model.getName(t.fromType),
 					isConcept: true,
-					edgeCounts: {}
+					edgeCounts: edgeCounts[uri] || {}
 				}
 			}
-		}
-		else {
+			*/
+		} else {
 			// ensure uris from both sides of the triple are in the uris map
 			if (t.to && t.to.length > 0) {
 				uriMap[t.to] = true
@@ -162,6 +151,7 @@ function getEntities(uris, opts) {
 			}
 		}
 	}
+
 
 	// turn the uri map back into an array
 	uris = Object.keys(uriMap)
@@ -174,55 +164,67 @@ function getEntities(uris, opts) {
 		const doc = cts.doc(uri)
 
 		// the actual entity
-		let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
+		if (fn.exists(doc)) {
+			let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
 
-		// use metadata from the model to grab the "label" out of the entity
-		// the label is specified in envision's UI on the Modeler page
-		const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
-		const entityId = entityName.toLowerCase()
-		const modelNode = model.nodes[entityId] || {};
-		const labelField = modelNode.labelField;
+			// use metadata from the model to grab the "label" out of the entity
+			// the label is specified in envision's UI on the Modeler page
+			const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
+			const entityId = entityName.toLowerCase()
+			const modelNode = model.nodes[entityId] || {};
+			const labelField = modelNode.labelField;
 
-		// grab the label or default to the uri
-		const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
+			// grab the label or default to the uri
+			const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
 
-		// convert xml to json map
-		if (entity instanceof Element) {
-			entity = entity.xpath('node()').toArray().reduce((item, el) => {
-				item[el.xpath('local-name(.)')] = el.xpath('string(.)')
-				return item;
-			}, {})
-		}
-		else {
-			entity = entity.toObject()
-		}
-
-		let enrichedEntity = {}
-		for (let key in entity) {
-			let value = entity[key]
-			if (value instanceof Array) {
-				value = value.map(v => enrichValue(v))
-			}
-			else {
-				value = enrichValue(value)
+			// convert xml to json map
+			if (entity instanceof Element) {
+				entity = entity.xpath('node()').toArray().reduce((item, el) => {
+					item[el.xpath('local-name(.)')] = el.xpath('string(.)')
+					return item;
+				}, {})
 			}
 
-			enrichedEntity[key] = value
-		}
+			resp.nodes[uri] = {
+				id: uri,
+				uri: uri,
+				entityName: entityName,
+				label: label,
+				entity: entity,
+				edgeCounts: edgeCounts[uri] || {},
 
-		resp.nodes[uri] = {
-			id: uri,
-			uri: uri,
-			entityName: entityName,
-			label: label,
-			entity: enrichedEntity,
-			edgeCounts: edgeCounts[uri] || {},
-
-			// grab the DHF provenance data out of the jobs db
-			prov: provHelper.getProv(uri),
-			isConcept: false
+				// grab the DHF provenance data out of the jobs db
+				prov: provHelper.getProv(uri),
+				isConcept: false
+			}
 		}
 	})
+
+	// Add the concepts (nodes were added above)
+	for (let t of triples) {
+		if (t.isConcept) {
+			// determine which "side" (from or to) has the concept
+			if (fn.head(t.fromUri)) {
+				// to side has concept
+				resp.nodes[t.to] = {
+					id: t.to,
+					label: t.to.toString().replace(/(.+)#(.+)/, '$2'),
+					entityName: model.getName(t.toType),
+					isConcept: true,
+					edgeCounts: edgeCounts[t.to] || {} // DGB here and below to do differently
+				}
+			}	else {
+				// from side has concept
+				resp.nodes[t.from] = {
+					id: t.from,
+					label: t.from.toString().replace(/(.+)#(.+)/, '$2'),
+					entityName: model.getName(t.fromType),
+					isConcept: true,
+					edgeCounts: edgeCounts[t.from] || {}
+				}
+			}
+		}
+	}
 
 	return resp
 }
@@ -357,6 +359,150 @@ function getValues(qtext, query, facetName) {
 	return fn.head(xdmp.toJSON(json.transformToJsonObject(root, sut.buildValResultsConfig()))).root.toObject();
 }
 
+/**
+* This method takes a given array of uris and returns the # of edges
+* for each uri
+*
+* @param concept an array of concepts to get
+* @param opts an options object
+* Options:
+* 		start - start index for pagination
+* 		connectionLimit - # of connections to grab
+* 		labels - an array of edge labels to return, empty means all
+*
+* 		Called from a concept - based on getEntities - finds entities related to the concept then
+*		calls getEntities to populate the graph
+*/
+function getEntitiesRelatedToConcept(concepts, opts) {
+   let options = opts || {}
+   let start = (!!options.start) ? options.start : 0
+   let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
+
+   const resp = {
+	   nodes: {},
+	   edges: {}
+   }
+   if (concepts.length < 1) {
+	   return resp
+   }
+   // concepts may be an array like ['Manufacturing' , 'general ledger']. This code turns this into the sparql filter:
+   // FILTER ( STRENDS (?concept,'Manufacturing') || STRENDS (?concept,'general ledger') )
+	 let conceptFilterFromConcept = `FILTER ( ${concepts.map(concept => `STRENDS (?fromId,'${concept}')` ) .join (" || ")} )`
+   let conceptFilterToConcept = `FILTER ( ${concepts.map(concept => `STRENDS (?toId,'${concept}')` ) .join (" || ")} )`
+
+   // this query gets all the edges for the given list of uris
+   // with a limit applied to not return everything
+	 const sparql = `
+	 PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
+	 PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+
+	 SELECT DISTINCT
+		(fn:head((?fromUri, ?fromId)) as ?from)
+		(fn:head((?toUri, ?toId)) as ?to)
+		(fn:string-join((?from, ?lbl, ?to), "-") as ?id)
+		(fn:tail(fn:tokenize(?lbl, "#")) as ?label)
+		(fn:head(fn:tokenize(?fromId, "#")) as ?fromType)
+		(fn:head(fn:tokenize(?toId, "#")) as ?toType)
+	 WHERE {
+		{
+				## From concept to entity
+				 ?fromId  ?lbl ?toId .
+							 ?toUri rdf:hasId ?toId .
+							optional { ?fromUri rdf:hasId ?fromId}
+						 ${conceptFilterFromConcept}
+		 } UNION {
+				?fromId  ?lbl ?toId .
+							 ?fromUri rdf:hasId ?fromId .
+					optional { ?toUri rdf:hasId ?toId}
+							${conceptFilterToConcept}
+			}
+	 }
+	 `
+
+   // build a cts.query that omits archived documents from smart mastering
+   const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+   const query = cts.notQuery(cts.collectionQuery(archivedCollections))
+
+   // run the sparql query while ignoring archived docs
+   const triples = sem.sparql(sparql, null, null, sem.store(null, query))
+   let uris = []
+	for (let t of triples) {
+		uris.push(t.from)
+		uris.push(t.to)
+	}
+
+	const edgeCounts = getEdgeCounts(uris)
+
+	/* This code gets the next 2 levels
+	let otherEntities = getEntities(uris, opts)
+	resp.nodes = otherEntities.nodes
+	resp.edges = otherEntities.edges
+	*/
+	// now add the edges from the concept
+	for (let t of triples) {
+		resp.edges[t.id] = {
+			from: t.from,
+			to: t.to,
+			id: t.id,
+			label: t.label,
+			fromType: t.fromType,
+			toType: t.toType
+		}
+		let uri = t.from
+		let doc = cts.doc(uri)
+		let haveDoc = false
+		// the actual entity which could be on the to or from side
+		if (fn.exists(doc)) {
+			haveDoc = true
+		} else {
+			uri = t.to
+			doc = cts.doc(uri)
+			if (fn.exists(doc)) {
+				haveDoc=true
+			}
+		}
+		if( haveDoc) {
+			let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
+
+			// use metadata from the model to grab the "label" out of the entity
+			// the label is specified in envision's UI on the Modeler page
+			const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
+			const entityId = entityName.toLowerCase()
+			const modelNode = model.nodes[entityId] || {};
+			const labelField = modelNode.labelField;
+
+			// grab the label or default to the uri
+			const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
+
+			// convert xml to json map
+			if (entity instanceof Element) {
+				entity = entity.xpath('node()').toArray().reduce((item, el) => {
+					item[el.xpath('local-name(.)')] = el.xpath('string(.)')
+					return item;
+				}, {})
+			}
+
+			resp.nodes[uri] = {
+				id: uri,
+				uri: uri,
+				entityName: entityName,
+				label: label,
+				entity: entity,
+				edgeCounts: edgeCounts[uri] || {},
+
+				// grab the DHF provenance data out of the jobs db
+				prov: provHelper.getProv(uri),
+				isConcept: false
+			}
+		}
+	}
+
+	return resp
+
+}
+
+exports.getEntitiesRelatedToConcept = getEntitiesRelatedToConcept;
 exports.getEntities = getEntities;
 exports.runQuery = runQuery
 exports.getValues = getValues
+

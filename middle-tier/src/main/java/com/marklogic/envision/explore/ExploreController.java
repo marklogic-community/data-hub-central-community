@@ -133,5 +133,17 @@ public class ExploreController extends AbstractController {
 		int page = node.get("page").asInt();
 		int pageLength = node.get("pageLength").asInt();
         return EntitySearcher.on(client).relatedEntities(uri, label, page, pageLength);
-    }
+	}
+
+
+	@RequestMapping(value = "/related-entities-to-concept", method = RequestMethod.POST)
+	JsonNode getRelatedEntitiesToConcept(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		DatabaseClient client = getFinalClient();
+
+		JsonNode node = om.readTree(request.getInputStream());
+		String concept = node.get("concept").asText();
+		int page = node.get("page").asInt();
+		int pageLength = node.get("pageLength").asInt();
+		return EntitySearcher.on(client).relatedEntitiesToConcept(concept, page, pageLength);
+	}
 }

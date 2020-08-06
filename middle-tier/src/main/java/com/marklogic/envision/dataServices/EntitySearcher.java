@@ -50,6 +50,22 @@ public interface EntitySearcher {
 
 
             @Override
+            public com.fasterxml.jackson.databind.JsonNode relatedEntitiesToConcept(String concept, Integer page, Integer pageLength) {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("relatedEntitiesToConcept.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
+                .withSession()
+                .withParams(
+                    BaseProxy.atomicParam("concept", false, BaseProxy.StringType.fromString(concept)),
+                    BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
+                    BaseProxy.atomicParam("pageLength", false, BaseProxy.IntegerType.fromInteger(pageLength)))
+                .withMethod("POST")
+                .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
             public com.fasterxml.jackson.databind.JsonNode relatedEntities(String uri, String label, Integer page, Integer pageLength) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
@@ -97,6 +113,16 @@ public interface EntitySearcher {
    * @return	as output
    */
     com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, String searchQuery);
+
+  /**
+   * Invokes the relatedEntitiesToConcept operation on the database server
+   *
+   * @param concept	provides input
+   * @param page	provides input
+   * @param pageLength	provides input
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode relatedEntitiesToConcept(String concept, Integer page, Integer pageLength);
 
   /**
    * Invokes the relatedEntities operation on the database server
