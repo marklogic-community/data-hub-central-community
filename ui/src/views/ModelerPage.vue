@@ -396,7 +396,7 @@ export default {
 		async deleteModel() {
 			await this.$store.dispatch('model/delete', this.model)
 		},
-		graphAddNode(nodeData, callback = function(){}) {
+		graphAddNode(nodeData, callback) {
 			this.$refs.addEntity.open(this.nodes.map(n => n.label.toLowerCase()))
 				.then(({type, name, iri, version}) => {
 					if (name) {
@@ -425,10 +425,10 @@ export default {
 						this.nodes.push(node)
 						this.currentNodeId = node.id
 						this.doMLSave()
-						callback(nodeData)
+						!!callback && callback(nodeData)
 					}
 					else {
-						callback(null)
+						!!callback && callback(null)
 					}
 				})
 		},

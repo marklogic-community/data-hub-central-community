@@ -72,8 +72,8 @@ public class ModelService {
         });
 
         EntityModeller.on(client).removeAllEntities();
-		deployService.deployEntities();
 		deleteExtraHubentities(fieldNames);
+		deployService.deployEntities();
     }
 
     public void deleteModel(InputStream stream) throws IOException {

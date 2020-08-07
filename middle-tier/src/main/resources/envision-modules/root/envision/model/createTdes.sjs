@@ -9,8 +9,10 @@ if (!model) {
 let subTemplates = {}
 for (let key in model.edges) {
 	let edge = model.edges[key];
-	const fromNode = model.nodes[edge.from]
-	const toNode = model.nodes[edge.to]
+	const from = edge.from.split('/').pop()
+	const to = edge.to.split('/').pop()
+	const fromNode = model.nodes[from]
+	const toNode = model.nodes[to]
 	let subj = null
 	const pred = `sem:iri("http://www.w3.org/2000/01/rdf-schema#${edge.label}")`
 	let obj = null
@@ -22,16 +24,16 @@ for (let key in model.edges) {
 	if (hasConcept) {
 		if (fromNode.type === 'entity') {
 			node = fromNode
-			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${edge.from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')))`
-			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${edge.to}#", xs:string(.)))`
+			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')))`
+			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))`
 			subTempKey = `./${edge.keyTo}`
 			concept = obj
 			conceptType = toNode.entityName
 		}
 		else {
 			node = toNode
-			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${edge.from}#", xs:string(.)))`
-			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${edge.to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')))`
+			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`
+			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')))`
 			subTempKey = `./${edge.keyFrom}`
 			concept = subj
 			conceptType = fromNode.entityName
@@ -40,14 +42,14 @@ for (let key in model.edges) {
 	else {
 		if (fromNode.idField === edge.keyFrom) {
 			node = toNode
-			subj = `sem:iri(fn:replace(fn:concat("${edge.from}#", xs:string(.)), " ", ""))`
-			obj = `sem:iri(fn:replace(fn:concat("${edge.to}#", fn:string-join((../../${toNode.idField},../${toNode.idField})[1], ';;')), " ", ""))`
+			subj = `sem:iri(fn:replace(fn:concat("${from}#", xs:string(.)), " ", ""))`
+			obj = `sem:iri(fn:replace(fn:concat("${to}#", fn:string-join((../../${toNode.idField},../${toNode.idField})[1], ';;')), " ", ""))`
 			subTempKey = `./${edge.keyTo}`
 		}
 		else if (toNode.idField === edge.keyTo) {
 			node = fromNode
-			subj = `sem:iri(fn:replace(fn:concat("${edge.from}#", fn:string-join((../../${fromNode.idField},../${fromNode.idField})[1], ';;')), " ", ""))`
-			obj = `sem:iri(fn:replace(fn:concat("${edge.to}#", xs:string(.)), " ", ""))`
+			subj = `sem:iri(fn:replace(fn:concat("${from}#", fn:string-join((../../${fromNode.idField},../${fromNode.idField})[1], ';;')), " ", ""))`
+			obj = `sem:iri(fn:replace(fn:concat("${to}#", xs:string(.)), " ", ""))`
 			subTempKey = `./${edge.keyFrom}`
  		}
 	}

@@ -172,7 +172,7 @@
 								<concept-card
 									v-else
 									:entity="entity"
-									:edges="edges"
+									:edges="entityEdges(entity)"
 									:nodes="nodes"
 									:edgeIds="edgeIds"
 									@updated="onUpdateModel"
