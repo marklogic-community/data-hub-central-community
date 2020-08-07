@@ -299,9 +299,7 @@ export default {
 		saveEdge(edge) {
 			if (edge) {
 				if (edge.id) {
-					this.graphDeleteEdge({
-						edges: [edge.id]
-					}, null)
+					this.deleteEdge(edge, false)
 				}
 				let roundness = this.getNextRoundness(edge.to, edge.from)
 				let id = this.getEdgeId(edge)
