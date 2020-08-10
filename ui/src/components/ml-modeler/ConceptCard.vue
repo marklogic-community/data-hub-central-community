@@ -7,7 +7,7 @@
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
 			<v-tab-item>
-				<v-simple-table v-if="edges[entity] && edges[entity].length > 0">
+				<v-simple-table v-if="edges && edges.length > 0">
 					<thead>
 						<tr>
 							<th class="primary--text">Description</th>
@@ -17,7 +17,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="edge in edges[entity]" :key="edge.id">
+						<tr v-for="edge in edges" :key="edge.id">
 							<td>{{edge.label}}</td>
 							<td>{{edge.to}}</td>
 							<td>{{edge.cardinality}}</td>
@@ -33,8 +33,8 @@
 										aria-label="Edit relationship" />
 									</template>
 									<edit-relationship
-										:ref="'edit_relationship_' + entity"
-										:nodes="nodes"
+										:ref="'edit_relationship_' + entity.label"
+										:nodes="entities"
 										:relationship="Object.assign({}, edge)"
 										@save="btnSaveEdge(entity, $event)"
 										@cancel="editRelationshipsPopover[edge.id] = false"
@@ -50,27 +50,25 @@
 				<v-menu
 					:close-on-content-click="false"
 					:nudge-width="300"
-					v-model="relationshipsPopover[entity]"
-					offset-x
-				>
+					v-model="relationshipsPopover[entity.label]"
+					offset-x>
 					<template v-slot:activator="{ on }">
 						<v-btn
 							color="primary"
 							fab
 							dark
-							v-on="on"
-						>
+							v-on="on">
 							<v-icon dark>add</v-icon>
 						</v-btn>
 					</template>
 					<edit-relationship
-						:ref="'add_relationship_' + entity"
-						:nodes="nodes"
-						:relationship="Object.assign({from: entity})"
+						:ref="'add_relationship_' + entity.label"
+						:nodes="entities"
+						:relationship="Object.assign({from: entity.id})"
 						:existingRelNames="edgeIds"
 						adding="true"
 						@save="btnSaveEdge(entity, $event)"
-						@cancel="relationshipsPopover[entity] = false"
+						@cancel="relationshipsPopover[entity.label] = false"
 					></edit-relationship>
 				</v-menu>
 			</v-tab-item>
@@ -82,11 +80,10 @@
 import EditRelationship from '@/components/EditRelationship.vue';
 
 export default {
-	name: 'entity-card',
 	props: {
-		entity: {type: String},
-		edges: {type: Object},
-		nodes: {type: Array},
+		entity: {type: Object},
+		edges: {type: Array},
+		entities: {type: Array},
 		edgeIds: {type: Array}
 	},
 	components: {
@@ -127,6 +124,7 @@ export default {
 	border-radius: 4px;
 	background-color: rgba(255,255,255,.5);
 	-webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+	box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
 .fa-pencil {

@@ -9,7 +9,7 @@
 		</v-tabs>
 		<v-tabs-items v-model="whichTab">
 			<v-tab-item>
-				<v-simple-table v-if="entities[entity].properties.length > 0">
+				<v-simple-table v-if="properties.length > 0">
 					<thead>
 						<tr>
 							<th class="id-col"></th>
@@ -18,35 +18,36 @@
 							<th class="primary--text">Action</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr v-for="prop in entities[entity].properties" :key="prop.name">
+					<draggable v-bind="dragOptions" v-model="properties" tag="tbody" class="properties">
+						<tr v-for="prop in properties" :key="prop.name" data-cy="entityPickList.propertyRow" :name="prop.name">
 							<td class="id-col" data-cy="entityPickList.entityPropertyId">
-								<span v-if="entities[entity].idField === prop.name">id</span>
+								<span v-if="currentEntity.idField === prop.name">id</span>
 							</td>
 							<td data-cy="entityPickList.entityPropertyName">{{prop.name}}</td>
 							<td data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</td>
 							<td class="action">
 								<edit-property-menu
 									:prop="Object.assign({}, prop)"
-									:entityName="entity"
-									:existingProperties="entities[entity].properties"
-									@save="btnSaveProperty(entity, $event)">
+									:entityName="currentEntity.entityName"
+									:existingProperties="properties"
+									@save="btnSaveProperty">
 									<button data-cy="entityPickList.editPropertyBtn" class="fa fa-pencil" aria-label="Edit Property" />
 								</edit-property-menu>
 								<button
 									data-cy="entityPickList.deletePropertyBtn"
 									class="fa fa-trash"
-									v-on:click="btnDeleteProperties(entity, prop.name)"
+									v-on:click="btnDeleteProperties(currentEntity, prop.name)"
 									aria-label="Delete property"></button>
 							</td>
 						</tr>
-					</tbody>
+					</draggable>
 				</v-simple-table>
 				<p class="grey--text darken-4" v-else>No properties</p>
 				<edit-property-menu
-					:existingProperties="entities[entity].properties"
-					:entityName="entity"
-					@save="btnSaveProperty(entity, $event)">
+					v-if="currentEntity"
+					:existingProperties="properties"
+					:entityName="currentEntity.entityName"
+					@save="btnSaveProperty">
 					<v-btn
 						color="primary"
 						fab
@@ -58,7 +59,7 @@
 				</edit-property-menu>
 			</v-tab-item>
 			<v-tab-item>
-				<v-simple-table v-if="edges[entity] && edges[entity].length > 0">
+				<v-simple-table v-if="edges && edges.length > 0">
 					<thead>
 						<tr>
 							<th class="primary--text">Description</th>
@@ -68,7 +69,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="edge in edges[entity]" :key="edge.id">
+						<tr v-for="edge in edges" :key="edge.id">
 							<td>{{edge.label}}</td>
 							<td>{{edge.to}}</td>
 							<td>{{edge.cardinality}}</td>
@@ -87,7 +88,7 @@
 										:visible="relationshipsPopover[edge.id] == true"
 										:nodes="nodes"
 										:relationship="edge"
-										@save="btnSaveExistingEdge(entity, edge.id, $event)"
+										@save="btnSaveExistingEdge(currentEntity, edge.id, $event)"
 										@cancel="cancelRelationshipsPopover(edge.id)"
 									></edit-relationship>
 								</v-menu>
@@ -101,7 +102,7 @@
 				<v-menu
 					:close-on-content-click="false"
 					:nudge-width="300"
-					v-model="relationshipsPopover[entity]"
+					v-model="relationshipsPopover[currentEntity]"
 					offset-x
 				>
 					<template v-slot:activator="{ on }">
@@ -115,34 +116,35 @@
 						</v-btn>
 					</template>
 					<edit-relationship
-						:visible="relationshipsPopover[entity] == true"
-						:ref="'add_relationship_' + entity"
+						v-if="currentEntity"
+						:visible="relationshipsPopover[currentEntity] == true"
+						:ref="'add_relationship_' + currentEntity"
 						:nodes="nodes"
-						:relationship="Object.assign({from: entity})"
+						:relationship="Object.assign({from: currentEntity.id})"
 						:existingRelNames="edgeIds"
 						adding="true"
-						@save="btnSaveNewEdge(entity, $event)"
-						@cancel="cancelRelationshipsPopover(entity)"
+						@save="btnSaveNewEdge(currentEntity, $event)"
+						@cancel="cancelRelationshipsPopover(currentEntity)"
 					></edit-relationship>
 				</v-menu>
 			</v-tab-item>
-			<v-tab-item class="info-tab">
+			<v-tab-item v-if="currentEntity" class="info-tab">
 				<v-select
-					:items="entities[entity].properties"
+					:items="properties"
 					item-text="name"
 					item-value="name"
 					label="Entity Identifier"
-					v-model="entities[entity].idField"
-					@change="btnUpdateModel(entity)"
+					v-model="currentEntity.idField"
+					@change="save()"
 					outlined
 				></v-select>
 				<v-select
-					:items="entities[entity].properties"
+					:items="properties"
 					item-text="name"
 					item-value="name"
 					label="Entity Label"
-					v-model="entities[entity].labelField"
-					@change="btnUpdateModel(entity)"
+					v-model="currentEntity.labelField"
+					@change="save()"
 					outlined
 				></v-select>
 				<v-text-field
@@ -169,36 +171,45 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import EditRelationship from '@/components/EditRelationship.vue';
 import EditPropertyMenu from '@/components/EditPropertyMenu.vue'
 
-const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+(\/)$/
+const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+(\/)$/
 
 export default {
-	name: 'entity-card',
 	props: {
-		entity: {type: String},
-		entities: {type: Object},
-		edges: {type: Object},
+		entity: {type: Object},
+		edges: {type: Array},
 		nodes: {type: Array},
 		edgeIds: {type: Array},
 		activeTab: {type: Number}
 	},
 	components: {
+		draggable,
 		EditRelationship,
 		EditPropertyMenu
 	},
 	computed: {
+		properties: {
+			get() {
+				return this.currentEntity ? this.currentEntity.properties : []
+			},
+			set(props) {
+				this.currentEntity.properties = props
+				this.save()
+			}
+		},
 		baseUri: {
 			get() {
-				return this.entities[this.entity].baseUri || 'http://marklogic.envision.com/'
+				return this.currentEntity.baseUri || 'http://marklogic.envision.com/'
 			},
 			set(val) {
 				if (val && BASE_URI_REGEX.test(val)) {
 					this.errorIRI = false
 					this.errorMsgIRI = []
-					this.entities[this.entity].baseUri = val
-					this.btnUpdateModel()
+					this.currentEntity.baseUri = val
+					this.save()
 				}
 				else {
 					this.errorIRI = true
@@ -208,19 +219,23 @@ export default {
 		},
 		version: {
 			get() {
-				return this.entities[this.entity].version || '0.0.1'
+				return this.currentEntity.version || '0.0.1'
 			},
 			set(val) {
-				this.entities[this.entity].version = val
+				this.currentEntity.version = val
 			}
 		}
 	},
 	data() {
 		return {
+			currentEntity: null,
 			relationshipsPopover: {},
 			whichTab: null,
 			errorIRI: false,
-			errorMsgIRI: null
+			errorMsgIRI: null,
+			dragOptions: {
+				animation: 200,
+			}
 		}
 	},
 	watch: {
@@ -230,24 +245,31 @@ export default {
 	},
 	mounted() {
 		this.whichTab = this.activeTab || 0
+		this.updateValues()
 	},
 	methods: {
+		updateValues() {
+			this.currentEntity = JSON.parse(JSON.stringify(this.entity))
+		},
 		cancelRelationshipsPopover(id) {
 			this.$set(this.relationshipsPopover, id, false)
 		},
-		btnSaveProperty(item, {oldProp, newProp}) {
-			let entity = this.entities[item]
-			if (oldProp) {
-				entity.properties = entity.properties.filter(p => p._propId !== oldProp._propId)
+		btnSaveProperty({oldProp, newProp}) {
+			const idx = this.currentEntity.properties.findIndex(p => p._propId === (oldProp || {})._propId)
+			if (idx >= 0) {
+				this.$set(this.currentEntity.properties, idx, newProp)
 			}
-			entity.properties.push(newProp)
-			this.btnUpdateModel(item)
+			else {
+				this.currentEntity.properties.push(newProp)
+			}
+			console.log(this.currentEntity.properties)
+			this.save()
 		},
-		btnUpdateModel() {
-			this.$emit('updateModel')
+		save() {
+			this.$emit('updated', this.currentEntity)
 		},
-		btnDeleteProperties(item, propName){
-			this.$emit ("deleteProperties", {item, propName})
+		btnDeleteProperties(entity, propName){
+			this.$emit ("deleteProperties", {entity, propName})
 		},
 		btnSaveNewEdge(item, relInfo) {
 			this.$set(this.relationshipsPopover, item, false)
@@ -277,6 +299,7 @@ export default {
 	border-radius: 4px;
 	background-color: rgba(255,255,255,.5);
 	-webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+	box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
 .fa-pencil {

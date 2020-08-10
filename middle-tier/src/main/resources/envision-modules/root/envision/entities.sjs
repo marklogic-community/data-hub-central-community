@@ -11,7 +11,7 @@ const extensions = xdmp.mimetypes()
 	.join('|')
 
 function enrichValue(value) {
-	if (value && value.toLowerCase().match(`^.+(${extensions})$`) && fn.docAvailable(value)) {
+	if (value && value.toString().toLowerCase().match(`^.+(${extensions})$`) && fn.docAvailable(value)) {
 		return {
 			value: value,
 			contentType: xdmp.uriContentType(value)

@@ -3,7 +3,10 @@
 		<v-flex xs12 fill-height class="relparent">
 			<v-card dark class="white--text abs">
 				<v-card-title primary-title>
-					<div class="headline" v-if="model" data-cy="createModelVue.currentModelLabel">{{model.name}}</div>
+					<div
+						v-if="model"
+						class="headline"
+						data-cy="createModelVue.currentModelLabel">{{model.name}}</div>
 					<v-spacer></v-spacer>
 					<v-menu
 						:close-on-content-click="false"
@@ -19,8 +22,7 @@
 										icon
 										small
 										class="small-btn"
-										v-on="{ ...tooltip, ...menu }"
-									>
+										v-on="{ ...tooltip, ...menu }">
 										<v-icon>mdi-plus</v-icon>
 									</v-btn>
 								</template>
@@ -48,8 +50,7 @@
 										icon
 										small
 										class="small-btn"
-										v-on="{ ...tooltip, ...menu }"
-									>
+										v-on="{ ...tooltip, ...menu }">
 										<v-icon>mdi-rename-box</v-icon>
 									</v-btn>
 								</template>
@@ -58,18 +59,16 @@
 						</template>
 						<rename-model
 							:existingModels="models"
-							@rename="renameModel($event, model.name)"
+							@rename="renameModel"
 							@cancel="renameModelMenu = false"
 							></rename-model>
 					</v-menu>
-
 
 					<v-menu
 						:close-on-content-click="false"
 						:nudge-width="300"
 						offset-x
-						v-model="loadModelsMenu"
-					>
+						v-model="loadModelsMenu">
 						<template v-slot:activator="{ on: menu }">
 							<v-tooltip bottom>
 								<template v-slot:activator="{ on: tooltip }">
@@ -79,8 +78,7 @@
 										icon
 										small
 										class="small-btn"
-										v-on="{ ...tooltip, ...menu }"
-									>
+										v-on="{ ...tooltip, ...menu }">
 										<v-icon>open_in_browser</v-icon>
 									</v-btn>
 								</template>
@@ -101,8 +99,7 @@
 								small
 								class="small-btn"
 								v-on="on"
-								@click="saveImage"
-							>
+								@click="saveImage">
 								<v-icon>image</v-icon>
 							</v-btn>
 						</template>
@@ -112,8 +109,7 @@
 						:close-on-content-click="false"
 						:nudge-width="300"
 						offset-x
-						v-model="confirmDeleteMenu"
-					>
+						v-model="confirmDeleteMenu">
 						<template v-slot:activator="{ on: menu }">
 							<v-tooltip bottom>
 								<template v-slot:activator="{ on: tooltip }">
@@ -123,8 +119,7 @@
 										icon
 										small
 										class="small-btn"
-										v-on="{ ...tooltip, ...menu }"
-									>
+										v-on="{ ...tooltip, ...menu }">
 										<v-icon>delete</v-icon>
 									</v-btn>
 								</template>
@@ -149,42 +144,38 @@
 							label="search for entity"
 							v-model="searchLabel"
 							prepend-icon="search"
-							single-line
-						></v-text-field>
+							single-line></v-text-field>
 					</div>
-					<v-expansion-panels ref="expansionPanel" v-model="panel" flat fill-height>
+					<v-expansion-panels ref="expansionPanel" v-model="currentPanel" flat fill-height>
 						<v-expansion-panel
 							lazy
 							light
-							:ref="'panel_' + item"
-							@change="updateNode(item)"
+							@change="updateNode(entity)"
+							:ref="'panel_' + entity.id"
 							:key="idx"
-							v-for="(item, idx) in nodeLabels" v-show="item.toLowerCase().match((searchLabel || '').toLowerCase())"
-						>
-							<v-expansion-panel-header>{{ item }}</v-expansion-panel-header>
+							v-for="(entity, idx) in sortedEntities"
+							v-show="entity.label.toLowerCase().match((searchLabel || '').toLowerCase())">
+							<v-expansion-panel-header>{{ entity.label }}</v-expansion-panel-header>
 							<v-expansion-panel-content>
 								<entity-card
-									v-if="entities[item].type === 'entity'"
-									:entity="item"
+									v-if="entity.type === 'entity'"
+									:entity="entity"
 									:entities="entities"
-									:edges="edges"
+									:edges="entityEdges(entity)"
 									:nodes="nodes"
 									:edgeIds="edgeIds"
 									:activeTab="activeTab"
-									@updateModel="onUpdateModel"
-									@addProperties="onAddProperties"
+									@updated="onUpdateModel"
 									@deleteProperties="onDeleteProperties"
 									@saveEdge="onSaveEdge"
-									@deleteEdge="onDeleteEdge"
-								></entity-card>
+									@deleteEdge="onDeleteEdge"></entity-card>
 								<concept-card
 									v-else
-									:entity="item"
-									:edges="edges"
+									:entity="entity"
+									:edges="entityEdges(entity)"
 									:nodes="nodes"
 									:edgeIds="edgeIds"
-									@updateModel="onUpdateModel"
-									@addProperties="onAddProperties"
+									@updated="onUpdateModel"
 									@deleteProperties="onDeleteProperties"
 									@saveEdge="onSaveEdge"
 									@deleteEdge="onDeleteEdge"
@@ -193,33 +184,27 @@
 						</v-expansion-panel>
 					</v-expansion-panels>
 				</v-card-text>
-				<v-card-actions>
-					<v-spacer></v-spacer>
-
-				</v-card-actions>
 			</v-card>
 		</v-flex>
 	</v-layout>
 </template>
 
 <script>
-import CreateModel from '@/components/CreateModel.vue';
-import RenameModel from '@/components/RenameModel.vue';
-import LoadModel from '@/components/LoadModel.vue';
-import Confirm from '@/components/Confirm.vue';
-import EntityCard from '@/components/ml-modeler/EntityCard.vue';
-import ConceptCard from '@/components/ml-modeler/ConceptCard.vue';
-import uuidv4 from 'uuid/v4';
+import CreateModel from '@/components/CreateModel.vue'
+import RenameModel from '@/components/RenameModel.vue'
+import LoadModel from '@/components/LoadModel.vue'
+import Confirm from '@/components/Confirm.vue'
+import EntityCard from '@/components/ml-modeler/EntityCard.vue'
+import ConceptCard from '@/components/ml-modeler/ConceptCard.vue'
 import { mapState } from 'vuex'
 
 export default {
 	name: 'entity-pick-list',
 	props: {
-		// all these are passed in from the parent vue component
-		nodesCache: {type: Object}, //nodes and edges managed by parent container
-		currentNode: {type: String}, //outside changes to the currently selected node
-		edgesCache: {type: Object},
-		currentEdge: {type: String}, //outside changes to the currently selected edge
+		nodes: { type: Array },
+		edges: {type: Array},
+		entity: {type: Object},
+		currentEdge: {type: String}
 	},
 	components: {
 		CreateModel,
@@ -245,83 +230,65 @@ export default {
 			model: state => state.model.model,
 			models: state => state.model.models
 		}),
-		nodeLabels() {
-			return Object.values(this.nodesCache)
-				.map(n => n.entityName).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+		currentPanel: {
+			get() {
+				return this.panel
+			},
+			set(val) {
+				this.panel = val
+				if (this.panel) {
+					const entity = this.sortedEntities[val]
+					if (!entity) {
+						return
+					}
+					setTimeout(() => {
+						let panelRef = this.$refs['panel_' + entity.id]
+						if (panelRef && panelRef[0] && panelRef[0].$el) {
+							let offset = panelRef[0].$el.offsetTop
+							this.$refs.expansionPanel.$el.scrollTop = offset
+						}
+					}, 750)
+				}
+			}
 		},
 		edgeIds() {
-			return Object.values(this.edgesCache).map(e => e.id);
+			return this.edges.map(e => e.id)
 		},
-		nodes() {
-			return Object.values(this.nodesCache);
+		sortedEntities() {
+			return this.nodes.slice()
+				.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()))
 		},
 		entities() {
-			return this.nodeLabels.reduce((prev, cur) => {
-				let entity = this.nodesCache[cur.toLowerCase()];
-				entity.properties = entity.properties
-					.map(p => {
-						return {
-							...p,
-							_propId: p._propId || uuidv4(),
-						};
-					})
-					.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-				prev[cur] = entity;
-				return prev;
-			}, {});
-		},
-		entity() {
-			return this.nodesCache[this.currentNode] || null;
+			return this.nodes.reduce((output, entity) => {
+				output[entity.entityName] = entity
+				return output
+			}, {})
 		},
 		edge() {
-			return this.edgesCache[this.currentEdge] || null;
-		},
-		edges() {
-			return this.nodeLabels.reduce((prev, cur) => {
-				prev[cur] = Object.values(this.edgesCache)
-					.filter(e => e.from.toLowerCase() === cur.toLowerCase())
-					.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()));
-				return prev;
-			}, {})
+			return this.currentEdge ? this.edges.find(e => e.id === this.currentEdge): null
 		},
 	},
 	watch: {
-		panel(newVal) {
-			let nodeLabel = this.nodeLabels[newVal]
-			if (!nodeLabel) {
-				return
-			}
-			// wait for the panel to finish opening before scrolling it into view
-			setTimeout(() => {
-				let panelRef = this.$refs['panel_' + nodeLabel]
-				if (panelRef && panelRef[0] && panelRef[0].$el) {
-					let offset = panelRef[0].$el.offsetTop;
-					this.$refs.expansionPanel.$el.scrollTop = offset
-				}
-			}, 750);
-		},
 		entity(newVal) {
-			//currentNode changed by parent
 			if (newVal) {
-				this.currentItem = newVal.entityName;
-				//turn on the correct button
-				this.panel = this.nodeLabels.findIndex(v => v == this.currentItem)
-				this.activeTab = 0;
+				this.currentItem = newVal.entityName
+				this.currentPanel = this.sortedEntities.findIndex(v => v.label == this.currentItem)
+				this.activeTab = 0
 			}
 		},
 		edge(newVal) {
 			if (newVal) {
-				this.panel = this.nodeLabels.findIndex(v => v.toLowerCase() == newVal.from)
-				this.activeTab = 1;
+				this.currentPanel = this.sortedEntities.findIndex(v => v.label.toLowerCase() == newVal.from)
+				this.activeTab = 1
 			}
 		}
 	},
 	methods: {
-		updateNode(item) {
-			let entity = this.entities[item];
-			if (entity) {
-				this.$emit('selectedNode', entity);
-			}
+		entityEdges(entity) {
+			return this.edges.filter(e => e.from.toLowerCase() === entity.id.toLowerCase())
+		},
+		updateNode(entity) {
+			this.$emit('selectedNode', entity)
 		},
 		createModel(modelName) {
 			this.$store.dispatch('model/save', {
@@ -329,30 +296,28 @@ export default {
 				edges: {},
 				nodes: {}
 			})
-			this.createModelMenu = false;
+			this.createModelMenu = false
 		},
 		renameModel(newModelName) {
-			console.log ("In rename model with new name " + newModelName)
-
 			this.$store.dispatch('model/rename', {
 				originalname: this.model.name,
 				newname: newModelName,
 				model: this.model
 			})
-			this.renameModelMenu = false;
+			this.renameModelMenu = false
 		},
 		saveImage() {
-			this.$emit('doAction', 'saveGraphImage');
+			this.$emit('saveGraphImage')
 		},
 		deleteModel() {
-			this.$emit('doAction', 'deleteModel')
+			this.$emit('deleteModel')
 			this.confirmDeleteMenu = false
 		},
 		onDeleteEdge(edge) {
-			this.$emit('doAction', 'deleteEdge', {edge})
+			this.$emit('deleteEdge', edge)
 		},
 		onSaveEdge({relInfo}) {
-			this.$emit ("doAction", 'saveEdge', {
+			this.$emit ('saveEdge', {
 				id: relInfo.id,
 				from: relInfo.from,
 				label: relInfo.label,
@@ -362,24 +327,16 @@ export default {
 				keyTo: relInfo.keyTo
 			})
 		},
-		onUpdateModel() {
-			this.$emit ("doAction", 'saveToML')
+		onUpdateModel(entity) {
+			this.$set(this.entities, entity.entityName, entity)
+			this.$emit ('updateEntity', entity)
 		},
-		onAddProperties({item, propInfo}) {
-			let entity = this.entities[item]
-			entity.properties.push(propInfo)
-
-			this.$emit ("doAction", 'updateNodes', { nodesCache: this.nodesCache })
-			this.$emit ("doAction", 'saveToML')
-		},
-		onDeleteProperties({item, propName}){
-			let entity = this.entities[item]
+		onDeleteProperties({entity, propName}){
 			entity.properties = entity.properties.filter(p => p.name !== propName)
-			this.$emit ("doAction", 'updateNodes', { nodesCache: this.nodesCache })
-			this.$emit ("doAction", 'saveToML')
+			this.$emit ('updateEntity', entity)
 		}
-	} //end of methods
-} //end of export
+	}
+}
 </script>
 
 <style lang="less" scoped>
@@ -395,6 +352,7 @@ export default {
 	border-radius: 4px;
 	background-color: rgba(255,255,255,.5);
 	-webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+	box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
 .fa-pencil {

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import * as X2JS from 'x2js';
+import X2JS from 'x2js';
 import friendlyJson from '@/components/friendly-json.vue';
 
 const x2js = new X2JS();

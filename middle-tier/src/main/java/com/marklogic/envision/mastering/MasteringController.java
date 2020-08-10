@@ -82,7 +82,6 @@ public class MasteringController extends AbstractController {
 			sort = node.get("sort").asText();
 		}
 
-		JsonNode extractions = node.get("extractions");
 		return masteringService.getNotifications(getFinalClient(), qtext, page, pageLength, sort);
 	}
 

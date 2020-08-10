@@ -3,6 +3,7 @@
 const config = require('/com.marklogic.hub/config.sjs')
 const finalDB = config.FINALDATABASE
 const stagingDB = config.STAGINGDATABASE
+const jobDB = config.JOBDATABASE
 let arrErrors = []
 
 // code to delete anything in a collection EXCEPT ES/DH collections, or items not in any
@@ -34,7 +35,7 @@ function deleteJobs() {
 }
 
 try {
-	xdmp.invokeFunction(deleteJobs,{ "database" : xdmp.database("data-hub-JOBS") })
+	xdmp.invokeFunction(deleteJobs,{ "database" : xdmp.database(jobDB) })
 } catch (e) {
 	arrErrors.push ("Error clearing items from data-hub-JOBS. Error message was '" + e.message + "'.")
 }

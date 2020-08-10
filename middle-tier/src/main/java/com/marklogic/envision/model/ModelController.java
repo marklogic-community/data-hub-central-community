@@ -42,34 +42,34 @@ public class ModelController extends AbstractController {
     }
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void switchModel(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		modelService.deleteModel(getFinalClient(), request.getInputStream());
+    public void switchModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		modelService.deleteModel(request.getInputStream());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public void saveModel(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void saveModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
         modelService.saveModel(getFinalClient(), request.getInputStream());
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
 	@RequestMapping(value = "/import", method = RequestMethod.PUT)
-	public void importModel(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void importModel(HttpServletResponse response) throws IOException {
 		modelService.importModel(getFinalClient());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
     @RequestMapping(value = "/todatahub", method = RequestMethod.POST)
-    public void toDataHub(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void toDataHub() {
         modelService.toDataHub(getFinalClient());
     }
 
 	@RequestMapping(value = "/activeIndexes", method = RequestMethod.GET)
-	public JsonNode getActiveIndexes(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public JsonNode getActiveIndexes() {
 		return modelService.getActiveIndexes(getFinalClient());
     }
     @RequestMapping(value = "/rename", method = RequestMethod.POST)
-	public void renameModel(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void renameModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		modelService.renameModel(getFinalClient(), request.getInputStream());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
