@@ -34,7 +34,7 @@
 									</template>
 									<edit-relationship
 										:ref="'edit_relationship_' + entity.label"
-										:nodes="entities"
+										:nodes="nodes"
 										:relationship="Object.assign({}, edge)"
 										@save="btnSaveEdge(entity, $event)"
 										@cancel="editRelationshipsPopover[edge.id] = false"
@@ -63,7 +63,7 @@
 					</template>
 					<edit-relationship
 						:ref="'add_relationship_' + entity.label"
-						:nodes="entities"
+						:nodes="nodes"
 						:relationship="Object.assign({from: entity.id})"
 						:existingRelNames="edgeIds"
 						adding="true"
@@ -83,7 +83,7 @@ export default {
 	props: {
 		entity: {type: Object},
 		edges: {type: Array},
-		entities: {type: Array},
+		nodes: {type: Array},
 		edgeIds: {type: Array}
 	},
 	components: {
