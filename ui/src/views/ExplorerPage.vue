@@ -37,7 +37,7 @@
 			</v-layout>
 			<v-flex md12>
 				<v-layout row class="fullHeight">
-					<v-flex :class="['graph-container', currentNode ? 'md8' : 'md12']">
+					<v-flex :class="['graph-container', (currentNode  && showDetailPane) ? 'md8' : 'md12']">
 						<div row>
 							<v-tabs v-if="isFinalDb" v-model="tab" @change="updateRoute" hide-slider>
 								<v-tab data-cy="tabGraph"><v-icon>bubble_chart</v-icon>Graph</v-tab>
@@ -87,12 +87,14 @@
 							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
 						</ul>
 					</v-flex>
-					<v-flex :class="['right-pane', currentNode ? 'md4' : 'nowidth']">
+					<v-flex :class="['right-pane', (currentNode && showDetailPane)? 'md4' : 'nowidth']">
 						<entity-details
 							v-if="currentNode && !currentNode.isConcept"
 							:entity="currentNode"
 							v-on:expandRelationship="expandRelationship"
-							v-on:unmerge="unmerge"></entity-details>
+							v-on:unmerge="unmerge"
+							v-on:hideDetails="showDetailPane = false"
+							></entity-details>
 						<v-card
 							v-if="currentNode && currentNode.isConcept">
 							<v-card-text>
@@ -200,6 +202,7 @@ export default {
 			rightClickPos: { x: 0, y: 0 },
 			rightClickItems: [],
 			currentNode: null,
+			showDetailPane: false,
 			title: 'Explore',
 			entities: {},
 			colors: {},
@@ -523,6 +526,7 @@ export default {
 		clickedResult(result) {
 			if (this.isFinalDb) {
 				this.currentNode = result
+				this.showDetailPane = true
 			}
 			else {
 				this.$router.push({ name: 'root.details', query: { uri: result.uri, db: this.currentDatabase } })
@@ -679,11 +683,13 @@ export default {
 				let node = this.nodeMap[nodeId]
 				if (node) {
 					this.currentNode = node
+					this.showDetailPane = true
 				}
 				else {
 					let concept = this.concepts.find(c => c.id === nodeId)
 					if (concept) {
 						this.currentNode = concept
+						this.showDetailPane = true
 					}
 				}
 			} else if (!isDrag) {
