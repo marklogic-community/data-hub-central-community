@@ -1,7 +1,6 @@
 'use strict'
 
 const ents = require('/envision/entities.sjs');
-const model = require('/envision/model.sjs');
 
 var qtext;
 var page;
