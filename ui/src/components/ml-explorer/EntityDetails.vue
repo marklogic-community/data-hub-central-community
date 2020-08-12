@@ -46,12 +46,11 @@
 
 			<v-tooltip bottom>
 				<template v-slot:activator="{ on }">
-					<v-btn
-						data-cy="entity.detailsBtn"
-						@click="goDetails"
-						right icon small class="small-btn" v-on="on">
+					<router-link
+						:to="{ name: 'root.details', query: { uri: entity.uri, db: 'final' } }"
+						v-on="on">
 						<v-icon>list_alt</v-icon>
-					</v-btn>
+					</router-link>
 				</template>
 				<span>View Document</span>
 			</v-tooltip>

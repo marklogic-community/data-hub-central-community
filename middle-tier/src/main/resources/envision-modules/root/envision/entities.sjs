@@ -48,12 +48,14 @@ function getEntities(uris, opts) {
 	if (labels && labels.length > 0) {
 		labelFilter = `FILTER( ?lbl IN ( ${labels.map(label => `rdf:${label}`).join(', ')} ) )`
 	}
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
 
 	// this query gets all the edges for the given list of uris
 	// with a limit applied to not return everything
 	const sparql = `
 		PREFIX rdf: <http://www.w3.org/2000/01/rdf-schema#>
 		PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+		PREFIX xdmp: <http://marklogic.com/xdmp#>
 
 		select distinct
 			# we use fromUri and toUri to determine which side is a concept
@@ -87,6 +89,7 @@ function getEntities(uris, opts) {
 				?toId rdf:hasEntityType ?entityType.
 				optional { ?toUri rdf:hasId ?toId }
 				FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
+				FILTER( xdmp:document-get-collections(?toUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
 				${labelFilter}
 			}
 
@@ -97,6 +100,7 @@ function getEntities(uris, opts) {
 				?fromId rdf:hasEntityType ?entityType.
 				optional { ?fromUri rdf:hasId ?fromId }
 				FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
+				FILTER( xdmp:document-get-collections(?fromUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
 				${labelFilter}
 			}
 		}
@@ -108,7 +112,6 @@ function getEntities(uris, opts) {
 	uris.forEach(uri => uriMap[uri] = true)
 
 	// build a cts.query that omits archived documents from smart mastering
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
 	const query = cts.notQuery(cts.collectionQuery(archivedCollections))
 
 	// run the sparql query while ignoring archived docs
