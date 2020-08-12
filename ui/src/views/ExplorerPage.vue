@@ -706,16 +706,28 @@ export default {
 						y: e.event.y
 					}
 
-					let items = _.sortBy(Object.values(node.edgeCounts), 'label').map(e => {
-						return {
-							label: `Expand ${e.label} (${e.count})`,
-							action: 'expand',
-							rel: {
-								uri: this.currentNode.id,
-								label: e.label
+					let items = []
+					if (!node.isConcept) {
+						items = _.sortBy(Object.values(node.edgeCounts), 'label').map(e => {
+							return {
+								label: `Expand ${e.label} (${e.count})`,
+								action: 'expand',
+								rel: {
+									uri: this.currentNode.id,
+									label: e.label
+								}
 							}
-						}
-					})
+						})
+					} else {
+						// TODO - change to be like normal entities and show numbers?
+						items.push({
+							label: 'Expand concept ' + node.label,
+							action: 'expandConcept',
+							rel: {
+								concept: node.label
+							}
+						})
+          }
 
 					if (node.uri && node.uri.match('/com.marklogic.smart-mastering/merged/')) {
 						items.push({
@@ -747,6 +759,9 @@ export default {
 				case 'expand':
 					this.expandRelationship(item.rel)
 					break
+				case 'expandConcept':
+					this.expandConcept(item.rel)
+					break;
 				case 'unmerge':
 					this.confirmUnmergeMenu = true
 					break;
@@ -760,6 +775,12 @@ export default {
 			const page = 1
 			const pageLength = 10
 			this.$store.dispatch('explore/getRelatedEntities', { uri, label, page, pageLength })
+		},
+		expandConcept({ concept }) {
+			// TODO: move this to store
+			const page = 1
+			const pageLength = 10
+			this.$store.dispatch('explore/getEntitiesRelatedToConcept', { concept, page, pageLength })
 		},
 		mergeHistory(uri) {
 			this.$router.push({ name: 'root.explorer.compare', query: { uri } })

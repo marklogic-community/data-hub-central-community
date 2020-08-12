@@ -230,5 +230,13 @@ export default {
 			console.error('error:', error);
 			return error;
 		});
+	},
+	getEntitiesRelatedToConcept ({ concept, page, pageLength }) {
+		return axios.post('/api/explore/related-entities-to-concept/', { concept, page, pageLength })
+		.then(response => response.data)
+		.catch(error => {
+			console.error('error:', error);
+			return error;
+		});
 	}
 };
