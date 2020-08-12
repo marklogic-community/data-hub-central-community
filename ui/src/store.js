@@ -386,6 +386,13 @@ const explore = {
 					commit('addDocs', response)
 				})
 		},
+		getEntitiesRelatedToConcept({ commit }, { concept, page, pageLength }) {
+			return searchApi
+				.getEntitiesRelatedToConcept({ concept, page, pageLength })
+				.then(response => {
+					commit('addDocs', response)
+				})
+		},
 		getHistory({ commit }, uri) {
 			return masteringApi.getHistory(uri)
 				.then(response => {

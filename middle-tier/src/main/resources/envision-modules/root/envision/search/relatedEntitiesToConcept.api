@@ -1,0 +1,21 @@
+{
+    "functionName": "relatedEntitiesToConcept",
+    "params": [
+      {
+        "datatype": "string",
+        "name": "concept"
+      },
+			{
+        "datatype": "int",
+        "name": "page"
+      },
+			{
+        "datatype": "int",
+        "name": "pageLength"
+      }
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}
