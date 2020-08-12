@@ -55,6 +55,20 @@
 				</template>
 				<span>View Document</span>
 			</v-tooltip>
+
+			<v-tooltip bottom>
+				<template v-slot:activator="{ on }">
+					<v-btn
+						data-cy="entity.hideBtn"
+						@click="$emit('hideDetails')"
+						right icon small class="small-btn" v-on="on">
+						<v-icon>unfold_less</v-icon>
+					</v-btn>
+				</template>
+				<span>Hide detail pane</span>
+			</v-tooltip>
+
+
 		</v-card-title>
 		<v-card-text class="overflow">
 			<v-tabs

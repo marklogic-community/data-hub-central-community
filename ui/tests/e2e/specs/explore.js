@@ -150,6 +150,23 @@ describe('Explore', () => {
 		cy.get('code.json.hljs').contains('envelope')
 	})
 
+	it('Grid Result close details page', () => {
+		cy.visit('/explore')
+		cy.get('[data-cy=searchInput]').clear()
+		cy.get('[data-cy=searchInput]').type('Sashenka{enter}')
+		cy.contains('Showing results 1 to 5 of 31')
+
+		cy.url().should('equal', 'http://localhost:9999/explore?tab=0&q=Sashenka&page=1&db=final')
+		cy.get('[data-cy=tabGrid]').click()
+		cy.url().should('equal', 'http://localhost:9999/explore?tab=1&q=Sashenka&page=1&db=final')
+
+		cy.get('h3').contains('Sashenka').parent().click()
+		cy.get('[data-cy=entityTitle]').contains("Sashenka")
+		cy.contains('571 Grayhawk Court')
+		cy.get('[data-cy="entity.hideBtn"]').click()
+		cy.get('[data-cy="entity.entityTitle"]').should('not.be.visible')
+	})
+
 	it('Property panel cleared after search', () => {
 		cy.visit('/explore')
 		cy.get('[data-cy=searchInput]').clear()
