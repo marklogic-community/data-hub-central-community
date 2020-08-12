@@ -75,6 +75,12 @@ dependencies {
 	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
 }
 
+processResources {
+	filesMatching("**/version.properties") {
+		expand(project: project)
+	}
+}
+
 task installDependencies(type: NpmTask, group: taskGroup) {
 	description = "Install UI dependencies before building the UI files"
 	args = ["install"]
