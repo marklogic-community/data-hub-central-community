@@ -24,6 +24,7 @@ main:
       { url: '/components/explore/', text: 'Explore' },
 			{ url: '/components/know/', text: 'Know' },
 			{ url: '/components/notifications/', text: 'Mastering Notifications' },
+			{ url: '/components/admin/', text: 'Deploy to DHS' },
       #{
       #  url: '/subpages/subsubpages/',
       #  text: 'Subsub pages',
