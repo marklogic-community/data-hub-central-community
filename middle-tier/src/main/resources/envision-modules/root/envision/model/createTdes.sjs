@@ -24,20 +24,21 @@ for (let key in model.edges) {
 	if (hasConcept) {
 		if (fromNode.type === 'entity') {
 			node = fromNode
-			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')))`
-			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))`
+			subj = `sem:iri(fn:replace(fn:concat("${fromNode.baseUri || ''}${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')), " ", ""))`
+			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))` // don't replace spaces here because this is displayed
 			subTempKey = `./${edge.keyTo}`
 			concept = obj
 			conceptType = toNode.entityName
 		}
 		else {
 			node = toNode
-			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`
-			obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')))`
+			subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`// don't replace spaces here because this is displayed
+			obj = `sem:iri(fn:replace(fn:concat("${toNode.baseUri || ''}${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')), " ", ""))`
 			subTempKey = `./${edge.keyFrom}`
 			concept = subj
 			conceptType = fromNode.entityName
 		}
+
 	}
 	else {
 		if (fromNode.idField === edge.keyFrom) {
@@ -92,12 +93,15 @@ for (let key in model.nodes) {
 	let entity = model.nodes[key];
 	let subTemps = subTemplates[entity.id] || {};
 
+// doesn't apply to concepts - eg ${entity.idField} won't exist, no concept of collection for concept
+if ( entity.type !== "concept") {
 	let template = {
 		template: {
 			context: '//*:instance/*:' + entity.entityName,
 			collections: [entity.entityName]
 		}
 	}
+
 	template.template.templates = []
 	template.template.templates.push({
 		context: `./${entity.idField}`,
@@ -146,6 +150,7 @@ for (let key in model.nodes) {
 	}
 	templates.push(template);
 	tde.templateInsert(`${entity.id}-relationships-tde.json`, template);
+}
 }
 
 // not necessary, just return it for grins
