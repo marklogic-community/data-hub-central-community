@@ -8,21 +8,60 @@
 			"label": "hrSkill1",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#hrSkill2": {
 			"id": "skill#hrSkill2",
 			"label": "hrSkill2",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#hrSkill3": {
 			"id": "skill#hrSkill3",
 			"label": "hrSkill3",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"/MountainTopEmployees/employee4.json": {
 			"id": "/MountainTopEmployees/employee4.json",
@@ -41,7 +80,7 @@
 			},
 			"edgeCounts": {
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 1
@@ -83,7 +122,7 @@
 			},
 			"edgeCounts": {
 				"employee-belongsto-department": {
-					"from":"employee",
+					"from": "employee",
 					"to": "department",
 					"label": "belongsTo",
 					"count": 2

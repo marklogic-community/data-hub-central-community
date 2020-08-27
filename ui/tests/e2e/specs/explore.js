@@ -16,7 +16,7 @@ describe('Explore', () => {
 		cy.route('PUT', '/api/models/', {})
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
 
-		cy.route('/api/models/model.json', 'fixture:model.json')
+		cy.route('/api/models/current', 'fixture:model.json')
 		cy.route('GET', '/api/models/', 'fixture:models.json')
 		cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
 		cy.route('GET', '/api/crud/metadata**?uri=/com.marklogic.smart-mastering/merged/5d83f304b366fd804a4afccbd33e4b24.json&database=final', 'fixture:metadata.json')
@@ -200,7 +200,7 @@ describe('Explore', () => {
 
 	describe('Sort Options', () => {
 		beforeEach(function () {
-			cy.route('/api/models/model.json', 'fixture:modelWithRangeIndexes.json')
+			cy.route('/api/models/current', 'fixture:modelWithRangeIndexes.json')
 			cy.route('GET', '/api/models/', 'fixture:modelsWithRangeIndexes.json')
 			cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
 			cy.visit('/')

@@ -1,6 +1,9 @@
 const tde = require('/MarkLogic/tde.xqy');
+const modelWrapper = require('/envision/model.sjs');
 
-const model = require('/envision/model.sjs');
+var model;
+
+model = modelWrapper(model);
 
 if (!model) {
 	fn.error('MISSING MODEL');
@@ -145,7 +148,11 @@ for (let key in model.nodes) {
 		})
 	}
 	templates.push(template);
-	tde.templateInsert(`${entity.id}-relationships-tde.json`, template);
+	const permissions = [
+		xdmp.permission("data-hub-developer", "update"),
+		xdmp.permission("data-hub-operator", "read")
+	]
+	tde.templateInsert(`${entity.id}-relationships-tde.json`, template, permissions);
 }
 
 // not necessary, just return it for grins

@@ -1,12 +1,25 @@
 {
 	"nodes": {
-		"skill#programming": {
-			"id": "skill#programming",
-			"label": "programming",
-			"entityName": "Skill",
-			"isConcept": true,
-			"edgeCounts": {}
-		},
+    "skill#programming": {
+      "id": "skill#programming",
+      "label": "programming",
+      "entityName": "Skill",
+      "isConcept": true,
+      "edgeCounts": {
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 1
+        }
+      }
+    },
 		"/CoastalEmployees/55003.json": {
 			"id": "/CoastalEmployees/55003.json",
 			"uri": "/CoastalEmployees/55003.json",

@@ -1,11 +1,14 @@
 'use strict'
 
+const mastering = require('/envision/mastering.sjs')
+
+var model;
 var qtext;
 var page;
 var pageLength;
 var sort;
 
-const mastering = require('/envision/mastering.sjs')
+model = model.toObject();
 
 let start = ((page - 1) * pageLength) + 1;
 const collections = cts.collectionMatch("sm-*-notification")
@@ -26,7 +29,7 @@ const totalUnread = cts.estimate(unreadQuery)
 const docs = fn.subsequence(cts.search(query), start, pageLength).toArray();
 const notifications = docs.map(doc => {
 	const uri = fn.baseUri(doc);
-	return mastering.getNotification(uri, doc);
+	return mastering.getNotification(model, uri, doc);
 });
 
 const response = {

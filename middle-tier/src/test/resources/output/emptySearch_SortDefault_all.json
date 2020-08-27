@@ -8,42 +8,120 @@
 			"label": "general ledger",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#hrSkill1": {
 			"id": "skill#hrSkill1",
 			"label": "hrSkill1",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 2
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 2
+				}
+			}
 		},
 		"skill#hrSkill2": {
 			"id": "skill#hrSkill2",
 			"label": "hrSkill2",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 2
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 2
+				}
+			}
 		},
 		"skill#hrSkill3": {
 			"id": "skill#hrSkill3",
 			"label": "hrSkill3",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#procurement": {
 			"id": "skill#procurement",
 			"label": "procurement",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#programming": {
 			"id": "skill#programming",
 			"label": "programming",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"/CoastalEmployees/55003.json": {
 			"id": "/CoastalEmployees/55003.json",

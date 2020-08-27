@@ -11,6 +11,8 @@ import com.marklogic.client.io.StringHandle;
 import com.marklogic.client.io.marker.AbstractWriteHandle;
 import com.marklogic.client.util.RequestParameters;
 import com.marklogic.envision.dataServices.Mastering;
+import com.marklogic.envision.model.ModelService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,6 +29,12 @@ public class MasteringService {
 	private final String MASTERING_BLOCK_MATCH = "sm-block-match";
 	private final String SM_NOTIFICATIONS = "mlSmNotifications";
 
+	private final ModelService modelService;
+
+	@Autowired
+	MasteringService(ModelService modelService) {
+		this.modelService = modelService;
+	}
 	public String getStats(DatabaseClient client) {
 		return new GenericResourceManager(MASTERING_STATS, client).get();
 	}
@@ -41,7 +49,7 @@ public class MasteringService {
 	}
 
 	public JsonNode unmerge(DatabaseClient client, String uri) {
-		return Mastering.on(client).unmerge(uri);
+		return Mastering.on(client).unmerge(uri, modelService.getModel(client));
 	}
 
 	public String getHistoryDocument(DatabaseClient client, String uri) {
@@ -77,15 +85,15 @@ public class MasteringService {
 	}
 
 	public JsonNode getNotification(DatabaseClient client, String uri) {
-		return Mastering.on(client).getNotification(uri);
+		return Mastering.on(client).getNotification(uri, modelService.getModel(client));
 	}
 
 	public JsonNode getNotifications(DatabaseClient client, String qtext, Integer page, Integer pageLength, String sort) {
-		return Mastering.on(client).getNotifications(qtext, page, pageLength, sort);
+		return Mastering.on(client).getNotifications(modelService.getModel(client), qtext, page, pageLength, sort);
 	}
 
 	public JsonNode updateNotifications(DatabaseClient client, ArrayNode uris, String status) {
-		return Mastering.on(client).updateNotifications(uris, status);
+		return Mastering.on(client).updateNotifications(uris, modelService.getModel(client), status);
 	}
 
 	public JsonNode getBlocks(DatabaseClient client, ArrayNode uris) {

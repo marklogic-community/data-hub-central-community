@@ -1,6 +1,11 @@
 {
     "functionName": "getNotifications",
     "params": [
+			{
+				"datatype": "jsonDocument",
+				"name": "model",
+				"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+			},
       {
         "datatype": "string",
         "name": "qtext",

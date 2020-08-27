@@ -19,10 +19,6 @@ package com.marklogic.grove.boot.auth;
 import com.marklogic.hub.impl.HubConfigImpl;
 import com.marklogic.mgmt.ManageConfig;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -110,32 +106,4 @@ public class MarkLogicAuthenticationManager implements AuthenticationProvider, A
     public void setPathToAuthenticateAgainst(String pathToAuthenticateAgainst) {
         this.pathToAuthenticateAgainst = pathToAuthenticateAgainst;
     }
-}
-
-/**
- * Simple implementation that is good for one-time requests.
- */
-class SimpleCredentialsProvider implements CredentialsProvider {
-
-    private String username;
-    private String password;
-
-    public SimpleCredentialsProvider(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
-    @Override
-    public void setCredentials(AuthScope authscope, Credentials credentials) {
-    }
-
-    @Override
-    public Credentials getCredentials(AuthScope authscope) {
-        return new UsernamePasswordCredentials(username, password);
-    }
-
-    @Override
-    public void clear() {
-    }
-
 }

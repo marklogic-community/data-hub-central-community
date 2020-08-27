@@ -1,13 +1,18 @@
 {
-    "functionName": "unmerge",
-    "params": [
-      {
-        "datatype": "string",
-        "name": "uri"
-      }
-    ],
-    "return": {
-      "datatype": "jsonDocument",
-      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-    }
+		"functionName": "unmerge",
+		"params": [
+			{
+				"datatype": "string",
+				"name": "uri"
+			},
+			{
+				"datatype": "jsonDocument",
+				"name": "model",
+				"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+			}
+		],
+		"return": {
+			"datatype": "jsonDocument",
+			"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+		}
 }

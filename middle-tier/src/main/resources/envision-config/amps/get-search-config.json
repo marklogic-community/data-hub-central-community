@@ -1,0 +1,7 @@
+{
+	"namespace" : "https://marklogic.com/envision/indexes",
+	"local-name" : "get-search-config",
+	"document-uri" : "/envision/options.xqy",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "manage-admin" ]
+}
