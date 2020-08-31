@@ -5,28 +5,80 @@
 			"label": "general ledger",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#not visible in search": {
 			"id": "skill#not visible in search",
 			"label": "not visible in search",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#otherSkill": {
 			"id": "skill#otherSkill",
 			"label": "otherSkill",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"skill#procurement": {
 			"id": "skill#procurement",
 			"label": "procurement",
 			"entityName": "Skill",
 			"isConcept": true,
-			"edgeCounts": {}
+			"edgeCounts": {
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				}
+			}
 		},
 		"/CoastalEmployees/55002.json": {
 			"id": "/CoastalEmployees/55002.json",

@@ -3,20 +3,46 @@
 	"total": 7,
 	"pageLength": 1,
 	"nodes": {
-		"skill#general ledger": {
-			"id": "skill#general ledger",
-			"label": "general ledger",
-			"entityName": "Skill",
-			"isConcept": true,
-			"edgeCounts": {}
-		},
-		"skill#procurement": {
-			"id": "skill#procurement",
-			"label": "procurement",
-			"entityName": "Skill",
-			"isConcept": true,
-			"edgeCounts": {}
-		},
+    "skill#general ledger": {
+      "id": "skill#general ledger",
+      "label": "general ledger",
+      "entityName": "Skill",
+      "isConcept": true,
+      "edgeCounts": {
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 1
+        }
+      }
+    },
+    "skill#procurement": {
+      "id": "skill#procurement",
+      "label": "procurement",
+      "entityName": "Skill",
+      "isConcept": true,
+      "edgeCounts": {
+        "skill-isskillfor-employee": {
+          "from": "skill",
+          "to": "employee",
+          "label": "isSkillFor",
+          "count": 1
+        },
+        "employee-has-skill": {
+          "from": "employee",
+          "to": "skill",
+          "label": "has",
+          "count": 1
+        }
+      }
+    },
 		"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json": {
 			"id": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
 			"uri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",

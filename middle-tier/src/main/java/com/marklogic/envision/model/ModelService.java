@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.document.DocumentPage;
-import com.marklogic.client.document.DocumentRecord;
-import com.marklogic.client.io.DocumentMetadataHandle;
-import com.marklogic.client.io.JacksonHandle;
+import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.envision.dataServices.EntityModeller;
 import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.envision.session.SessionPojo;
+import com.marklogic.envision.session.SessionService;
 import com.marklogic.grove.boot.error.NotFoundException;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.entity.HubEntity;
@@ -32,10 +31,13 @@ public class ModelService {
 
     private final DeployService deployService;
 
+    private final SessionService sessionService;
+
     @Autowired
-	ModelService(EntityManager em, DeployService deployService) {
+	ModelService(EntityManager em, DeployService deployService, SessionService sessionService) {
     	this.em = em;
     	this.deployService = deployService;
+    	this.sessionService = sessionService;
 	}
 
 	@Value("${modelsDir}")
@@ -56,8 +58,8 @@ public class ModelService {
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void toDataHub(DatabaseClient client ) {
-        JsonNode node = EntityModeller.on(client).toDatahub();
+    public void toDataHub(JsonNode model, DatabaseClient client) {
+        JsonNode node = EntityModeller.on(client).toDatahub(model);
         List<String> fieldNames = new ArrayList<>();
         node.fieldNames().forEachRemaining(entityName -> {
 			fieldNames.add(entityName);
@@ -116,33 +118,33 @@ public class ModelService {
 		saveModel(client, node);
 	}
 
-	private void saveModel(DatabaseClient client, JsonNode node) throws IOException {
-		DocumentMetadataHandle meta = new DocumentMetadataHandle();
-
-		JacksonHandle content = new JacksonHandle(node);
-
-		client.newJSONDocumentManager().write("model.json", meta, content);
-		toDataHub(client);
-		createModelTDEs(client);
-
-		String fileName = node.get("name").asText().replace(" ", "") + ".json";
+	private void saveModel(DatabaseClient client, JsonNode model) throws IOException {
+		String fileName = model.get("name").asText().replace(" ", "") + ".json";
+		sessionService.setCurrentModel(client, fileName);
 		File jsonFile = new File(modelsDir, fileName);
-		objectMapper.writeValue(jsonFile, node);
+		objectMapper.writeValue(jsonFile, model);
+
+		toDataHub(model, client);
+		createModelTDEs(client, model);
 	}
 
-    public void createModelTDEs(DatabaseClient client) {
-        EntityModeller.on(client).createTdes();
+    public void createModelTDEs(DatabaseClient client, JsonNode model) {
+        EntityModeller.on(client).createTdes(model);
 	}
 
-	public JsonNode getModel(DatabaseClient client, String modelName) {
-		DocumentPage page = client.newDocumentManager().read(modelName);
-		if (!page.hasNext()) {
+	public JsonNode getModel(DatabaseClient client) {
+		try {
+			SessionPojo session = sessionService.getSession(client);
+			File modelFile = new File(modelsDir, session.currentModel);
+			FileInputStream fileInputStream = new FileInputStream(modelFile);
+			JsonNode node = objectMapper.readTree(fileInputStream);
+			fileInputStream.close();
+			return node;
+		} catch (ResourceNotFoundException|IOException e) {
 			throw new NotFoundException();
 		}
-		DocumentRecord documentRecord = page.next();
-		JsonNode model = documentRecord.getContent(new JacksonHandle()).get();
-		return updateLegacyModel(model);
 	}
+
 	public List<JsonNode> getAllModels(DatabaseClient client) throws IOException {
 		List<JsonNode> names = listAllModels();
 

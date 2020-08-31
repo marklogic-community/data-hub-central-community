@@ -7,7 +7,7 @@ const jobDB = config.JOBDATABASE
 let arrErrors = []
 
 // code to delete anything in a collection EXCEPT ES/DH collections, or items not in any
-// collections (e.g. model.json)
+// collections
 function deleteCollections() {
 	declareUpdate();
 	for (var col of cts.collections() ) {

@@ -2,8 +2,7 @@
  * This module provides a wrapper around the Envision Model.json
  * to provide extra functionality
  */
-function getModel() {
-	let model = cts.doc('model.json');
+function getModel(model) {
 	if (model) {
 		model = model.toObject();
 	}
@@ -29,4 +28,4 @@ function getModel() {
 	return model;
 }
 
-module.exports = getModel();
+module.exports = getModel

@@ -1,0 +1,24 @@
+{
+  "role-name": "envision",
+  "description": "",
+  "role": [
+    "data-hub-module-writer",
+    "data-hub-operator",
+    "data-hub-developer",
+    "data-hub-entity-model-writer"
+  ],
+  "permission": [
+  ],
+  "privilege": [
+    {
+      "privilege-name": "admin-database",
+      "action": "http://marklogic.com/xdmp/privileges/admin/database",
+      "kind": "execute"
+    },
+    {
+      "privilege-name": "dhf-internal-entities",
+      "action": "/entities/",
+      "kind": "uri"
+    }
+  ]
+}

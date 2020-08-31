@@ -32,13 +32,14 @@ public interface Mastering {
             }
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, String status) {
+            public com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, com.fasterxml.jackson.databind.JsonNode model, String status) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("updateNotifications.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
                 .withSession()
                 .withParams(
                     BaseProxy.documentParam("uris", false, BaseProxy.JsonDocumentType.fromJsonNode(uris)),
+                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)),
                     BaseProxy.atomicParam("status", false, BaseProxy.StringType.fromString(status)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
@@ -47,13 +48,14 @@ public interface Mastering {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode getNotification(String uri) {
+            public com.fasterxml.jackson.databind.JsonNode getNotification(String uri, com.fasterxml.jackson.databind.JsonNode model) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("getNotification.sjs", BaseProxy.ParameterValuesKind.SINGLE_ATOMIC)
+                .request("getNotification.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
                 .withSession()
                 .withParams(
-                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)))
+                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)),
+                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -75,12 +77,13 @@ public interface Mastering {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode getNotifications(String qtext, Integer page, Integer pageLength, String sort) {
+            public com.fasterxml.jackson.databind.JsonNode getNotifications(com.fasterxml.jackson.databind.JsonNode model, String qtext, Integer page, Integer pageLength, String sort) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("getNotifications.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
+                .request("getNotifications.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
                 .withSession()
                 .withParams(
+                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)),
                     BaseProxy.atomicParam("qtext", true, BaseProxy.StringType.fromString(qtext)),
                     BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
                     BaseProxy.atomicParam("pageLength", false, BaseProxy.IntegerType.fromInteger(pageLength)),
@@ -111,13 +114,14 @@ public interface Mastering {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode unmerge(String uri) {
+            public com.fasterxml.jackson.databind.JsonNode unmerge(String uri, com.fasterxml.jackson.databind.JsonNode model) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("unmerge.sjs", BaseProxy.ParameterValuesKind.SINGLE_ATOMIC)
+                .request("unmerge.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
                 .withSession()
                 .withParams(
-                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)))
+                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)),
+                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -174,18 +178,20 @@ public interface Mastering {
    * Invokes the updateNotifications operation on the database server
    *
    * @param uris	provides input
+   * @param model	provides input
    * @param status	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, String status);
+    com.fasterxml.jackson.databind.JsonNode updateNotifications(com.fasterxml.jackson.databind.JsonNode uris, com.fasterxml.jackson.databind.JsonNode model, String status);
 
   /**
    * Invokes the getNotification operation on the database server
    *
    * @param uri	provides input
+   * @param model	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode getNotification(String uri);
+    com.fasterxml.jackson.databind.JsonNode getNotification(String uri, com.fasterxml.jackson.databind.JsonNode model);
 
   /**
    * Invokes the block operation on the database server
@@ -198,13 +204,14 @@ public interface Mastering {
   /**
    * Invokes the getNotifications operation on the database server
    *
+   * @param model	provides input
    * @param qtext	provides input
    * @param page	provides input
    * @param pageLength	provides input
    * @param sort	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode getNotifications(String qtext, Integer page, Integer pageLength, String sort);
+    com.fasterxml.jackson.databind.JsonNode getNotifications(com.fasterxml.jackson.databind.JsonNode model, String qtext, Integer page, Integer pageLength, String sort);
 
   /**
    * Invokes the merge operation on the database server
@@ -223,9 +230,10 @@ public interface Mastering {
    * Invokes the unmerge operation on the database server
    *
    * @param uri	provides input
+   * @param model	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode unmerge(String uri);
+    com.fasterxml.jackson.databind.JsonNode unmerge(String uri, com.fasterxml.jackson.databind.JsonNode model);
 
   /**
    * Invokes the unBlock operation on the database server

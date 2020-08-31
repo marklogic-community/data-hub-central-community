@@ -1,8 +1,13 @@
 /**
- * Given an Envision model (model.json), create Entity Services
+ * Given an Envision model , create Entity Services
  * entities for each entity in the model.
  */
-const model = require('/envision/model.sjs');
+
+var model;
+
+const modelWrapper = require('/envision/model.sjs');
+model = modelWrapper(model);
+
 let entities = {};
 
 // first create the models

@@ -1,5 +1,4 @@
 const provHelper = require('/envision/prov-helper.xqy');
-const model = require('/envision/model.sjs');
 const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
@@ -30,7 +29,8 @@ function enrichValue(value) {
  * 		connectionLimit - # of connections to grab
  * 		labels - an array of edge labels to return, empty means all
  */
-function getEntities(uris, opts) {
+function getEntities(model, uris, opts) {
+	console.log('model', model)
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
@@ -376,7 +376,7 @@ function getValues(qtext, query, facetName) {
 * 		Called from a concept - based on getEntities - finds entities related to the concept then
 *		calls getEntities to populate the graph
 */
-function getEntitiesRelatedToConcept(concepts, opts) {
+function getEntitiesRelatedToConcept(model, vconcepts, opts) {
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
@@ -436,11 +436,6 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 
  const edgeCounts = getEdgeCounts(uris)
 
- /* This code gets the next 2 levels
- let otherEntities = getEntities(uris, opts)
- resp.nodes = otherEntities.nodes
- resp.edges = otherEntities.edges
- */
  // now add the edges from the concept
  for (let t of triples) {
 	 resp.edges[t.id] = {

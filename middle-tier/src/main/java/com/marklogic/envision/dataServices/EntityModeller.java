@@ -60,13 +60,13 @@ public interface EntityModeller {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode createTdes() {
+            public com.fasterxml.jackson.databind.JsonNode createTdes(com.fasterxml.jackson.databind.JsonNode model) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("createTdes.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .request("createTdes.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
                 .withSession()
                 .withParams(
-                    )
+                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -102,13 +102,13 @@ public interface EntityModeller {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode toDatahub() {
+            public com.fasterxml.jackson.databind.JsonNode toDatahub(com.fasterxml.jackson.databind.JsonNode model) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("toDatahub.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .request("toDatahub.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
                 .withSession()
                 .withParams(
-                    )
+                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -138,10 +138,10 @@ public interface EntityModeller {
   /**
    * Invokes the createTdes operation on the database server
    *
-   * 
+   * @param model	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode createTdes();
+    com.fasterxml.jackson.databind.JsonNode createTdes(com.fasterxml.jackson.databind.JsonNode model);
 
   /**
    * Invokes the removeAllEntities operation on the database server
@@ -162,9 +162,9 @@ public interface EntityModeller {
   /**
    * Invokes the toDatahub operation on the database server
    *
-   * 
+   * @param model	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode toDatahub();
+    com.fasterxml.jackson.databind.JsonNode toDatahub(com.fasterxml.jackson.databind.JsonNode model);
 
 }
