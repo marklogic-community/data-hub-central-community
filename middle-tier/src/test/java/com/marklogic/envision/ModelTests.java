@@ -30,6 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -56,6 +57,9 @@ public class ModelTests extends BaseTest {
 	@Test
 	@WithMockUser
 	public void toDatahub() throws IOException, JSONException {
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
 		modelService.saveModel(getFinalClient(), getResourceStream("models/model.json"));
 		DatabaseClient client = getFinalClient();
 		ObjectMapper objectMapper = new ObjectMapper();

@@ -45,6 +45,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class BaseTest {
 	public static final String PROJECT_PATH = "ye-olde-project";
 
+	public static Path projectPath;
+
 	@Autowired
 	private HubConfigImpl hubConfig;
 
@@ -186,16 +188,14 @@ public class BaseTest {
 		}
 	}
 
-	public void createProjectDir() {
-		createProjectDir(PROJECT_PATH);
+	public Path createProjectDir() throws IOException {
+		return createProjectDir(PROJECT_PATH);
 	}
 
 	// this method creates a project dir and copies the gradle.properties in.
-	public void createProjectDir(String projectDirName) {
-		File projectDir = new File(projectDirName);
-		if (!projectDir.isDirectory() || !projectDir.exists()) {
-			projectDir.mkdirs();
-		}
+	public Path createProjectDir(String projectDirName) throws IOException {
+		projectPath = Files.createTempDirectory(projectDirName);
+		File projectDir = projectPath.toFile();
 
 		// force module loads for new test runs.
 		File timestampDirectory = new File(projectDir + "/.tmp");
@@ -224,6 +224,7 @@ public class BaseTest {
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		return projectPath;
 		// note at this point the properties from the project have not been  read.  maybe
 		// props reading should be in this directory...
 	}
@@ -255,16 +256,16 @@ public class BaseTest {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected void init() {
-		createProjectDir();
-		hubConfig.createProject(PROJECT_PATH);
+	protected void init() throws IOException {
+		Path projectPath = createProjectDir();
+		hubConfig.createProject(projectPath.toAbsolutePath().toString());
 		hubConfig.refreshProject();
 		if(! hubProject.isInitialized()) {
 			hubConfig.initHubProject();
 		}
 
 		try {
-			File projectDir = new File(PROJECT_PATH);
+			File projectDir = projectPath.toFile();
 			Path devProperties = getResourceFile("final-database.json").toPath();
 			Path projectProperties = projectDir.toPath().resolve("src/main/ml-config/databases/final-database.json");
 			Files.copy(devProperties, projectProperties, REPLACE_EXISTING);
@@ -275,19 +276,14 @@ public class BaseTest {
 		hubConfig.refreshProject();
 	}
 
-	public void setupProject() {
-		createProjectDir();
-	}
-
 	public void teardownProject() {
 		deleteProjectDir();
 	}
 
 	@PostConstruct
-	public void bootstrapHub() {
+	public void bootstrapHub() throws IOException {
 		teardownProject();
 		init();
-
 
 
 		boolean isInstalled = false;
