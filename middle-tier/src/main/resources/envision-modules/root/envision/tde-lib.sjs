@@ -5,6 +5,7 @@ function createTdes() {
 	if (!model) {
 		fn.error('MISSING MODEL');
 	}
+
 	let subTemplates = {}
 	for (let key in model.edges) {
 		let edge = model.edges[key];
@@ -23,16 +24,16 @@ function createTdes() {
 		if (hasConcept) {
 			if (fromNode.type === 'entity') {
 				node = fromNode
-				subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')))`
-				obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))`
+				subj = `sem:iri(fn:replace(fn:concat("${fromNode.baseUri || ''}${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')), " ", ""))`
+				obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))` // don't replace spaces here because this is displayed
 				subTempKey = `./${edge.keyTo}`
 				concept = obj
 				conceptType = toNode.entityName
 			}
 			else {
 				node = toNode
-				subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`
-				obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')))`
+				subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`// don't replace spaces here because this is displayed
+				obj = `sem:iri(fn:replace(fn:concat("${toNode.baseUri || ''}${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')), " ", ""))`
 				subTempKey = `./${edge.keyFrom}`
 				concept = subj
 				conceptType = fromNode.entityName
@@ -91,64 +92,68 @@ function createTdes() {
 		let entity = model.nodes[key];
 		let subTemps = subTemplates[entity.id] || {};
 
-		let template = {
-			template: {
-				context: '//*:instance/*:' + entity.entityName,
-				collections: [entity.entityName]
-			}
-		}
-		template.template.templates = []
-		template.template.templates.push({
-			context: `./${entity.idField}`,
-			triples: [
-				{
-					"subject": {
-						"val": "xdmp:node-uri(.)"
-					},
-					"predicate": {
-						"val": 'sem:iri("http://www.w3.org/2000/01/rdf-schema#hasLabel")'
-					},
-					"object": {
-						"val": `sem:iri(fn:concat("${entity.entityName}#", xs:string(.)))`
-					}
-				},
-				{
-					"subject": {
-						"val": "xdmp:node-uri(.)"
-					},
-					"predicate": {
-						"val": 'sem:iri("http://www.w3.org/2000/01/rdf-schema#hasId")'
-					},
-					"object": {
-						"val": `sem:iri(fn:replace(fn:concat("${entity.entityName.toLowerCase()}#", xs:string(.)), " ", ""))`
-					}
-				},
-				{
-					"subject": {
-						"val": `sem:iri(fn:replace(fn:concat("${entity.entityName.toLowerCase()}#", xs:string(.)), " ", ""))`
-					},
-					"predicate": {
-						"val": 'sem:iri("http://www.w3.org/2000/01/rdf-schema#hasEntityType")'
-					},
-					"object": {
-						"val": `"${entity.entityName}"`
-					}
+		// doesn't apply to concepts - eg ${entity.idField} won't exist, no concept of collection for concept
+		if ( entity.type !== "concept") {
+			let template = {
+				template: {
+					context: '//*:instance/*:' + entity.entityName,
+					collections: [entity.entityName]
 				}
-			]
-		})
-		for (let key in subTemps) {
-			let sub = subTemps[key]
+			}
+
+			template.template.templates = []
 			template.template.templates.push({
-				context: key,
-				triples: sub
+				context: `./${entity.idField}`,
+				triples: [
+					{
+						"subject": {
+							"val": "xdmp:node-uri(.)"
+						},
+						"predicate": {
+							"val": 'sem:iri("http://www.w3.org/2000/01/rdf-schema#hasLabel")'
+						},
+						"object": {
+							"val": `sem:iri(fn:concat("${entity.entityName}#", xs:string(.)))`
+						}
+					},
+					{
+						"subject": {
+							"val": "xdmp:node-uri(.)"
+						},
+						"predicate": {
+							"val": 'sem:iri("http://www.w3.org/2000/01/rdf-schema#hasId")'
+						},
+						"object": {
+							"val": `sem:iri(fn:replace(fn:concat("${entity.entityName.toLowerCase()}#", xs:string(.)), " ", ""))`
+						}
+					},
+					{
+						"subject": {
+							"val": `sem:iri(fn:replace(fn:concat("${entity.entityName.toLowerCase()}#", xs:string(.)), " ", ""))`
+						},
+						"predicate": {
+							"val": 'sem:iri("http://www.w3.org/2000/01/rdf-schema#hasEntityType")'
+						},
+						"object": {
+							"val": `"${entity.entityName}"`
+						}
+					}
+				]
 			})
+			for (let key in subTemps) {
+				let sub = subTemps[key]
+				template.template.templates.push({
+					context: key,
+					triples: sub
+				})
+			}
+			templates.push(template);
+			const permissions = [
+				xdmp.permission("data-hub-developer", "update"),
+				xdmp.permission("data-hub-operator", "read")
+			]
+			tde.templateInsert(`${entity.id}-relationships-tde.json`, template, permissions);
 		}
-		templates.push(template);
-		const permissions = [
-			xdmp.permission("data-hub-developer", "update"),
-			xdmp.permission("data-hub-operator", "read")
-		]
-		tde.templateInsert(`${entity.id}-relationships-tde.json`, template, permissions);
 	}
 
 	// not necessary, just return it for grins

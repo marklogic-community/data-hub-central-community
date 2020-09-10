@@ -352,10 +352,10 @@ export default {
 			}
 		},
 		pageStart() {
-      return (this.page - 1) * this.pageLength + 1;
+			return parseInt( (this.page - 1) * this.pageLength + 1 );
     },
 		pageEnd() {
-      return Math.min(this.pageStart + this.pageLength - 1, this.total);
+			return Math.min(this.pageStart + this.pageLength - 1, this.total);
     },
 		sort: {
 			get() {
@@ -422,10 +422,10 @@ export default {
 			}
 		},
 		totalResults() {
-			return Math.max(this.total, this.end)
+			 return Math.max(this.total, this.end)
 		},
 		end() {
-			return this.start + this.nodes.length - 1
+			return parseInt (this.start + this.nodes.length - 1)
 		},
 		entitiesArray() {
 			const ents = Object.values(this.entities).map(e => {
