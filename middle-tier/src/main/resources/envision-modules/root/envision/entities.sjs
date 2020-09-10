@@ -3,6 +3,8 @@ const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
+const model = require('/envision/model.sjs').enhancedModel;
+
 const extensions = xdmp.mimetypes()
 	.filter(m => m.format === 'binary' && !!m.extensions)
 	.map(m => m.extensions.split(' '))
@@ -29,8 +31,7 @@ function enrichValue(value) {
  * 		connectionLimit - # of connections to grab
  * 		labels - an array of edge labels to return, empty means all
  */
-function getEntities(model, uris, opts) {
-	console.log('model', model)
+function getEntities(uris, opts) {
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
@@ -376,7 +377,7 @@ function getValues(qtext, query, facetName) {
 * 		Called from a concept - based on getEntities - finds entities related to the concept then
 *		calls getEntities to populate the graph
 */
-function getEntitiesRelatedToConcept(model, vconcepts, opts) {
+function getEntitiesRelatedToConcept(concepts, opts) {
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10

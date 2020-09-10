@@ -4,8 +4,9 @@
   "role": [
     "data-hub-module-writer",
     "data-hub-operator",
-    "data-hub-developer",
-    "data-hub-entity-model-writer"
+		"data-hub-entity-model-writer",
+		"data-hub-flow-writer",
+		"data-hub-mapping-writer"
   ],
   "permission": [
   ],
@@ -18,6 +19,11 @@
     {
       "privilege-name": "dhf-internal-entities",
       "action": "/entities/",
+      "kind": "uri"
+		},
+		{
+      "privilege-name": "dhf-internal-mappings",
+      "action": "/mappings/",
       "kind": "uri"
     }
   ]

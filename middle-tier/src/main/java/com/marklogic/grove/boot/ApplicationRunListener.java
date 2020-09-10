@@ -1,16 +1,12 @@
 package com.marklogic.grove.boot;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.marklogic.envision.installer.InstallService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 
 public class ApplicationRunListener implements SpringApplicationRunListener {
-
-    @Autowired
-    Environment environment;
 
     public ApplicationRunListener(SpringApplication application, String[] args) { }
 
@@ -28,6 +24,7 @@ public class ApplicationRunListener implements SpringApplicationRunListener {
 
     @Override
     public void started(ConfigurableApplicationContext context) {
+		context.getBean(InstallService.class).install();
         String port = context.getEnvironment().getProperty("local.server.port");
         System.out.println("Web UI is Ready and Listening on port " + port + ".\n");
         System.out.println("Open your browser to http://localhost:" + port + ".\t(We recommend you use Chrome or FireFox.)");

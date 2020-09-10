@@ -32,13 +32,12 @@ public interface EntitySearcher {
             }
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode findEntities(com.fasterxml.jackson.databind.JsonNode model, String qtext, Integer page, Integer pageLength, String sort, String searchQuery) {
+            public com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, String searchQuery) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("findEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
+                .request("findEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
                 .withSession()
                 .withParams(
-                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)),
                     BaseProxy.atomicParam("qtext", true, BaseProxy.StringType.fromString(qtext)),
                     BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
                     BaseProxy.atomicParam("pageLength", false, BaseProxy.IntegerType.fromInteger(pageLength)),
@@ -67,13 +66,12 @@ public interface EntitySearcher {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode relatedEntities(com.fasterxml.jackson.databind.JsonNode model, String uri, String label, Integer page, Integer pageLength) {
+            public com.fasterxml.jackson.databind.JsonNode relatedEntities(String uri, String label, Integer page, Integer pageLength) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("relatedEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
+                .request("relatedEntities.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
                 .withSession()
                 .withParams(
-                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)),
                     BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)),
                     BaseProxy.atomicParam("label", false, BaseProxy.StringType.fromString(label)),
                     BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
@@ -107,7 +105,6 @@ public interface EntitySearcher {
   /**
    * Invokes the findEntities operation on the database server
    *
-   * @param model	provides input
    * @param qtext	provides input
    * @param page	provides input
    * @param pageLength	provides input
@@ -115,7 +112,7 @@ public interface EntitySearcher {
    * @param searchQuery	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode findEntities(com.fasterxml.jackson.databind.JsonNode model, String qtext, Integer page, Integer pageLength, String sort, String searchQuery);
+    com.fasterxml.jackson.databind.JsonNode findEntities(String qtext, Integer page, Integer pageLength, String sort, String searchQuery);
 
   /**
    * Invokes the relatedEntitiesToConcept operation on the database server
@@ -130,14 +127,13 @@ public interface EntitySearcher {
   /**
    * Invokes the relatedEntities operation on the database server
    *
-   * @param model	provides input
    * @param uri	provides input
    * @param label	provides input
    * @param page	provides input
    * @param pageLength	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode relatedEntities(com.fasterxml.jackson.databind.JsonNode model, String uri, String label, Integer page, Integer pageLength);
+    com.fasterxml.jackson.databind.JsonNode relatedEntities(String uri, String label, Integer page, Integer pageLength);
 
   /**
    * Invokes the getValues operation on the database server

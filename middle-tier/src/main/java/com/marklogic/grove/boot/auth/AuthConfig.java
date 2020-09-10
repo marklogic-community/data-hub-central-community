@@ -16,6 +16,8 @@
  */
 package com.marklogic.grove.boot.auth;
 
+import com.marklogic.envision.config.EnvisionConfig;
+import com.marklogic.envision.session.SessionManager;
 import com.marklogic.spring.http.RestConfig;
 import com.marklogic.spring.http.SimpleRestConfig;
 import com.marklogic.spring.security.context.SpringSecurityCredentialsProvider;
@@ -23,8 +25,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,6 +39,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class AuthConfig extends WebSecurityConfigurerAdapter {
     /**
      * @return a config class with ML connection properties
@@ -52,41 +54,26 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
         return new SpringSecurityCredentialsProvider();
     }
 
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    @Lazy
-    @Autowired
-    private ConnectionAuthenticationFilter authFilter;
+	private final EnvisionConfig envisionConfig;
+	private final SessionManager sessionManager;
 
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/h2-console/**");
     }
 
-    @Autowired
-    public MarkLogicAuthenticationManager markLogicAuthenticationManager;
-
-    @Bean
-    public ConnectionAuthenticationFilter getConnectionAuthenticationFilter() throws Exception{
-        ConnectionAuthenticationFilter authFilter = new ConnectionAuthenticationFilter();
-        authFilter.setAuthenticationManager(markLogicAuthenticationManager);
-        authFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
-
-        return authFilter;
-    }
-
-    /**
-     * Sets MarkLogicAuthenticationProvider as the authentication manager, which overrides the in-memory authentication
-     * manager that Spring Boot uses by default. We also have to set eraseCredentials to false so that the password is
-     * kept in the Authentication object, which allows HttpProxy to use it when authenticating against MarkLogic.
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configure(auth);
-        auth.parentAuthenticationManager(markLogicAuthenticationManager);
-        auth.eraseCredentials(false);
-    }
+	@Autowired
+	AuthConfig(
+		RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+		EnvisionConfig envisionConfig,
+		SessionManager sessionManager
+	) {
+    	this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+    	this.envisionConfig = envisionConfig;
+    	this.sessionManager = sessionManager;
+	}
 
     /**
      * Configures what requests require authentication and which ones are always permitted. Uses CorsRequestMatcher to
@@ -106,8 +93,8 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(getAlwaysPermittedPatterns()).permitAll()
             .anyRequest().authenticated()
             .and()
-            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JwtAuthorizationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new ConnectionAuthenticationFilter(envisionConfig, sessionManager), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtAuthorizationFilter(authenticationManager(), sessionManager), UsernamePasswordAuthenticationFilter.class)
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
@@ -115,13 +102,19 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
     /**
      * Defines a set of URLs that are always permitted - these are based on the presumed contents of the
      * src/main/resources/static directory.
-     *
-     * @return
      */
     protected String[] getAlwaysPermittedPatterns() {
         return new String[] {
             "/websocket/**",
             "/api/auth/login",
+			"/api/auth/signup",
+			"/api/auth/userExists",
+			"/api/auth/resetPassword",
+			"/api/auth/validateResetToken",
+			"/api/auth/updatePassword",
+			"/registrationConfirm",
+			"/registrationComplete",
+			"/updatePassword",
             "/",
             "/**/*.js",
             "/**/*.ttf",
@@ -134,6 +127,10 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
 			"/components/**",
             "/index.html",
             "/login",
+			"/signup",
+			"/userExists",
+			"/upload",
+			"/integrate/**",
             "/model",
             "/explore",
 			"/explore/compare",
@@ -142,7 +139,6 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
 			"/notifications",
 			"/notifications/compare",
 			"/admin",
-			"/install",
             "/404",
             "/assets/**",
             "/static/**",

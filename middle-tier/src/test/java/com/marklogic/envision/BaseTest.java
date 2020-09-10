@@ -11,7 +11,10 @@ import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.FileHandle;
-import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.envision.config.EnvisionConfig;
+import com.marklogic.envision.hub.HubClient;
+import com.marklogic.envision.installer.InstallService;
+import com.marklogic.grove.boot.Application;
 import com.marklogic.grove.boot.error.NotAuthenticatedException;
 import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.HubConfig;
@@ -21,13 +24,18 @@ import com.marklogic.hub.impl.DataHubImpl;
 import com.marklogic.hub.impl.HubConfigImpl;
 import com.marklogic.mgmt.api.API;
 import com.marklogic.mgmt.api.security.User;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -35,17 +43,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-@Component
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = Application.class)
 public class BaseTest {
 	public static final String PROJECT_PATH = "ye-olde-project";
 
 	public static Path projectPath;
+
+	@Autowired
+	private EnvisionConfig envisionConfig;
 
 	@Autowired
 	private HubConfigImpl hubConfig;
@@ -54,7 +66,7 @@ public class BaseTest {
 	private HubProject hubProject;
 
 	@Autowired
-	private DeployService deployService;
+	private InstallService installService;
 
 	@Autowired
 	protected DataHubImpl dataHub;
@@ -62,7 +74,6 @@ public class BaseTest {
 	@Autowired
 	protected LoadHubModulesCommand loadHubModulesCommand;
 
-	@Value("${dhfDir}")
 	private File dhfDir;
 
 	@Value("${dhfEnv}")
@@ -77,6 +88,7 @@ public class BaseTest {
 	private boolean configFinished = false;
 
 	HubConfigImpl getHubConfig() {
+//		HubConfigImpl hubConfig = new HubConfigImpl();
 		if (!configFinished) {
 			String projectDir = dhfDir.getAbsolutePath();
 			hubProject.createProject(projectDir);
@@ -98,7 +110,15 @@ public class BaseTest {
 		return hubConfig;
 	}
 
-	protected ObjectMapper om = new ObjectMapper();
+	protected ObjectMapper objectMapper = new ObjectMapper();
+
+	protected HubClient getHubClient() {
+		return getHubClient(username, password);
+	}
+
+	protected HubClient getHubClient(String username, String password) {
+		return envisionConfig.newHubClient(username, password);
+	}
 
 	protected DatabaseClient getFinalClient() {
 		return getClient(DatabaseKind.FINAL);
@@ -188,6 +208,41 @@ public class BaseTest {
 		}
 	}
 
+	public void removeDoc(DatabaseClient client, String... uris) {
+		client.newDocumentManager().delete(uris);
+	}
+
+	public void removeUser(String username) {
+		ServerEvaluationCall eval = getStagingClient().newServerEval();
+		String installer =
+			"import module namespace sec=\"http://marklogic.com/xdmp/security\" at \n" +
+			"    \"/MarkLogic/security.xqy\";\n" +
+			"    \n" +
+			"declare variable $username external;\n" +
+			"let $role := xdmp:md5($username)\n" +
+			"where xdmp:invoke-function(function() {\n" +
+			"    sec:user-exists($username)\n" +
+			"  },\n" +
+			"  map:entry(\"database\", xdmp:security-database()))\n" +
+			"return (\n" +
+			"  xdmp:invoke-function(function() {\n" +
+			"    sec:remove-user($username)\n" +
+			"  },\n" +
+			"  map:entry(\"database\", xdmp:security-database())),\n" +
+			"  \n" +
+			"  xdmp:invoke-function(function() {\n" +
+			"    sec:remove-role($role)\n" +
+			"  },\n" +
+			"  map:entry(\"database\", xdmp:security-database()))\n" +
+			")";
+		eval.addVariable("username", username);
+		EvalResultIterator result = eval.xquery(installer).eval();
+		if (result.hasNext()) {
+			logger.error(result.next().getString());
+		}
+		removeDoc(getFinalClient(), "/envision/users/" + DigestUtils.md5Hex(username) + ".json");
+	}
+
 	public Path createProjectDir() throws IOException {
 		return createProjectDir(PROJECT_PATH);
 	}
@@ -251,29 +306,29 @@ public class BaseTest {
 	}
 
 	public void installEnvisionModules() {
-		deployService.deploy();
+		installService.install(true);
 	}
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected void init() throws IOException {
-		Path projectPath = createProjectDir();
-		hubConfig.createProject(projectPath.toAbsolutePath().toString());
+		Path projectPath = createProjectDir().toAbsolutePath();
+		dhfDir = projectPath.toFile();
+		hubConfig.createProject(projectPath.toString());
 		hubConfig.refreshProject();
-		if(! hubProject.isInitialized()) {
+		if(!hubProject.isInitialized()) {
 			hubConfig.initHubProject();
 		}
 
 		try {
-			File projectDir = projectPath.toFile();
 			Path devProperties = getResourceFile("final-database.json").toPath();
-			Path projectProperties = projectDir.toPath().resolve("src/main/ml-config/databases/final-database.json");
+			Path projectProperties = projectPath.resolve("src/main/ml-config/databases/final-database.json");
 			Files.copy(devProperties, projectProperties, REPLACE_EXISTING);
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		hubConfig.refreshProject();
+		getHubConfig();
 	}
 
 	public void teardownProject() {
@@ -284,7 +339,6 @@ public class BaseTest {
 	public void bootstrapHub() throws IOException {
 		teardownProject();
 		init();
-
 
 		boolean isInstalled = false;
 		try {

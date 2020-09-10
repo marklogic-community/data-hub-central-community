@@ -1,0 +1,2 @@
+{"name":"bogus","description":"flow description","batchSize":100,"threadCount":4,"stopOnError":false,"options":{"identifier":""},"version":0,"steps":{}}
+{"name":"bogus","description":"flow description","batchSize":100,"threadCount":4,"stopOnError":false,"options":{"identifier":""},"version":0,"steps":{},"latestJob":{}}

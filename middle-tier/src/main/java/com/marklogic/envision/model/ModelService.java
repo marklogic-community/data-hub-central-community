@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.ResourceNotFoundException;
+import com.marklogic.client.io.DocumentMetadataHandle;
+import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.envision.dataServices.EntityModeller;
 import com.marklogic.envision.deploy.DeployService;
-import com.marklogic.envision.session.SessionPojo;
-import com.marklogic.envision.session.SessionService;
-import com.marklogic.grove.boot.error.NotFoundException;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.entity.HubEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,10 @@ public class ModelService {
 
     private final DeployService deployService;
 
-    private final SessionService sessionService;
-
     @Autowired
-	ModelService(EntityManager em, DeployService deployService, SessionService sessionService) {
+	ModelService(EntityManager em, DeployService deployService) {
     	this.em = em;
     	this.deployService = deployService;
-    	this.sessionService = sessionService;
 	}
 
 	@Value("${modelsDir}")
@@ -58,8 +54,22 @@ public class ModelService {
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void toDataHub(JsonNode model, DatabaseClient client) {
-        JsonNode node = EntityModeller.on(client).toDatahub(model);
+	public File getModelsDir(String username) {
+		File userModelsDir = new File(modelsDir, username);
+		if (!userModelsDir.exists()) {
+			userModelsDir.mkdirs();
+		}
+		return userModelsDir;
+	}
+
+	private File getModelFile(String username, String modelName) {
+		File userModelDir = getModelsDir(username);
+		String fileName = modelName.replace(" ", "") + ".json";
+		return new File(userModelDir, fileName);
+	}
+
+    public void toDataHub(HubClient hubClient) {
+        JsonNode node = EntityModeller.on(hubClient.getFinalClient()).toDatahub();
         List<String> fieldNames = new ArrayList<>();
         node.fieldNames().forEachRemaining(entityName -> {
 			fieldNames.add(entityName);
@@ -73,23 +83,21 @@ public class ModelService {
             }
         });
 
-        EntityModeller.on(client).removeAllEntities();
+        EntityModeller.on(hubClient.getFinalClient()).removeAllEntities();
 		deleteExtraHubentities(fieldNames);
-		deployService.deployEntities();
+		deployService.deployEntities(hubClient);
     }
 
-    public void deleteModel(InputStream stream) throws IOException {
+    public void deleteModel(String username, InputStream stream) throws IOException {
 		JsonNode node = objectMapper.readTree(stream);
-		String fileName = node.get("name").asText().replace(" ", "") + ".json";
-		File jsonFile = new File(modelsDir, fileName);
+		File jsonFile = getModelFile(username, node.get("name").asText());
 		jsonFile.delete();
 	}
 
-	public void renameModel(DatabaseClient client, InputStream stream) throws IOException {
+	public void renameModel(String username, HubClient client, InputStream stream) throws IOException {
     	JsonNode node = objectMapper.readTree(stream);
-		String originalModelName = node.get("originalname").asText().replace(" ", "") + ".json";
-
-		File originalModelFile = new File(modelsDir, originalModelName);
+		String originalModelName = node.get("originalname").asText();
+		File originalModelFile = getModelFile(username, originalModelName);
 
 		saveModel(client, node.get("model"));
 		originalModelFile.delete();
@@ -108,48 +116,44 @@ public class ModelService {
 		});
 	}
 
-	public void importModel(DatabaseClient client) throws IOException {
-		JsonNode node = EntityModeller.on(client).fromDatahub();
+	public void importModel(HubClient client) throws IOException {
+		JsonNode node = EntityModeller.on(client.getFinalClient()).fromDatahub();
 		saveModel(client, node);
 	}
 
-	public void saveModel(DatabaseClient client, InputStream stream) throws IOException {
+	public void saveModel(HubClient client, InputStream stream) throws IOException {
 		JsonNode node = objectMapper.readTree(stream);
 		saveModel(client, node);
 	}
 
-	private void saveModel(DatabaseClient client, JsonNode model) throws IOException {
-		String fileName = model.get("name").asText().replace(" ", "") + ".json";
-		sessionService.setCurrentModel(client, fileName);
-		File jsonFile = new File(modelsDir, fileName);
-		objectMapper.writeValue(jsonFile, model);
+	private void saveModel(HubClient client, JsonNode model) throws IOException {
+		DocumentMetadataHandle meta = new DocumentMetadataHandle();
+		JacksonHandle content = new JacksonHandle(model);
+		client.getFinalClient().newJSONDocumentManager().write("/envision/" + client.getUsername() + "/currentModel.json", meta, content);
+		saveModelFile(client.getUsername(), model);
 
-		toDataHub(model, client);
-		createModelTDEs(client, model);
+		toDataHub(client);
+		createModelTDEs(client.getFinalClient());
 	}
 
-    public void createModelTDEs(DatabaseClient client, JsonNode model) {
-        EntityModeller.on(client).createTdes(model);
+	public void saveModelFile(String username, JsonNode model) throws IOException {
+		File jsonFile = getModelFile(username, model.get("name").asText());
+		objectMapper.writeValue(jsonFile, model);
+	}
+
+    public void createModelTDEs(DatabaseClient client) {
+        EntityModeller.on(client).createTdes();
 	}
 
 	public JsonNode getModel(DatabaseClient client) {
-		try {
-			SessionPojo session = sessionService.getSession(client);
-			File modelFile = new File(modelsDir, session.currentModel);
-			FileInputStream fileInputStream = new FileInputStream(modelFile);
-			JsonNode node = objectMapper.readTree(fileInputStream);
-			fileInputStream.close();
-			return node;
-		} catch (ResourceNotFoundException|IOException e) {
-			throw new NotFoundException();
-		}
+    	return EntityModeller.on(client).getCurrentModel();
 	}
 
-	public List<JsonNode> getAllModels(DatabaseClient client) throws IOException {
+	public List<JsonNode> getAllModels(HubClient client) throws IOException {
 		List<JsonNode> names = listAllModels();
 
 		ArrayNode models = objectMapper.convertValue(names, ArrayNode.class);
-		if (EntityModeller.on(client).needsImport(models)) {
+		if (EntityModeller.on(client.getFinalClient()).needsImport(models)) {
 			this.importModel(client);
 			names = listAllModels();
 		}

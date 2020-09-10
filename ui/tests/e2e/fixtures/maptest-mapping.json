@@ -1,0 +1,106 @@
+{
+	"lang": "zxx",
+	"name": "admin-MappingTest",
+	"description": "",
+	"version": 0,
+	"targetEntityType": "http://marklogic.com/envision/Employee-0.0.1/Employee",
+	"sourceContext": "/",
+	"sourceURI": "/sample/doc1.json",
+	"properties": {
+		"lastName": {
+			"sourcedFrom": "l_name"
+		},
+		"country": {
+			"sourcedFrom": ""
+		},
+		"jobEffectiveDate": {
+			"sourcedFrom": "start_date"
+		},
+		"jobStatus": {
+			"sourcedFrom": "status"
+		},
+		"address": {
+			"sourcedFrom": "concat(address1,\" \",address2)"
+		},
+		"city": {
+			"sourcedFrom": "city"
+		},
+		"mobileNumber": {
+			"sourcedFrom": "cell_phone"
+		},
+		"departmentId": {
+			"sourcedFrom": "dept_num"
+		},
+		"jobTitle": {
+			"sourcedFrom": "job_title"
+		},
+		"postalCode": {
+			"sourcedFrom": "zip"
+		},
+		"employeeId": {
+			"sourcedFrom": "employee_id"
+		},
+		"hasJobReview": {
+			"sourcedFrom": "",
+			"properties": {
+				"employeeId": {
+					"sourcedFrom": ""
+				},
+				"reasonType": {
+					"sourcedFrom": ""
+				},
+				"reviewCode": {
+					"sourcedFrom": ""
+				},
+				"reviewDate": {
+					"sourcedFrom": ""
+				},
+				"reviewer": {
+					"sourcedFrom": ""
+				},
+				"reviewId": {
+					"sourcedFrom": ""
+				}
+			}
+		},
+		"languageSkills": {
+			"sourcedFrom": "string-join(competency/languages,\" , \")"
+		},
+		"firstName": {
+			"sourcedFrom": "f_name"
+		},
+		"toolSkills": {
+			"sourcedFrom": "string-join(competency/tools,\" , \")"
+		},
+		"geoLocation": {
+			"sourcedFrom": ""
+		},
+		"hasResume": {
+			"sourcedFrom": "",
+			"properties": {
+				"category": {
+					"sourcedFrom": ""
+				},
+				"employeeId": {
+					"sourcedFrom": ""
+				},
+				"resumeId": {
+					"sourcedFrom": ""
+				},
+				"resumeText": {
+					"sourcedFrom": ""
+				}
+			}
+		},
+		"state": {
+			"sourcedFrom": "state"
+		},
+		"productSkills": {
+			"sourcedFrom": "primary_prod"
+		},
+		"email": {
+			"sourcedFrom": "email"
+		}
+	},
+	"namespaces": {}
+}

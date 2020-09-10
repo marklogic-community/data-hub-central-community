@@ -1,12 +1,6 @@
 {
 		"functionName": "createTdes",
-		"params": [
-			{
-				"datatype": "jsonDocument",
-				"name": "model",
-				"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-			}
-		],
+		"params": [],
 		"return": {
 			"datatype": "jsonDocument",
 			"$javaClass":"com.fasterxml.jackson.databind.JsonNode"

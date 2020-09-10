@@ -8,5 +8,4 @@ ModelerPageNew1.vue
 .DS_Store
 .gradle/
 build/
-.vscode
-ye-olde-project/
+.vscode/

@@ -1,0 +1,14 @@
+{
+    "functionName": "createUser",
+    "params": [
+			{
+				"datatype": "jsonDocument",
+				"name": "user",
+				"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+			}
+    ],
+    "return": {
+      "datatype": "boolean"
+    }
+}
+

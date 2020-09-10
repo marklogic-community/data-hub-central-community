@@ -60,13 +60,13 @@ public interface EntityModeller {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode createTdes(com.fasterxml.jackson.databind.JsonNode model) {
+            public com.fasterxml.jackson.databind.JsonNode createTdes() {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("createTdes.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
+                .request("createTdes.sjs", BaseProxy.ParameterValuesKind.NONE)
                 .withSession()
                 .withParams(
-                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)))
+                    )
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -102,13 +102,27 @@ public interface EntityModeller {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode toDatahub(com.fasterxml.jackson.databind.JsonNode model) {
+            public com.fasterxml.jackson.databind.JsonNode getCurrentModel() {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("toDatahub.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
+                .request("getCurrentModel.sjs", BaseProxy.ParameterValuesKind.NONE)
                 .withSession()
                 .withParams(
-                    BaseProxy.documentParam("model", false, BaseProxy.JsonDocumentType.fromJsonNode(model)))
+                    )
+                .withMethod("POST")
+                .responseSingle(true, Format.JSON)
+                );
+            }
+
+
+            @Override
+            public com.fasterxml.jackson.databind.JsonNode toDatahub() {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("toDatahub.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .withSession()
+                .withParams(
+                    )
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -138,10 +152,10 @@ public interface EntityModeller {
   /**
    * Invokes the createTdes operation on the database server
    *
-   * @param model	provides input
+   * 
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode createTdes(com.fasterxml.jackson.databind.JsonNode model);
+    com.fasterxml.jackson.databind.JsonNode createTdes();
 
   /**
    * Invokes the removeAllEntities operation on the database server
@@ -160,11 +174,19 @@ public interface EntityModeller {
     com.fasterxml.jackson.databind.JsonNode fromDatahub();
 
   /**
-   * Invokes the toDatahub operation on the database server
+   * Invokes the getCurrentModel operation on the database server
    *
-   * @param model	provides input
+   * 
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode toDatahub(com.fasterxml.jackson.databind.JsonNode model);
+    com.fasterxml.jackson.databind.JsonNode getCurrentModel();
+
+  /**
+   * Invokes the toDatahub operation on the database server
+   *
+   * 
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode toDatahub();
 
 }

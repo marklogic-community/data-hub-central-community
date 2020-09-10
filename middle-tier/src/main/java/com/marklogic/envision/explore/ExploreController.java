@@ -7,10 +7,8 @@ import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.envision.dataServices.EntitySearcher;
-import com.marklogic.envision.model.ModelService;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.grove.boot.search.SearchService;
-import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,13 +23,10 @@ public class ExploreController extends AbstractController {
 
 	final private ObjectMapper om = new ObjectMapper();
 	final private SearchService searchService;
-	final private ModelService modelService;
 
 	@Autowired
-	ExploreController(HubConfigImpl hubConfig, SearchService searchService, ModelService modelService) {
-		super(hubConfig);
+	ExploreController(SearchService searchService) {
 		this.searchService = searchService;
-		this.modelService = modelService;
 	}
 
     @RequestMapping(value = "/entities", method = RequestMethod.POST)
@@ -67,10 +62,10 @@ public class ExploreController extends AbstractController {
 		}
 		DatabaseClient client;
 		if (database.equals("final")) {
-			client = getFinalClient();
+			client = getHubClient().getFinalClient();
 		}
 		else {
-			client = getStagingClient();
+			client = getHubClient().getStagingClient();
 		}
 
 		QueryManager mgr = client.newQueryManager();
@@ -78,9 +73,8 @@ public class ExploreController extends AbstractController {
 		StructuredQueryDefinition query = searchService.buildQueryWithCriteria(mgr.newStructuredQueryBuilder(), filters);
 
 		if (database.equals("final")) {
-			String filterString = ((StructuredQueryDefinition) query).serialize();
-			JsonNode resp = EntitySearcher.on(client).findEntities(modelService.getModel(client), qtext, page, pageLength, sort, filterString);
-			return resp;
+			String filterString = query.serialize();
+			return EntitySearcher.on(client).findEntities(qtext, page, pageLength, sort, filterString);
 		}
 		else {
 			long start = ((page - 1) * pageLength) + 1;
@@ -110,35 +104,34 @@ public class ExploreController extends AbstractController {
 		}
 		DatabaseClient client;
 		if (database.equals("final")) {
-			client = getFinalClient();
+			client = getHubClient().getFinalClient();
 		}
 		else {
-			client = getStagingClient();
+			client = getHubClient().getStagingClient();
 		}
 
 		QueryManager mgr = client.newQueryManager();
 		StructuredQueryDefinition query = searchService.buildQueryWithCriteria(mgr.newStructuredQueryBuilder(), filters);
 
-		String filterString = ((StructuredQueryDefinition) query).serialize();
-		JsonNode resp = EntitySearcher.on(client).getValues(facetName, qtext, filterString);
-		return resp;
+		String filterString = query.serialize();
+		return EntitySearcher.on(client).getValues(facetName, qtext, filterString);
 	}
 
     @RequestMapping(value = "/related-entities", method = RequestMethod.POST)
     JsonNode getRelatedEntities(HttpServletRequest request) throws IOException {
-        DatabaseClient client = getFinalClient();
+        DatabaseClient client = getHubClient().getFinalClient();
 
         JsonNode node = om.readTree(request.getInputStream());
         String uri = node.get("uri").asText();
         String label = node.get("label").asText();
 		int page = node.get("page").asInt();
 		int pageLength = node.get("pageLength").asInt();
-        return EntitySearcher.on(client).relatedEntities(modelService.getModel(client), uri, label, page, pageLength);
+        return EntitySearcher.on(client).relatedEntities(uri, label, page, pageLength);
 	}
 
 	@RequestMapping(value = "/related-entities-to-concept", method = RequestMethod.POST)
 	JsonNode getRelatedEntitiesToConcept(HttpServletRequest request) throws IOException {
-		DatabaseClient client = getFinalClient();
+		DatabaseClient client = getHubClient().getFinalClient();
 
 		JsonNode node = om.readTree(request.getInputStream());
 		String concept = node.get("concept").asText();

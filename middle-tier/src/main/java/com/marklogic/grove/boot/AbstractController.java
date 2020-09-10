@@ -1,65 +1,28 @@
 package com.marklogic.grove.boot;
 
-import com.marklogic.appdeployer.AppConfig;
-import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.ext.DatabaseClientConfig;
-import com.marklogic.client.ext.SecurityContextType;
+import com.marklogic.client.ext.helper.LoggingObject;
+import com.marklogic.envision.hub.HubClient;
+import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.error.NotAuthenticatedException;
-import com.marklogic.hub.DatabaseKind;
-import com.marklogic.hub.impl.HubConfigImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-public abstract class AbstractController {
-
-	final private HubConfigImpl hubConfig;
+public abstract class AbstractController extends LoggingObject {
 
 	@Autowired
-	public AbstractController(HubConfigImpl hubConfig) {
-		this.hubConfig = hubConfig;
+	SessionManager sessionManager;
+
+	protected String getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.getName();
 	}
 
-	public HubConfigImpl getHubConfig() {
-		if (hubConfig != null) {
-			return hubConfig;
+	protected HubClient getHubClient() {
+		HubClient client = sessionManager.getHubClient(getCurrentUser());
+		if (client == null) {
+			throw new NotAuthenticatedException();
 		}
-
-		throw new NotAuthenticatedException();
+		return client;
 	}
-
-	protected DatabaseClient getFinalClient() {
-		return getClient(DatabaseKind.FINAL);
-	}
-
-	protected DatabaseClient getStagingClient() {
-		return getClient(DatabaseKind.STAGING);
-	}
-
-	protected DatabaseClient getJobClient() {
-		return getClient(DatabaseKind.JOB);
-	}
-
-	protected DatabaseClient getClient(DatabaseKind kind) {
-		if (hubConfig != null) {
-			AppConfig appConfig = hubConfig.getAppConfig();
-			if (appConfig != null) {
-				DatabaseClientConfig config = new DatabaseClientConfig(appConfig.getHost(), hubConfig.getPort(kind), hubConfig.getMlUsername(), hubConfig.getMlPassword());
-				config.setSecurityContextType(SecurityContextType.valueOf(hubConfig.getAuthMethod(kind).toUpperCase()));
-				config.setSslHostnameVerifier(hubConfig.getSslHostnameVerifier(kind));
-				config.setSslContext(hubConfig.getSslContext(kind));
-				config.setCertFile(hubConfig.getCertFile(kind));
-				config.setCertPassword(hubConfig.getCertPassword(kind));
-				config.setExternalName(hubConfig.getExternalName(kind));
-				config.setTrustManager(hubConfig.getTrustManager(kind));
-				if (hubConfig.getIsHostLoadBalancer()) {
-					config.setConnectionType(DatabaseClient.ConnectionType.GATEWAY);
-				}
-				return appConfig.getConfiguredDatabaseClientFactory().newDatabaseClient(config);
-			}
-		}
-
-		throw new NotAuthenticatedException();
-	}
-	protected Logger logger = LoggerFactory.getLogger(getClass());
 }

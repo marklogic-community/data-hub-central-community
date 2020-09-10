@@ -1,20 +1,12 @@
 package com.marklogic.envision;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.query.QueryManager;
-import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.envision.dataServices.EntityModeller;
-import com.marklogic.envision.dataServices.EntitySearcher;
 import com.marklogic.envision.model.ModelService;
-import com.marklogic.envision.session.SessionPojo;
-import com.marklogic.envision.session.SessionService;
+import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
-import jdk.nashorn.internal.ir.ObjectNode;
 import org.json.JSONException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +21,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 
 @SpringBootTest
@@ -41,17 +32,13 @@ public class ModelTests extends BaseTest {
 	ModelService modelService;
 
 	@Autowired
-	SessionService sessionService;
+	SessionManager sessionManager;
 
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() {
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
-
-		SessionPojo session = new SessionPojo();
-		session.user = "user";
-		session.currentModel = "TestModel.json";
-		sessionService.saveSession(getFinalClient(), session);
+		sessionManager.setHubClient("user", getHubClient());
 	}
 
 	@Test
@@ -60,12 +47,10 @@ public class ModelTests extends BaseTest {
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
 		modelService.setModelsDir(modelsDir.toFile());
-		modelService.saveModel(getFinalClient(), getResourceStream("models/model.json"));
+		modelService.saveModel(getHubClient(), getResourceStream("models/model.json"));
 		DatabaseClient client = getFinalClient();
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode node = objectMapper.readTree(getResourceStream("models/model.json"));
-		JsonNode result = EntityModeller.on(client).toDatahub(node);
-		JSONAssert.assertEquals(getResource("output/esEntities.json"), om.writeValueAsString(result), true);
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		JSONAssert.assertEquals(getResource("output/esEntities.json"), this.objectMapper.writeValueAsString(result), true);
 	}
 
 	@Test
@@ -82,6 +67,6 @@ public class ModelTests extends BaseTest {
 
 		DatabaseClient client = getFinalClient();
 		JsonNode result = EntityModeller.on(client).fromDatahub();
-		JSONAssert.assertEquals(getResource("output/esModel.json"), om.writeValueAsString(result), resultCompare);
+		JSONAssert.assertEquals(getResource("output/esModel.json"), objectMapper.writeValueAsString(result), resultCompare);
 	}
 }

@@ -17,54 +17,41 @@
 package com.marklogic.grove.boot.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marklogic.hub.HubProject;
-import com.marklogic.hub.impl.HubConfigImpl;
-import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.envision.config.EnvisionConfig;
+import com.marklogic.envision.dataServices.Users;
+import com.marklogic.envision.hub.HubClient;
+import com.marklogic.envision.session.SessionManager;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @PropertySource({"classpath:application.properties"})
-public class ConnectionAuthenticationFilter extends
-    AbstractAuthenticationProcessingFilter {
+public class ConnectionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public Authentication authAttempt = null;
+    private final EnvisionConfig envisionConfig;
+	private final SessionManager sessionManager;
 
-    @Autowired
-    private HubConfigImpl hubConfig;
-
-    @Autowired
-	private DeployService deployService;
-
-    @Autowired
-	private HubProject hubProject;
-
-	@Value("${dhfDir}")
-	private File dhfDir;
-
-	@Value("${dhfEnv}")
-	private String dhfEnv;
-
-
-    public ConnectionAuthenticationFilter() {
+    public ConnectionAuthenticationFilter(EnvisionConfig envisionConfig, SessionManager sessionManager) {
         super(new AntPathRequestMatcher("/api/auth/login", "POST"));
+        this.envisionConfig = envisionConfig;
+		this.sessionManager = sessionManager;
+		setAuthenticationFailureHandler(new LoginFailureHandler());
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request,
@@ -75,43 +62,9 @@ public class ConnectionAuthenticationFilter extends
         }
 
         final LoginInfo loginInfo = new ObjectMapper().readValue(request.getInputStream(), LoginInfo.class);
-        String username = loginInfo.username;
-        String password = loginInfo.password;
-
-        if (username == null) {
-            username = "";
-        }
-
-        if (password == null) {
-            password = "";
-        }
-
-        username = username.trim();
-
-		System.out.println("dhfDir: " + dhfDir.getCanonicalPath());
-        String projectDir = dhfDir.getCanonicalPath();
-        hubProject.createProject(projectDir);
-        hubConfig.setMlUsername(username);
-        hubConfig.setMlPassword(password);
-        hubConfig.resetAppConfigs();
-		String envName = dhfEnv;
-        if (envName == null || envName.isEmpty()) {
-            envName = "local";
-		}
-		System.out.println("envName: " + envName);
-        hubConfig.withPropertiesFromEnvironment(envName);
-        hubConfig.resetHubConfigs();
-        hubConfig.refreshProject();
-        hubConfig.getAppConfig().setAppServicesUsername(username);
-        hubConfig.getAppConfig().setAppServicesPassword(password);
-
-        ConnectionAuthenticationToken authRequest = new ConnectionAuthenticationToken(
-            username, password, hubConfig.getAppConfig().getHost(), loginInfo.projectId, loginInfo.environment);
-
-        // Allow subclasses to set the "details" property
-        setDetails(request, authRequest);
-        authAttempt = this.getAuthenticationManager().authenticate(authRequest);
-        return authAttempt;
+		AuthenticationToken token = authenticateUser(loginInfo.username, loginInfo.password);
+		token.setDetails(authenticationDetailsSource.buildDetails(request));
+		return token;
     }
 
     /**
@@ -123,12 +76,46 @@ public class ConnectionAuthenticationFilter extends
      * set
      */
     protected void setDetails(HttpServletRequest request,
-                              ConnectionAuthenticationToken authRequest) {
+                              AuthenticationToken authRequest) {
         authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 
+	/**
+	 * Authenticates the user and builds an AuthenticationToken containing the granted authorities.
+	 * <p>
+	 * This is the preferred method for determining if an authenticated user is permitted to perform a particular
+	 * action. The SecurityService endpoint is expected to return an array of strings, each corresponding to a
+	 * particular action. A Spring Security GrantedAuthority is constructed for each one, using "ROLE_" as a prefix,
+	 * which is expected by Spring Security's default voting mechanism for whether a user can perform an action or not
+	 * - see https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#appendix-faq-role-prefix.
+	 *
+	 * @param username - the username
+	 * @param password - the password
+	 */
+	protected AuthenticationToken authenticateUser(String username, String password) {
+		if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+			throw new BadCredentialsException("Unauthorized");
+		}
+
+		username = username.trim();
+
+		HubClient hubClient = envisionConfig.newHubClient(username, password);
+		sessionManager.setHubClient(username, hubClient);
+
+		try {
+			if (Users.on(sessionManager.getHubClient(username).getStagingClient()).testLogin()) {
+				List<GrantedAuthority> authorities = new ArrayList<>();
+				return new AuthenticationToken(username, password, authorities);
+			}
+		} catch (Exception e) {
+//			e.printStackTrace();
+		}
+		throw new BadCredentialsException("Unauthorized");
+
+	}
+
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         String user = (String)authResult.getPrincipal();
 
         byte[] signingKey = SecurityConstants.JWT_SECRET.getBytes();
@@ -145,8 +132,5 @@ public class ConnectionAuthenticationFilter extends
                 .compact();
 
         response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
-
-        boolean needsInstall = deployService.needsInstall();
-        response.getWriter().write("{\"needsInstall\":" + needsInstall + "}");
     }
 }

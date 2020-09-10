@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -155,14 +154,13 @@ public class SearchService {
 	public JsonNode processResults(JsonNode node) {
 		StreamSupport.stream(node.get("results").spliterator(), false)
 			.map(jsonNode -> (ObjectNode)jsonNode)
-			.map(jsonNode -> {
+			.forEach(jsonNode -> {
 				try {
 					jsonNode.put("id", URLEncoder.encode(jsonNode.get("uri").asText(), "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				return jsonNode;
-			}).collect(Collectors.toList());
+			});
 		return node;
 	}
 }

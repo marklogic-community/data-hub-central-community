@@ -15,19 +15,16 @@ import com.marklogic.envision.model.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @Service
 public class MasteringService {
 
-	private final String MASTERING_STATS = "mastering-stats";
-	private final String MASTERING_MATCH = "mlSmMatch";
-	private final String MASTERING_MERGE = "mlSmMerge";
-	private final String MASTERING_HISTORY_DOCUMENT = "mlSmHistoryDocument";
-	private final String MASTERING_HISTORY_PROPERTIES = "mlSmHistoryProperties";
-	private final String MASTERING_BLOCK_MATCH = "sm-block-match";
-	private final String SM_NOTIFICATIONS = "mlSmNotifications";
+	private final static String MASTERING_STATS = "mastering-stats";
+	private final static String MASTERING_HISTORY_DOCUMENT = "mlSmHistoryDocument";
+	private final static String MASTERING_HISTORY_PROPERTIES = "mlSmHistoryProperties";
+	private final static String MASTERING_BLOCK_MATCH = "sm-block-match";
+	private final static String SM_NOTIFICATIONS = "mlSmNotifications";
 
 	private final ModelService modelService;
 
@@ -44,12 +41,12 @@ public class MasteringService {
 		return docMgr.readAs(docUri, String.class);
 	}
 
-	public JsonNode mergeDocs(DatabaseClient client, ArrayNode uris, String flowName, String stepNumber, Boolean preview) throws IOException {
+	public JsonNode mergeDocs(DatabaseClient client, ArrayNode uris, String flowName, String stepNumber, Boolean preview) {
 		return Mastering.on(client).merge(uris, flowName, stepNumber, preview, UUID.randomUUID().toString(), null);
 	}
 
 	public JsonNode unmerge(DatabaseClient client, String uri) {
-		return Mastering.on(client).unmerge(uri, modelService.getModel(client));
+		return Mastering.on(client).unmerge(uri);
 	}
 
 	public String getHistoryDocument(DatabaseClient client, String uri) {
@@ -85,15 +82,15 @@ public class MasteringService {
 	}
 
 	public JsonNode getNotification(DatabaseClient client, String uri) {
-		return Mastering.on(client).getNotification(uri, modelService.getModel(client));
+		return Mastering.on(client).getNotification(uri);
 	}
 
 	public JsonNode getNotifications(DatabaseClient client, String qtext, Integer page, Integer pageLength, String sort) {
-		return Mastering.on(client).getNotifications(modelService.getModel(client), qtext, page, pageLength, sort);
+		return Mastering.on(client).getNotifications(qtext, page, pageLength, sort);
 	}
 
 	public JsonNode updateNotifications(DatabaseClient client, ArrayNode uris, String status) {
-		return Mastering.on(client).updateNotifications(uris, modelService.getModel(client), status);
+		return Mastering.on(client).updateNotifications(uris, status);
 	}
 
 	public JsonNode getBlocks(DatabaseClient client, ArrayNode uris) {
@@ -114,7 +111,7 @@ public class MasteringService {
 		new GenericResourceManager(SM_NOTIFICATIONS, client).delete(params);
 	}
 
-	class GenericResourceManager extends ResourceManager {
+	static class GenericResourceManager extends ResourceManager {
 		public GenericResourceManager(String name, DatabaseClient client) {
 			super();
 			client.init(name, this);

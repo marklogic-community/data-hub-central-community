@@ -3,9 +3,7 @@
 const mastering = require('/envision/mastering.sjs')
 
 var uri;
-var model;
-model = model.toObject();
 
 const doc = cts.doc(uri);
-const notification = mastering.getNotification(model, uri, doc);
+const notification = mastering.getNotification(uri, doc);
 notification;

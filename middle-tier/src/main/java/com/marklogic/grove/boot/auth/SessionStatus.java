@@ -9,19 +9,10 @@ public class SessionStatus {
 	private String username;
 	private boolean disallowUpdates;
 	private boolean appUsersOnly;
-	private boolean needsInstall;
 
-	public SessionStatus() {
-	}
-
-	public SessionStatus(boolean authenticated) {
-		this.authenticated = authenticated;
-	}
-
-	public SessionStatus(String username, boolean authenticated, boolean needsInstall) {
+	public SessionStatus(String username, boolean authenticated) {
 		this.username = username;
 		this.authenticated = authenticated;
-		this.needsInstall = needsInstall;
 	}
 
 	public String getAppName() {
@@ -62,9 +53,5 @@ public class SessionStatus {
 
 	public void setAppUsersOnly(boolean appUsersOnly) {
 		this.appUsersOnly = appUsersOnly;
-	}
-
-	public boolean isNeedsInstall() {
-		return needsInstall;
 	}
 }

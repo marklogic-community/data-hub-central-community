@@ -3,22 +3,19 @@ package com.marklogic.envision.commands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.marklogic.appdeployer.command.CommandContext;
-import com.marklogic.appdeployer.command.SortOrderConstants;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentWriteSet;
 import com.marklogic.client.document.JSONDocumentManager;
+import com.marklogic.client.ext.helper.LoggingObject;
 import com.marklogic.client.ext.modulesloader.Modules;
 import com.marklogic.client.ext.modulesloader.ModulesFinder;
-import com.marklogic.client.ext.modulesloader.impl.*;
+import com.marklogic.client.ext.modulesloader.impl.EntityDefModulesFinder;
 import com.marklogic.client.ext.util.DefaultDocumentPermissionsParser;
 import com.marklogic.client.ext.util.DocumentPermissionsParser;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.JacksonHandle;
-import com.marklogic.hub.HubConfig;
-import com.marklogic.hub.deploy.commands.LoadUserArtifactsCommand;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.mgmt.util.ObjectMapperFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
@@ -28,95 +25,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
-public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
+public class DeployEntitiesCommand extends LoggingObject {
 
-	@Autowired
-	private HubConfig hubConfig;
+	private final HubClient hubClient;
 
-	private DocumentPermissionsParser documentPermissionsParser = new DefaultDocumentPermissionsParser();
-	private ObjectMapper objectMapper;
-
-	public void setForceLoad(boolean forceLoad) {
-		this.forceLoad = forceLoad;
-	}
-
-	private boolean forceLoad = false;
+	private final DocumentPermissionsParser documentPermissionsParser = new DefaultDocumentPermissionsParser();
+	private final ObjectMapper objectMapper;
 
 
-	public DeployEntitiesCommand(HubConfig hubConfig) {
-		super();
-		this.hubConfig = hubConfig;
+	public DeployEntitiesCommand(HubClient hubClient) {
+		this.hubClient = hubClient;
 		this.objectMapper = ObjectMapperFactory.getObjectMapper();
-		setExecuteSortOrder(SortOrderConstants.DEPLOY_TRIGGERS + 1);
 	}
 
-	boolean isArtifactDir(Path dir, Path startPath) {
-		String dirStr = dir.toString();
-		String startPathStr = Pattern.quote(startPath.toString());
-		String regex = startPathStr + "[/\\\\][^/\\\\]+$";
-		return dirStr.matches(regex);
-	}
+	public void execute() {
+		DatabaseClient stagingClient = hubClient.getStagingClient();
+		DatabaseClient finalClient = hubClient.getFinalClient();
 
-	private PropertiesModuleManager getModulesManager() {
-		String timestampFile = hubConfig.getHubProject().getUserModulesDeployTimestampFile();
-		PropertiesModuleManager pmm = new PropertiesModuleManager(timestampFile);
-
-		if (forceLoad) {
-			pmm.deletePropertiesFile();
-		}
-		return pmm;
-	}
-
-	@Override
-	public void execute(CommandContext context) {
-		DatabaseClient stagingClient = hubConfig.newStagingClient();
-		DatabaseClient finalClient = hubConfig.newFinalClient();
-
-		Path entitiesPath = hubConfig.getHubEntitiesDir();
-		Path mappingsPath = hubConfig.getHubMappingsDir();
-		Path stepDefPath = hubConfig.getStepDefinitionsDir();
-		Path flowPath = hubConfig.getFlowsDir();
+		Path entitiesPath = hubClient.getHubConfig().getHubEntitiesDir();
 
 		JSONDocumentManager finalDocMgr = finalClient.newJSONDocumentManager();
 		JSONDocumentManager stagingDocMgr = stagingClient.newJSONDocumentManager();
 
 		DocumentWriteSet finalEntityDocumentWriteSet = finalDocMgr.newWriteSet();
 		DocumentWriteSet stagingEntityDocumentWriteSet = stagingDocMgr.newWriteSet();
-		DocumentWriteSet stagingMappingDocumentWriteSet = stagingDocMgr.newWriteSet();
-		DocumentWriteSet finalMappingDocumentWriteSet = finalDocMgr.newWriteSet();
-		DocumentWriteSet stagingStepDefDocumentWriteSet = stagingDocMgr.newWriteSet();
-		DocumentWriteSet finalStepDefDocumentWriteSet = finalDocMgr.newWriteSet();
-		DocumentWriteSet stagingFlowDocumentWriteSet = stagingDocMgr.newWriteSet();
-		DocumentWriteSet finalFlowDocumentWriteSet = finalDocMgr.newWriteSet();
-		PropertiesModuleManager propertiesModuleManager = getModulesManager();
 		DeployEntitiesCommand.ResourceToURI entityResourceToURI = new DeployEntitiesCommand.ResourceToURI(){
 			public String toURI(Resource r) {
 				return "/entities/" + r.getFilename();
 			}
 		};
-		DeployEntitiesCommand.ResourceToURI mappingResourceToURI = new DeployEntitiesCommand.ResourceToURI(){
-			public String toURI(Resource r) throws IOException {
-				return "/mappings/" + r.getFile().getParentFile().getName() + "/" + r.getFilename();
-			}
-		};
-		DeployEntitiesCommand.ResourceToURI flowResourceToURI = new DeployEntitiesCommand.ResourceToURI(){
-			public String toURI(Resource r) {
-				return "/flows/" + r.getFilename();
-			}
-		};
-		DeployEntitiesCommand.ResourceToURI stepResourceToURI = new DeployEntitiesCommand.ResourceToURI(){
-			public String toURI(Resource r) throws IOException {
-				return "/step-definitions/" + r.getFile().getParentFile().getParentFile().getName() + "/" + r.getFile().getParentFile().getName() + "/" + r.getFilename();
-			}
-		};
 		EntityDefModulesFinder entityDefModulesFinder = new EntityDefModulesFinder();
-		MappingDefModulesFinder mappingDefModulesFinder = new MappingDefModulesFinder();
-		StepDefModulesFinder stepDefModulesFinder = new StepDefModulesFinder();
-		FlowDefModulesFinder flowDefModulesFinder = new FlowDefModulesFinder();
 		try {
 			//first let's do the entities paths
 			if (entitiesPath.toFile().exists()) {
@@ -126,9 +66,8 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 						executeWalk(
 							dir,
 							entityDefModulesFinder,
-							propertiesModuleManager,
 							entityResourceToURI,
-							buildMetadataForEntityModels(hubConfig),
+							buildMetadataForEntityModels(),
 							stagingEntityDocumentWriteSet,
 							finalEntityDocumentWriteSet
 						);
@@ -136,108 +75,29 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 					}
 				});
 			}
-//			//now let's do the mappings paths
-//			if (mappingsPath.toFile().exists()) {
-//				Files.walkFileTree(mappingsPath, new SimpleFileVisitor<Path>() {
-//					@Override
-//					public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-//						if (isArtifactDir(dir, mappingsPath.toAbsolutePath())) {
-//							executeWalk(
-//								dir,
-//								mappingDefModulesFinder,
-//								propertiesModuleManager,
-//								mappingResourceToURI,
-//								buildMetadata("http://marklogic.com/data-hub/mappings", hubConfig.getModulePermissions()),
-//								stagingMappingDocumentWriteSet,
-//								finalMappingDocumentWriteSet
-//							);
-//							return FileVisitResult.CONTINUE;
-//						}
-//						else {
-//							return FileVisitResult.CONTINUE;
-//						}
-//					}
-//				});
-//			}
-//
-//			// let's do step-definitions
-//			if (stepDefPath.toFile().exists()) {
-//				Files.walkFileTree(stepDefPath, new SimpleFileVisitor<Path>() {
-//					@Override
-//					public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-//						executeWalk(
-//							dir,
-//							stepDefModulesFinder,
-//							propertiesModuleManager,
-//							stepResourceToURI,
-//							buildMetadata("http://marklogic.com/data-hub/step-definition", hubConfig.getModulePermissions()),
-//							stagingStepDefDocumentWriteSet,
-//							finalStepDefDocumentWriteSet
-//						);
-//						return FileVisitResult.CONTINUE;
-//					}
-//				});
-//			}
-//
-//
-//			// let's do flows
-//			if (flowPath.toFile().exists()) {
-//				Files.walkFileTree(flowPath, new SimpleFileVisitor<Path>() {
-//					@Override
-//					public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-//						executeWalk(
-//							dir,
-//							flowDefModulesFinder,
-//							propertiesModuleManager,
-//							flowResourceToURI,
-//							buildMetadata("http://marklogic.com/data-hub/flow", hubConfig.getModulePermissions()),
-//							stagingFlowDocumentWriteSet,
-//							finalFlowDocumentWriteSet
-//						);
-//						return FileVisitResult.CONTINUE;
-//					}
-//				});
-//			}
 
 			if (stagingEntityDocumentWriteSet.size() > 0) {
 				finalDocMgr.write(finalEntityDocumentWriteSet);
 				stagingDocMgr.write(stagingEntityDocumentWriteSet);
 			}
-//			if (stagingMappingDocumentWriteSet.size() > 0) {
-//				stagingDocMgr.write(stagingMappingDocumentWriteSet);
-//				finalDocMgr.write(finalMappingDocumentWriteSet);
-//			}
-//			if (stagingStepDefDocumentWriteSet.size() > 0) {
-//				stagingDocMgr.write(stagingStepDefDocumentWriteSet);
-//				finalDocMgr.write(finalStepDefDocumentWriteSet);
-//			}
-//			if (stagingFlowDocumentWriteSet.size() > 0) {
-//				stagingDocMgr.write(stagingFlowDocumentWriteSet);
-//				finalDocMgr.write(finalFlowDocumentWriteSet);
-//			}
-
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			//throw new RuntimeException(e);
 		}
 	}
 
 	/**
 	 * As of 5.1.0, entity model permissions are separate from module permissions. Though if entity model permissions
 	 * are not defined, then this falls back to using module permissions.
-	 *
-	 * @param config
-	 * @return
 	 */
-	protected DocumentMetadataHandle buildMetadataForEntityModels(HubConfig config) {
-		String permissions = config.getEntityModelPermissions();
+	protected DocumentMetadataHandle buildMetadataForEntityModels() {
+		String permissions = hubClient.getHubConfig().getEntityModelPermissions();
 		if (permissions == null || permissions.trim().length() < 1) {
 			if (logger.isInfoEnabled()) {
 				logger.info("Entity model permissions were not set, so using module permissions; consider setting mlEntityModelPermissions " +
 					"in case you want entity models to have custom permissions.");
 			}
-			permissions = config.getModulePermissions();
+			permissions = hubClient.getHubConfig().getModulePermissions();
 		}
 		return buildMetadata("http://marklogic.com/entity-services/models", permissions);
 	}
@@ -245,7 +105,6 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 	private void executeWalk(
 		Path dir,
 		ModulesFinder modulesFinder,
-		PropertiesModuleManager propertiesModuleManager,
 		DeployEntitiesCommand.ResourceToURI resourceToURI,
 		DocumentMetadataHandle metadata,
 		DocumentWriteSet... writeSets
@@ -254,7 +113,6 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 		for (Resource r : modules.getAssets()) {
 			addResourceToWriteSets(
 				r,
-				propertiesModuleManager,
 				resourceToURI.toURI(r),
 				metadata,
 				writeSets
@@ -272,35 +130,31 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 
 	private void addResourceToWriteSets(
 		Resource r,
-		PropertiesModuleManager propertiesModuleManager,
 		String docId,
 		DocumentMetadataHandle meta,
 		DocumentWriteSet... writeSets
 	) throws IOException {
-		if (forceLoad || propertiesModuleManager.hasFileBeenModifiedSinceLastLoaded(r.getFile())) {
-			InputStream inputStream = r.getInputStream();
+		InputStream inputStream = r.getInputStream();
 
-			JsonNode json;
+		JsonNode json;
+		try {
+			json = objectMapper.readTree(inputStream);
+		} finally {
+			inputStream.close();
+		}
+
+		if (json instanceof ObjectNode && json.has("language")) {
+			json = replaceLanguageWithLang((ObjectNode)json);
 			try {
-				json = objectMapper.readTree(inputStream);
-			} finally {
-				inputStream.close();
+				objectMapper.writeValue(r.getFile(), json);
+			} catch (Exception ex) {
+				logger.warn("Unable to replace 'language' with 'lang' in artifact file: " + r.getFile().getAbsolutePath()
+					+ ". You should replace 'language' with 'lang' yourself in this file. Error cause: " + ex.getMessage(), ex);
 			}
+		}
 
-			if (json instanceof ObjectNode && json.has("language")) {
-				json = replaceLanguageWithLang((ObjectNode)json);
-				try {
-					objectMapper.writeValue(r.getFile(), json);
-				} catch (Exception ex) {
-					logger.warn("Unable to replace 'language' with 'lang' in artifact file: " + r.getFile().getAbsolutePath()
-						+ ". You should replace 'language' with 'lang' yourself in this file. Error cause: " + ex.getMessage(), ex);
-				}
-			}
-
-			for (DocumentWriteSet writeSet : writeSets) {
-				writeSet.add(docId, meta, new JacksonHandle(json));
-			}
-			propertiesModuleManager.saveLastLoadedTimestamp(r.getFile(), new Date());
+		for (DocumentWriteSet writeSet : writeSets) {
+			writeSet.add(docId, meta, new JacksonHandle(json));
 		}
 	}
 
@@ -308,9 +162,6 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 	 * Per DHFPROD-3193 and an update to MarkLogic 10.0-2, "lang" must now be used instead of "language". To ensure that
 	 * a user artifact is never loaded with "language", this command handles both updating the JSON that will be loaded
 	 * into MarkLogic and updating the artifact file.
-	 *
-	 * @param object
-	 * @return
 	 */
 	protected ObjectNode replaceLanguageWithLang(ObjectNode object) {
 		ObjectNode newObject = objectMapper.createObjectNode();
@@ -325,15 +176,7 @@ public class DeployEntitiesCommand extends LoadUserArtifactsCommand {
 		return newObject;
 	}
 
-	public void setHubConfig(HubConfig hubConfig) {
-		this.hubConfig = hubConfig;
-	}
-
-	public void setObjectMapper(ObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
-	}
-
-	abstract class ResourceToURI {
+	abstract static class ResourceToURI {
 		public abstract String toURI(Resource r) throws IOException;
 	}
 }

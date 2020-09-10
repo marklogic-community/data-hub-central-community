@@ -1,9 +1,8 @@
 package com.marklogic.envision.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.marklogic.client.DatabaseClient;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.impl.HubConfigImpl;
+import com.marklogic.grove.boot.error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,47 +21,49 @@ public class ModelController extends AbstractController {
     final private ModelService modelService;
 
     @Autowired
-	ModelController(HubConfigImpl hubConfig, ModelService modelService) {
-    	super(hubConfig);
+	ModelController(ModelService modelService) {
     	this.modelService = modelService;
 	}
 
     @RequestMapping(value = "/current", method = RequestMethod.GET)
     public JsonNode getModel() {
-        return modelService.getModel(getFinalClient());
+        JsonNode model = modelService.getModel(getHubClient().getFinalClient());
+        if (model != null) {
+        	return model;
+		}
+		throw new NotFoundException();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<JsonNode> getAllModels() throws IOException {
-		DatabaseClient client = getFinalClient();
-    	return modelService.getAllModels(client);
+    	return modelService.getAllModels(getHubClient());
     }
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void switchModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		modelService.deleteModel(request.getInputStream());
+		modelService.deleteModel(getHubClient().getUsername(), request.getInputStream());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void saveModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        modelService.saveModel(getFinalClient(), request.getInputStream());
+        modelService.saveModel(getHubClient(), request.getInputStream());
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
 	@RequestMapping(value = "/import", method = RequestMethod.PUT)
 	public void importModel(HttpServletResponse response) throws IOException {
-		modelService.importModel(getFinalClient());
+		modelService.importModel(getHubClient());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
 	@RequestMapping(value = "/activeIndexes", method = RequestMethod.GET)
 	public JsonNode getActiveIndexes() {
-		return modelService.getActiveIndexes(getFinalClient());
+		return modelService.getActiveIndexes(getHubClient().getFinalClient());
     }
     @RequestMapping(value = "/rename", method = RequestMethod.POST)
 	public void renameModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		modelService.renameModel(getFinalClient(), request.getInputStream());
+		modelService.renameModel(getHubClient().getUsername(), getHubClient(), request.getInputStream());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 }

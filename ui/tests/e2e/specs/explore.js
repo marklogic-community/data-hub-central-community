@@ -11,7 +11,7 @@ a click action on the results to populate the properties page
 describe('Explore', () => {
 	beforeEach(function () {
 		cy.server()
-		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false,"needsInstall":false})
+		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false})
 		cy.route('/api/models/activeIndexes', ['age'])
 		cy.route('PUT', '/api/models/', {})
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})

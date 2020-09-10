@@ -1,77 +1,105 @@
 package com.marklogic.envision.deploy;
 
-import com.marklogic.appdeployer.AppConfig;
-import com.marklogic.appdeployer.AppDeployer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marklogic.appdeployer.command.Command;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
+import com.marklogic.client.document.JSONDocumentManager;
+import com.marklogic.client.ext.helper.LoggingObject;
+import com.marklogic.client.ext.util.DefaultDocumentPermissionsParser;
+import com.marklogic.client.ext.util.DocumentPermissionsParser;
+import com.marklogic.client.io.DocumentMetadataHandle;
+import com.marklogic.client.io.StringHandle;
 import com.marklogic.envision.commands.DeployEntitiesCommand;
-import com.marklogic.envision.commands.DeployEnvisionModulesCommand;
-import com.marklogic.envision.config.EnvisionConfig;
-import com.marklogic.hub.impl.HubConfigImpl;
-import com.marklogic.mgmt.ManageClient;
-import com.marklogic.mgmt.resource.security.AmpManager;
-import com.marklogic.mgmt.resource.security.RoleManager;
-import org.apache.commons.io.IOUtils;
+import com.marklogic.envision.hub.HubClient;
+import com.marklogic.hub.deploy.commands.LoadUserArtifactsCommand;
+import com.marklogic.hub.flow.Flow;
+import com.marklogic.hub.mapping.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
-public class DeployService {
+public class DeployService extends LoggingObject {
 
-	private final HubConfigImpl hubConfig;
-	private final EnvisionConfig config;
+	private final DocumentPermissionsParser documentPermissionsParser = new DefaultDocumentPermissionsParser();
+
+	final private LoadUserArtifactsCommand loadUserArtifactsCommand;
+
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
+	protected JSONDocumentManager getFinalDocMgr(HubClient hubClient) {
+		return hubClient.getFinalClient().newJSONDocumentManager();
+	}
+
+	protected JSONDocumentManager getStagingDocMgr(HubClient hubClient) {
+		return hubClient.getStagingClient().newJSONDocumentManager();
+	}
 
 	@Autowired
-	DeployService(HubConfigImpl hubConfig, EnvisionConfig config) {
-		this.hubConfig = hubConfig;
-		this.config = config;
+	DeployService(LoadUserArtifactsCommand loadUserArtifactsCommand) {
+		this.loadUserArtifactsCommand = loadUserArtifactsCommand;
 	}
 
-	public boolean needsInstall() {
-		String installedVersion = config.getInstalledVersion(hubConfig.newModulesDbClient());
-		return installedVersion == null || !installedVersion.equals(config.getVersion());
+	public void deployUserArtifacts(HubClient hubClient) {
+		List<Command> commands = new ArrayList<>();
+
+		loadUserArtifactsCommand.setHubConfig(hubClient.getHubConfig());
+		loadUserArtifactsCommand.setForceLoad(false);
+
+		commands.add(loadUserArtifactsCommand);
+
+		SimpleAppDeployer deployer = new SimpleAppDeployer(hubClient.getManageClient(), hubClient.getHubConfig().getAdminManager());
+		deployer.setCommands(commands);
+		deployer.deploy(hubClient.getHubConfig().getAppConfig());
 	}
 
-	public void deployEntities() {
+	public void deployEntities(HubClient hubClient) {
 		try {
-			AppDeployer appDeployer = new SimpleAppDeployer(hubConfig.getManageClient(), hubConfig.getAdminManager(), new DeployEntitiesCommand(hubConfig));
-			appDeployer.deploy(hubConfig.getAppConfig());
+			new DeployEntitiesCommand(hubClient).execute();
 		}
 		catch (Error error) {
 			error.printStackTrace();
 		}
-
 	}
 
-	private void createAmps(ManageClient manageClient, String modulesDbName) {
+	public void loadMapping(HubClient hubClient, Mapping mapping) {
+		String uri = getMappingUri(mapping.getName(), mapping.getVersion());
+		DocumentMetadataHandle meta = buildMetadata("http://marklogic.com/data-hub/mappings", hubClient.getHubConfig().getModulePermissions());
+		StringHandle handle = new StringHandle(mapping.serialize());
+		getStagingDocMgr(hubClient).write(uri, meta, handle);
+		getFinalDocMgr(hubClient).write(uri, meta, handle);
+	}
+
+	public void deleteMapping(HubClient hubClient, String mappingName, int version) {
+		String uri = getMappingUri(mappingName, version);
+		getStagingDocMgr(hubClient).delete(uri);
+		getFinalDocMgr(hubClient).delete(uri);
+	}
+
+	private String getMappingUri(String mappingName, int version) {
+		return "/mappings/" + mappingName + "/" + mappingName + "-" + version + ".mapping.json";
+	}
+
+	public void loadFlow(HubClient hubClient, Flow flow) {
+		String uri = "/flows/" + flow.getName() + ".flow.json";
+		DocumentMetadataHandle meta = buildMetadata("http://marklogic.com/data-hub/flow", hubClient.getHubConfig().getModulePermissions());
 		try {
-			AmpManager ampManager = new AmpManager(manageClient);
-			String amp = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("envision-config/amps/get-search-config.json"));
-			amp = amp.replace("%%mlModulesDbName%%", modulesDbName);
-			ampManager.save(amp);
-		} catch (IOException e) {
-			e.printStackTrace();
+			StringHandle handle = new StringHandle(objectMapper.writeValueAsString(flow));
+			getStagingDocMgr(hubClient).write(uri, meta, handle);
+			getFinalDocMgr(hubClient).write(uri, meta, handle);
+		}
+		catch(JsonProcessingException e) {
+			throw new RuntimeException("Invalid Flow Json");
 		}
 	}
 
-	private void createEnvisionRole(ManageClient manageClient) {
-		try {
-			RoleManager roleManager = new RoleManager(manageClient);
-			String role = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("envision-config/roles/envision.json"));
-			roleManager.save(role);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deploy() {
-		ManageClient manageClient = config.getManageClient();
-		AppDeployer appDeployer = new SimpleAppDeployer(manageClient, config.getAdminManager(), new DeployEnvisionModulesCommand(hubConfig));
-		AppConfig appConfig = hubConfig.getAppConfig();
-		appConfig.getCustomTokens().put("%%envisionVersion%%", config.getVersion());
-		appDeployer.deploy(hubConfig.getAppConfig());
-		createAmps(manageClient, appConfig.getModulesDatabaseName());
-		createEnvisionRole(manageClient);
+	private DocumentMetadataHandle buildMetadata(String collection, String permissions) {
+		DocumentMetadataHandle meta = new DocumentMetadataHandle();
+		meta.getCollections().add(collection);
+		documentPermissionsParser.parsePermissions(permissions, meta.getPermissions());
+		return meta;
 	}
 }

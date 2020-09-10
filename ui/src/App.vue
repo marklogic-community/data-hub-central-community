@@ -1,31 +1,30 @@
 <template>
 	<v-app>
-		<Header v-if="isLoggedIn && !needsInstall"/>
+		<Header v-if="isLoggedIn"/>
 		<v-main>
           <router-view/>
 		</v-main>
     <ml-footer/>
+		<progress-listener />
 	</v-app>
 </template>
 
 <script>
 import Header from '@/components/Header.vue';
 import mlFooter from '@/components/ml-footer.vue';
-import { mapState } from 'vuex'
+import ProgressListener from '@/components/ProgressListener.vue'
 
 export default {
   name: 'app',
   components: {
     Header,
-		mlFooter
+		mlFooter,
+		ProgressListener
 	},
 	computed: {
 		isLoggedIn() {
       return this.$store.state.auth.authenticated;
-		},
-		...mapState({
-			needsInstall: state => state.auth.needsInstall
-		}),
+		}
 	},
 	created() {
     this.$http.interceptors.response.use(undefined, (err) => {

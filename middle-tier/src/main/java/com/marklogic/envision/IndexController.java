@@ -9,7 +9,24 @@ public class IndexController {
 	/**
 	 * Assumes that the root URL should use a template named "index", which presumably will setup the Angular app.
 	 */
-	@RequestMapping(value = {"/login", "/model", "/explore", "/explore/compare", "/know", "/admin", "/install", "/notifications", "/notifications/compare", "/detail", "/404"}, method = RequestMethod.GET)
+	@RequestMapping(value = {
+		"/login",
+		"/signup",
+		"/forgotPassword",
+		"/updatePassword",
+		"/registrationComplete",
+		"/model",
+		"/explore",
+		"/explore/compare",
+		"/know",
+		"/admin",
+		"/notifications",
+		"/notifications/compare",
+		"/detail",
+		"/404",
+		"/upload",
+		"/integrate/**"
+	}, method = RequestMethod.GET)
 	public String index() {
 		return "/";
 	}

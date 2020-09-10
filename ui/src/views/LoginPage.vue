@@ -1,31 +1,38 @@
 <template>
-	<v-container fluid fill-height>
+	<v-container fluid fill-height class="login-page">
 		<v-layout align-center justify-center>
 			<v-flex xs12 sm8 md4>
-				<v-card dark class="elevation-12">
+				<v-card class="elevation-12">
+					<v-card-title>Login to your account</v-card-title>
 					<v-form v-on:submit.prevent="isLoggedIn ? doLogout() : doLogin()">
 						<v-card-text>
 							<v-alert type="error" v-show="hasLoginError" v-cloak>Username and/or Password Incorrect</v-alert>
 							<v-alert type="success" v-show="hasLoginSuccess" v-cloak>You successfully logged in</v-alert>
 							<v-alert type="error" v-show="hasLogoutError" v-cloak>Logout failed</v-alert>
 							<v-alert type="success" v-show="hasLogoutSuccess" v-cloak>You successfully logged out</v-alert>
-							<v-text-field autofocus prepend-icon="person" name="login" v-model="user" label="Login" type="text"></v-text-field>
-							<v-text-field prepend-icon="lock" name="password" label="Password" v-model="pass" type="password"></v-text-field>
+							<v-text-field autofocus outlined prepend-inner-icon="person" name="login" v-model="user" :label="isHosted ? 'Email Address' : 'User Name'" type="text"></v-text-field>
+							<v-text-field outlined prepend-inner-icon="lock" name="password" label="Password" v-model="pass" type="password"></v-text-field>
+							<div class="buttons">
+								<v-btn id="submit-btn" type="submit" color="primary">Login</v-btn>
+							</div>
 						</v-card-text>
-						<v-card-actions>
-							<v-spacer></v-spacer>
-							<v-btn type="submit" color="primary">Login</v-btn>
+						<v-card-actions v-if="isHosted">
+							<span>New Here?</span><router-link to="/signup">Sign Up</router-link>
 						</v-card-actions>
 					</v-form>
 				</v-card>
+				<div v-if="isHosted" class="other-actions">
+					<router-link to="/forgotPassword">Forgot Your Password?</router-link>
+				</div>
 			</v-flex>
 		</v-layout>
 	</v-container>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  name: 'LoginPage',
   beforeRouteUpdate(to, from, next) {
     this.user = '';
     this.pass = '';
@@ -53,7 +60,10 @@ export default {
     },
     showCancel() {
       return this.$route.params && this.$route.params.state;
-    }
+		},
+		...mapState({
+			isHosted: state => state.isHosted
+		}),
   },
   methods: {
     doLogin() {
@@ -99,3 +109,44 @@ export default {
   }
 };
 </script>
+
+<style lang="less" scoped>
+.login-page {
+	background: linear-gradient(0deg, black, #555);
+}
+h2 {
+	margin-bottom: 2em;
+}
+
+.v-card__actions {
+	justify-content: center;
+}
+
+.buttons {
+	text-align: center;
+}
+#submit-btn {
+	min-width: 300px;
+	min-height: 50px;
+}
+/deep/ .v-card__title {
+	justify-content: center;
+}
+/deep/ .v-card__actions {
+	span {
+		margin-right: 10px;
+	}
+	background: #eee;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+	min-height: 50px;
+}
+
+.other-actions {
+	margin-top: 1em;
+	text-align: center;
+	a {
+		color: white;
+	}
+}
+</style>

@@ -4,7 +4,7 @@
 describe('Login', () => {
 	beforeEach(() => {
 		cy.server()
-		cy.route('/api/auth/status', {"appName":null,"authenticated":false,"username":null,"disallowUpdates":false,"appUsersOnly":false,"needsInstall":false})
+		cy.route('/api/auth/status', {"appName":null,"authenticated":false,"username":null,"disallowUpdates":false,"appUsersOnly":false})
 		cy.route({
 			method: 'POST',
 			url: '/api/auth/login',
@@ -19,7 +19,7 @@ describe('Login', () => {
 	})
 
 	it('pass with valid credentials', () => {
-		cy.route('POST', '/api/auth/login', {needsInstall: false})
+		cy.route('POST', '/api/auth/login', {})
 		cy.visit('/')
 		cy.url().should('include', '/login')
 

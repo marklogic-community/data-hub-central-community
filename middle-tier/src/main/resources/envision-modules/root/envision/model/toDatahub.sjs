@@ -3,13 +3,12 @@
  * entities for each entity in the model.
  */
 
-var model;
-
-const modelWrapper = require('/envision/model.sjs');
-model = modelWrapper(model);
+const model = require('/envision/model.sjs').enhancedModel;
 
 let entities = {};
 
+console.log('model', model);
+if (model.nodes) {
 // first create the models
 Object.keys(model.nodes).forEach(key => {
 	let node = model.nodes[key];
@@ -84,7 +83,9 @@ Object.keys(model.nodes).forEach(key => {
 		entities[key].definitions[node.entityName] = definition;
 	}
 });
+}
 
+if (model.edges) {
 // now connect the entities according to the edge definitions in the model
 Object.keys(model.edges).forEach(key => {
 	let edge = model.edges[key];
@@ -124,5 +125,6 @@ Object.keys(model.edges).forEach(key => {
 	// 	}
 	// })
 });
+}
 
 entities;

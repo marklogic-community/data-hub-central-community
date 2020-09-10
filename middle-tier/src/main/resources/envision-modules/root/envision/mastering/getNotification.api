@@ -4,11 +4,6 @@
 			{
 				"datatype": "string",
 				"name": "uri"
-			},
-			{
-				"datatype": "jsonDocument",
-				"name": "model",
-				"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
 			}
 		],
 		"return": {

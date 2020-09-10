@@ -7,34 +7,25 @@ import com.marklogic.client.document.*;
 import com.marklogic.client.io.*;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.grove.boot.error.NotFoundException;
-import com.marklogic.hub.impl.HubConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URLDecoder;
 
 @RestController
 @RequestMapping("/api/crud")
 public class CrudController extends AbstractController {
 
-    @Autowired
-	CrudController(HubConfigImpl hubConfig) {
-		super(hubConfig);
-	}
-
     @RequestMapping(method = RequestMethod.GET)
     void getDoc(@RequestParam String uri, @RequestParam(defaultValue = "final") String database, HttpServletResponse response) throws IOException {
 		DatabaseClient client;
 		if (database.equals("staging")) {
-			client = getStagingClient();
+			client = getHubClient().getStagingClient();
 		}
 		else {
-			client = getFinalClient();
+			client = getHubClient().getFinalClient();
 		}
 		DocumentPage page = client.newBinaryDocumentManager().read(new ServerTransform("prettifyXML"), uri);
 
@@ -52,10 +43,10 @@ public class CrudController extends AbstractController {
     void getDocMetadata(@RequestParam String uri, @RequestParam(defaultValue = "final") String database, HttpServletResponse response) throws IOException {
         DatabaseClient client;
         if (database.equals("staging")) {
-        	client = getStagingClient();
+        	client = getHubClient().getStagingClient();
 		}
         else {
-        	client = getFinalClient();
+        	client = getHubClient().getFinalClient();
 		}
         GenericDocumentManager documentManager = client.newDocumentManager();
         documentManager.setNonDocumentFormat(Format.JSON);
@@ -93,8 +84,8 @@ public class CrudController extends AbstractController {
     }
 
     @RequestMapping(value = "/{type}/{uri}", method = RequestMethod.PUT)
-    void updateDoc(@PathVariable String type, @PathVariable String uri, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        DatabaseClient client = getFinalClient();
+    void updateDoc(@PathVariable String type, @PathVariable String uri, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        DatabaseClient client = getHubClient().getFinalClient();
 
         DocumentMetadataHandle meta = new DocumentMetadataHandle();
         InputStreamHandle content = new InputStreamHandle(request.getInputStream());
@@ -105,8 +96,8 @@ public class CrudController extends AbstractController {
     }
 
     @RequestMapping(value = "/{type}", method = RequestMethod.POST)
-    void createDoc(@PathVariable String type, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        DatabaseClient client = getFinalClient();
+    void createDoc(@PathVariable String type, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        DatabaseClient client = getHubClient().getFinalClient();
         GenericDocumentManager documentManager = client.newDocumentManager();
         DocumentUriTemplate uriTemplate;
         Format format = Format.getFromMimetype(request.getContentType());

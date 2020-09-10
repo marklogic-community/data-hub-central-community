@@ -1,0 +1,7 @@
+{
+    "functionName": "testLogin",
+    "params": [],
+    "return": {
+        "datatype": "boolean"
+    }
+}

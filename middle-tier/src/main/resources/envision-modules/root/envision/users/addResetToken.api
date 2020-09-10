@@ -1,0 +1,21 @@
+{
+    "functionName": "addResetToken",
+    "params": [
+        {
+            "datatype": "string",
+            "name": "email"
+        },
+				{
+            "datatype": "string",
+            "name": "token"
+        },
+				{
+            "datatype": "dateTime",
+            "name": "expiry",
+						"$javaClass":"java.util.Date"
+        }
+    ],
+    "return": {
+        "datatype": "boolean"
+    }
+}

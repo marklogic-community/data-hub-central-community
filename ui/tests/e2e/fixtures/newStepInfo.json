@@ -1,0 +1,20 @@
+{
+	"databases": {
+		"staging": "data-hub-STAGING",
+		"final": "data-hub-FINAL"
+	},
+	"collections": {
+		"staging": [
+			"DataSource1",
+			"DataSource2",
+			"DataSource3",
+			"DataSource4"
+		],
+		"final": [
+			"DataSource1",
+			"DataSource2",
+			"DataSource3",
+			"DataSource4"
+		]
+	}
+}
