@@ -22,7 +22,7 @@ public class EmailService {
 			email.setSmtpPort(emailConfig.smtpPort);
 			email.setAuthentication(emailConfig.smtpUsername, emailConfig.smtpPassword);
 			email.setSSLOnConnect(emailConfig.useSSL);
-			email.setFrom(emailConfig.fromEmail);
+			email.setFrom(emailConfig.fromEmail, emailConfig.fromName);
 			email.addTo(recipient);
 			email.setSubject(subject);
 			email.setTextMsg(body);

@@ -20,6 +20,9 @@ public class EmailConfig {
 	@Value("${from.email:}")
 	public String fromEmail;
 
+	@Value("${from.name:}")
+	public String fromName;
+
 	@Value("${smtp.useSSL:false}")
 	public boolean useSSL;
 }
