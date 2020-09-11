@@ -20,6 +20,7 @@
 								placeholder="Email"
 								type="email"
 								:error-messages="inputErrors('email', 'Email')"
+								@change="delayTouch($v.email)"
 								@blur="$v.email.$touch()"></v-text-field>
 							<v-text-field
 								outlined
@@ -40,7 +41,7 @@
 								:error-messages="inputErrors('password', 'Password')"
 								@blur="$v.password.$touch()"></v-text-field>
 							<div class="buttons">
-								<v-btn id="submit-btn" type="submit" color="primary">Register</v-btn>
+								<v-btn id="submit-btn" :disabled="submitting" type="submit" color="primary">Register</v-btn>
 							</div>
 						</v-card-text>
 						<v-card-actions>
@@ -55,7 +56,9 @@
 
 <script>
 import { required, email, minLength } from 'vuelidate/lib/validators'
-import authApi from '../api/AuthApi';
+import authApi from '../api/AuthApi'
+
+const touchMap = new WeakMap()
 
 export default {
   data() {
@@ -63,7 +66,8 @@ export default {
 			email: '',
 			name: '',
 			password: '',
-      signupComplete: false
+			signupComplete: false,
+			submitting: false
     }
   },
   methods: {
@@ -77,11 +81,16 @@ export default {
 			return errors
 		},
     register() {
+			if (this.submitting) {
+				return
+			}
+
 			this.$v.$touch()
 			if (this.$v.$invalid) {
 				return
 			}
 
+			this.submitting = true
       this.$store
         .dispatch('auth/signup', {
 					email: this.email,
@@ -90,8 +99,18 @@ export default {
         })
         .then(() => {
 					this.signupComplete = true
-        })
-    }
+				})
+				.finally(() => {
+					this.submitting = false
+				})
+		},
+		delayTouch($v) {
+			$v.$reset()
+			if (touchMap.has($v)) {
+				clearTimeout(touchMap.get($v))
+			}
+			touchMap.set($v, setTimeout($v.$touch, 1250))
+		}
 	},
 	validations: {
     email: {
@@ -101,7 +120,6 @@ export default {
         // standalone validator ideally should not assume a field is required
         if (value === '') return true
 
-				// simulate async call, fail for all logins with even length
 				const exists = await authApi.userExists(value)
 				return !exists
 			}

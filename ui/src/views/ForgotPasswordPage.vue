@@ -22,7 +22,7 @@
 								:error-messages="inputErrors('email', 'Email')"
 								@blur="$v.email.$touch()"></v-text-field>
 							<div class="buttons">
-								<v-btn id="submit-btn" type="submit" color="primary">Reset Password</v-btn>
+								<v-btn id="submit-btn" type="submit" :disabled="submitting" color="primary">Reset Password</v-btn>
 							</div>
 						</v-card-text>
 					</v-form>
@@ -39,13 +39,14 @@
 
 <script>
 import { required, email } from 'vuelidate/lib/validators'
-import authApi from '../api/AuthApi';
+import authApi from '../api/AuthApi'
 
 export default {
   data() {
     return {
 			email: '',
-      requested: false
+			requested: false,
+			submitting: false
     }
   },
   methods: {
@@ -57,15 +58,23 @@ export default {
 			return errors
 		},
     resetPassword() {
+			if (this.submitting) {
+				return
+			}
+
 			this.$v.$touch()
 			if (this.$v.$invalid) {
 				return
 			}
 
+			this.submitting = true
 			authApi.resetPassword(this.email)
         .then(() => {
           this.requested = true
-        })
+				})
+				.finally(() => {
+					this.submitting = false
+				})
     }
 	},
 	validations: {

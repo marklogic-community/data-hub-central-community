@@ -15,7 +15,7 @@ public class EmailService {
 		this.emailConfig = emailConfig;
 	}
 
-	public void sendEmail(String recipient, String subject, String body) {
+	public void sendEmail(String recipient, String subject, String textBody, String htmlBody) {
 		try {
 			HtmlEmail email = new HtmlEmail();
 			email.setHostName(emailConfig.smtpHost);
@@ -25,7 +25,8 @@ public class EmailService {
 			email.setFrom(emailConfig.fromEmail, emailConfig.fromName);
 			email.addTo(recipient);
 			email.setSubject(subject);
-			email.setTextMsg(body);
+			email.setTextMsg(textBody);
+			email.setHtmlMsg(htmlBody);
 			email.send();
 		}
 		catch(EmailException e) {

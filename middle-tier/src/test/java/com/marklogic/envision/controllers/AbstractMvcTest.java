@@ -69,7 +69,7 @@ public class AbstractMvcTest extends BaseTest {
 		user.email = ACCOUNT_NAME;
 		user.password = ACCOUNT_PASSWORD;
 		user.name = "Bob Smith";
-		user = userService.createUser(user, "");
+		user = userService.createUser(user);
 		userService.validateToken(user.token);
 		Mockito.reset(emailService);
 	}

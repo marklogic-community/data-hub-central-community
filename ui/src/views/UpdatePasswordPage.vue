@@ -22,7 +22,7 @@
 									:error-messages="inputErrors('password', 'New Password')"
 									@blur="$v.password.$touch()"></v-text-field>
 								<div class="buttons">
-									<v-btn id="submit-btn" type="submit" color="primary">Update Password</v-btn>
+									<v-btn id="submit-btn" type="submit" :disabled="submitting" color="primary">Update Password</v-btn>
 								</div>
 							</template>
 						</v-card-text>
@@ -47,7 +47,8 @@ export default {
     return {
 			password: '',
 			error: null,
-			passwordUpdated: false
+			passwordUpdated: false,
+			submitting: false
     }
 	},
 	computed: {
@@ -71,15 +72,23 @@ export default {
 			return errors
 		},
     updatePassword() {
+			if (this.submitting) {
+				return
+			}
+
 			this.$v.$touch()
 			if (this.$v.$invalid) {
 				return
 			}
 
+			this.submitting = true
 			authApi.setPassword(this.token, this.password)
         .then(() => {
 					this.passwordUpdated = true
-        })
+				})
+				.finally(() => {
+					this.submitting = false
+				})
     }
 	},
 	validations: {

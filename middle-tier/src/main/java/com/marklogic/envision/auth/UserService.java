@@ -68,7 +68,7 @@ public class UserService {
 		return null;
 	}
 
-	public UserPojo createUser(UserPojo user, String appUrl) throws IOException {
+	public UserPojo createUser(UserPojo user) throws IOException {
 		Users.on(envisionConfig.newAdminFinalClient()).createUser(objectMapper.valueToTree(user));
 		user.token = UUID.randomUUID().toString();
 
@@ -82,7 +82,7 @@ public class UserService {
 
 		modelService.saveModelFile(user.email, objectMapper.readTree("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}"));
 
-		eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, appUrl));
+		eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 		return user;
 	}
 
@@ -95,7 +95,7 @@ public class UserService {
 		mgr.write(userUri(user.email), meta, handle);
 	}
 
-	public void addResetTokenToUser(String email, String appUrl) {
+	public void addResetTokenToUser(String email) {
 		try {
 			UserPojo user = getUser(envisionConfig.getAdminHubConfig().newFinalClient(), email);
 			user.resetToken = UUID.randomUUID().toString();
@@ -107,7 +107,7 @@ public class UserService {
 			saveUser(user);
 			logger.info("token: " + user.resetToken);
 
-			eventPublisher.publishEvent(new OnResetPasswordEvent(user, appUrl));
+			eventPublisher.publishEvent(new OnResetPasswordEvent(user));
 		}
 		catch(ResourceNotFoundException e) {}
 	}

@@ -24,8 +24,8 @@ public class UserController extends AbstractController {
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> signup(@RequestBody UserPojo user, HttpServletRequest request) throws IOException {
-		userService.createUser(user, getBaseUrl(request));
+	public ResponseEntity<?> signup(@RequestBody UserPojo user) throws IOException {
+		userService.createUser(user);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -37,8 +37,8 @@ public class UserController extends AbstractController {
 
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<?> resetPassword(HttpServletRequest request, @RequestParam String email) {
-		userService.addResetTokenToUser(email, getBaseUrl(request));
+	public ResponseEntity<?> resetPassword(@RequestParam String email) {
+		userService.addResetTokenToUser(email);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

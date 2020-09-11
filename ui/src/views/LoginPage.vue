@@ -13,7 +13,7 @@
 							<v-text-field autofocus outlined prepend-inner-icon="person" name="login" v-model="user" :label="isHosted ? 'Email Address' : 'User Name'" type="text"></v-text-field>
 							<v-text-field outlined prepend-inner-icon="lock" name="password" label="Password" v-model="pass" type="password"></v-text-field>
 							<div class="buttons">
-								<v-btn id="submit-btn" type="submit" color="primary">Login</v-btn>
+								<v-btn id="submit-btn" type="submit" :disabled="pending" color="primary">Login</v-btn>
 							</div>
 						</v-card-text>
 						<v-card-actions v-if="isHosted">

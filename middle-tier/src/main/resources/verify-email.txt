@@ -1,0 +1,7 @@
+You've successfully joined the MarkLogic Envision self-service demo.
+
+There's lots to explore, but before you get going, please prove you are a real and amazing human by verifying your email address.
+
+Click this link:
+
+%%VERIFY_URL%%
