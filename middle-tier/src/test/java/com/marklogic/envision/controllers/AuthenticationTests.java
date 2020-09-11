@@ -82,7 +82,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 
 		postJson(SIGNUP_URL, user)
 			.andExpect(status().isOk());
-		verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
+		verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString(), anyString());
 		Mockito.reset(emailService);
 
 		UserPojo finalUser = userService.getUser(getFinalClient(), ACCOUNT_NAME);
@@ -151,7 +151,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertNotNull(finalUser.resetToken);
 		assertNotNull(finalUser.resetTokenExpiry);
 
-		verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString());
+		verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString(), anyString());
 
 		getJson(VALIDATE_RESET_TOKEN_URL + "?token=bogus")
 			.andDo(

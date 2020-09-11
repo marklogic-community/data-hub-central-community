@@ -1,6 +1,7 @@
 package com.marklogic.envision.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,9 @@ public class RegistrationCompleteController {
 
 	private final UserService userService;
 
+	@Value("${app.url}")
+	public String appUrl;
+
 	@Autowired
 	RegistrationCompleteController(UserService userService) {
 		this.userService = userService;
@@ -24,7 +28,7 @@ public class RegistrationCompleteController {
 
 	@GetMapping()
 	public ModelAndView confirmRegistration(HttpServletRequest request, @RequestParam("token") String token) throws UnsupportedEncodingException {
-		String redirect = "redirect:http://" + request.getServerName() + ":" + request.getServerPort();
+		String redirect = "redirect:" + appUrl;
 		ValidateTokenPojo vtp = userService.validateToken(token);
 		if (vtp.valid) {
 			redirect += "/registrationComplete?accountVerified=true";
