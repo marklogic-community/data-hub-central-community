@@ -3,6 +3,9 @@ const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
+
+const rdt = require('/MarkLogic/redaction');
+
 const extensions = xdmp.mimetypes()
 	.filter(m => m.format === 'binary' && !!m.extensions)
 	.map(m => m.extensions.split(' '))
@@ -147,12 +150,61 @@ function getEntities(model, uris, opts) {
 	uris = Object.keys(uriMap)
 	const edgeCounts = getEdgeCounts(uris)
 
+	let thisUserId = xdmp.getCurrentUserid()
+	let seqUserRoles = xdmp.useridRoles(thisUserId)
+	let arrUserRoleNames = seqUserRoles.toArray().map(roleId => {
+		return xdmp.roleName(roleId)
+	})
+
+	let redactionRulesDoc = cts.doc ("/redactionRules2Roles.json");
+	let arrRulesToApply = []
+
+	if(redactionRulesDoc) {
+		let redactionRules = redactionRulesDoc.toObject().rules
+		redactionRules.forEach((rule) => {
+			if( !rule.rolesThatDoNotUseRedaction.some(r=> arrUserRoleNames.includes(r)) ) {
+				arrRulesToApply.push(rule.redactionRuleCollection)
+			}
+		});
+	}
+
 	// iterate over the uris and create "nodes" for the graph ui
 	// do this by opening the docs at each uri
 	// then insert some additional metadata about each "node"
 	uris.forEach(uri => {
-		const doc = cts.doc(uri)
+		let doc
+		if (!redactionRulesDoc) {
+			// try to use piiRules - this will be applied for all users
+			try {
+				xdmp.log("/redactionRules2Roles.json doesn't exist, applying piiRules only")
+				doc = fn.head( rdt.redact(cts.doc(uri), ["piiRules"] ) ).root
+			} catch (e) {
+				xdmp.log("No pii rules to apply?")
+				doc = cts.doc(uri)
+			}
+		} else {
+			try {
+				xdmp.log("trying to load doc")
+				doc = fn.head( rdt.redact(cts.doc(uri), arrRulesToApply ) ).root
+			} catch(e) {
+				xdmp.log("Error applying redaction rules")
+				xdmp.log("/redactionRules2Roles.json specifies rules in collections " + arrRulesToApply.toString() )
+				xdmp.log("Do rules in these collections exist in the schema db? Please read the documentation." )
 
+				if (arrRulesToApply.includes("piiRules")) {
+					try {
+						xdmp.log("Applying piiRules only")
+						doc = fn.head( rdt.redact(cts.doc(uri), ["piiRules"] ) ).root
+					} catch (e) {
+						xdmp.log("No pii rules to apply?")
+						doc = cts.doc(uri)
+					}
+				} else {
+					xdmp.log("No pii to apply, so just load doc")
+					doc = cts.doc(uri)
+				}
+			}
+		}
 		// the actual entity
 		let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
 
