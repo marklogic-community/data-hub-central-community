@@ -1,0 +1,25 @@
+{
+	"info": {
+		"title": "Planet",
+		"version": "0.0.1",
+		"baseUri": "http://marklogic.com/envision/",
+		"description": null
+	},
+	"definitions": {
+		"definitions": {
+			"Planet": {
+				"name": "Planet",
+				"description": null,
+				"primaryKey": null,
+				"namespace": null,
+				"namespacePrefix": null,
+				"required": [],
+				"pii": [],
+				"elementRangeIndex": [],
+				"rangeIndex": [],
+				"wordLexicon": [],
+				"properties": []
+			}
+		}
+	}
+}

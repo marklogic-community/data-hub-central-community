@@ -1,0 +1,27 @@
+{
+	"name": "My Wacky Model",
+	"edges": {},
+	"nodes": {
+		"employee": {
+			"id": "employee",
+			"label": "Employee",
+			"entityName": "Employee",
+			"type": "entity",
+			"properties": []
+		},
+		"department": {
+			"id": "department",
+			"label": "Department",
+			"entityName": "Department",
+			"type": "entity",
+			"properties": []
+		},
+		"skill": {
+			"id": "skill",
+			"label": "Skill",
+			"entityName": "Skill",
+			"type": "concept",
+			"properties": []
+		}
+	}
+}

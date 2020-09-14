@@ -1,13 +1,11 @@
 package com.marklogic.envision.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.envision.BaseTest;
 import com.marklogic.envision.auth.UserPojo;
 import com.marklogic.envision.auth.UserService;
 import com.marklogic.envision.email.EmailService;
 import com.marklogic.grove.boot.auth.LoginInfo;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -16,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -24,14 +23,11 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 public class AbstractMvcTest extends BaseTest {
-	public static final String ACCOUNT_NAME = "bob.smith@marklogic.com";
-	public static final String ACCOUNT_PASSWORD = "password";
 
 	@MockBean
 	EmailService emailService;
@@ -42,10 +38,6 @@ public class AbstractMvcTest extends BaseTest {
 	@Autowired
 	protected UserService userService;
 
-	@BeforeAll
-	static void instal() {
-
-	}
 	@BeforeEach
 	void setup() throws IOException {
 		MockitoAnnotations.initMocks(this);
@@ -78,13 +70,15 @@ public class AbstractMvcTest extends BaseTest {
 		authToken = null;
 	}
 
+	protected ResultActions login() {
+		return loginAsUser(ACCOUNT_NAME, ACCOUNT_PASSWORD);
+	}
+
 	protected ResultActions loginAsUser(String username, String password) {
 		try {
 			return postJson("/api/auth/login", buildLoginPayload(username, password))
 				.andExpect(status().isOk())
-				.andDo(result -> {
-					authToken = result.getResponse().getHeader("Authorization");
-				});
+				.andDo(result -> authToken = result.getResponse().getHeader("Authorization"));
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -106,6 +100,30 @@ public class AbstractMvcTest extends BaseTest {
 		return mockMvc.perform(buildJsonPost(url, json));
 	}
 
+	protected MockHttpServletRequestBuilder buildUpload(String url, MockMultipartFile file) {
+		MockHttpServletRequestBuilder builder = multipart(url).file(file);
+		if (authToken != null) {
+			builder.header("Authorization", authToken);
+		}
+		return builder;
+	}
+
+	protected ResultActions putJson(String url, Object json) throws Exception {
+		return putJson(url, objectMapper.valueToTree(json).toString());
+	}
+
+	protected MockHttpServletRequestBuilder buildJsonPut(String url, String json) {
+		MockHttpServletRequestBuilder builder = put(url).contentType(MediaType.APPLICATION_JSON).content(json);
+		if (authToken != null) {
+			builder.header("Authorization", authToken);
+		}
+		return builder;
+	}
+
+	protected ResultActions putJson(String url, String json) throws Exception {
+		return mockMvc.perform(buildJsonPut(url, json));
+	}
+
 	protected ResultActions getJson(String url) throws Exception {
 		return getJson(url, new LinkedMultiValueMap<>());
 	}
@@ -116,13 +134,5 @@ public class AbstractMvcTest extends BaseTest {
 			builder.header("Authorization", authToken);
 		}
 		return mockMvc.perform(builder);
-	}
-
-	protected ObjectNode readJsonObject(String json) {
-		try {
-			return (ObjectNode) objectMapper.readTree(json);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 }

@@ -8,16 +8,17 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthenticationTests extends AbstractMvcTest {
@@ -41,7 +42,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 
 		// remove models
 		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		for (File file: modelDir.listFiles()) {
+		for (File file: Objects.requireNonNull(modelDir.listFiles())) {
 			file.delete();
 		}
 		clearStagingFinalAndJobDatabases();
@@ -64,6 +65,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		loginAsUser("flow-developer", ACCOUNT_PASSWORD).andDo(
 			result -> {
 				String authToken = result.getResponse().getHeader("Authorization");
+				assertNotNull(authToken);
 				assertTrue(authToken.startsWith("Bearer "));
 			})
 			.andExpect(status().isOk());
@@ -93,6 +95,10 @@ public class AuthenticationTests extends AbstractMvcTest {
 			.andExpect(status().isFound());
 
 		getJson(REGISTRATION_COMPLETE_URL + "?token=" + finalUser.token)
+			.andDo(
+				result -> {
+					assertEquals("http://localhost:-1/registrationComplete?accountVerified=true", result.getResponse().getHeader("Location"));
+				})
 			.andExpect(status().isFound());
 
 		finalUser = userService.getUser(getFinalClient(), ACCOUNT_NAME);
@@ -102,24 +108,66 @@ public class AuthenticationTests extends AbstractMvcTest {
 
 		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
 		File modelFile = new File(modelDir, "MyModel.json");
-		JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", FileUtils.readFileToString(modelFile), true);
+		jsonAssertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", FileUtils.readFileToString(modelFile));
+	}
+
+	@Test
+	void testRegisterAccountExpiredToken() throws Exception {
+		UserPojo user = new UserPojo();
+		user.email = ACCOUNT_NAME;
+		user.password = ACCOUNT_PASSWORD;
+		user.name = "Bob Smith";
+		assertNull(user.token);
+		assertNull(user.validated);
+
+		postJson(SIGNUP_URL, user)
+			.andExpect(status().isOk());
+		verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString(), anyString());
+		Mockito.reset(emailService);
+
+		UserPojo finalUser = userService.getUser(getFinalClient(), ACCOUNT_NAME);
+		assertFalse(finalUser.token.isEmpty());
+		assertFalse(finalUser.validated);
+
+		getJson(REGISTRATION_COMPLETE_URL + "?token=bogus")
+			.andExpect(status().isFound());
+
+
+		// expire the token
+		final Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.DATE, -2);
+		finalUser.tokenExpiry = c.getTime();
+		userService.saveUser(finalUser);
+
+		getJson(REGISTRATION_COMPLETE_URL + "?token=" + finalUser.token)
+			.andDo(
+				result -> {
+					assertEquals("http://localhost:-1/registrationComplete?error=Expired+Token", result.getResponse().getHeader("Location"));
+				})
+			.andExpect(status().isFound());
+
+		finalUser = userService.getUser(getFinalClient(), ACCOUNT_NAME);
+		assertFalse(finalUser.token.isEmpty());
+		assertFalse(finalUser.validated);
+		assertNull(authToken);
+
+		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
+		File modelFile = new File(modelDir, "MyModel.json");
+		assertTrue(modelFile.exists());
 	}
 
 	@Test
 	void userExists() throws Exception {
 		getJson(USER_EXISTS_URL + "?email=dont.exist@marklogic.com")
 			.andDo(
-				result -> {
-					assertFalse(objectMapper.readTree(result.getResponse().getContentAsString()).asBoolean());
-				})
+				result -> assertFalse(objectMapper.readTree(result.getResponse().getContentAsString()).asBoolean()))
 			.andExpect(status().isOk());
 
 		registerAccount();
 		getJson(USER_EXISTS_URL + "?email=bob.smith@marklogic.com")
 			.andDo(
-				result -> {
-					assertTrue(objectMapper.readTree(result.getResponse().getContentAsString()).asBoolean());
-				})
+				result -> assertTrue(objectMapper.readTree(result.getResponse().getContentAsString()).asBoolean()))
 			.andExpect(status().isOk());
 		assertNull(authToken);
 	}
@@ -135,7 +183,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertNull(beforeUser.resetToken);
 		assertNull(beforeUser.resetTokenExpiry);
 
-		loginAsUser(ACCOUNT_NAME, ACCOUNT_PASSWORD);
+		login();
 		assertNotNull(authToken);
 
 		logout();
@@ -156,7 +204,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		getJson(VALIDATE_RESET_TOKEN_URL + "?token=bogus")
 			.andDo(
 				result -> {
-					JsonNode node = objectMapper.readTree(result.getResponse().getContentAsString());
+					JsonNode node = readJsonObject(result.getResponse().getContentAsString());
 					assertTrue(node.get("email").isNull());
 					assertFalse(node.get("valid").asBoolean());
 					assertEquals("Invalid Token", node.get("error").asText());
@@ -167,7 +215,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		getJson(VALIDATE_RESET_TOKEN_URL + "?token=" + finalUser.resetToken)
 			.andDo(
 				result -> {
-					JsonNode node = objectMapper.readTree(result.getResponse().getContentAsString());
+					JsonNode node = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(ACCOUNT_NAME, node.get("email").asText());
 					assertTrue(node.get("valid").asBoolean());
 					assertTrue(node.get("error").isNull());
@@ -202,13 +250,61 @@ public class AuthenticationTests extends AbstractMvcTest {
 	}
 
 	@Test
+	void resetPasswordExpiredToken() throws Exception {
+		registerAccount();
+
+		UserPojo beforeUser = userService.getUser(getFinalClient(), ACCOUNT_NAME);
+		assertNull(beforeUser.token);
+		assertNull(beforeUser.tokenExpiry);
+		assertTrue(beforeUser.validated);
+		assertNull(beforeUser.resetToken);
+		assertNull(beforeUser.resetTokenExpiry);
+
+		login();
+		assertNotNull(authToken);
+
+		logout();
+
+		getJson(RESET_PASSWORD_URL + "?email=bob.smith@marklogic.com")
+			.andExpect(status().isOk());
+		assertNull(authToken);
+
+		UserPojo finalUser = userService.getUser(getFinalClient(), ACCOUNT_NAME);
+		assertNull(finalUser.token);
+		assertNull(finalUser.tokenExpiry);
+		assertTrue(finalUser.validated);
+		assertNotNull(finalUser.resetToken);
+		assertNotNull(finalUser.resetTokenExpiry);
+
+		verify(emailService, times(1)).sendEmail(anyString(), anyString(), anyString(), anyString());
+
+		// expire the token
+		final Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.DATE, -2);
+		finalUser.resetTokenExpiry = c.getTime();
+		userService.saveUser(finalUser);
+
+		getJson(VALIDATE_RESET_TOKEN_URL + "?token=" + finalUser.resetToken)
+			.andDo(
+				result -> {
+					JsonNode node = readJsonObject(result.getResponse().getContentAsString());
+					assertTrue(node.get("email").isNull());
+					assertFalse(node.get("valid").asBoolean());
+					assertEquals("Token Expired", node.get("error").asText());
+				})
+			.andExpect(status().isOk());
+		assertNull(authToken);
+	}
+
+	@Test
 	void getProfile() throws Exception {
 		registerAccount();
-		loginAsUser(ACCOUNT_NAME, ACCOUNT_PASSWORD);
+		login();
 		getJson(GET_PROFILE_URL)
 			.andDo(
 				result -> {
-					JsonNode node = objectMapper.readTree(result.getResponse().getContentAsString());
+					JsonNode node = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(ACCOUNT_NAME, node.get("email").asText());
 					assertEquals("Bob Smith", node.get("name").asText());
 				})

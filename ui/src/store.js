@@ -263,8 +263,8 @@ const explore = {
 		setDocs(state, response) {
 			if (response) {
 				state.total = response.total
-				state.page = response.page || Math.ceil (response.start / response.['page-length']) // different server response between staging/final
-				state.pageLength = response.pageLength || response.['page-length']
+				state.page = response.page || Math.ceil (response.start / response['page-length']) // different server response between staging/final
+				state.pageLength = response.pageLength || response['page-length']
 				state.colors = {};
 				state.edges = response.edges
 				state.nodes = response.nodes

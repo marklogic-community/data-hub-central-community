@@ -1,0 +1,17 @@
+{
+	"info" : {
+		"title" : "Orphan",
+		"version" : "0.0.1",
+		"baseUri" : "http://marklogic.com/envision/"
+	},
+	"definitions" : {
+		"Orphan" : {
+			"required" : [ ],
+			"pii" : [ ],
+			"elementRangeIndex" : [ ],
+			"rangeIndex" : [ ],
+			"wordLexicon" : [ ],
+			"properties" : { }
+		}
+	}
+}

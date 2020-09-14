@@ -10,12 +10,10 @@ import com.marklogic.envision.model.ModelService;
 import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.grove.boot.search.SearchService;
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.Customization;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +52,10 @@ public class Search extends BaseTest {
 
 		installEnvisionModules();
 
-		sessionManager.setHubClient("user", getHubClient());
+		sessionManager.setHubClient("user", getAdminHubClient());
 
 		modelService.setModelsDir(getHubConfig().getHubProjectDir().resolve("conceptConnectorModels").toFile());
-		modelService.saveModel(getHubClient(), getResourceStream("models/model.json"));
+		modelService.saveModel(getAdminHubClient(), getResourceStream("models/model.json"));
 		installFinalDoc("entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee");
 		installFinalDoc("entities/employee1.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "sm-Employee-archived", "Employee");
 		installFinalDoc("entities/employee2.json", "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json", "MasterEmployees", "MapEmployees", "sm-Employee-archived", "Employee");
@@ -85,94 +83,94 @@ public class Search extends BaseTest {
 	//{"and":[{"type":"queryText","value":""},{"type":"selection","constraint":"Collections","constraintType":"collection","mode":"and","value":[{"not":"MasterEmployees"}]}]}
 	@Test
 	@WithMockUser
-	public void noresults() throws IOException, JSONException {
+	public void noresults() throws Exception {
 		DatabaseClient client = getFinalClient();
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities("fdljfkladjljad", 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/noresults.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/noresults.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void emptySearch_SortDefault_all() throws IOException, JSONException {
+	public void emptySearch_SortDefault_all() throws Exception {
 		DatabaseClient client = getFinalClient();
 		int pageLength = 30;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/emptySearch_SortDefault_all.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void emptySearch_SortDefault_noCollections() throws IOException, JSONException {
+	public void emptySearch_SortDefault_noCollections() throws Exception {
 		DatabaseClient client = getFinalClient();
 		int pageLength = 30;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_all.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/emptySearch_SortDefault_all.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void emptySearch_SortDefault_onlyEmployee() throws IOException, JSONException {
+	public void emptySearch_SortDefault_onlyEmployee() throws Exception {
 		DatabaseClient client = getFinalClient();
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Employee\"]}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void emptySearch_SortDefault_onlyDepartment() throws IOException, JSONException {
+	public void emptySearch_SortDefault_onlyDepartment() throws Exception {
 		DatabaseClient client = getFinalClient();
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Department\"]}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void emptySearch_SortDefault_some() throws IOException, JSONException {
+	public void emptySearch_SortDefault_some() throws Exception {
 		DatabaseClient client = getFinalClient();
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/emptySearch_SortDefault_some.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/emptySearch_SortDefault_some.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void pagination() throws IOException, JSONException {
+	public void pagination() throws Exception {
 		for (int page = 1; page <= 8; page++) {
 			DatabaseClient client = getFinalClient();
 			int pageLength = 1;
 			String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 			JsonNode found = EntitySearcher.on(client).findEntities(null, page, pageLength, "default", filterString);
-			JSONAssert.assertEquals(getResource("output/pagination" + page + ".json"), om.writeValueAsString(found), resultCompare);
+			jsonAssertEquals(getResource("output/pagination" + page + ".json"), found, resultCompare);
 		}
 	}
 
 	@Test
 	@WithMockUser
-	public void search_hrskill3() throws IOException, JSONException {
+	public void search_hrskill3() throws Exception {
 		DatabaseClient client = getFinalClient();
 		String qtext = "hrSkill3";
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"" + qtext + "\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(qtext, 1, pageLength, "default", filterString);
-		JSONAssert.assertEquals(getResource("output/hrskill3.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/hrskill3.json"), found, resultCompare);
 	}
 
 	@Test
 	@WithMockUser
-	public void getRelated() throws IOException, JSONException {
+	public void getRelated() throws Exception {
 		JsonNode found = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "belongsTo", 1, 10);
-		JSONAssert.assertEquals(getResource("output/related-belongs-to.json"), om.writeValueAsString(found), resultCompare);
+		jsonAssertEquals(getResource("output/related-belongs-to.json"), found, resultCompare);
 
 		JsonNode found2 = EntitySearcher.on(getFinalClient()).relatedEntities("/CoastalEmployees/55003.json", "has",1, 10);
-		JSONAssert.assertEquals(getResource("output/related-has.json"), om.writeValueAsString(found2), resultCompare);
+		jsonAssertEquals(getResource("output/related-has.json"), found2, resultCompare);
 	}
 }

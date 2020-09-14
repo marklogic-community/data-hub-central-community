@@ -1,6 +1,6 @@
-# Contributing to Envison
+# Contributing to Envision
 
-Envison welcomes new contributors. This document will guide you
+Envision welcomes new contributors. This document will guide you
 through the process.
 
  - [Question or Problem?](#question)
@@ -10,7 +10,7 @@ through the process.
  
 ## <a name="question"></a> Got a Question or Problem?
 
-If you need help working with Envison, please ask it on [Stack
+If you need help working with Envision, please ask it on [Stack
 Overflow with the "marklogic-envision" tag][stackoverflow]. 
 
 ## <a name="issue"></a> Found an Issue?
@@ -35,7 +35,7 @@ being dealt with quickly:
 
 * **Overview of the Issue** - if an error is being thrown a stack trace helps
 * **Motivation for or Use Case** - explain why this is a bug for you
-* **Envison Version** - is it a named version or from our dev branch
+* **Envision Version** - is it a named version or from our dev branch
 * **MarkLogic Version** - the version of MarkLogic you're working with
 * **Operating System** - Mac, windows? details help
 * **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point to what might be
@@ -43,7 +43,7 @@ being dealt with quickly:
 
 ### Submitting a Pull Request
 
-#### Fork Envison
+#### Fork Envision
 
 Fork the project [on GitHub](https://github.com/marklogic-community/envision/fork) 
 and clone
@@ -91,7 +91,7 @@ git config --global user.email "j.random.user@example.com"
 Writing good commit logs is important. A commit log should describe what
 changed and why. Follow these guidelines when writing one:
 
-1. The first line should be 50 characters or less and contain a short
+1. The first line should be 50 characters or fewer and contain a short
    description of the change including the Issue number prefixed by a hash (#).
 2. Keep the second line blank.
 3. Wrap all other lines at 72 columns.
@@ -128,7 +128,7 @@ git rebase upstream/develop
 ```sh
 gradle test
 ```
-When finished, verify that the self-test works. Make sure that all tests pass. 
+When finished, verify that the self-test works. Make sure all tests pass. 
 Please, do not submit patches that fail.
 
 #### Push your changes
@@ -185,6 +185,6 @@ from the main (upstream) repository:
 
 [issue tracker]: https://github.com/marklogic-community/envision/issues
 [.editorconfig]: http://editorconfig.org/
-[stackoverflow]: http://stackoverflow.com/questions/ask?tags=marklogic-envison
+[stackoverflow]: http://stackoverflow.com/questions/ask?tags=marklogic-envision
 [test ui]: http://localhost:8042/test
 [cla]: http://developer.marklogic.com/products/cla

@@ -1,6 +1,7 @@
 package com.marklogic.envision.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.grove.boot.error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,18 @@ public class ModelController extends AbstractController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<JsonNode> getAllModels() throws IOException {
-    	return modelService.getAllModels(getHubClient());
+		HubClient hubClient = getHubClient();
+    	return modelService.getAllModels(hubClient, hubClient.getUsername());
     }
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void switchModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		modelService.deleteModel(getHubClient().getUsername(), request.getInputStream());
-		response.setStatus(HttpStatus.NO_CONTENT.value());
+		if (modelService.deleteModel(getHubClient(), getHubClient().getUsername(), request.getInputStream())) {
+			response.setStatus(HttpStatus.NO_CONTENT.value());
+		}
+		else {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
 	}
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
@@ -61,6 +67,7 @@ public class ModelController extends AbstractController {
 	public JsonNode getActiveIndexes() {
 		return modelService.getActiveIndexes(getHubClient().getFinalClient());
     }
+
     @RequestMapping(value = "/rename", method = RequestMethod.POST)
 	public void renameModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		modelService.renameModel(getHubClient().getUsername(), getHubClient(), request.getInputStream());

@@ -32,7 +32,7 @@ public class FlowsController extends AbstractController {
 
 	@RequestMapping(value = "/{flowName}", method = RequestMethod.GET)
 	JsonNode getFlow(@PathVariable String flowName) {
-		return flowsService.getFlow(getHubClient(), flowName);
+		return flowsService.getJsonFlow(getHubClient(), flowName);
 	}
 
 	@RequestMapping(value = "/{flowName}", method = RequestMethod.PUT)
@@ -41,7 +41,6 @@ public class FlowsController extends AbstractController {
 		flowsService.createFlow(getHubClient(), flowJson);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
 
 	@RequestMapping(value = "/mappings/{mapName}", method = RequestMethod.GET)
 	@ResponseBody

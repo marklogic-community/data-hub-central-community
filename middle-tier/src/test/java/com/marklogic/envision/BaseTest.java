@@ -1,16 +1,23 @@
 package com.marklogic.envision;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.appdeployer.AppConfig;
 import com.marklogic.appdeployer.command.Command;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.eval.EvalResult;
 import com.marklogic.client.eval.EvalResultIterator;
 import com.marklogic.client.eval.ServerEvaluationCall;
 import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.FileHandle;
+import com.marklogic.client.io.JacksonHandle;
+import com.marklogic.client.query.QueryManager;
+import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.installer.InstallService;
@@ -27,13 +34,15 @@ import com.marklogic.mgmt.api.security.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.comparator.JSONComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -51,7 +60,10 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = Application.class)
+@ActiveProfiles("test")
 public class BaseTest {
+	public static final String ACCOUNT_NAME = "bob.smith@marklogic.com";
+	public static final String ACCOUNT_PASSWORD = "password";
 	public static final String PROJECT_PATH = "ye-olde-project";
 
 	public static Path projectPath;
@@ -87,8 +99,7 @@ public class BaseTest {
 
 	private boolean configFinished = false;
 
-	HubConfigImpl getHubConfig() {
-//		HubConfigImpl hubConfig = new HubConfigImpl();
+	protected HubConfigImpl getHubConfig() {
 		if (!configFinished) {
 			String projectDir = dhfDir.getAbsolutePath();
 			hubProject.createProject(projectDir);
@@ -110,11 +121,12 @@ public class BaseTest {
 		return hubConfig;
 	}
 
-	protected ObjectMapper objectMapper = new ObjectMapper();
+	protected final ObjectMapper objectMapper = new ObjectMapper();
 
-	protected HubClient getHubClient() {
+	protected HubClient getAdminHubClient() {
 		return getHubClient(username, password);
 	}
+	protected HubClient getNonAdminHubClient() { return getHubClient(ACCOUNT_NAME, ACCOUNT_PASSWORD); }
 
 	protected HubClient getHubClient(String username, String password) {
 		return envisionConfig.newHubClient(username, password);
@@ -179,10 +191,14 @@ public class BaseTest {
 	}
 
 	protected void installFinalDoc(String resource, String uri, String... collections) {
+		installDoc(getFinalClient(), resource, uri, collections);
+	}
+
+	protected void installDoc(DatabaseClient client, String resource, String uri, String... collections) {
 		FileHandle handle = new FileHandle(getResourceFile(resource));
 		DocumentMetadataHandle meta = new DocumentMetadataHandle();
 		meta.getCollections().addAll(collections);
-		getFinalClient().newDocumentManager().write(uri, meta, handle);
+		client.newDocumentManager().write(uri, meta, handle);
 	}
 
 	protected void clearStagingFinalAndJobDatabases() {
@@ -309,11 +325,12 @@ public class BaseTest {
 		installService.install(true);
 	}
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected void init() throws IOException {
 		Path projectPath = createProjectDir().toAbsolutePath();
 		dhfDir = projectPath.toFile();
+		envisionConfig.dhfDir = dhfDir;
 		hubConfig.createProject(projectPath.toString());
 		hubConfig.refreshProject();
 		if(!hubProject.isInitialized()) {
@@ -370,6 +387,89 @@ public class BaseTest {
 
 		if (getHubConfig().getIsProvisionedEnvironment()) {
 			installHubModules();
+		}
+	}
+
+	protected ArrayNode getEntities() {
+		QueryManager mgr = getAdminHubClient().getFinalClient().newQueryManager();
+		StructuredQueryBuilder sqb = mgr.newStructuredQueryBuilder();
+		JsonNode response = mgr.search(sqb.collection("http://marklogic.com/entity-services/models"), new JacksonHandle()).get();
+		return (ArrayNode)response.get("results");
+	}
+
+	protected int getEntityCount() {
+		return getEntities().size();
+	}
+
+	protected int getDocCount(DatabaseClient client, String collection) {
+		int count = 0;
+		String collectionName = "";
+		if (collection != null) {
+			collectionName = "'" + collection + "'";
+		}
+		EvalResultIterator resultItr = client.newServerEval().xquery("xdmp:estimate(fn:collection(" + collectionName + "))").eval();
+		if (resultItr == null || !resultItr.hasNext()) {
+			return count;
+		}
+		EvalResult res = resultItr.next();
+		count = Math.toIntExact((long) res.getNumber());
+		return count;
+	}
+
+	protected void jsonAssertEquals(JsonNode expected, JsonNode actual) throws Exception {
+		jsonAssertEquals(objectMapper.writeValueAsString(expected), objectMapper.writeValueAsString(actual));
+	}
+
+	protected void jsonAssertEquals(JsonNode expected, String actual) throws Exception {
+		jsonAssertEquals(objectMapper.writeValueAsString(expected), actual);
+	}
+
+	protected void jsonAssertEquals(String expected, JsonNode actual) throws Exception {
+		jsonAssertEquals(expected, objectMapper.writeValueAsString(actual));
+	}
+
+
+	protected void jsonAssertEquals(String expected, JsonNode actual, JSONComparator comparator) throws Exception {
+		jsonAssertEquals(expected, objectMapper.writeValueAsString(actual), comparator);
+	}
+
+	protected void jsonAssertEquals(String expected, String actual, JSONComparator comparator) throws Exception {
+		JSONAssert.assertEquals(expected, actual, comparator);
+	}
+
+	protected void jsonAssertEquals(String expected, String actual) throws Exception {
+		JSONAssert.assertEquals(expected, actual, true);
+	}
+
+	protected ObjectNode readJsonObject(String json) {
+		try {
+			return (ObjectNode) objectMapper.readTree(json);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ObjectNode readJsonObject(File json) {
+		try {
+			return (ObjectNode) objectMapper.readTree(json);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ObjectNode readJsonObject(InputStream json) {
+		try {
+			return (ObjectNode) objectMapper.readTree(json);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ArrayNode readJsonArray(String json) {
+		try {
+			return (ArrayNode) objectMapper.readTree(json);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

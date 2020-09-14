@@ -43,19 +43,6 @@ public class DeployService extends LoggingObject {
 		this.loadUserArtifactsCommand = loadUserArtifactsCommand;
 	}
 
-	public void deployUserArtifacts(HubClient hubClient) {
-		List<Command> commands = new ArrayList<>();
-
-		loadUserArtifactsCommand.setHubConfig(hubClient.getHubConfig());
-		loadUserArtifactsCommand.setForceLoad(false);
-
-		commands.add(loadUserArtifactsCommand);
-
-		SimpleAppDeployer deployer = new SimpleAppDeployer(hubClient.getManageClient(), hubClient.getHubConfig().getAdminManager());
-		deployer.setCommands(commands);
-		deployer.deploy(hubClient.getHubConfig().getAppConfig());
-	}
-
 	public void deployEntities(HubClient hubClient) {
 		try {
 			new DeployEntitiesCommand(hubClient).execute();

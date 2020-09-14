@@ -1,0 +1,109 @@
+{
+	"name": "MyCrazyFlow",
+	"description": "flow description",
+	"batchSize": 100,
+	"threadCount": 4,
+	"stopOnError": false,
+	"options": {
+		"identifier": ""
+	},
+	"version": 0,
+	"steps": {
+		"1": {
+			"name": "myMappingStep1",
+			"description": "",
+			"options": {
+				"additionalCollections": [],
+				"sourceQuery": "cts.collectionQuery([\"MyData.csv\"])",
+				"mapping": {
+					"name": "myMappingStep1",
+					"version": 1
+				},
+				"targetEntity": "Planet",
+				"sourceDatabase": "data-hub-STAGING",
+				"collections": [
+					"Planet"
+				],
+				"permissions": "81e946846cda588e6b5c4890ad1ef229,read,81e946846cda588e6b5c4890ad1ef229,update",
+				"sourceCollection": "MyData.csv",
+				"outputFormat": "json",
+				"targetDatabase": "data-hub-FINAL"
+			},
+			"customHook": {
+				"module": "/envision/customHooks/uriRemapper.sjs",
+				"parameters": {},
+				"user": "",
+				"runBefore": false
+			},
+			"retryLimit": 0,
+			"batchSize": 100,
+			"threadCount": 4,
+			"stepDefinitionName": "entity-services-mapping",
+			"stepDefinitionType": "MAPPING"
+		},
+		"2": {
+			"name": "myMappingStep2",
+			"description": "",
+			"options": {
+				"additionalCollections": [],
+				"sourceQuery": "cts.collectionQuery([\"MyData.csv\"])",
+				"mapping": {
+					"name": "myMappingStep2",
+					"version": 1
+				},
+				"targetEntity": "Planet",
+				"sourceDatabase": "data-hub-STAGING",
+				"collections": [
+					"Planet"
+				],
+				"permissions": "81e946846cda588e6b5c4890ad1ef229,read,81e946846cda588e6b5c4890ad1ef229,update",
+				"sourceCollection": "MyData.csv",
+				"outputFormat": "json",
+				"targetDatabase": "data-hub-FINAL"
+			},
+			"customHook": {
+				"module": "/envision/customHooks/uriRemapper.sjs",
+				"parameters": {},
+				"user": "",
+				"runBefore": false
+			},
+			"retryLimit": 0,
+			"batchSize": 100,
+			"threadCount": 4,
+			"stepDefinitionName": "entity-services-mapping",
+			"stepDefinitionType": "MAPPING"
+		},
+		"3": {
+			"name": "myMappingStep3",
+			"description": "",
+			"options": {
+				"additionalCollections": [],
+				"sourceQuery": "cts.collectionQuery([\"MyData.csv\"])",
+				"mapping": {
+					"name": "myMappingStep3",
+					"version": 1
+				},
+				"targetEntity": "Planet",
+				"sourceDatabase": "data-hub-STAGING",
+				"collections": [
+					"Planet"
+				],
+				"permissions": "81e946846cda588e6b5c4890ad1ef229,read,81e946846cda588e6b5c4890ad1ef229,update",
+				"sourceCollection": "MyData.csv",
+				"outputFormat": "json",
+				"targetDatabase": "data-hub-FINAL"
+			},
+			"customHook": {
+				"module": "/envision/customHooks/uriRemapper.sjs",
+				"parameters": {},
+				"user": "",
+				"runBefore": false
+			},
+			"retryLimit": 0,
+			"batchSize": 100,
+			"threadCount": 4,
+			"stepDefinitionName": "entity-services-mapping",
+			"stepDefinitionType": "MAPPING"
+		}
+	}
+}

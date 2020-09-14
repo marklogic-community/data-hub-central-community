@@ -1,7 +1,7 @@
 package com.marklogic.envision.pojo;
 
 public class StatusMessage {
-	public String key;
+	public final String key;
 	public String message;
 	public String error;
 	public Integer percentComplete;

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,13 +9,10 @@
 		#outlook a {padding:0;} /* Force Outlook to provide a "view in browser" menu link. */
 		body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
 		/* Prevent Webkit and Windows Mobile platforms from changing default font sizes, while not breaking desktop design. */
-		.ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */
-		.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /* Force Hotmail to display normal line spacing.  */
 		#backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
 		img {outline:none; text-decoration:none;border:none; -ms-interpolation-mode: bicubic;}
 		a img {border:none;}
-		.image_fix {display:block;}
-		p {margin: 0px 0px !important;}
+		p {margin: 0 0 !important;}
 		table td {border-collapse: collapse;}
 		table { border-collapse:collapse; mso-table-lspace:-1pt; mso-table-rspace:-1pt; }
 		.mobilelink a {
@@ -26,41 +23,50 @@
 
 		/*IPHONE STYLES*/
 		@media only screen and (max-width: 480px) {
-
-			table[class=devicewidth] {width: 310px!important;text-align:center!important;}
-			td[class=devicewidth] {width: 310px!important;text-align:center!important;padding-bottom:4px!important;}
-			td[class=devicewidth2] {width: 310px!important;text-align:center!important;padding-left:10px!important; padding-right:10px!important;line-height:20px!important;padding-top:10px!important;padding-bottom:6px!important;font-size:12px!important;}
-			table[class=devicewidth2] {width: 270px!important;text-align:center!important;padding-left:25px!important; padding-right:25px!important;}
-			td[class=devicewidthtext] {width: 310px!important;line-height:24px!important;padding-left:20px!important;padding-right:20px!important;padding-bottom:0px!important;}
-			td[class=devicewidthtext2] {width: 310px!important;line-height:32px!important;padding-left:60px!important;padding-right:60px!important;text-align:center!important;font-size:26px!important;}
-			img[class=colorlogo]{width:310px!important;height:5px!important;}
-			img[class=logo] {padding-bottom:10px!important;}
-			table[class=devicewidthcta]{width:270px!important;}
-			span[class=mobilehide]{display:none!important;}
-
-			table[class=devicewidthsocial] {
-				width: 210px!important;
-				text-align: center!important;
-				padding-left: 60px!important;
+			table[class=devicewidth] {
+				width: 310px !important;
+				text-align: center !important;
 			}
-			td[class=social] {
-				padding-left: 0px!important;
-				padding-right: 0px!important;
-				padding-bottom: 20px!important;
-				padding-top: 30px!important;
+
+			td[class=devicewidth] {
+				width: 310px !important;
+				text-align: center !important;
+				padding-bottom: 4px !important;
 			}
+
+			td[class=devicewidthtext] {
+				width: 310px !important;
+				line-height: 24px !important;
+				padding-left: 20px !important;
+				padding-right: 20px !important;
+				padding-bottom: 0 !important;
+			}
+
+			td[class=devicewidthtext2] {
+				width: 310px !important;
+				line-height: 32px !important;
+				padding-left: 60px !important;
+				padding-right: 60px !important;
+				text-align: center !important;
+				font-size: 26px !important;
+			}
+
+			table[class=devicewidthcta] {
+				width: 270px !important;
+			}
+
 			td[class=devicewidthfoot] {
-				width: 320px!important;
-
-				padding-left: 20px!important;
-				padding-right: 20px!important;
+				width: 320px !important;
+				padding-left: 20px !important;
+				padding-right: 20px !important;
 			}
+		}
 	</style>
 </head>
 <body leftmargin="0" rightmargin="0" marginwidth="0" topmargin="0" bottommargin="0" marginheight="0" offset="0" bgcolor="#f0f1f4">
 
 <!-- Start of preheader -->
-<table width="100%" bgcolor="#f0f1f4"" cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
+<table width="100%" bgcolor="#f0f1f4" cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
 <tr>
 	<td>
 		<table width="640" cellpadding="0" cellspacing="0" border="0" align="center" class="devicewidth">
@@ -161,5 +167,8 @@
 			</tr>
 		</table>
 		<!-- END OF POSTFOOTER -->
+	</td>
+</tr>
+</table>
 </body>
 </html>

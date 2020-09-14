@@ -38,6 +38,10 @@ public class UploadService extends LoggingObject {
 	}
 
 	@Async
+	public void asyncUploadFile(HubClient client, InputStream stream, String collectionName) {
+		uploadFile(client, stream, collectionName);
+	}
+
 	public void uploadFile(HubClient client, InputStream stream, String collectionName) {
 		DataMovementManager dataMovementManager = client.getStagingClient().newDataMovementManager();
 		ServerTransform serverTransform = new ServerTransform("mlRunIngest");
@@ -103,7 +107,7 @@ public class UploadService extends LoggingObject {
 				.onBatchFailure((batch, ex) -> {
 					long completed = batch.getJobWritesSoFar();
 					int percentComplete = (int) (((double)completed / totalUris.get()) * 100.0);
-					updateStatus(msg.withPercentComplete(percentComplete));
+					updateStatus(msg.withError(ex.getMessage()).withPercentComplete(percentComplete));
 				});
 				writeBatcher.flushAndWait();
 				dataMovementManager.stopJob(writeBatcher);

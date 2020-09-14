@@ -11,20 +11,16 @@ import com.marklogic.client.pojo.PojoQueryDefinition;
 import com.marklogic.client.query.MatchDocumentSummary;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
-import com.marklogic.envision.email.EmailConfig;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.dataServices.Users;
 import com.marklogic.envision.model.ModelService;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -131,6 +127,7 @@ public class UserService {
 	public ValidateTokenPojo validateResetToken(String token) {
 		ValidateTokenPojo vtp = new ValidateTokenPojo();
 		vtp.valid = false;
+		vtp.error = "Invalid Token";
 		UserPojo user = getUserFromResetToken(token);
 		if (user != null && user.resetToken.equals(token)) {
 			if (user.resetTokenExpiry.before(new Date())) {
@@ -138,11 +135,9 @@ public class UserService {
 			}
 			else {
 				vtp.valid = true;
+				vtp.error = null;
 				vtp.email = user.email;
 			}
-		}
-		else {
-			vtp.error = "Invalid Token";
 		}
 
 		return vtp;
@@ -166,7 +161,7 @@ public class UserService {
 			try {
 				UserPojo user = objectMapper.treeToValue(mgr.read(mds.getUri(), new JacksonHandle()).get(), UserPojo.class);
 				boolean expired = user.tokenExpiry.before(new Date());
-				boolean validToken = user != null && user.token.equals(token);
+				boolean validToken = user.token.equals(token);
 
 				if (validToken && !expired) {
 					user.validated = true;
@@ -176,10 +171,6 @@ public class UserService {
 					vtp.email = user.email;
 					vtp.valid = true;
 					vtp.error = null;
-				}
-				else if (!validToken) {
-					vtp.valid = false;
-					vtp.error = "Invalid Token";
 				}
 				else if (expired) {
 					vtp.valid = false;

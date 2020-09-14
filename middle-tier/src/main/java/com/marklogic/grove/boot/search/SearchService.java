@@ -167,7 +167,7 @@ public class SearchService {
 
 class QueryBuilderAndCriteria {
 
-	StructuredQueryBuilder queryBuilder;
+	final StructuredQueryBuilder queryBuilder;
 	String criteria;
 
 	public QueryBuilderAndCriteria(StructuredQueryBuilder queryBuilder) {

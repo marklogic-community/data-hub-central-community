@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.envision.dataServices.Mastering;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.grove.boot.error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,17 +35,22 @@ public class MasteringController extends AbstractController {
 	@ResponseBody
 	public ResponseEntity<String> getDoc(@RequestParam String docUri) {
 		HttpHeaders headers = new HttpHeaders();
-		String body = masteringService.getDoc(getHubClient().getFinalClient(), docUri);
-		if (body.startsWith("<")) {
-			headers.setContentType(MediaType.APPLICATION_XML);
-		} else {
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		try {
+			String body = masteringService.getDoc(getHubClient().getFinalClient(), docUri);
+			if (body.startsWith("<")) {
+				headers.setContentType(MediaType.APPLICATION_XML);
+			} else {
+				headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			}
+			return new ResponseEntity<>(body, headers, HttpStatus.OK);
 		}
-		return new ResponseEntity<>(body, headers, HttpStatus.OK);
+		catch(ResourceNotFoundException e) {
+			throw new NotFoundException();
+		}
 	}
 
 	@RequestMapping(value = "/history", method = RequestMethod.POST)
-	public JsonNode getEntities(HttpServletRequest request) throws IOException {
+	public JsonNode getHistory(HttpServletRequest request) throws IOException {
 		DatabaseClient client = getHubClient().getFinalClient();
 
 		JsonNode node = om.readTree(request.getInputStream());
@@ -53,7 +60,11 @@ public class MasteringController extends AbstractController {
 
 	@RequestMapping(value = "/notification", method = RequestMethod.GET)
 	public JsonNode getNotification(@RequestParam String uri) {
-		return masteringService.getNotification(getHubClient().getFinalClient(), uri);
+		JsonNode notification = masteringService.getNotification(getHubClient().getFinalClient(), uri);
+		if (notification == null) {
+			throw new NotFoundException();
+		}
+		return notification;
 	}
 
 	@RequestMapping(value = "/notifications", method = RequestMethod.POST)
@@ -110,7 +121,7 @@ public class MasteringController extends AbstractController {
 		return masteringService.updateNotifications(getHubClient().getFinalClient(), uris, status);
 	}
 
-	@RequestMapping(value = "/notifications", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/notifications/delete", method = RequestMethod.POST)
 	public ResponseEntity<?> deleteNotification(HttpServletRequest request) throws IOException {
 
 		String[] uris = om.readValue(request.getInputStream(), String[].class);

@@ -31,6 +31,9 @@ import java.util.Properties;
 @Configuration
 @PropertySource({"classpath:application.properties"})
 public class EnvisionConfig {
+	@Value("${envision.autoInstall:true}")
+	public boolean autoInstall;
+
 	@Value("${marklogic.host:localhost}")
 	public String markLogicHost;
 

@@ -4,11 +4,8 @@ import com.marklogic.grove.boot.AbstractController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -59,9 +56,4 @@ public class UserController extends AbstractController {
 	public UserProfile profile() {
 		return userService.getUser(getHubClient().getFinalClient(), getCurrentUser()).toUserProfile();
 	}
-
-	private String getBaseUrl(HttpServletRequest request) {
-		return "http://" + request.getServerName() + ":" + request.getServerPort();
-	}
-
 }

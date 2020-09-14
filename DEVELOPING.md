@@ -51,7 +51,7 @@ http://localhost:9999
 You can log in with your MarkLogic username and password.
 
 If you want to debug the middle tier while you run the ui in development mode, you might want to use a port for the middle tier other than the default.
-Say you you want to run the middle tier at 9004 by using -Dserver.port=9004 when you run bootRun.
+Say you want to run the middle tier at 9004 by using -Dserver.port=9004 when you run bootRun.
 
 First, edit ui/.env:
 VUE_APP_MIDDLETIER_PORT=9004
@@ -63,7 +63,7 @@ In the other run the ui, as above:
 `gradlew runui`
 
 #### Running End to End UI Tests
-Open a terminal in the top level envision directory.
+Open a terminal in the top-level envision directory.
 
 `gradlew testUi`
 
@@ -98,7 +98,7 @@ If you also need to specify a different models directory:
 
 `java -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
 
-And if you need to specify the Data Hub Framework environment (it defaults to local):
+If you need to specify the Data Hub Framework environment (it defaults to local):
 
 `java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
 
@@ -109,5 +109,5 @@ And if you need to specify the Data Hub Framework environment (it defaults to lo
 * Are you seeing URIs on the Explore tab instead of meaningful labels?  
 * Is the merge screen showing `   ,   ` instead of `Finn, Finn`?
 
-You have not loaded the proper concept connector model for current dataset in the Data Hub.  To get working again, navigate to the "Connect" tab.  On the right panel, select "Load Model" and select the proper model for your dataset.  For the standard HR use case, pick "HR Employee 360".    
+You have not loaded the proper concept connector model for the current dataset in the Data Hub. To get working again, navigate to the "Connect" tab.  On the right panel, select "Load Model" and select the proper model for your dataset.  For the standard HR use case, pick "HR Employee 360".    
 

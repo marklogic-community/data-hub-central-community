@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationListener;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class EmailListener<E extends ApplicationEvent> implements ApplicationListener<E> {
+public abstract class EmailListener<E extends ApplicationEvent> implements ApplicationListener<E> {
 
 	protected InputStream getResourceStream(String resourceName) {
 		return EmailListener.class.getClassLoader().getResourceAsStream(resourceName);
@@ -26,10 +26,5 @@ public class EmailListener<E extends ApplicationEvent> implements ApplicationLis
 			IOUtils.closeQuietly(inputStream);
 		}
 		return output;
-	}
-
-	@Override
-	public void onApplicationEvent(E event) {
-
 	}
 }

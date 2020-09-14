@@ -83,7 +83,7 @@ public class ExploreController extends AbstractController {
     }
 
 	@RequestMapping(value = "/values", method = RequestMethod.POST)
-	JsonNode getValus(HttpServletRequest request) throws IOException {
+	JsonNode getValues(HttpServletRequest request) throws IOException {
 
 		JsonNode node = om.readTree(request.getInputStream());
 		String facetName = node.get("facetName").asText();

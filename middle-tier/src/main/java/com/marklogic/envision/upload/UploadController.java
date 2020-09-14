@@ -23,7 +23,7 @@ public class UploadController extends AbstractController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> uploadFile(@RequestParam("collection") String collection, @RequestParam("file") MultipartFile file) throws IOException {
-		uploadService.uploadFile(getHubClient(), file.getInputStream(), collection);
+		uploadService.asyncUploadFile(getHubClient(), file.getInputStream(), collection);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

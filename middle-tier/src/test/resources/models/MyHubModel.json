@@ -1,0 +1,42 @@
+{
+	"name": "My Model",
+	"nodes": {
+		"person": {
+			"id": "person",
+			"x": -196.22543352601159,
+			"y": -143.11011728363047,
+			"label": "Person",
+			"entityName": "Person",
+			"type": "entity",
+			"baseUri": "http://marklogic.envision.com/",
+			"version": "0.0.1",
+			"properties": [
+				{
+					"_propId": "29c27460-56f7-4d3c-8178-aae38ead3926",
+					"name": "name",
+					"type": "string",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isPrimaryKey": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false
+				},
+				{
+					"_propId": "ebc2e49e-b344-43ff-a712-0fd57a4bfef5",
+					"name": "age",
+					"type": "decimal",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isPrimaryKey": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false
+				}
+			]
+		}
+	},
+	"edges": {}
+}

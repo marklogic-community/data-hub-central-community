@@ -84,14 +84,27 @@ public class ModelService {
         });
 
         EntityModeller.on(hubClient.getFinalClient()).removeAllEntities();
-		deleteExtraHubentities(fieldNames);
+		deleteExtraEntities(fieldNames);
 		deployService.deployEntities(hubClient);
     }
 
-    public void deleteModel(String username, InputStream stream) throws IOException {
+    public boolean deleteModel(HubClient hubClient, String username, InputStream stream) throws IOException {
 		JsonNode node = objectMapper.readTree(stream);
+
 		File jsonFile = getModelFile(username, node.get("name").asText());
-		jsonFile.delete();
+		if (jsonFile.exists()) {
+			JsonNode model = objectMapper.readTree(jsonFile);
+			model.get("nodes").forEach(jsonNode -> {
+				try {
+					String entityName = jsonNode.get("entityName").asText();
+					em.deleteEntity(entityName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			EntityModeller.on(hubClient.getFinalClient()).removeAllEntities();
+		}
+		return jsonFile.delete();
 	}
 
 	public void renameModel(String username, HubClient client, InputStream stream) throws IOException {
@@ -103,7 +116,7 @@ public class ModelService {
 		originalModelFile.delete();
 	}
 
-	private void deleteExtraHubentities(List<String> legitEntities) {
+	private void deleteExtraEntities(List<String> legitEntities) {
 		em.getEntities().forEach(hubEntity -> {
 			try {
 				String entityName = hubEntity.getInfo().getTitle();
@@ -149,13 +162,13 @@ public class ModelService {
     	return EntityModeller.on(client).getCurrentModel();
 	}
 
-	public List<JsonNode> getAllModels(HubClient client) throws IOException {
-		List<JsonNode> names = listAllModels();
+	public List<JsonNode> getAllModels(HubClient client, String username) throws IOException {
+		List<JsonNode> names = listAllModels(username);
 
 		ArrayNode models = objectMapper.convertValue(names, ArrayNode.class);
 		if (EntityModeller.on(client.getFinalClient()).needsImport(models)) {
 			this.importModel(client);
-			names = listAllModels();
+			names = listAllModels(username);
 		}
 		return names;
 	}
@@ -164,10 +177,11 @@ public class ModelService {
 		return EntityModeller.on(client).getActiveIndexes();
 	}
 
-	private List<JsonNode> listAllModels() {
+	private List<JsonNode> listAllModels(String username) {
 		List<JsonNode> names = new ArrayList<>();
+		File modelsDir = getModelsDir(username);
 		File[] modelFiles = modelsDir.listFiles(pathname -> pathname.toString().endsWith(".json"));
-		if (modelFiles!= null) {
+		if (modelFiles != null) {
 			try {
 				for (File modelFile: modelFiles) {
 					FileInputStream fileInputStream = new FileInputStream(modelFile);

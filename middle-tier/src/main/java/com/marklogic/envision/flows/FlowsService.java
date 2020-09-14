@@ -20,8 +20,6 @@ import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -62,20 +60,24 @@ public class FlowsService {
 		});
 	}
 
-	public JsonNode getFlow(HubClient client, String flowName) {
+	public JsonNode getJsonFlow(HubClient client, String flowName) {
+		return mapper.valueToTree(getFlow(client, flowName));
+	}
+
+	public Flow getFlow(HubClient client, String flowName) {
 		List<String> flowNames = new ArrayList<>();
 		flowNames.add(flowName);
 		JsonNode flows = Flows.on(client.getFinalClient()).getFlows(mapper.valueToTree(flowNames));
 		JsonNode flow =  flows.get(0);
 		if (flow != null) {
-			return flow;
+			return flowManager.createFlowFromJSON(flow);
 		}
 
 		// create the flow if it doesn't exist
 		Flow newFlow = flowManager.createFlow(flowName);
 		flowManager.saveFlow(newFlow);
 		deployService.loadFlow(client, newFlow);
-		return mapper.valueToTree(newFlow);
+		return newFlow;
 	}
 
 	public void createFlow(HubClient hubClient, JsonNode flowJson) {
@@ -103,15 +105,19 @@ public class FlowsService {
 		String stepType = stepJson.get("stepDefinitionType").asText();
 		String stepName = stepJson.get("name").asText();
 		String entityName = stepJson.get("options").get("targetEntity").asText();
-		Flow flow = flowManager.getFlow(flowName);
+		Flow flow = getFlow(hubClient, flowName);
 		Step step = Step.deserialize(stepJson);
 
+		// update the permissions to be the user's unique role
+		// so that when the flow runs, the output docs are visible only to the current user
+		// user's unique role is an md5 hash of the username
 		String email = hubClient.getUsername();
 		String roleName = DigestUtils.md5Hex(email);
 		step.getOptions().put("permissions", String.format("%s,read,%s,update", roleName, roleName));
-		Map<String, Step> steps = flow.getSteps();
 
+		Map<String, Step> steps = flow.getSteps();
 		final String[] existingIndex = {String.valueOf(steps.size() + 1)};
+
 		// see if the step already exists. happens when updating
 		steps.forEach((idx, step1) -> {
 			if (step1.getName().equals(step.getName())) {
@@ -136,7 +142,7 @@ public class FlowsService {
 	}
 
 	public void deleteStep(HubClient hubClient, String flowName, String stepName) {
-		Flow flow = flowManager.getFlow(flowName);
+		Flow flow =  getFlow(hubClient, flowName);
 		String stepKey = getStepKeyByName(flow, stepName);
 		if (stepKey != null) {
 			Step step = flow.getStep(stepKey);

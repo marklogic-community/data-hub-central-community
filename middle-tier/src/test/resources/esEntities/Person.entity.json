@@ -1,0 +1,26 @@
+{
+	"info" : {
+		"title" : "Person",
+		"version" : "0.0.1",
+		"baseUri" : "http://marklogic.envision.com/"
+	},
+	"definitions" : {
+		"Person" : {
+			"required" : [ ],
+			"pii" : [ ],
+			"elementRangeIndex" : [ ],
+			"rangeIndex" : [ ],
+			"wordLexicon" : [ ],
+			"properties" : {
+				"name" : {
+					"datatype" : "string",
+					"collation" : "http://marklogic.com/collation/codepoint"
+				},
+				"age" : {
+					"datatype" : "decimal",
+					"collation" : "http://marklogic.com/collation/codepoint"
+				}
+			}
+		}
+	}
+}

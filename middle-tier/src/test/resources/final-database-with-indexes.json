@@ -1,0 +1,26 @@
+{
+	"database-name": "%%mlFinalDbName%%",
+	"schema-database": "%%mlFinalSchemasDbName%%",
+	"triggers-database": "%%mlFinalTriggersDbName%%",
+	"triple-index": true,
+	"collection-lexicon": true,
+	"uri-lexicon": true,
+	"range-element-index": [
+		{
+			"collation": "http://marklogic.com/collation/codepoint",
+			"invalid-values": "reject",
+			"localname": "entityConfigFinal1",
+			"namespace-uri": null,
+			"range-value-positions": false,
+			"scalar-type": "string"
+		},
+		{
+			"collation": "http://marklogic.com/collation/codepoint",
+			"invalid-values": "reject",
+			"localname": "entityConfigFinal2",
+			"namespace-uri": null,
+			"range-value-positions": false,
+			"scalar-type": "string"
+		}
+	]
+}
