@@ -36,8 +36,6 @@ public class AuthenticationTests extends AbstractMvcTest {
 
 	@BeforeEach
 	void setup() {
-		logout();
-
 		removeUser(ACCOUNT_NAME);
 
 		// remove models

@@ -7,13 +7,16 @@ import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.hub.impl.HubClientImpl;
+import com.marklogic.envision.hub.impl.MultiTenantProjectImpl;
 import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.HubProject;
 import com.marklogic.hub.impl.HubConfigImpl;
+import com.marklogic.hub.impl.HubProjectImpl;
 import com.marklogic.mgmt.ManageClient;
 import com.marklogic.mgmt.ManageConfig;
 import com.marklogic.mgmt.admin.AdminConfig;
 import com.marklogic.mgmt.admin.AdminManager;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -61,6 +64,9 @@ public class EnvisionConfig {
 	@Value("${dhfEnv:local}")
 	public String dhfEnv;
 
+	@Value("${envision.multiTenant:false}")
+	public boolean isMultiTenant;
+
 	private final Environment environment;
 
 	private final HubConfigImpl hubConfig;
@@ -94,7 +100,11 @@ public class EnvisionConfig {
 	}
 
 	private HubConfigImpl newHubConfig(String username, String password) {
-		HubConfigImpl hubConfig = new HubConfigImpl(hubProject, environment);
+		HubProject hp = hubProject;
+		if (isMultiTenant) {
+			hp = new MultiTenantProjectImpl(hubProject, username);
+		}
+		HubConfigImpl hubConfig = new HubConfigImpl(hp, environment);
 		setupHubConfig(hubConfig, username, password);
 		return hubConfig;
 	}
@@ -131,6 +141,8 @@ public class EnvisionConfig {
 			hubConfig.setMlUsername(username);
 			hubConfig.setMlPassword(password);
 			hubConfig.resetAppConfigs();
+
+			String roleName = DigestUtils.md5Hex(username);
 			String envName = dhfEnv;
 			if (envName == null || envName.isEmpty()) {
 				envName = "local";
@@ -141,6 +153,7 @@ public class EnvisionConfig {
 			hubConfig.refreshProject();
 			hubConfig.getAppConfig().setAppServicesUsername(username);
 			hubConfig.getAppConfig().setAppServicesPassword(password);
+			hubConfig.setEntityModelPermissions(String.format("%s,read,%s,update", roleName, roleName));
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);

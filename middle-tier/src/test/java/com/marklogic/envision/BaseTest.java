@@ -18,7 +18,10 @@ import com.marklogic.client.io.FileHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
+import com.marklogic.envision.auth.UserPojo;
+import com.marklogic.envision.auth.UserService;
 import com.marklogic.envision.config.EnvisionConfig;
+import com.marklogic.envision.email.EmailService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.installer.InstallService;
 import com.marklogic.grove.boot.Application;
@@ -34,7 +37,10 @@ import com.marklogic.mgmt.api.security.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
 import org.slf4j.Logger;
@@ -42,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -80,6 +87,12 @@ public class BaseTest {
 	@Autowired
 	private InstallService installService;
 
+	@MockBean
+	protected EmailService emailService;
+
+	@Autowired
+	protected UserService userService;
+
 	@Autowired
 	protected DataHubImpl dataHub;
 
@@ -98,6 +111,11 @@ public class BaseTest {
 	private String password;
 
 	private boolean configFinished = false;
+
+	@BeforeEach
+	void setup() throws IOException {
+		MockitoAnnotations.initMocks(this);
+	}
 
 	protected HubConfigImpl getHubConfig() {
 		if (!configFinished) {
@@ -119,6 +137,20 @@ public class BaseTest {
 			configFinished = true;
 		}
 		return hubConfig;
+	}
+
+	protected void registerAccount() throws IOException {
+		registerAccount(ACCOUNT_NAME, ACCOUNT_PASSWORD);
+	}
+
+	protected void registerAccount(String email, String password) throws IOException {
+		UserPojo user = new UserPojo();
+		user.email = ACCOUNT_NAME;
+		user.password = ACCOUNT_PASSWORD;
+		user.name = "Bob Smith";
+		user = userService.createUser(user);
+		userService.validateToken(user.token);
+		Mockito.reset(emailService);
 	}
 
 	protected final ObjectMapper objectMapper = new ObjectMapper();

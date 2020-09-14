@@ -10,11 +10,14 @@ import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.pojo.StatusMessage;
+import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.MappingManager;
+import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
+import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.mapping.Mapping;
 import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -58,6 +61,10 @@ public class FlowsService {
 				.withPercentComplete(percentComplete);
 			this.template.convertAndSend("/topic/status", msg);
 		});
+	}
+
+	EntityManager getEntityManager(HubClient hubClient) {
+		return new EntityManagerImpl(hubClient.getHubConfig());
 	}
 
 	public JsonNode getJsonFlow(HubClient client, String flowName) {
@@ -133,7 +140,8 @@ public class FlowsService {
 				mappingManager.getMapping(mappingName);
 			}
 			catch(Exception e) {
-				Mapping mapping = mappingManager.createMapping(flowName + "-" + stepName, entityName);
+				HubEntity entity = getEntityManager(hubClient).getEntityFromProject(entityName);
+				Mapping mapping =  Mapping.create(mappingName, entity);
 				mappingManager.saveMapping(mapping);
 				deployService.loadMapping(hubClient, mapping);
 			}

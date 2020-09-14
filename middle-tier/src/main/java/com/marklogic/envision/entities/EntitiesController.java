@@ -20,13 +20,13 @@ public class EntitiesController extends AbstractController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public List<HubEntity> getEntities() {
-		return entityManagerService.getEntities();
+		return entityManagerService.getEntities(getHubClient());
 	}
 
 	@RequestMapping(value = "/{entityName}", method = RequestMethod.GET)
 	@ResponseBody
 	public HubEntity getEntity(@PathVariable String entityName, @RequestParam(required = false)Boolean extendSubEntities) {
 		boolean extSubEntities = (extendSubEntities != null) && extendSubEntities;
-		return entityManagerService.getEntity(entityName, extSubEntities);
+		return entityManagerService.getEntity(getHubClient(), entityName, extSubEntities);
 	}
 }

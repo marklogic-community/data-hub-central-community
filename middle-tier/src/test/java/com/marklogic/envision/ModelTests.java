@@ -32,20 +32,24 @@ public class ModelTests extends BaseTest {
 	SessionManager sessionManager;
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws Exception {
+		removeUser(ACCOUNT_NAME);
+
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
-		sessionManager.setHubClient("user", getAdminHubClient());
+
+		registerAccount();
+		sessionManager.setHubClient(ACCOUNT_NAME, getAdminHubClient());
 	}
 
 	@Test
-	@WithMockUser
+	@WithMockUser(username = ACCOUNT_NAME)
 	public void toDatahub() throws Exception {
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
 		modelService.setModelsDir(modelsDir.toFile());
-		modelService.saveModel(getAdminHubClient(), getResourceStream("models/model.json"));
-		DatabaseClient client = getFinalClient();
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
 		jsonAssertEquals(getResource("output/esEntities.json"), result);
 	}

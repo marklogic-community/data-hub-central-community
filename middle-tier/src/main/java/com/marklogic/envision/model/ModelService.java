@@ -13,6 +13,7 @@ import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.entity.HubEntity;
+import com.marklogic.hub.impl.EntityManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,15 @@ import java.util.*;
 @Service
 public class ModelService {
 
-    private final EntityManager em;
-
     private final DeployService deployService;
 
     @Autowired
-	ModelService(EntityManager em, DeployService deployService) {
-    	this.em = em;
+	ModelService(DeployService deployService) {
     	this.deployService = deployService;
+	}
+
+	EntityManager getEntityManager(HubClient hubClient) {
+		return new EntityManagerImpl(hubClient.getHubConfig());
 	}
 
 	@Value("${modelsDir}")
@@ -77,14 +79,14 @@ public class ModelService {
             HubEntity hubEntity = HubEntity.fromJson(entityFileName, node.get(entityName));
 
             try {
-                em.saveEntity(hubEntity, false);
+				getEntityManager(hubClient).saveEntity(hubEntity, false);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
 
         EntityModeller.on(hubClient.getFinalClient()).removeAllEntities();
-		deleteExtraEntities(fieldNames);
+		deleteExtraEntities(hubClient, fieldNames);
 		deployService.deployEntities(hubClient);
     }
 
@@ -97,7 +99,7 @@ public class ModelService {
 			model.get("nodes").forEach(jsonNode -> {
 				try {
 					String entityName = jsonNode.get("entityName").asText();
-					em.deleteEntity(entityName);
+					getEntityManager(hubClient).deleteEntity(entityName);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -116,12 +118,12 @@ public class ModelService {
 		originalModelFile.delete();
 	}
 
-	private void deleteExtraEntities(List<String> legitEntities) {
-		em.getEntities().forEach(hubEntity -> {
+	private void deleteExtraEntities(HubClient hubClient, List<String> legitEntities) {
+		getEntityManager(hubClient).getEntities().forEach(hubEntity -> {
 			try {
 				String entityName = hubEntity.getInfo().getTitle();
 				if (!legitEntities.contains(entityName.toLowerCase())) {
-					em.deleteEntity(entityName);
+					getEntityManager(hubClient).deleteEntity(entityName);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

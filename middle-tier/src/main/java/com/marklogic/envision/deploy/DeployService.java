@@ -2,8 +2,6 @@ package com.marklogic.envision.deploy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marklogic.appdeployer.command.Command;
-import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.ext.helper.LoggingObject;
 import com.marklogic.client.ext.util.DefaultDocumentPermissionsParser;
@@ -17,9 +15,6 @@ import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.mapping.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class DeployService extends LoggingObject {
@@ -45,7 +40,7 @@ public class DeployService extends LoggingObject {
 
 	public void deployEntities(HubClient hubClient) {
 		try {
-			new DeployEntitiesCommand(hubClient).execute();
+			new DeployEntitiesCommand(hubClient, hubClient.getUsername()).execute();
 		}
 		catch (Error error) {
 			error.printStackTrace();

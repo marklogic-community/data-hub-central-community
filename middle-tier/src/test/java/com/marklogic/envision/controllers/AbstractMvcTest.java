@@ -3,16 +3,11 @@ package com.marklogic.envision.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.marklogic.envision.BaseTest;
 import com.marklogic.envision.auth.UserPojo;
-import com.marklogic.envision.auth.UserService;
-import com.marklogic.envision.email.EmailService;
 import com.marklogic.grove.boot.auth.LoginInfo;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,19 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 public class AbstractMvcTest extends BaseTest {
 
-	@MockBean
-	EmailService emailService;
 
 	@Autowired
 	protected MockMvc mockMvc;
-
-	@Autowired
-	protected UserService userService;
-
-	@BeforeEach
-	void setup() throws IOException {
-		MockitoAnnotations.initMocks(this);
-	}
 
 	protected String authToken;
 

@@ -30,13 +30,15 @@ import java.util.Iterator;
 public class DeployEntitiesCommand extends LoggingObject {
 
 	private final HubClient hubClient;
+	private final String username;
 
 	private final DocumentPermissionsParser documentPermissionsParser = new DefaultDocumentPermissionsParser();
 	private final ObjectMapper objectMapper;
 
 
-	public DeployEntitiesCommand(HubClient hubClient) {
+	public DeployEntitiesCommand(HubClient hubClient, String username) {
 		this.hubClient = hubClient;
+		this.username = username;
 		this.objectMapper = ObjectMapperFactory.getObjectMapper();
 	}
 
@@ -53,7 +55,7 @@ public class DeployEntitiesCommand extends LoggingObject {
 		DocumentWriteSet stagingEntityDocumentWriteSet = stagingDocMgr.newWriteSet();
 		DeployEntitiesCommand.ResourceToURI entityResourceToURI = new DeployEntitiesCommand.ResourceToURI(){
 			public String toURI(Resource r) {
-				return "/entities/" + r.getFilename();
+				return "/entities/" + username + "/" + r.getFilename();
 			}
 		};
 		EntityDefModulesFinder entityDefModulesFinder = new EntityDefModulesFinder();
