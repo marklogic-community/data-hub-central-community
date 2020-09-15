@@ -90,7 +90,7 @@ function getEntities(uris, opts) {
 				?toId rdf:hasEntityType ?entityType.
 				optional { ?toUri rdf:hasId ?toId }
 				FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-				FILTER( xdmp:document-get-collections(?toUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
+				${archivedCollections.length <= 0 ? '#': ''} FILTER( xdmp:document-get-collections(?toUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
 				${labelFilter}
 			}
 
@@ -101,7 +101,7 @@ function getEntities(uris, opts) {
 				?fromId rdf:hasEntityType ?entityType.
 				optional { ?fromUri rdf:hasId ?fromId }
 				FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-				FILTER( xdmp:document-get-collections(?fromUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
+				${archivedCollections.length <= 0 ? '#': ''} FILTER( xdmp:document-get-collections(?fromUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
 				${labelFilter}
 			}
 		}
@@ -257,7 +257,7 @@ function getEdgeCounts(uris) {
 			?fromUri rdf:hasId ?s.
 			optional { ?toUri rdf:hasId ?o }
 			FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId ) )
+			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId, rdf:hasLabel ) )
 		}
 		UNION
 		{
@@ -265,7 +265,7 @@ function getEdgeCounts(uris) {
 			?toUri rdf:hasId ?o.
 			optional { ?fromUri rdf:hasId ?s }
 			FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId ) )
+			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId, rdf:hasLabel ) )
 		}
 	}`
 
@@ -409,16 +409,16 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 	 (fn:head(fn:tokenize(?toId, "#")) as ?toType)
 	WHERE {
 	 {
-			 ## From concept to entity
-				?fromId  ?lbl ?toId .
-							?toUri rdf:hasId ?toId .
-						 optional { ?fromUri rdf:hasId ?fromId}
-						${conceptFilterFromConcept}
+			## From concept to entity
+			?fromId  ?lbl ?toId .
+			?toUri rdf:hasId ?toId .
+			optional { ?fromUri rdf:hasId ?fromId}
+			${conceptFilterFromConcept}
 		} UNION {
 			 ?fromId  ?lbl ?toId .
-							?fromUri rdf:hasId ?fromId .
-				 optional { ?toUri rdf:hasId ?toId}
-						 ${conceptFilterToConcept}
+				?fromUri rdf:hasId ?fromId .
+				optional { ?toUri rdf:hasId ?toId}
+				${conceptFilterToConcept}
 		 }
 	}
 	`

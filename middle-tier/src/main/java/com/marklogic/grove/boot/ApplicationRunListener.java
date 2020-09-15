@@ -29,7 +29,8 @@ public class ApplicationRunListener implements SpringApplicationRunListener {
     public void started(ConfigurableApplicationContext context) {
     	EnvisionConfig envisionConfig = context.getBean(EnvisionConfig.class);
     	if (envisionConfig.autoInstall) {
-			context.getBean(InstallService.class).install();
+			boolean forceInstall = context.getEnvironment().getProperty("forceInstall", "false").equals("true");
+			context.getBean(InstallService.class).install(forceInstall);
 		}
         String port = context.getEnvironment().getProperty("local.server.port");
         System.out.println("Web UI is Ready and Listening on port " + port + ".\n");

@@ -1,6 +1,7 @@
 package com.marklogic.envision.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.grove.boot.error.NotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class ModelController extends AbstractController {
 
     final private ModelService modelService;
 
+    final private  ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
 	ModelController(ModelService modelService) {
     	this.modelService = modelService;
@@ -43,7 +46,9 @@ public class ModelController extends AbstractController {
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void switchModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if (modelService.deleteModel(getHubClient(), getHubClient().getUsername(), request.getInputStream())) {
+		JsonNode node = objectMapper.readTree(request.getInputStream());
+		String modelName = node.get("name").asText();
+		if (modelService.deleteModel(getHubClient(), getHubClient().getUsername(), modelName)) {
 			response.setStatus(HttpStatus.NO_CONTENT.value());
 		}
 		else {

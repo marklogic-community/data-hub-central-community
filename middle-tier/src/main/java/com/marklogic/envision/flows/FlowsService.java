@@ -38,7 +38,6 @@ public class FlowsService {
 	final private FlowManager flowManager;
 	final private MappingManager mappingManager;
 	final private DeployService deployService;
-	final private FlowRunnerImpl flowRunner;
 	final private SimpMessagingTemplate template;
 
 	@Autowired
@@ -46,21 +45,13 @@ public class FlowsService {
 		FlowManager flowManager,
 		MappingManager mappingManager,
 		DeployService deployService,
-		FlowRunnerImpl flowRunner,
 		SimpMessagingTemplate template
 	) {
 
 		this.flowManager = flowManager;
 		this.mappingManager = mappingManager;
 		this.deployService = deployService;
-		this.flowRunner = flowRunner;
 		this.template = template;
-		this.flowRunner.onStatusChanged((jobId, step, jobStatus, percentComplete, successfulEvents, failedEvents, message) -> {
-			StatusMessage msg = StatusMessage.newStatus(jobId)
-				.withMessage(message)
-				.withPercentComplete(percentComplete);
-			this.template.convertAndSend("/topic/status", msg);
-		});
 	}
 
 	EntityManager getEntityManager(HubClient hubClient) {
@@ -181,11 +172,18 @@ public class FlowsService {
 		}
 	}
 
-	public void runSteps(String flowName, JsonNode steps) {
+	public void runSteps(HubClient hubClient, String flowName, JsonNode steps) {
 		try {
 			ObjectReader reader = mapper.readerFor(new TypeReference<String[]>() {});
 			String[] stepsList = reader.readValue(steps);
 			FlowInputs inputs = new FlowInputs(flowName, stepsList);
+			FlowRunnerImpl flowRunner = new FlowRunnerImpl(hubClient.getHubConfig());
+			flowRunner.onStatusChanged((jobId, step, jobStatus, percentComplete, successfulEvents, failedEvents, message) -> {
+				StatusMessage msg = StatusMessage.newStatus(jobId)
+					.withMessage(message)
+					.withPercentComplete(percentComplete);
+				this.template.convertAndSend("/topic/status", msg);
+			});
 			flowRunner.runFlow(inputs);
 		}
 		catch(Exception e) {

@@ -206,9 +206,7 @@ public class EnvisionConfig {
 				return result.next().getString();
 			}
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		catch(Exception e) {}
 		return null;
 	}
 

@@ -24,7 +24,7 @@ function createTdes() {
 		if (hasConcept) {
 			if (fromNode.type === 'entity') {
 				node = fromNode
-				subj = `sem:iri(fn:replace(fn:concat("${fromNode.baseUri || ''}${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')), " ", ""))`
+				subj = `sem:iri(fn:replace(fn:concat("${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')), " ", ""))`
 				obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))` // don't replace spaces here because this is displayed
 				subTempKey = `./${edge.keyTo}`
 				concept = obj
@@ -33,7 +33,7 @@ function createTdes() {
 			else {
 				node = toNode
 				subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`// don't replace spaces here because this is displayed
-				obj = `sem:iri(fn:replace(fn:concat("${toNode.baseUri || ''}${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')), " ", ""))`
+				obj = `sem:iri(fn:replace(fn:concat("${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')), " ", ""))`
 				subTempKey = `./${edge.keyFrom}`
 				concept = subj
 				conceptType = fromNode.entityName

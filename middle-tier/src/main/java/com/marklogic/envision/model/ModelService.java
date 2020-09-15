@@ -90,10 +90,11 @@ public class ModelService {
 		deployService.deployEntities(hubClient);
     }
 
-    public boolean deleteModel(HubClient hubClient, String username, InputStream stream) throws IOException {
-		JsonNode node = objectMapper.readTree(stream);
+    public void deleteAllModels(HubClient hubClient, String username) {
 
-		File jsonFile = getModelFile(username, node.get("name").asText());
+	}
+    public boolean deleteModel(HubClient hubClient, String username, String modelName) throws IOException {
+		File jsonFile = getModelFile(username, modelName);
 		if (jsonFile.exists()) {
 			JsonNode model = objectMapper.readTree(jsonFile);
 			model.get("nodes").forEach(jsonNode -> {
