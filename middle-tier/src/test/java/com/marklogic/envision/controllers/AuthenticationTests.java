@@ -3,6 +3,8 @@ package com.marklogic.envision.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.envision.auth.UpdatePasswordPojo;
 import com.marklogic.envision.auth.UserPojo;
+import com.marklogic.envision.flows.FlowsService;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +32,13 @@ public class AuthenticationTests extends AbstractMvcTest {
 	private static final String VALIDATE_RESET_TOKEN_URL = "/api/auth/validateResetToken";
 	private static final String UPDATE_PASSWORD_URL = "/api/auth/updatePassword";
 	private static final String GET_PROFILE_URL = "/api/auth/profile";
+	private static final String DELETE_USER_URL = "/api/auth/delete";
 
 	@Autowired
 	ModelService modelService;
 
+	@Autowired
+	FlowsService flowsService;
 	@BeforeEach
 	void setup() {
 		removeUser(ACCOUNT_NAME);
@@ -168,6 +173,71 @@ public class AuthenticationTests extends AbstractMvcTest {
 				result -> assertTrue(objectMapper.readTree(result.getResponse().getContentAsString()).asBoolean()))
 			.andExpect(status().isOk());
 		assertNull(authToken);
+	}
+
+	@Test
+	void deleteUser() throws Exception {
+		registerAccount();
+		HubClient adminHubClient = getAdminHubClient();
+		HubClient hubClient = getNonAdminHubClient();
+		modelService.saveModel(hubClient, getResourceStream("models/MyHubModel.json"));
+		flowsService.addMapping(hubClient, readJsonObject(getResource("mappings/myMappingStep.json")));
+		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/user.flow.json")));
+		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME + "/doc1.json", "user-data");
+		installDoc(hubClient.getFinalClient(), "data/stagingDoc.json", "/data/" + ACCOUNT_NAME + "/doc1.json", "user-data");
+
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/flow"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/mappings"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/model"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "user-data"));
+
+		assertEquals(1, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/data-hub/flow"));
+		assertEquals(1, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/data-hub/mappings"));
+		assertEquals(1, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(1, getDocCount(adminHubClient.getStagingClient(), "user-data"));
+
+		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-xml-schema"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME));
+
+		assertEquals(1, getDocCount(adminHubClient.getStagingSchemasClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(1, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(1, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-xml-schema"));
+
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+			.andExpect(status().isUnauthorized());
+
+		login();
+
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+			.andExpect(status().isOk());
+
+		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/flow"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/mappings"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/model"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "user-data"));
+
+		assertEquals(0, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/data-hub/flow"));
+		assertEquals(0, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/data-hub/mappings"));
+		assertEquals(0, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(0, getDocCount(adminHubClient.getStagingClient(), "user-data"));
+
+		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-xml-schema"));
+		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME));
+
+		assertEquals(0, getDocCount(adminHubClient.getStagingSchemasClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(0, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(0, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-xml-schema"));
+
+		assertNull(adminHubClient.getStagingClient().newDocumentManager().exists("/ingest/" + ACCOUNT_NAME + "/doc1.json"));
+		assertNull(adminHubClient.getFinalClient().newDocumentManager().exists("/data/" + ACCOUNT_NAME + "/doc1.json"));
 	}
 
 	@Test

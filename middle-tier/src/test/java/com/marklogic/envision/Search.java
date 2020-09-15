@@ -53,6 +53,8 @@ public class Search extends BaseTest {
 
 		installEnvisionModules();
 
+		registerAccount();
+
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.setModelsDir(hubClient.getHubConfig().getHubProjectDir().resolve("conceptConnectorModels").toFile());
 		modelService.saveModel(hubClient, getResourceStream("models/model.json"));

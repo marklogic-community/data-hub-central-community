@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,8 +131,14 @@ public class ModelControllerTests extends AbstractMvcTest {
 					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
 					assertEquals(3, models.size());
 					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
-					assertEquals("My Hub Model", models.get(1).get("name").asText());
-					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(2)), true);
+
+					// get around sorting issues by getting the proper indexes for comparison
+					// prevents failing tests in CI
+					List<String> names = StreamSupport.stream(models.spliterator(), false).map(jsonNode -> jsonNode.get("name").asText()).collect(Collectors.toList());
+					int idx = names.indexOf("My Hub Model");
+					assertEquals("My Hub Model", models.get(idx).get("name").asText());
+					idx = names.indexOf("Test Model");
+					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(idx)), true);
 				})
 			.andExpect(status().isOk());
 	}

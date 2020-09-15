@@ -18,6 +18,8 @@ public class HubClientImpl implements HubClient {
 	private final DatabaseClient finalClient;
 	private final DatabaseClient jobsClient;
 	private final DatabaseClient modulesClient;
+	private final DatabaseClient stagingSchemasClient;
+	private final DatabaseClient finalSchemasClient;
 	private final Map<DatabaseKind, String> databaseNames;
 	private final ManageClient manageClient;
 	private final HubConfigImpl hubConfig;
@@ -28,6 +30,8 @@ public class HubClientImpl implements HubClient {
 		finalClient = newFinalClient(hubConfig);
 		jobsClient = hubConfig.newJobDbClient();
 		modulesClient = hubConfig.newModulesDbClient();
+		stagingSchemasClient = hubConfig.newStagingClient(hubConfig.getDbName(DatabaseKind.STAGING_SCHEMAS));
+		finalSchemasClient = hubConfig.newStagingClient(hubConfig.getDbName(DatabaseKind.FINAL_SCHEMAS));
 		this.databaseNames = databaseNames;
 		this.manageClient = hubConfig.getManageClient();
 		this.hubConfig = hubConfig;
@@ -77,6 +81,16 @@ public class HubClientImpl implements HubClient {
 	@Override
 	public DatabaseClient getModulesClient() {
 		return modulesClient;
+	}
+
+	@Override
+	public DatabaseClient getStagingSchemasClient() {
+		return stagingSchemasClient;
+	}
+
+	@Override
+	public DatabaseClient getFinalSchemasClient() {
+		return finalSchemasClient;
 	}
 
 	@Override

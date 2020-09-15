@@ -119,6 +119,20 @@ public interface Users {
 
 
             @Override
+            public Boolean deleteUser(String user) {
+              return BaseProxy.BooleanType.toBoolean(
+                baseProxy
+                .request("deleteUser.xqy", BaseProxy.ParameterValuesKind.SINGLE_ATOMIC)
+                .withSession()
+                .withParams(
+                    BaseProxy.atomicParam("user", false, BaseProxy.StringType.fromString(user)))
+                .withMethod("POST")
+                .responseSingle(false, null)
+                );
+            }
+
+
+            @Override
             public com.fasterxml.jackson.databind.JsonNode validateResetToken(String token) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
@@ -186,6 +200,14 @@ public interface Users {
    * @return	as output
    */
     Boolean validateToken(String token);
+
+  /**
+   * Invokes the deleteUser operation on the database server
+   *
+   * @param user	provides input
+   * @return	as output
+   */
+    Boolean deleteUser(String user);
 
   /**
    * Invokes the validateResetToken operation on the database server

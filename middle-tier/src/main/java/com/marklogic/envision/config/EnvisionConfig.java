@@ -87,6 +87,10 @@ public class EnvisionConfig {
 		this.hubProject = hubProject;
 	}
 
+	public HubClient newAdminHubClient() {
+		return newHubClient(marklogicUsername, marklogicPassword);
+	}
+
 	public HubClient newHubClient(String username, String password) {
 		HubConfigImpl hubConfig = newHubConfig(username, password);
 

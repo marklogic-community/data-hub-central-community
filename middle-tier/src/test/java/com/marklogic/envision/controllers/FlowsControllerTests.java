@@ -284,8 +284,8 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		HubClient hubClient = getNonAdminHubClient();
 
 		modelService.saveModel(hubClient, getResourceStream("models/MyHubModel.json"));
-		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/runnable.flow.json")));
 		flowsService.addMapping(hubClient, readJsonObject(getResource("mappings/myMappingStep.json")));
+		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/runnable.flow.json")));
 
 		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/doc1.json");
 

@@ -32,6 +32,8 @@ public class MasteringTest extends BaseTest {
 
 		installEnvisionModules();
 
+		registerAccount();
+
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
 		installDoc(hubClient.getFinalClient(), "entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee");

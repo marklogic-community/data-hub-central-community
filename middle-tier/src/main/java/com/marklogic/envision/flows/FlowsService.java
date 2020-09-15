@@ -84,6 +84,10 @@ public class FlowsService {
 		deployService.loadFlow(hubClient, flow);
 	}
 
+	public void deleteFlow(HubClient hubClient, String flowName) {
+		flowManager.deleteFlow(flowName);
+	}
+
 	public String getMapping(String mapName) {
 		return mappingManager.getMappingAsJSON(mapName, -1, true);
 	}

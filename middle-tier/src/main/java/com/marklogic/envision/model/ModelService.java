@@ -90,9 +90,16 @@ public class ModelService {
 		deployService.deployEntities(hubClient);
     }
 
-    public void deleteAllModels(HubClient hubClient, String username) {
-
+    public void deleteAllModels(HubClient hubClient, String username) throws IOException {
+		File userModelDir = getModelsDir(username);
+		File[] files = userModelDir.listFiles();
+		for (File file : files) {
+			JsonNode model = objectMapper.readTree(file);
+			String modelName = model.get("name").asText();
+			deleteModel(hubClient, username, modelName);
+		}
 	}
+
     public boolean deleteModel(HubClient hubClient, String username, String modelName) throws IOException {
 		File jsonFile = getModelFile(username, modelName);
 		if (jsonFile.exists()) {
@@ -144,6 +151,7 @@ public class ModelService {
 
 	private void saveModel(HubClient client, JsonNode model) throws IOException {
 		DocumentMetadataHandle meta = new DocumentMetadataHandle();
+		meta.getCollections().addAll("http://marklogic.com/envision/model");
 		JacksonHandle content = new JacksonHandle(model);
 		client.getFinalClient().newJSONDocumentManager().write("/envision/" + client.getUsername() + "/currentModel.json", meta, content);
 		saveModelFile(client.getUsername(), model);
