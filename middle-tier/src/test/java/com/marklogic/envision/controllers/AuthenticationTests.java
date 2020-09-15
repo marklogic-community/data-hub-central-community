@@ -6,6 +6,7 @@ import com.marklogic.envision.auth.UserPojo;
 import com.marklogic.envision.flows.FlowsService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
+import com.marklogic.hub.HubConfig;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 			file.delete();
 		}
 		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME, HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME);
 		installEnvisionModules();
 	}
 

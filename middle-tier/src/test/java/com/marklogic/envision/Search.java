@@ -49,6 +49,7 @@ public class Search extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
+		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 
 		installEnvisionModules();
