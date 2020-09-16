@@ -1,0 +1,12 @@
+{
+	"databases": {
+		"staging": "data-hub-STAGING",
+		"final": "data-hub-FINAL"
+	},
+	"collections": {
+		"staging": [
+		],
+		"final": [
+		]
+	}
+}

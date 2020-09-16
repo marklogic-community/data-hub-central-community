@@ -125,10 +125,10 @@ function noSpaces(value) {
 export default {
 	props: {
 		flowName: { type: String },
-		// entities: { type: Array },
 		showDialog: { type: Boolean },
 		isEditing: { type: Boolean, default: false },
-		step: { type: Object }
+		step: { type: Object },
+		stepInfo: { type: Object }
 	},
 	data() {
 		return {
@@ -143,9 +143,6 @@ export default {
 			outputFormat: 'json',
 			sourceDatabase: 'Staging',
 			targetDatabase: 'Final',
-
-			allCollections: {},
-			allDatabases: {},
 
 			databases: ['Staging', 'Final'],
 			stepTypes: [
@@ -174,7 +171,7 @@ export default {
 			return this.isEditing ? 'Edit Step' : 'Create Step'
 		},
 		collections() {
-			return this.sourceDatabase ? (this.allCollections[this.sourceDatabase.toLowerCase()] || []) : []
+			return (this.sourceDatabase && this.stepInfo) ? (this.stepInfo.collections[this.sourceDatabase.toLowerCase()] || []) : []
 		},
 		open: {
 			get() {
@@ -199,11 +196,7 @@ export default {
   },
 	mounted() {
 		this.stepType = this.stepTypes[0].value
-		flowsApi.getNewStepInfo().then(info => {
-			this.allCollections = info.collections,
-			this.allDatabases = info.databases
-			this.updateValues()
-		})
+		this.updateValues()
 	},
 	methods: {
 		...mapActions({
@@ -230,8 +223,10 @@ export default {
 			this.stepDescription = step.description
 			this.sourceCollection = step.options.sourceCollection
 			this.outputFormat = step.options.outputFormat
-			this.sourceDatabase = _.capitalize(_.findKey(this.allDatabases, (db) => db === step.options.sourceDatabase))
-			this.targetDatabase = _.capitalize(_.findKey(this.allDatabases, (db) => db === step.options.targetDatabase))
+			if (this.stepInfo && this.stepInfo.databases) {
+				this.sourceDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === step.options.sourceDatabase))
+				this.targetDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === step.options.targetDatabase))
+			}
 		},
 		inputErrors(field, fieldName) {
 			const errors = []
@@ -254,8 +249,8 @@ export default {
 				options: {
 					additionalCollections: [],
 					targetEntity: this.entityName,
-					sourceDatabase : this.allDatabases[this.sourceDatabase.toLowerCase()],
-					targetDatabase : this.allDatabases[this.targetDatabase.toLowerCase()],
+					sourceDatabase : this.stepInfo.databases[this.sourceDatabase.toLowerCase()],
+					targetDatabase : this.stepInfo.databases[this.targetDatabase.toLowerCase()],
 					collections : [this.entityName],
 					sourceCollection : this.sourceCollection,
 					sourceQuery: `cts.collectionQuery(["${this.sourceCollection}"])`,
@@ -349,6 +344,7 @@ export default {
 	watch: {
 		step: 'updateValues',
 		showDialog: 'updateValues',
+		stepInfo: 'updateValues',
 		stepType() {
 			if (this.stepType == 'MATCHING' || this.stepType === 'MERGING') {
 				this.sourceDatabase = 'Final'

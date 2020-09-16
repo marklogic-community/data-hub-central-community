@@ -74,6 +74,7 @@
 			:entityName="entityName"
 			:step="step"
 			:flowName="flow.name"
+			:stepInfo="stepInfo"
 			:isEditing="true"
 			@closed="showEditStep = false">
 		</add-step-dialog>
@@ -93,7 +94,8 @@ export default {
 	name: 'flow-step',
 	props: {
 		flow: {type: Object},
-		step: {type: Object}
+		step: {type: Object},
+		stepInfo: {type: Object}
 	},
 	data() {
 		return {
