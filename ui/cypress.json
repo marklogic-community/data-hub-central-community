@@ -1,7 +1,7 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
   "watchForFileChanges": true,
-  "viewportHeight": 800,
-  "viewportWidth": 1600,
+  "viewportHeight": 1280,
+  "viewportWidth": 1920,
   "projectId": "6wc1kn"
 }
