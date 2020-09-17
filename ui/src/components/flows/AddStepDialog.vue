@@ -171,7 +171,7 @@ export default {
 			return this.isEditing ? 'Edit Step' : 'Create Step'
 		},
 		collections() {
-			return (this.sourceDatabase && this.stepInfo) ? (this.stepInfo.collections[this.sourceDatabase.toLowerCase()] || []) : []
+			return (this.sourceDatabase && this.stepInfo) ? (this.stepInfo.collections[this.sourceDatabase.toLowerCase()].map(c => c.collection) || []) : []
 		},
 		open: {
 			get() {

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.dataServices.SystemUtils;
 import com.marklogic.grove.boot.AbstractController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/system")
@@ -16,5 +14,17 @@ public class SystemController extends AbstractController {
 	JsonNode reset() {
 		DatabaseClient client = getHubClient().getFinalClient();
 		return SystemUtils.on(client).resetSystem();
+	}
+
+	@RequestMapping(value = "/deleteCollection", method = RequestMethod.POST)
+	void deleteCollection(@RequestBody DeleteCollectionPojo body) {
+		DatabaseClient databaseClient;
+		if (body.database.equals("final")) {
+			databaseClient = getHubClient().getFinalClient();
+		}
+		else {
+			databaseClient = getHubClient().getStagingClient();
+		}
+		SystemUtils.on(databaseClient).deleteDatasource(body.collection);
 	}
 }

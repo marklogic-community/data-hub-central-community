@@ -3,5 +3,6 @@
   "watchForFileChanges": true,
   "viewportHeight": 1280,
   "viewportWidth": 1920,
-  "projectId": "6wc1kn"
+	"projectId": "6wc1kn",
+	"baseUrl": "http://localhost:9999"
 }

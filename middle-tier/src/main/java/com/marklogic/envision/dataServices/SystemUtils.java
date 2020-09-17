@@ -32,6 +32,20 @@ public interface SystemUtils {
             }
 
             @Override
+            public Boolean deleteDatasource(String collection) {
+              return BaseProxy.BooleanType.toBoolean(
+                baseProxy
+                .request("deleteDatasource.sjs", BaseProxy.ParameterValuesKind.SINGLE_ATOMIC)
+                .withSession()
+                .withParams(
+                    BaseProxy.atomicParam("collection", false, BaseProxy.StringType.fromString(collection)))
+                .withMethod("POST")
+                .responseSingle(false, null)
+                );
+            }
+
+
+            @Override
             public com.fasterxml.jackson.databind.JsonNode resetSystem() {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
@@ -48,6 +62,14 @@ public interface SystemUtils {
 
         return new SystemUtilsImpl(db);
     }
+
+  /**
+   * Invokes the deleteDatasource operation on the database server
+   *
+   * @param collection	provides input
+   * @return	as output
+   */
+    Boolean deleteDatasource(String collection);
 
   /**
    * Invokes the resetSystem operation on the database server

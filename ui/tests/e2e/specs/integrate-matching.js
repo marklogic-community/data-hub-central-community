@@ -51,11 +51,11 @@ describe('Integrate Tab', () => {
 				cy.get('.v-messages__message').contains('Weight must be an integer.').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Exact').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Exact').click()
 				cy.get('.v-messages__message').contains('Match Type is required.').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 				cy.get('.v-messages__message').contains('Property to Match is required.').should('not.exist')
 
 				cy.get('[data-cy="matchOptionDlg.weightField"]').clear().type('dd')
@@ -93,12 +93,12 @@ describe('Integrate Tab', () => {
 				cy.get('td').contains('email').should('not.exist')
 				cy.get('[data-cy="matching.addOptionBtn"]').click()
 
-				cy.wait(500)
 
+				cy.getActiveDialog().should('exist')
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Zip').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Zip').click()
 
 				cy.get('[data-cy="matchOptionDlg.saveBtn"]').click()
 
@@ -110,7 +110,7 @@ describe('Integrate Tab', () => {
 				cy.get('.v-messages__message').contains('9-vs-5 Match Weight must be an integer.').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('email').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('email').click()
 				cy.get('.v-messages__message').contains('Property to Match is required.').should('not.exist')
 
 				cy.get('[data-cy="matchOptionDlg.zip5match9Field"]').clear().type('dd')
@@ -158,12 +158,13 @@ describe('Integrate Tab', () => {
 				cy.get('td').contains('firstName, lastName').should('not.exist')
 				cy.get('[data-cy="matching.addOptionBtn"]').click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Reduce').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Reduce').click()
 
 				cy.get('[data-cy="matchOptionDlg.saveBtn"]').click()
 
@@ -173,10 +174,10 @@ describe('Integrate Tab', () => {
 				cy.get('.v-messages__message').contains('Weight must be an integer.').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertiesReduceField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('employeeId').parentsUntil('.v-list-item').scrollIntoView()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('firstName').parentsUntil('.v-list-item').click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('languageSkills').parentsUntil('.v-list-item').scrollIntoView()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('lastName').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('employeeId').scrollIntoView()
+				cy.getMenuOption('firstName').click()
+				cy.getMenuOption('languageSkills').scrollIntoView()
+				cy.getMenuOption('lastName').click()
 
 				// cy.get('.v-menu__content:visible .v-select-list:visible').type('{enter}')
 				cy.get('.menuable__content__active').invoke('css', 'display', 'none')
@@ -222,16 +223,17 @@ describe('Integrate Tab', () => {
 				cy.get('td').contains('departmentId').should('not.exist')
 				cy.get('[data-cy="matchStep.editOption"]').first().click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				// cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				// cy.get('.v-menu__content:visible .v-list-item:visible').contains('Exact').parentsUntil('.v-list-item').click()
+				// cy.getMenuOption('Exact').click()
 				// cy.get('.v-messages__message').contains('Match Type is required.').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 
 				cy.get('.v-messages__message').should('not.exist')
 				cy.get('[data-cy="matchOptionDlg.saveBtn"]').click()
@@ -269,12 +271,13 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="matchStep.editOption"]').first().click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Zip').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Zip').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('[data-cy="matchOptionDlg.zip5match9Field"]').clear().type('dd')
@@ -331,19 +334,20 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="matchStep.editOption"]').first().click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Reduce').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Reduce').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertiesReduceField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('employeeId').parentsUntil('.v-list-item').scrollIntoView()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('firstName').parentsUntil('.v-list-item').click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('languageSkills').parentsUntil('.v-list-item').scrollIntoView()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('lastName').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('employeeId').scrollIntoView()
+				cy.getMenuOption('firstName').click()
+				cy.getMenuOption('languageSkills').scrollIntoView()
+				cy.getMenuOption('lastName').click()
 
 				cy.get('.menuable__content__active').invoke('css', 'display', 'none')
 
@@ -453,7 +457,7 @@ describe('Integrate Tab', () => {
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Exact').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Exact').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('[data-cy="matchOptionDlg.weightField"]').clear().type('33')
@@ -500,19 +504,20 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="matchStep.editOption"]').eq(3).click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Reduce').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Reduce').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertiesReduceField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('employeeId').parentsUntil('.v-list-item').scrollIntoView()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('firstName').parentsUntil('.v-list-item').click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('languageSkills').parentsUntil('.v-list-item').scrollIntoView()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('lastName').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('employeeId').scrollIntoView()
+				cy.getMenuOption('firstName').click()
+				cy.getMenuOption('languageSkills').scrollIntoView()
+				cy.getMenuOption('lastName').click()
 
 				cy.get('.menuable__content__active').invoke('css', 'display', 'none')
 
@@ -562,7 +567,8 @@ describe('Integrate Tab', () => {
 				})
 				cy.get('[data-cy="matchStep.editOption"]').eq(4).click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
@@ -609,16 +615,17 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="matchStep.editOption"]').eq(4).click()
 
-				cy.wait(500)
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Exact').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Exact').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 
 				cy.get('.v-messages__message').should('not.exist')
 				cy.get('[data-cy="matchOptionDlg.saveBtn"]').click()
@@ -661,16 +668,17 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="matchStep.editOption"]').eq(4).click()
 
+				// cy.getActiveDialog().should('exist')
 				cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.matchTypeField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Zip').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Zip').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="matchOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 
 				cy.get('[data-cy="matchOptionDlg.zip5match9Field"]').clear().type('dd')
 				cy.get('.v-messages__message').contains('5-vs-9 Match Weight must be an integer.').should('exist')
@@ -745,7 +753,9 @@ describe('Integrate Tab', () => {
 		describe('Add Threshold', () => {
 			it('can add a Notify threshold', () => {
 				cy.get('[data-cy="matching.addThresholdBtn"]').click()
-				cy.wait(500)
+
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
@@ -763,7 +773,7 @@ describe('Integrate Tab', () => {
 				cy.get('[data-cy="matchThresholdDlg.aboveField"]').clear().type('11')
 
 				cy.get('.v-dialog--active [data-cy="matchThresholdDlg.actionField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Notify').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Notify').click()
 
 				cy.get('[data-cy="matchThresholdDlg.saveBtn"]').click()
 
@@ -786,7 +796,9 @@ describe('Integrate Tab', () => {
 
 			it('can add a Merge threshold', () => {
 				cy.get('[data-cy="matching.addThresholdBtn"]').click()
-				cy.wait(500)
+
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 
 				cy.get('.v-messages__message').should('not.exist')
 
@@ -804,7 +816,7 @@ describe('Integrate Tab', () => {
 				cy.get('[data-cy="matchThresholdDlg.aboveField"]').clear().type('11')
 
 				cy.get('.v-dialog--active [data-cy="matchThresholdDlg.actionField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Merge').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Merge').click()
 
 				cy.get('[data-cy="matchThresholdDlg.saveBtn"]').click()
 
@@ -829,7 +841,9 @@ describe('Integrate Tab', () => {
 		describe('Edit Threshold', () => {
 			it('can edit a weight', () => {
 				cy.get('[data-cy="matching.editThresholdBtn"]').first().click()
-				cy.wait(500)
+
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 				cy.get('[data-cy="matchThresholdDlg.aboveField"]').clear().type('333')
 				cy.get('[data-cy="matchThresholdDlg.saveBtn"]').click()
 
@@ -853,9 +867,11 @@ describe('Integrate Tab', () => {
 
 			it('can change a merge to a notify', () => {
 				cy.get('[data-cy="matching.editThresholdBtn"]').first().click()
-				cy.wait(500)
+
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 				cy.get('.v-dialog--active [data-cy="matchThresholdDlg.actionField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Notify').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Notify').click()
 
 				cy.get('[data-cy="matchThresholdDlg.saveBtn"]').click()
 
@@ -879,9 +895,11 @@ describe('Integrate Tab', () => {
 
 			it('can change a notify to a merge', () => {
 				cy.get('[data-cy="matching.editThresholdBtn"]').last().click()
-				cy.wait(500)
+
+				cy.getActiveDialog().should('exist')
+				// cy.wait(500)
 				cy.get('.v-dialog--active [data-cy="matchThresholdDlg.actionField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('Merge').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('Merge').click()
 
 				cy.get('[data-cy="matchThresholdDlg.saveBtn"]').click()
 
@@ -935,6 +953,8 @@ describe('Integrate Tab', () => {
 			it('can edit the step', () => {
 				cy.get('.v-dialog--active').should('not.exist')
 				cy.get('[data-cy="flowStep.editButton"]').click()
+
+				cy.getActiveDialog().should('exist')
 				cy.get('.v-dialog--active [data-cy="addStepDialog.stepNameField"]').should('have.value', 'MatchTest')
 				cy.get('.v-dialog--active [data-cy="addStepDialog.stepTypeField"]').parent().within(() => {
 					cy.get('.v-select__selection').should('have.text', 'Matching')
@@ -961,7 +981,7 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="addStepDialog.stepDescField"]').clear().type('Updated!')
 				cy.get('.v-dialog--active [data-cy="addStepDialog.dataFormatField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('xml').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('xml').click()
 				cy.get('[data-cy="addStepDialog.saveBtn"]').click()
 				cy.wait('@updateStep')
 					.its('request.body')

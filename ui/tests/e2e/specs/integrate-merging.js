@@ -46,11 +46,11 @@ describe('Integrate Tab', () => {
 				cy.get('.v-messages__message').contains('Strategy is required.').should('exist')
 
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 				cy.get('.v-messages__message').contains('Property to Merge is required.').should('not.exist')
 
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.strategyField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('My Strategy').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('My Strategy').click()
 				cy.get('.v-messages__message').contains('Strategy is required.').should('not.exist')
 
 				cy.get('.v-messages__message').should('not.exist')
@@ -112,7 +112,7 @@ describe('Integrate Tab', () => {
 				})
 
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('[data-cy="mergeOptionDlg.saveBtn"]').click()
@@ -162,6 +162,8 @@ describe('Integrate Tab', () => {
 				})
 
 				cy.get('[data-cy="mergeStep.editOption"]').click()
+
+				cy.getActiveDialog()
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.propertyNameField"]').parent().within(() => {
 					cy.get('.v-select__selection').should('have.text', 'address')
 				})
@@ -170,7 +172,7 @@ describe('Integrate Tab', () => {
 				})
 
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.strategyField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('My Strategy2').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('My Strategy2').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('[data-cy="mergeOptionDlg.saveBtn"]').click()
@@ -228,10 +230,10 @@ describe('Integrate Tab', () => {
 				})
 
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.propertyNameField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('departmentId').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('departmentId').click()
 
 				cy.get('.v-dialog--active [data-cy="mergeOptionDlg.strategyField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('My Strategy2').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('My Strategy2').click()
 				cy.get('.v-messages__message').should('not.exist')
 
 				cy.get('[data-cy="mergeOptionDlg.saveBtn"]').click()
@@ -649,7 +651,7 @@ describe('Integrate Tab', () => {
 
 				cy.get('[data-cy="addStepDialog.stepDescField"]').clear().type('Updated!')
 				cy.get('.v-dialog--active [data-cy="addStepDialog.dataFormatField"]').parent().click()
-				cy.get('.v-menu__content:visible .v-list-item:visible').contains('xml').parentsUntil('.v-list-item').click()
+				cy.getMenuOption('xml').click()
 				cy.get('[data-cy="addStepDialog.saveBtn"]').click()
 				cy.wait('@updateStep')
 					.its('request.body')

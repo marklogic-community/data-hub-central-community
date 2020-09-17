@@ -7,15 +7,17 @@ let databases = {
 
 let collections = {
 	staging: xdmp.invokeFunction(() =>
-		cts.collections()
-			.toArray()
-			.filter(c => !fn.startsWith(c, 'http://marklogic.com')),
+	cts.collections()
+	.toArray()
+	.filter(c => !fn.startsWith(c, 'http://marklogic.com'))
+	.map(c => ({ collection: c, count: cts.frequency(c)})),
 		{ database: xdmp.database(databases.staging)}
 	),
 	final: xdmp.invokeFunction(() =>
 		cts.collections()
 			.toArray()
-			.filter(c => !fn.startsWith(c, 'http://marklogic.com')),
+			.filter(c => !fn.startsWith(c, 'http://marklogic.com'))
+			.map(c => ({ collection: c, count: cts.frequency(c)})),
 		{ database: xdmp.database(databases.final)}
 	)
 }

@@ -50,7 +50,7 @@ public class DeployService extends LoggingObject {
 	public void loadMapping(HubClient hubClient, Mapping mapping) {
 		String uri = getMappingUri(mapping.getName(), mapping.getVersion());
 		DocumentMetadataHandle meta = buildMetadata("http://marklogic.com/data-hub/mappings", hubClient.getHubConfig().getModulePermissions());
-		meta.getCollections().add(hubClient.getUsername() + "_mappings");
+		meta.getCollections().add("http://marklogic.com/envision/" + hubClient.getUsername() + "_mappings");
 		StringHandle handle = new StringHandle(mapping.serialize());
 		getStagingDocMgr(hubClient).write(uri, meta, handle);
 		getFinalDocMgr(hubClient).write(uri, meta, handle);

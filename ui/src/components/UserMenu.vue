@@ -37,7 +37,7 @@
 					</v-list-item-title>
         </v-list-item>
 
-        <v-list-item v-on:click.prevent="adminPage">
+        <v-list-item v-if="!isHosted" v-on:click.prevent="adminPage">
           <v-list-item-title>Admin</v-list-item-title>
         </v-list-item>
 
@@ -54,7 +54,12 @@
 import { mapState } from 'vuex'
 
 export default {
-  name: 'UserMenu',
+	name: 'UserMenu',
+	data() {
+		return {
+			isHosted: process.env.VUE_APP_IS_HOSTED === 'true'
+		}
+	},
   computed: {
 		...mapState({
 			profile: state => state.auth.profile,

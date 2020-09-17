@@ -126,17 +126,6 @@ const routes = [
       }
     },
     {
-      path: '/admin',  //url path
-      name: 'root.admin', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-			import(/* webpackChunkName: "adminpage" */ './views/AdminPage.vue'),
-      meta: {
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    {
       path: '/detail',
       name: 'root.details',
       // lazy-loading of page
@@ -224,6 +213,17 @@ if (isHosted || isTesting) {
 	})
 }
 if (!isHosted || isTesting) {
+	routes.push({
+		path: '/admin',  //url path
+		name: 'root.admin', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "adminpage" */ './views/AdminPage.vue'),
+		meta: {
+			requiresLogin: true,
+			checkLogin
+		}
+	})
 	routes.push({
 		path: '/know',	//url path
 		name: 'root.know', //use to navigate to page

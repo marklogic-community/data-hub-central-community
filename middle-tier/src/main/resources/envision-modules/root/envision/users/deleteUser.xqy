@@ -33,7 +33,7 @@ declare function local:delete-envision-assets($user, $role-name) {
 			cts:uri-match("/ingest/" || $user || "*") ! xdmp:document-delete(.),
 			cts:uri-match("/data/" || $user || "*") ! xdmp:document-delete(.),
 			cts:uris((), (), cts:collection-query($user)) ! xdmp:document-delete(.),
-			cts:uris((), (), cts:collection-query($user || "_mappings")) ! xdmp:document-delete(.)
+			cts:uris((), (), cts:collection-query("http://marklogic.com/envision/" || $user || "_mappings")) ! xdmp:document-delete(.)
 		}, map:entry("database", $db))
 };
 

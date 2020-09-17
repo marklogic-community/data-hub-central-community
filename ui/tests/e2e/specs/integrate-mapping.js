@@ -150,9 +150,9 @@ describe('Integrate Tab', () => {
 				cy.get('.v-select__selection').should('have.text', 'json')
 			})
 
-			cy.get('[data-cy="addStepDialog.stepDescField"]').clear().type('Updated!')
+			cy.get('[data-cy="addStepDialog.stepDescField"]').clear({force: true}).type('Updated!')
 			cy.get('.v-dialog--active [data-cy="addStepDialog.dataFormatField"]').parent().click()
-			cy.get('.v-menu__content:visible .v-list-item:visible').contains('xml').parentsUntil('.v-list-item').click()
+			cy.get('.v-menu__content:visible .v-list-item:visible').contains('xml').parentsUntil('.v-list-item').first().click()
 			cy.get('[data-cy="addStepDialog.saveBtn"]').click()
 			cy.wait('@updateStep')
 				.its('request.body')
