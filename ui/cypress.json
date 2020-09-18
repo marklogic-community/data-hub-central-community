@@ -4,5 +4,8 @@
   "viewportHeight": 1280,
   "viewportWidth": 1920,
 	"projectId": "6wc1kn",
-	"baseUrl": "http://localhost:9999"
+	"baseUrl": "http://localhost:9999",
+	"retries": {
+		"runMode": 2, "openMode": 0
+	}
 }
