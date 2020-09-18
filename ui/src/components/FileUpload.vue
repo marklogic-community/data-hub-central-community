@@ -50,7 +50,7 @@ export default {
 				this.$emit('upload', dt.files)
 			}
 		},
-		chooseFile(test = false) {
+		chooseFile() {
 			this.chooseFileInput = document.createElement('input');
 			this.chooseFileInput.id = 'envision-file-chooser'
 			this.chooseFileInput.type = 'file'
@@ -58,12 +58,7 @@ export default {
 			this.chooseFileInput.addEventListener('change', () => {
 				this.$emit('upload', this.chooseFileInput.files)
 			})
-			if (test) {
-				document.getElementsByName('body').appendChild(this.chooseFile);
-			}
-			else {
-				this.chooseFileInput.click()
-			}
+			this.chooseFileInput.click()
 		},
 		inputChanged($event) {
 			this.$emit('upload', $event.target.files)
