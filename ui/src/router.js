@@ -135,6 +135,19 @@ const routes = [
         requiresLogin: true,
         checkLogin
       }
+		},
+		{
+      path: '/export',  //url path
+      name: 'root.export', //use to navigate to page
+      // lazy-loading of page
+      component: () =>
+			import(/* webpackChunkName: "exportpage" */ './views/ExportPage.vue'),
+      meta: {
+        label: 'Export',
+        navArea: 'header',
+        requiresLogin: true,
+        checkLogin
+      }
     },
     {
       path: '/detail',
