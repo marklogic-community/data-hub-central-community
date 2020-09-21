@@ -124,7 +124,7 @@ export default {
 		</v-snackbar>
 		<h1>Envision Export Page</h1>
 		<fieldset class="col-sm-9" v-if="!cloud">
-			<legend>Etities</legend>
+			<legend>Entities</legend>
 				<v-simple-table dense>
 				<tbody>
 					<tr v-for="entity in entities" :key="entity" class='clickable-row' @click="handleEntityTableClick(dhprop)">
