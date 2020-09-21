@@ -20,8 +20,12 @@ public interface HubClient {
 
 	DatabaseClient getModulesClient();
 
+	DatabaseClient getStagingSchemasClient();
+
+	DatabaseClient getFinalSchemasClient();
+
 	String getDbName(DatabaseKind kind);
-	
+
 	ManageClient getManageClient();
 
 	HubConfigImpl getHubConfig();

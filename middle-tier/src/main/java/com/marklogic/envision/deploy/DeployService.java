@@ -50,6 +50,7 @@ public class DeployService extends LoggingObject {
 	public void loadMapping(HubClient hubClient, Mapping mapping) {
 		String uri = getMappingUri(mapping.getName(), mapping.getVersion());
 		DocumentMetadataHandle meta = buildMetadata("http://marklogic.com/data-hub/mappings", hubClient.getHubConfig().getModulePermissions());
+		meta.getCollections().add("http://marklogic.com/envision/" + hubClient.getUsername() + "_mappings");
 		StringHandle handle = new StringHandle(mapping.serialize());
 		getStagingDocMgr(hubClient).write(uri, meta, handle);
 		getFinalDocMgr(hubClient).write(uri, meta, handle);
@@ -76,6 +77,12 @@ public class DeployService extends LoggingObject {
 		catch(JsonProcessingException e) {
 			throw new RuntimeException("Invalid Flow Json");
 		}
+	}
+
+	public void deleteFlow(HubClient hubClient, String flowName) {
+		String uri = "/flows/" + flowName + ".flow.json";
+		getStagingDocMgr(hubClient).delete(uri);
+		getFinalDocMgr(hubClient).delete(uri);
 	}
 
 	private DocumentMetadataHandle buildMetadata(String collection, String permissions) {

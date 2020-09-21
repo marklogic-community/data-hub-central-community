@@ -13,6 +13,7 @@
 			<v-btn @click="chooseFile" color="primary">
 				Choose a File
 			</v-btn>
+			<input class="hideUnlessTesting" type="file" data-cy="uploadfileInput" accept="text/csv" @change="inputChanged"/>
 		</div>
 		</slot>
 	</div>
@@ -51,12 +52,16 @@ export default {
 		},
 		chooseFile() {
 			this.chooseFileInput = document.createElement('input');
+			this.chooseFileInput.id = 'envision-file-chooser'
 			this.chooseFileInput.type = 'file'
 			this.chooseFileInput.accept = 'text/csv'
 			this.chooseFileInput.addEventListener('change', () => {
 				this.$emit('upload', this.chooseFileInput.files)
 			})
 			this.chooseFileInput.click()
+		},
+		inputChanged($event) {
+			this.$emit('upload', $event.target.files)
 		}
 	}
 };
@@ -84,4 +89,10 @@ export default {
 .container > div {
 	margin-bottom: 1em;
 }
+
+.hideUnlessTesting {
+	visibility: hidden;
+	position: absolute;
+}
+
 </style>

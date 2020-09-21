@@ -5,16 +5,40 @@
 	},
 	"collections": {
 		"staging": [
-			"DataSource1",
-			"DataSource2",
-			"DataSource3",
-			"DataSource4"
+			{
+				"collection": "DataSource1",
+				"count": 100
+			},
+			{
+				"collection": "DataSource2",
+				"count": 100
+			},
+			{
+				"collection": "DataSource3",
+				"count": 100
+			},
+			{
+				"collection": "DataSource4",
+				"count": 100
+			}
 		],
 		"final": [
-			"DataSource1",
-			"DataSource2",
-			"DataSource3",
-			"DataSource4"
+			{
+				"collection": "DataSource1",
+				"count": 44
+			},
+			{
+				"collection": "DataSource2",
+				"count": 44
+			},
+			{
+				"collection": "DataSource3",
+				"count": 44
+			},
+			{
+				"collection": "DataSource4",
+				"count": 44
+			}
 		]
 	}
 }

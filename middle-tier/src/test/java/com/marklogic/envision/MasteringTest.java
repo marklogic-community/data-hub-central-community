@@ -28,9 +28,12 @@ public class MasteringTest extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
+		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 
 		installEnvisionModules();
+
+		registerAccount();
 
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));

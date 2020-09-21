@@ -13,6 +13,7 @@ import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.dataServices.Users;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -89,6 +90,12 @@ public class UserService {
 		meta.getPermissions().add("envision", DocumentMetadataHandle.Capability.READ, DocumentMetadataHandle.Capability.UPDATE);
 		JacksonHandle handle = new JacksonHandle(objectMapper.valueToTree(user));
 		mgr.write(userUri(user.email), meta, handle);
+	}
+
+	public void deleteUser(String username) throws IOException {
+		HubClient hubClient = envisionConfig.newAdminHubClient();
+		modelService.deleteAllModels(hubClient, username);
+		Users.on(hubClient.getFinalClient()).deleteUser(username);
 	}
 
 	public void addResetTokenToUser(String email) {

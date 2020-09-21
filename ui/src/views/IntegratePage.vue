@@ -1,10 +1,15 @@
 <template>
 	<v-container fluid>
+		<v-layout row v-if="!hasSteps" class="no-steps">
+			<v-flex md8 :class="nextStepClass">
+					<i class="fa" :class="(nextStepClass === '') ? 'fa-level-down':'fa-level-up'" /> {{nextStep}}
+			</v-flex>
+		</v-layout>
 		<v-layout row justify-center no-gutters>
 			<div class="button-wrapper">
-				<v-btn @click="addStep">Add Step</v-btn>
+				<v-btn data-cy="integrate.addStepBtn" :disabled="!hasData" @click="addStep">Add Step</v-btn>
 				<v-spacer></v-spacer>
-				<v-btn @click="showFlowRunner = true">Run Steps</v-btn>
+				<v-btn data-cy="integrate.runStepBtn" :disabled="!hasSteps" @click="showFlowRunner = true">Run Steps</v-btn>
 			</div>
 		</v-layout>
 		<v-layout v-if="steps && steps.length > 0" row>
@@ -29,11 +34,6 @@
 				</transition-group>
 			</draggable>
 		</v-layout>
-		<v-layout row v-else class="no-steps">
-			<v-flex md8>
-				<i class="fa fa-level-up" /> Start by adding a step.
-			</v-flex>
-		</v-layout>
 
 		<v-layout row>
 			<v-flex md12>
@@ -41,6 +41,7 @@
 					v-if="flow"
 					:flow="flow"
 					:step="currentStep"
+					:stepInfo="stepInfo"
 					@saved="saveStep"
 					@deleted="stepDeleted"/>
 			</v-flex>
@@ -49,6 +50,7 @@
 			v-if="flow"
 			:showDialog="showAddStep"
 			:flowName="flow.name"
+			:stepInfo="stepInfo"
 			@closed="showAddStep = false"
 			@saved="stepCreated">
 		</add-step-dialog>
@@ -66,6 +68,7 @@ import draggable from 'vuedraggable'
 import FlowRunnerDialog from '@/components/flows/FlowRunnerDialog'
 import FlowStep from '@/components/flows/FlowStep'
 import AddStepDialog from '@/components/flows/AddStepDialog'
+import flowsApi from '@/api/FlowsApi'
 import md5 from 'md5';
 
 export default {
@@ -76,9 +79,12 @@ export default {
 			currentStepIdx: null,
 			currentStepName: null,
 			currentPanel: null,
+			stepInfo: null,
 			dragOptions: {
 				animation: 200
-			}
+			},
+			nextStep: 'Start by adding a step.',
+			nextStepClass: ''
 		}
 	},
 	components: {
@@ -88,12 +94,19 @@ export default {
 		draggable
 	},
 	computed: {
+		hasData() {
+			return this.stepInfo && this.stepInfo.collections.staging.length > 0 &&
+				this.entities && this.entities.length > 0
+		},
+		hasSteps() {
+			return this.flow && Object.keys(this.flow.steps).length > 0
+		},
 		currentStep() {
 			return (this.flow && this.currentStepName) ?
 				Object.values(this.flow.steps).find(s => s.name === this.currentStepName) : null
 		},
 		sortedSteps() {
-			return Object.values(this.entities).map(e => e.info.title)
+			return this.entities.map(e => e.info.title)
 				.map(e => {
 					return {
 						name: e,
@@ -139,7 +152,7 @@ export default {
 		...mapState({
 			flowName: state => md5(state.auth.username),
 			flows: state => state.flows.flows,
-			entities: state => state.flows.entities
+			entities: state => Object.values(state.flows.entities)
 		})
 	},
 	created () {
@@ -148,6 +161,17 @@ export default {
 	},
 	mounted() {
 		this.handleRouteParams()
+		flowsApi.getNewStepInfo().then(info => {
+			this.stepInfo = info
+			if (!this.stepInfo.collections.staging || this.stepInfo.collections.staging.length <= 0) {
+				this.nextStep = 'Start by Uploading data.'
+				this.nextStepClass = 'upload'
+			}
+			else if (!this.entities || this.entities.length <= 0) {
+				this.nextStep = 'Start by creating a data model'
+				this.nextStepClass = 'connect'
+			}
+		})
 	},
   watch: {
 		'$route.params': 'handleRouteParams',
@@ -330,14 +354,27 @@ export default {
 }
 
 .no-steps {
-	margin-top: 2em;
+	margin-bottom: 2em;
 	text-align: center;
 	justify-content: center;
-	.fa-level-up {
+	.fa-level-up,
+	.fa-level-down {
 		transform: scale(-1, 1);
 		font-size: 200%;
 		color: red;
 	}
+
+	.fa-level-down {
+		transform: scale(-1, 1) translateY(15px)
+	}
+}
+
+.upload {
+	transform: translateX(-150px);
+}
+
+.connect {
+	transform: translateX(-20px);
 }
 
 </style>

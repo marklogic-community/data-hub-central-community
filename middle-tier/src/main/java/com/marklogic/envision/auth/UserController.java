@@ -26,6 +26,13 @@ public class UserController extends AbstractController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<?> signup(@RequestParam String username) throws IOException {
+		userService.deleteUser(username);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/userExists", method = RequestMethod.GET)
 	@ResponseBody
 	public boolean userExists(@RequestParam String email) {

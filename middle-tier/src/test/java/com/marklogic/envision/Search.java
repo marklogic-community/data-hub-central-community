@@ -49,9 +49,12 @@ public class Search extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
+		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 
 		installEnvisionModules();
+
+		registerAccount();
 
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.setModelsDir(hubClient.getHubConfig().getHubProjectDir().resolve("conceptConnectorModels").toFile());

@@ -26,41 +26,41 @@ describe('Integrate Tab', () => {
 		cy.route('POST', '/api/flows/steps', {}).as('updateStep')
 		cy.route('POST', '/api/flows/steps/delete', {}).as('deleteStep')
 		cy.route('PUT', '/api/flows/21232f297a57a5a743894a0e4a801fc3', {}).as('saveFlow')
+		cy.route('POST', '/api/upload', {}).as('uploadFile')
 	})
 
-	it('should suggest uploading data', () => {
-		cy.visit('/integrate')
-		cy.contains('Start by Uploading data.')
-		cy.get('[data-cy="integrate.addStepBtn"]').should('be.disabled')
-		cy.get('[data-cy="integrate.runStepBtn"]').should('be.disabled')
-
+	it('should show sample data', () => {
+		cy.visit('/upload')
+		cy.contains('MyDataSource.csv')
+		cy.contains('MyOtherDataSource.csv')
 	})
 
-	it('should suggest creating a data model', () => {
+	it('should show real data', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
-
-		cy.visit('/integrate')
-		cy.contains('Start by creating a data model')
-		cy.get('[data-cy="integrate.addStepBtn"]').should('be.disabled')
-		cy.get('[data-cy="integrate.runStepBtn"]').should('be.disabled')
+		cy.visit('/upload')
+		cy.contains('DataSource1')
+		cy.contains('DataSource2')
+		cy.contains('DataSource3')
+		cy.contains('DataSource4')
 	})
 
-	it('should allow new steps', () => {
-		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
-		cy.route('GET', '/api/entities', 'fixture:entities.json')
-		cy.visit('/integrate')
-		cy.get('[data-cy="integrate.addStepBtn"]').should('not.be.disabled')
-		cy.get('[data-cy="integrate.runStepBtn"]').should('be.disabled')
-	})
+	it('should upload a csv', () => {
+		cy.visit('/upload')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.fixture('test.csv', 'base64').then(fileContent => {
+			console.log(fileContent)
+			cy.get('[data-cy="uploadfileInput"]').should('exist')
+        .attachFile(
+					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
+					{ subjectType: 'drag-n-drop' },
+				);
 
-	it('shows all the steps', () => {
-		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
-		cy.route('GET', '/api/entities', 'fixture:entities.json')
-		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
-		cy.visit('/integrate')
-		cy.get('[data-cy="integrate.addStepBtn"]').should('not.be.disabled')
-		cy.get('[data-cy="integrate.runStepBtn"]').should('not.be.disabled')
-
-		cy.get('.step-wrapper').should('have.length', 3)
+				cy.wait('@uploadFile')
+				.its('request.body')
+					.should(body => {
+						expect(body.get('collection')).to.eq('test.csv')
+						expect(body.get('file').name).to.eq('test.csv')
+					})
+		})
 	})
 })

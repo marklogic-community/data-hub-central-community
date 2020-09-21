@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -34,9 +36,12 @@ public class UploadServiceTest extends BaseTest {
 	private LoadHubArtifactsCommand loadHubArtifactsCommand;
 
 	@BeforeEach
-	void setup() {
+	void setup() throws IOException {
+		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
+
+		registerAccount();
 
 		HubConfigImpl hubConfig = getHubConfig();
 		SimpleAppDeployer deployer = new SimpleAppDeployer(hubConfig.getManageClient(), hubConfig.getAdminManager());
