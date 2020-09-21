@@ -12,7 +12,7 @@ export default {
 		entityMsg: '',
 		entityError: '',
 		datahub: '',
-		entities: '',
+		entities: [],
 		showEntityStatus:false,
 		headers: [
 			{
@@ -33,7 +33,7 @@ export default {
 			.then(response => {
 			console.log('Returning ' + response.data);
 			this.datahub= response.data;
-			this.entities= parseEntities(response.data);
+			this.parseEntities(response.data);
 			return response.data;
 			})
 			.catch(error => {
@@ -46,7 +46,7 @@ export default {
 			.get('/api/os/getEntityNames/')
 			.then(response => {
 				console.log('Returning ' + response.data);
-				this.entities=response.data;
+				//this.entities=response.data;
 				return response.data;
 			})
 			.catch(error => {
@@ -86,14 +86,22 @@ export default {
 			});
 		},
 		parseEntities(hubConfig){
-			hubConfig.filter(item => item.prop === "Entities")
-				.array.forEach(item => {
-					this.entities = item.value
-				});
+			//filter out the Entities item from hubConfig
+			let ents  = hubConfig.filter(item => item.prop === "Entities");
+			//have to parse this into an array- it's a string
+			let entStr = JSON.parse(JSON.stringify(ents[0].val));
+			//this regex pulls the entity names out of a serilaized string representation
+			//and puts them in an array; a great way to come up with this regex is an
+			//interactive regex pattern matcher like BBEdit
+			this.entities = entStr.match(/[^,\s,\",\[][^\,]*[^,\s,]*[^,\",\]]/g);
 		},
 		handleDataHubTableClick(event){
 			console.log(event);
-		}},
+		},
+		handleEntityTableClick(entity){
+			console.log(entity);
+		}
+	},
 	mounted() {
 		this.getDataHubConfig();
 		this.getEntityNames();
@@ -127,7 +135,7 @@ export default {
 			<legend>Entities</legend>
 				<v-simple-table dense>
 				<tbody>
-					<tr v-for="entity in entities" :key="entity" class='clickable-row' @click="handleEntityTableClick(dhprop)">
+					<tr v-for="entity in entities" :key="entity" class='clickable-row' @click="handleEntityTableClick(entity)">
 						<td >{{entity}}</td>
 					</tr>
 				</tbody>
