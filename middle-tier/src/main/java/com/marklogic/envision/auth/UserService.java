@@ -1,6 +1,7 @@
 package com.marklogic.envision.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.ResourceNotFoundException;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -90,6 +92,10 @@ public class UserService {
 		meta.getPermissions().add("envision", DocumentMetadataHandle.Capability.READ, DocumentMetadataHandle.Capability.UPDATE);
 		JacksonHandle handle = new JacksonHandle(objectMapper.valueToTree(user));
 		mgr.write(userUri(user.email), meta, handle);
+	}
+
+	public JsonNode getUsers() {
+		return Users.on(envisionConfig.newAdminFinalClient()).getUsers();
 	}
 
 	public void deleteUser(String username) throws IOException {

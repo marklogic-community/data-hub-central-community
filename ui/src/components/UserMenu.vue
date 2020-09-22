@@ -37,7 +37,11 @@
 					</v-list-item-title>
         </v-list-item>
 
-        <v-list-item v-if="!isHosted" v-on:click.prevent="adminPage">
+        <v-list-item v-if="isHosted && isAdmin" v-on:click.prevent="hostedAdminPage">
+          <v-list-item-title>Admin</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item v-else-if="!isHosted" v-on:click.prevent="adminPage">
           <v-list-item-title>Admin</v-list-item-title>
         </v-list-item>
 
@@ -64,7 +68,8 @@ export default {
 		...mapState({
 			profile: state => state.auth.profile,
 			username: state => state.auth.username,
-			notificationCount: state => state.mastering.totalUnread
+			notificationCount: state => state.mastering.totalUnread,
+			isAdmin: state => state.auth.authorities.indexOf('ROLE_envisionAdmin') >= 0
 		})
   },
   methods: {
@@ -77,7 +82,10 @@ export default {
           this.$router.push({ name: 'root.login' });
         }
       })
-    },
+		},
+		hostedAdminPage() {
+			this.$router.push({ name: 'root.hostedadmin' });
+		},
     adminPage() {
       this.$router.push({ name: 'root.admin' });
     }

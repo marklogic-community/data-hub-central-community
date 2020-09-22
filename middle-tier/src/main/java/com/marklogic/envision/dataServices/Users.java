@@ -32,6 +32,20 @@ public interface Users {
             }
 
             @Override
+            public com.fasterxml.jackson.databind.JsonNode getUsers() {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("getUsers.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .withSession()
+                .withParams(
+                    )
+                .withMethod("POST")
+                .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
             public Boolean addResetToken(String email, String token, java.util.Date expiry) {
               return BaseProxy.BooleanType.toBoolean(
                 baseProxy
@@ -48,15 +62,15 @@ public interface Users {
 
 
             @Override
-            public Boolean testLogin() {
-              return BaseProxy.BooleanType.toBoolean(
+            public com.fasterxml.jackson.databind.JsonNode testLogin() {
+              return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("testLogin.sjs", BaseProxy.ParameterValuesKind.NONE)
                 .withSession()
                 .withParams(
                     )
                 .withMethod("POST")
-                .responseSingle(false, null)
+                .responseSingle(false, Format.JSON)
                 );
             }
 
@@ -151,6 +165,14 @@ public interface Users {
     }
 
   /**
+   * Invokes the getUsers operation on the database server
+   *
+   * 
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode getUsers();
+
+  /**
    * Invokes the addResetToken operation on the database server
    *
    * @param email	provides input
@@ -166,7 +188,7 @@ public interface Users {
    * 
    * @return	as output
    */
-    Boolean testLogin();
+    com.fasterxml.jackson.databind.JsonNode testLogin();
 
   /**
    * Invokes the userExists operation on the database server

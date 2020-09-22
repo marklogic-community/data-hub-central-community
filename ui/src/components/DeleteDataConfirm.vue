@@ -20,11 +20,11 @@
 						<v-icon>delete</v-icon>
 					</v-btn>
 				</template>
-				<span>Delete Data Source</span>
+				<span>{{tooltip}}</span>
 			</v-tooltip>
 		</template>
 		<confirm
-			message="Do you really want to delete this data source?"
+			:message="message"
 			confirmText="Delete"
 			:disabled="deleteInProgress"
 			@confirm="deleteDatasource"
@@ -33,33 +33,31 @@
 </template>
 <script>
 import Confirm from '@/components/Confirm.vue';
-import axios from 'axios';
 
 export default {
 	components: {
 		Confirm
 	},
 	props: {
+		deleteInProgress: {type: Boolean, default: false},
+		tooltip: {type: String},
+		message: {type: String},
 		collection: {type: String},
 		disabled: {type: Boolean, default: false}
 	},
 	data() {
 		return {
-			deleteInProgress: false,
 			confirmDeleteMenu: null,
 		}
 	},
 	methods: {
 		async deleteDatasource() {
-			this.deleteInProgress = true
 			try {
-				await axios.post("/api/system/deleteCollection", { database: 'staging', collection: this.collection })
 				this.$emit('deleted', this.collection)
 			}
 			catch(error) {
 				console.error(error)
 			}
-			this.deleteInProgress = false
 			this.confirmDeleteMenu = false
 		},
 	}

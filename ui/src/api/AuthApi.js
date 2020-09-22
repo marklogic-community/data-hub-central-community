@@ -130,6 +130,36 @@ export default {
 		});
 	},
 
+	deleteUser(user) {
+		return axios.get(`/api/auth/delete?username=${encodeURIComponent(user)}`)
+		.then(response => {
+			if (response.status === 200) {
+				return response.data;
+			} else {
+				return { isError: true, error: response.data };
+			}
+		})
+		.catch(error => {
+			console.error('error:', error);
+			return { isError: true, error: error };
+		});
+	},
+
+	getUsers() {
+		return axios.get('/api/auth/users')
+		.then(response => {
+			if (response.status === 200) {
+				return response.data;
+			} else {
+				return { isError: true, error: response.data };
+			}
+		})
+		.catch(error => {
+			console.error('error:', error);
+			return { isError: true, error: error };
+		});
+	},
+
 	async install() {
 		return axios.post('/api/auth/install')
 		.then(response => {

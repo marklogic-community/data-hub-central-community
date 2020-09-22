@@ -2,6 +2,7 @@
     "functionName": "testLogin",
     "params": [],
     "return": {
-        "datatype": "boolean"
+        "datatype": "jsonDocument",
+        "$javaClass": "com.fasterxml.jackson.databind.JsonNode"
     }
 }
