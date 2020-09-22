@@ -33,6 +33,7 @@ export default {
 			.then(response => {
 			console.log('Returning ' + response.data);
 			this.datahub= response.data;
+      feature/issue-322
 			this.parseEntities(response.data);
 			return response.data;
 			})
@@ -46,7 +47,6 @@ export default {
 			.get('/api/os/getEntityNames/')
 			.then(response => {
 				console.log('Returning ' + response.data);
-				//this.entities=response.data;
 				return response.data;
 			})
 			.catch(error => {
@@ -86,6 +86,7 @@ export default {
 			});
 		},
 		parseEntities(hubConfig){
+
 			//filter out the Entities item from hubConfig
 			let ents  = hubConfig.filter(item => item.prop === "Entities");
 			//have to parse this into an array- it's a string
