@@ -45,6 +45,7 @@ public class InstallService {
 		appDeployer.deploy(appConfig);
 		createAmps(manageClient, appConfig.getModulesDatabaseName());
 		createEnvisionRole(manageClient);
+		createEnvisionAdminRole(manageClient);
 		System.out.println("...Install Complete.\n");
 	}
 
@@ -71,6 +72,18 @@ public class InstallService {
 			e.printStackTrace();
 		}
 	}
+
+	private void createEnvisionAdminRole(ManageClient manageClient) {
+		try {
+			RoleManager roleManager = new RoleManager(manageClient);
+			String role = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("envision-config/roles/envisionAdmin.json")));
+			roleManager.save(role);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 
 
 }

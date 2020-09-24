@@ -122,6 +122,7 @@ const auth = {
 		initialized: false,
 		authenticated: false,
 		username: undefined,
+		authorities: [],
 		profile: undefined
 	},
 	mutations: {
@@ -135,9 +136,10 @@ const auth = {
 				state.profile = undefined;
 			}
 		},
-		async loggedIn(state, { username }) {
+		async loggedIn(state, { username, authorities }) {
 			state.authenticated = true;
 			state.username = username;
+			state.authorities = authorities;
 			await this.$ws.connect()
 		},
 		loggedOut(state) {
@@ -165,7 +167,8 @@ const auth = {
 						await dispatch(
 							'loggedIn',
 							{
-								username: result.username
+								username: result.username,
+								authorities: result.authorities
 							},
 							{ root: true }
 						);
@@ -195,7 +198,8 @@ const auth = {
 					dispatch(
 						'loggedIn',
 						{
-							username: user
+							username: user,
+							authorities: result.authorities
 						},
 						{ root: true }
 					);
@@ -208,15 +212,6 @@ const auth = {
 				if (result.isError) {
 					// error
 					return result;
-				} else {
-					dispatch(
-						'loggedIn',
-						{
-							username: email
-						},
-						{ root: true }
-					);
-					dispatch('getProfile')
 				}
 			});
 		},

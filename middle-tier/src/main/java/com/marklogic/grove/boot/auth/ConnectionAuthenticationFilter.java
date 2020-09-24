@@ -16,7 +16,9 @@
  */
 package com.marklogic.grove.boot.auth;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.dataServices.Users;
 import com.marklogic.envision.hub.HubClient;
@@ -29,6 +31,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
@@ -40,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @PropertySource({"classpath:application.properties"})
 public class ConnectionAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -103,8 +107,14 @@ public class ConnectionAuthenticationFilter extends AbstractAuthenticationProces
 		sessionManager.setHubClient(username, hubClient);
 
 		try {
-			if (Users.on(sessionManager.getHubClient(username).getStagingClient()).testLogin()) {
+			ArrayNode resp = (ArrayNode)Users.on(sessionManager.getHubClient(username).getStagingClient()).testLogin();
+			if (resp != null) {
 				List<GrantedAuthority> authorities = new ArrayList<>();
+				resp.iterator().forEachRemaining(node -> {
+					String authority = node.asText();
+					authorities.add(new SimpleGrantedAuthority("ROLE_" + authority));
+				});
+
 				return new AuthenticationToken(username, password, authorities);
 			}
 		} catch (Exception e) {
@@ -115,13 +125,13 @@ public class ConnectionAuthenticationFilter extends AbstractAuthenticationProces
 	}
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String user = (String)authResult.getPrincipal();
 
         byte[] signingKey = SecurityConstants.JWT_SECRET.getBytes();
 
-        List<String> roles = new ArrayList<>();
-        roles.add("admin");
+
+        List<String> roles = authResult.getAuthorities().stream().map(grantedAuthority -> grantedAuthority.getAuthority()).collect(Collectors.toList());
 
         String token = Jwts.builder()
                 .setSubject(user)
@@ -132,5 +142,6 @@ public class ConnectionAuthenticationFilter extends AbstractAuthenticationProces
                 .compact();
 
         response.addHeader(SecurityConstants.TOKEN_HEADER, SecurityConstants.TOKEN_PREFIX + token);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(new SessionStatus(user, roles, true)));
     }
 }

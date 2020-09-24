@@ -43,8 +43,11 @@
 							<td>{{data.count}}</td>
 							<td>
 								<delete-data-confirm
+									tooltip="Delete Data Source"
+									message="Do you really want to delete this data source?"
 									:disabled="(stagingData.length <= 0)"
 									:collection="data.collection"
+									:deleteInProgress="deleteInProgress"
 									@deleted="removeData($event)"/>
 							</td>
 						</tr>
@@ -61,6 +64,7 @@ import uploadApi from '@/api/UploadApi'
 import flowsApi from '@/api/FlowsApi'
 import FileUpload from '@/components/FileUpload'
 import DeleteDataConfirm from '@/components/DeleteDataConfirm'
+import axios from 'axios';
 
 export default {
 	name: 'UploadPage',
@@ -79,6 +83,7 @@ export default {
 	},
 	data() {
 		return {
+			deleteInProgress: false,
 			sampleData: [
 				{
 					collection: 'MyDataSource.csv',
@@ -123,7 +128,10 @@ export default {
 				this.stagingData = info.collections.staging
 			})
 		},
-		removeData(collection) {
+		async removeData(collection) {
+			this.deleteInProgress = true
+			await axios.post("/api/system/deleteCollection", { database: 'staging', collection: this.collection })
+			this.deleteInProgress = false
 			this.stagingData = this.stagingData.filter(c => c.collection !== collection)
 		}
 	},

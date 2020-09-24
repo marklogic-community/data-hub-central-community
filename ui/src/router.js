@@ -224,6 +224,18 @@ if (isHosted || isTesting) {
 			import(/* webpackChunkName: "login" */ './views/RegistrationCompletePage.vue'),
 			meta: {}
 	})
+
+	routes.push({
+		path: '/hostedadmin',  //url path
+		name: 'root.hostedadmin', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "hostedadminpage" */ './views/HostedAdminPage.vue'),
+		meta: {
+			requiresLogin: true,
+			checkLogin
+		}
+	})
 }
 if (!isHosted || isTesting) {
 	routes.push({
