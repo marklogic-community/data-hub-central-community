@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -43,6 +44,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 	@BeforeEach
 	void setup() {
 		removeUser(ACCOUNT_NAME);
+		removeUser(ADMIN_ACCOUNT_NAME);
 
 		// remove models
 		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
@@ -180,6 +182,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 	@Test
 	void deleteUser() throws Exception {
 		registerAccount();
+		registerEnvisionAdminAccount();
 		HubClient adminHubClient = getAdminHubClient();
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(hubClient, getResourceStream("models/MyHubModel.json"));
@@ -188,7 +191,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME + "/doc1.json", "user-data");
 		installDoc(hubClient.getFinalClient(), "data/stagingDoc.json", "/data/" + ACCOUNT_NAME + "/doc1.json", "user-data");
 
-		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
 		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/flow"));
 		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/mappings"));
 		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/entity-services/models"));
@@ -215,9 +218,14 @@ public class AuthenticationTests extends AbstractMvcTest {
 		login();
 
 		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+			.andExpect(status().isForbidden());
+
+		loginAsUser(ADMIN_ACCOUNT_NAME, ACCOUNT_PASSWORD);
+
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
 			.andExpect(status().isOk());
 
-		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
 		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/flow"));
 		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/mappings"));
 		assertEquals(0, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/entity-services/models"));

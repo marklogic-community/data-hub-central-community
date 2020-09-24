@@ -51,6 +51,21 @@ public class AbstractMvcTest extends BaseTest {
 		Mockito.reset(emailService);
 	}
 
+	protected void registerEnvisionAdminAccount() throws IOException {
+		UserPojo user = new UserPojo();
+		user.email = ADMIN_ACCOUNT_NAME;
+		user.password = ACCOUNT_PASSWORD;
+		user.name = "Admin Smith";
+		user = userService.createUser(user);
+		userService.validateToken(user.token);
+		getHubConfig().newStagingClient("Security").newServerEval().javascript(
+			"declareUpdate(); \n" +
+			"const sec = require('/MarkLogic/security.xqy');\n" +
+			"sec.userAddRoles(\"" + ADMIN_ACCOUNT_NAME + "\", \"envisionAdmin\")"
+		).eval();
+		Mockito.reset(emailService);
+	}
+
 	protected void logout() {
 		authToken = null;
 	}

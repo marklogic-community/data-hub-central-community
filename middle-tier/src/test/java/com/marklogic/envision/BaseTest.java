@@ -69,6 +69,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @ContextConfiguration(classes = Application.class)
 @ActiveProfiles("test")
 public class BaseTest {
+	public static final String ADMIN_ACCOUNT_NAME = "admin.smith@marklogic.com";
 	public static final String ACCOUNT_NAME = "bob.smith@marklogic.com";
 	public static final String ACCOUNT_PASSWORD = "password";
 	public static final String PROJECT_PATH = "ye-olde-project";
