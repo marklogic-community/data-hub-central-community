@@ -9,11 +9,10 @@ export default {
 	data: ()=> ({
 		exportMsg: '',
 		exportError: '' ,
-		entityMsg: '',
-		entityError: '',
 		datahub: '',
 		entities: [],
-		showEntityStatus:false,
+		showExportStatus:false,
+		requestStatus:"green",
 		headers: [
 			{
 				text: 'Property',
@@ -25,7 +24,9 @@ export default {
 		],
 		cloud: isHosted && !isTesting
 	}),
-
+	computed:{
+		getRequestStatus(){return this.requestStatus}
+	},
 	methods: {
 		getDataHubConfig() {
 			return axios
@@ -41,46 +42,42 @@ export default {
 				return error;
 			});
 		},
-		getEntityNames() {
-			return axios
-			.get('/api/os/getEntityNames/')
-			.then(response => {
-				console.log('Returning ' + response.data);
-				//this.entities=response.data;
-				return response.data;
-			})
-			.catch(error => {
-				console.error('Error getting flows:', error);
-				return error;
-			});
-		},
 		async runExports(){
-			this.exportMsg = "Running exports."
+			this.exportMsg = "Exporting entities."
 			this.exportError = ""
-			axios.post("/api/os/runExports/")
+			this.requestStatus="green"
+			this.showExportStatus = true;
+			axios.post("/api/export/runExports/")
 			.then(response => {
-				this.entityMsg =response.statusText
+				this.exportMsg =response.statusText
+				this.showExportStatus = true;
+				console.log("runExports: " + response.data)
 				return response.data
 			})
 			.catch(error => {
 				console.error('error:', error);
 				this.exportError = error
+				this.requestStatus="red"
+				this.showExportStatus = true;
 				return error;
 			});
 		},
 		async runExport(entityName){
 			this.exportMsg = "Exporting " + entityName + "."
 			this.exportError = ""
+			this.requestStatus="green"
 			this.showExportStatus = true;
-			axios.post("/api/os/runExport/", null, {params: {entityName}})
+			return axios.get("/api/os/runExport/", null, {params: {entityName}})
 			.then(response => {
 				this.exportMsg =response.statusText
+				this.requestStatus="green"
 				this.showExportStatus = true;
 				return response.data
 			})
 			.catch(error => {
 				console.error('error:', error);
 				this.exportError = error
+				this.requestStatus="red"
 				this.showExportStatus = true;
 				return error;
 			});
@@ -93,18 +90,19 @@ export default {
 			//this regex pulls the entity names out of a serilaized string representation
 			//and puts them in an array; a great way to come up with this regex is an
 			//interactive regex pattern matcher like BBEdit
+			// eslint-disable-next-line no-useless-escape
 			this.entities = entStr.match(/[^,\s,\",\[][^\,]*[^,\s,]*[^,\",\]]/g);
 		},
 		handleDataHubTableClick(event){
 			console.log(event);
 		},
 		handleEntityTableClick(entity){
+			this.runExport(entity);
 			console.log(entity);
 		}
 	},
 	mounted() {
 		this.getDataHubConfig();
-		this.getEntityNames();
 	}
 }
 
@@ -113,18 +111,19 @@ export default {
 <template>
 	<div id="exportContainer">
 		<v-snackbar
-			v-model="showEntityStatus"
+			v-model="showExportStatus"
 			right
 			top
+			:color="this.requestStatus"
 		>
-			{{ entityMsg + " " + entityError }}
+			{{ exportMsg + " " + exportError }}
 
 			<template v-slot:action="{ attrs }">
 				<v-btn
-				color="red"
+				color="this.requestStatus"
 				text
 				v-bind="attrs"
-				@click="snackbar = false"
+				@click="showExportStatus = false"
 				>
 				Close
 				</v-btn>
