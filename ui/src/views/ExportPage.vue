@@ -47,7 +47,10 @@ export default {
 			this.exportError = ""
 			this.requestStatus="green"
 			this.showExportStatus = true;
-			axios.post("/api/export/runExports/")
+			//get the entitiy names
+			//let ents=JSON.stringify(this.entities);
+			//let entityNames={json_data:ents}
+			axios.post("/api/export/runExports", this.entities)
 			.then(response => {
 				this.exportMsg =response.statusText
 				this.showExportStatus = true;
@@ -92,9 +95,6 @@ export default {
 			//interactive regex pattern matcher like BBEdit
 			// eslint-disable-next-line no-useless-escape
 			this.entities = entStr.match(/[^,\s,\",\[][^\,]*[^,\s,]*[^,\",\]]/g);
-		},
-		handleDataHubTableClick(event){
-			console.log(event);
 		},
 		handleEntityTableClick(entity){
 			this.runExport(entity);
@@ -141,17 +141,6 @@ export default {
 			</v-simple-table>
 			<v-btn color="primary" class="right" v-on:click="runExports" aria-label="Export entities.">Export All</v-btn>
 		</fieldset>
-		<fieldset class="col-sm-9" v-if="!cloud">
-			<legend>Data Hub properties</legend>
-			<v-simple-table dense>
-				<tbody>
-					<tr v-for="dhprop in datahub" :key="dhprop.prop" class='clickable-row' @click="handleDataHubTableClick(dhprop)">
-						<td >{{dhprop.prop}}</td>
-						<td >{{dhprop.val}}</td>
-					</tr>
-				</tbody>
-			</v-simple-table>
-			</fieldset>
 	</div>
 </template>
 
