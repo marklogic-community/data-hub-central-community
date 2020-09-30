@@ -17,6 +17,11 @@
 			"action": "http://marklogic.com/xdmp/privileges/xdmp-with-namespaces",
 			"kind": "execute"
 		},
+		{
+			"privilege-name":"xdmp:user-roles",
+			"action":"http://marklogic.com/xdmp/privileges/xdmp-user-roles",
+			"kind":"execute"
+		},
     {
       "privilege-name": "admin-database",
       "action": "http://marklogic.com/xdmp/privileges/admin/database",

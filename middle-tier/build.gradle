@@ -103,7 +103,7 @@ task buildUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 
 task runUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 	description = "Run the UI in debug mode"
-	args = ["run", "start"]
+	args = ["run", (project.ext.has("env") && project.ext.env == "cloud") ? "serve:cloud" : "serve"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 
