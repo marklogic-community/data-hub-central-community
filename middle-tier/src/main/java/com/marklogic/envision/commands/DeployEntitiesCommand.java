@@ -55,7 +55,10 @@ public class DeployEntitiesCommand extends LoggingObject {
 		DocumentWriteSet stagingEntityDocumentWriteSet = stagingDocMgr.newWriteSet();
 		DeployEntitiesCommand.ResourceToURI entityResourceToURI = new DeployEntitiesCommand.ResourceToURI(){
 			public String toURI(Resource r) {
-				return "/entities/" + username + "/" + r.getFilename();
+				if (hubClient.isMultiTenant()) {
+					return "/entities/" + username + "/" + r.getFilename();
+				}
+				return "/entities/" + r.getFilename();
 			}
 		};
 		EntityDefModulesFinder entityDefModulesFinder = new EntityDefModulesFinder();

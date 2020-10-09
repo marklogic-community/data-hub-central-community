@@ -74,13 +74,13 @@ public interface EntityModeller {
 
 
             @Override
-            public Boolean removeAllEntities() {
+            public Boolean removeAllEntities(String user) {
               return BaseProxy.BooleanType.toBoolean(
                 baseProxy
-                .request("removeAllEntities.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .request("removeAllEntities.sjs", BaseProxy.ParameterValuesKind.SINGLE_ATOMIC)
                 .withSession()
                 .withParams(
-                    )
+                    BaseProxy.atomicParam("user", true, BaseProxy.StringType.fromString(user)))
                 .withMethod("POST")
                 .responseSingle(false, null)
                 );
@@ -160,10 +160,10 @@ public interface EntityModeller {
   /**
    * Invokes the removeAllEntities operation on the database server
    *
-   * 
+   * @param user	provides input
    * @return	as output
    */
-    Boolean removeAllEntities();
+    Boolean removeAllEntities(String user);
 
   /**
    * Invokes the fromDatahub operation on the database server

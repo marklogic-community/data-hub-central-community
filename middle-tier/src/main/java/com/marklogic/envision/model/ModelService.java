@@ -85,7 +85,7 @@ public class ModelService {
             }
         });
 
-        EntityModeller.on(hubClient.getFinalClient()).removeAllEntities();
+        EntityModeller.on(hubClient.getFinalClient()).removeAllEntities(hubClient.isMultiTenant() ?  hubClient.getUsername() : null);
 		deleteExtraEntities(hubClient, fieldNames);
 		deployService.deployEntities(hubClient);
     }
@@ -112,7 +112,8 @@ public class ModelService {
 					e.printStackTrace();
 				}
 			});
-			EntityModeller.on(hubClient.getFinalClient()).removeAllEntities();
+
+			EntityModeller.on(hubClient.getFinalClient()).removeAllEntities(hubClient.isMultiTenant() ? username : null);
 		}
 		return jsonFile.delete();
 	}

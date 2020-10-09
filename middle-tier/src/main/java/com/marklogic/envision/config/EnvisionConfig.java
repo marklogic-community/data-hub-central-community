@@ -64,8 +64,16 @@ public class EnvisionConfig {
 	@Value("${dhfEnv:local}")
 	public String dhfEnv;
 
+	private boolean isMultiTenant;
+
+	public boolean isMultiTenant() {
+		return isMultiTenant;
+	}
+
 	@Value("${envision.multiTenant:false}")
-	public boolean isMultiTenant;
+	public void setMultiTenant(boolean multiTenant) {
+		isMultiTenant = multiTenant;
+	}
 
 	private final Environment environment;
 
@@ -100,7 +108,7 @@ public class EnvisionConfig {
 			databaseNames.put(kind, hubConfig.getDbName(kind));
 		}
 
-		return new HubClientImpl(hubConfig, databaseNames);
+		return new HubClientImpl(hubConfig, databaseNames, this.isMultiTenant());
 	}
 
 	private HubConfigImpl newHubConfig(String username, String password) {

@@ -21,7 +21,6 @@ options.matchOptions.targetEntity = options.targetEntity
 const matchOptions = new NodeBuilder().addNode({ options: options.matchOptions }).toNode();
 
 function findMatches(start = 1, pageLength = 100, limit = 10, summary = {matchSummary: {}}) {
-  // console.log(`findMatches[${start}, ${pageLength}]`)
   const uris = xdmp.eval(`fn.subsequence(cts.uris(null, null, ${query}), ${start}, ${pageLength})`, null, {database: xdmp.database(database)})
   if (fn.exists(uris)) {
     const ms = mastering.buildMatchSummary(

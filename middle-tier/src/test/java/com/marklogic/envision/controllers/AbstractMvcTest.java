@@ -42,9 +42,13 @@ public class AbstractMvcTest extends BaseTest {
 	}
 
 	protected void registerAccount() throws IOException {
+		registerAccount(ACCOUNT_NAME, ACCOUNT_PASSWORD);
+	}
+
+	protected void registerAccount(String username, String password) throws IOException {
 		UserPojo user = new UserPojo();
-		user.email = ACCOUNT_NAME;
-		user.password = ACCOUNT_PASSWORD;
+		user.email = username;
+		user.password = password;
 		user.name = "Bob Smith";
 		user = userService.createUser(user);
 		userService.validateToken(user.token);
