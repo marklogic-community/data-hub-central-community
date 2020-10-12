@@ -1,31 +1,31 @@
 package com.marklogic.envision.export;
 
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.document.ServerTransform;
 import com.marklogic.client.ext.datamovement.QueryBatcherJobTicket;
 import com.marklogic.client.ext.datamovement.job.AbstractQueryBatcherJob;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 
 public class ExportToCsvFileJob extends AbstractQueryBatcherJob {
 	private File exportFile;
-	private String fileHeader;
-	private String fileFooter;
-	private StringWriter stringWriter;
+	private FileWriter fileWriter;
 	private ExportToCsvWriterListener exportToWriterListener;
 
 	public ExportToCsvFileJob() {
 		super();
 
-		addJobProperty("transform", "Optional REST transform to apply to each record before it is written",
-			value -> getExportListener().withTransform(new ServerTransform(value)));
+		this.setConsistentSnapshot(false);
 
-		stringWriter = new StringWriter();
-		this.exportToWriterListener = new ExportToCsvWriterListener(stringWriter);
-		this.addUrisReadyListener(exportToWriterListener);
-
+		try {
+			exportFile = File.createTempFile("export", "");
+			this.fileWriter = new FileWriter(exportFile);
+			this.exportToWriterListener = new ExportToCsvWriterListener(fileWriter);
+			this.addUrisReadyListener(exportToWriterListener);
+		} catch (IOException ie) {
+			throw new RuntimeException("Unable to open FileWriter on file: " + exportFile + "; cause: " + ie.getMessage(), ie);
+		}
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class ExportToCsvFileJob extends AbstractQueryBatcherJob {
 
 		if (ticket.getQueryBatcher().isStopped()) {
 			try {
-				this.stringWriter.close();
+				this.fileWriter.close();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -53,33 +53,12 @@ public class ExportToCsvFileJob extends AbstractQueryBatcherJob {
 	 *
 	 * @return
 	 */
-	public StringWriter getStringWriter() {
-		return stringWriter;
+	public FileWriter getFileWriter() {
+		return fileWriter;
 	}
 
 	public File getExportFile() {
 		return exportFile;
-	}
-
-	/**
-	 * Allow client to fiddle with the ExportToWriterListener that's created by this class.
-	 *
-	 * @return
-	 */
-	public ExportToCsvWriterListener getExportListener() {
-		return exportToWriterListener;
-	}
-
-	public void setFileHeader(String fileHeader) {
-		this.fileHeader = fileHeader;
-	}
-
-	public void setFileFooter(String fileFooter) {
-		this.fileFooter = fileFooter;
-	}
-
-	public void setTransform(String name) {
-		getExportListener().withTransform(new ServerTransform(name));
 	}
 }
 

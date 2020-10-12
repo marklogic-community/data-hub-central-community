@@ -1,6 +1,7 @@
 package com.marklogic.envision.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.marklogic.envision.export.ExportService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import org.junit.jupiter.api.AfterEach;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +22,9 @@ public class ExportControllerTests extends AbstractMvcTest {
 
 	@Autowired
 	ModelService modelService;
+
+	@Autowired
+	ExportService exportService;
 
 	@BeforeEach
 	void setup() throws IOException {
@@ -43,6 +49,14 @@ public class ExportControllerTests extends AbstractMvcTest {
 	@AfterEach
 	void teardown() {
 //		clearStagingFinalAndJobDatabases();
+	}
+
+	@Test
+	void serviceExport() throws IOException {
+		List<String> entityNames = new ArrayList<>();
+		entityNames.add("col1");
+		entityNames.add("col2");
+		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 	}
 
 	@Test
