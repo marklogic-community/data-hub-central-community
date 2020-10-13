@@ -72,12 +72,13 @@ public class BaseTest {
 	public static final String ADMIN_ACCOUNT_NAME = "admin.smith@marklogic.com";
 	public static final String ACCOUNT_NAME = "bob.smith@marklogic.com";
 	public static final String ACCOUNT_PASSWORD = "password";
+	public static final String ACCOUNT_NAME2 = "jim.jones@marklogic.com";
 	public static final String PROJECT_PATH = "ye-olde-project";
 
 	public static Path projectPath;
 
 	@Autowired
-	private EnvisionConfig envisionConfig;
+	protected EnvisionConfig envisionConfig;
 
 	@Autowired
 	private HubConfigImpl hubConfig;

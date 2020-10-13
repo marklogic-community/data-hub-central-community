@@ -23,8 +23,9 @@ public class HubClientImpl implements HubClient {
 	private final Map<DatabaseKind, String> databaseNames;
 	private final ManageClient manageClient;
 	private final HubConfigImpl hubConfig;
+	private boolean multiTenant = false;
 
-	public HubClientImpl(HubConfigImpl hubConfig, Map<DatabaseKind, String> databaseNames) {
+	public HubClientImpl(HubConfigImpl hubConfig, Map<DatabaseKind, String> databaseNames, boolean multiTenant) {
 		username = hubConfig.getMlUsername();
 		stagingClient = hubConfig.newStagingClient(null);
 		finalClient = newFinalClient(hubConfig);
@@ -35,6 +36,7 @@ public class HubClientImpl implements HubClient {
 		this.databaseNames = databaseNames;
 		this.manageClient = hubConfig.getManageClient();
 		this.hubConfig = hubConfig;
+		this.multiTenant = multiTenant;
 	}
 
 	private DatabaseClient newFinalClient(HubConfigImpl hubConfig) {
@@ -100,4 +102,13 @@ public class HubClientImpl implements HubClient {
 
 	@Override
 	public HubConfigImpl getHubConfig() { return hubConfig; }
+
+	@Override
+	public boolean isMultiTenant() {
+		return multiTenant;
+	}
+
+	public void setMultiTenant(boolean multiTenant) {
+		this.multiTenant = multiTenant;
+	}
 }

@@ -152,7 +152,7 @@ function createTdes() {
 				xdmp.permission("data-hub-developer", "update"),
 				xdmp.permission("data-hub-operator", "read")
 			]
-			tde.templateInsert(`${entity.id}-relationships-tde.json`, template, permissions, [xdmp.getCurrentUser()]);
+			tde.templateInsert(`/${xdmp.getCurrentUser()}/${entity.id}-relationships-tde.json`, template, permissions, [xdmp.getCurrentUser()]);
 		}
 	}
 

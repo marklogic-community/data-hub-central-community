@@ -9,7 +9,6 @@ const roleName = xdmp.md5(user.email);
 
 xdmp.invokeFunction(function() {
 	declareUpdate();
-	console.log('creating role');
 	try {
 		const roleId = sec.createRole(
 			roleName,
@@ -18,7 +17,6 @@ xdmp.invokeFunction(function() {
 			xdmp.defaultPermissions(),
 			xdmp.defaultCollections()
 		);
-		console.log('roleId: ' + roleId);
 	}
 	catch(ex) {
 		console.log(ex, ex.toString());

@@ -5,11 +5,10 @@
  */
 
 const model = require('/envision/model.sjs').enhancedModel;
-const finalDBSchema = require('/com.marklogic.hub/config.sjs').FINALDATABASE.toLowerCase() + "-SCHEMAS"  // TODO - is this changable on init?
+const finalDB = require('/com.marklogic.hub/config.sjs').FINALDATABASE
 
 let entities = {};
 
-console.log('model', model);
 if (model.nodes) {
 // first create the models
 Object.keys(model.nodes).forEach(key => {
@@ -70,7 +69,7 @@ Object.keys(model.nodes).forEach(key => {
 						if (isPII){
 							if (! fn.exists(cts.doc("/rules/pii/" + ruleName + ".json")) ) {
 
-								xdmp.documentInsert("/rules/pii/" + ruleName + ".json",
+								xdmp.documentInsert("/rules/pii/" + xdmp.getCurrentUser() + "/" + ruleName + ".json",
 									{ "rule": {
 											"description": "Redact " + entityName ,
 											"path": "/envelope/instance/" + entityName + "/" + propertyName,
@@ -97,7 +96,7 @@ Object.keys(model.nodes).forEach(key => {
 			}
 			const invokeRule = ruleDefinition (node.entityName, p.name, p.isPii)
 			xdmp.invokeFunction(invokeRule.piiRule,
-				{ "database" : xdmp.database(finalDBSchema) }
+				{ "database" : xdmp.schemaDatabase(xdmp.database(finalDB)) }
 			);
 		});
 		let definition = {

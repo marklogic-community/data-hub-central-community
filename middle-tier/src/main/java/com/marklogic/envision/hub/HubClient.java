@@ -29,4 +29,6 @@ public interface HubClient {
 	ManageClient getManageClient();
 
 	HubConfigImpl getHubConfig();
+
+	boolean isMultiTenant();
 }

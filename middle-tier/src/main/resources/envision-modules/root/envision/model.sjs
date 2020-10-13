@@ -4,7 +4,6 @@
  */
 function getModel() {
 	const uri = '/envision/' + xdmp.getCurrentUser() +'/currentModel.json';
-	console.log('uri', uri);
 	let model = fn.head(cts.doc(uri));
 	if (model) {
 		model = model.toObject();

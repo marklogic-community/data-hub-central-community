@@ -45,6 +45,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 	void setup() {
 		removeUser(ACCOUNT_NAME);
 		removeUser(ADMIN_ACCOUNT_NAME);
+		removeUser(ACCOUNT_NAME2);
 
 		// remove models
 		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
@@ -180,8 +181,10 @@ public class AuthenticationTests extends AbstractMvcTest {
 	}
 
 	@Test
-	void deleteUser() throws Exception {
+	void deleteUserMultiTenant() throws Exception {
+		envisionConfig.setMultiTenant(true);
 		registerAccount();
+		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
 		registerEnvisionAdminAccount();
 		HubClient adminHubClient = getAdminHubClient();
 		HubClient hubClient = getNonAdminHubClient();
@@ -190,6 +193,47 @@ public class AuthenticationTests extends AbstractMvcTest {
 		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/user.flow.json")));
 		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME + "/doc1.json", "user-data");
 		installDoc(hubClient.getFinalClient(), "data/stagingDoc.json", "/data/" + ACCOUNT_NAME + "/doc1.json", "user-data");
+
+		hubClient = getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+		modelService.saveModel(hubClient, getResourceStream("models/MyHubModel.json"));
+		flowsService.addMapping(hubClient, readJsonObject(getResource("mappings/myMappingStep2.json")));
+		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/user2.flow.json")));
+		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME2 + "/doc1.json", "user-data");
+		installDoc(hubClient.getFinalClient(), "data/stagingDoc.json", "/data/" + ACCOUNT_NAME2 + "/doc1.json", "user-data");
+
+		assertEquals(3, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/flow"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/mappings"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/model"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "user-data"));
+
+		assertEquals(2, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/data-hub/flow"));
+		assertEquals(2, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/data-hub/mappings"));
+		assertEquals(2, getDocCount(adminHubClient.getStagingClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(2, getDocCount(adminHubClient.getStagingClient(), "user-data"));
+
+		assertEquals(2, getDocCount(adminHubClient.getFinalSchemasClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(2, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-xml-schema"));
+		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME));
+
+		assertEquals(2, getDocCount(adminHubClient.getStagingSchemasClient(), "http://marklogic.com/entity-services/models"));
+		assertEquals(2, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(2, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-xml-schema"));
+
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+			.andExpect(status().isUnauthorized());
+
+		login();
+
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+			.andExpect(status().isForbidden());
+
+		loginAsUser(ADMIN_ACCOUNT_NAME, ACCOUNT_PASSWORD);
+
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+			.andExpect(status().isOk());
 
 		assertEquals(2, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
 		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/data-hub/flow"));
@@ -206,23 +250,21 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), "http://marklogic.com/entity-services/models"));
 		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-json-schema"));
 		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-xml-schema"));
-		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME));
+		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME));
+		assertEquals(1, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME2));
 
 		assertEquals(1, getDocCount(adminHubClient.getStagingSchemasClient(), "http://marklogic.com/entity-services/models"));
 		assertEquals(1, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-json-schema"));
 		assertEquals(1, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-xml-schema"));
 
-		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
-			.andExpect(status().isUnauthorized());
-
-		login();
-
-		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
-			.andExpect(status().isForbidden());
+		assertNull(adminHubClient.getStagingClient().newDocumentManager().exists("/ingest/" + ACCOUNT_NAME + "/doc1.json"));
+		assertNull(adminHubClient.getFinalClient().newDocumentManager().exists("/data/" + ACCOUNT_NAME + "/doc1.json"));
+		assertNotNull(adminHubClient.getStagingClient().newDocumentManager().exists("/ingest/" + ACCOUNT_NAME2 + "/doc1.json"));
+		assertNotNull(adminHubClient.getFinalClient().newDocumentManager().exists("/data/" + ACCOUNT_NAME2 + "/doc1.json"));
 
 		loginAsUser(ADMIN_ACCOUNT_NAME, ACCOUNT_PASSWORD);
 
-		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
+		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME2)
 			.andExpect(status().isOk());
 
 		assertEquals(1, getDocCount(adminHubClient.getFinalClient(), "http://marklogic.com/envision/usr"));
@@ -241,6 +283,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-json-schema"));
 		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), "ml-data-hub-xml-schema"));
 		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME));
+		assertEquals(0, getDocCount(adminHubClient.getFinalSchemasClient(), ACCOUNT_NAME2));
 
 		assertEquals(0, getDocCount(adminHubClient.getStagingSchemasClient(), "http://marklogic.com/entity-services/models"));
 		assertEquals(0, getDocCount(adminHubClient.getStagingSchemasClient(), "ml-data-hub-json-schema"));
@@ -248,6 +291,8 @@ public class AuthenticationTests extends AbstractMvcTest {
 
 		assertNull(adminHubClient.getStagingClient().newDocumentManager().exists("/ingest/" + ACCOUNT_NAME + "/doc1.json"));
 		assertNull(adminHubClient.getFinalClient().newDocumentManager().exists("/data/" + ACCOUNT_NAME + "/doc1.json"));
+		assertNull(adminHubClient.getStagingClient().newDocumentManager().exists("/ingest/" + ACCOUNT_NAME2 + "/doc1.json"));
+		assertNull(adminHubClient.getFinalClient().newDocumentManager().exists("/data/" + ACCOUNT_NAME2 + "/doc1.json"));
 	}
 
 	@Test

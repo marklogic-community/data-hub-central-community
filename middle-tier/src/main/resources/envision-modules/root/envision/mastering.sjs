@@ -128,7 +128,6 @@ function getNotification(uri, doc) {
 		uris: uris,
 		merged: merged,
     labels: uris.reduce((prev, cur) => {
-			console.log('uri', cur);
 			let doc = cts.doc(cur);
 			if (doc) {
 				doc = doc.root;

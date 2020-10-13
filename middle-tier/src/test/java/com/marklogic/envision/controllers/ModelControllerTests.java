@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.envision.deploy.DeployService;
-import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.deploy.commands.DeployHubDatabaseCommand;
@@ -41,8 +40,12 @@ public class ModelControllerTests extends AbstractMvcTest {
 	@Autowired
 	DeployService deployService;
 
+	EntityManager getEntityManager(String username, String password) {
+		return new EntityManagerImpl(getHubClient(username, password).getHubConfig());
+	}
+
 	EntityManager getEntityManager() {
-		return new EntityManagerImpl(getNonAdminHubClient().getHubConfig());
+		return getEntityManager(ACCOUNT_NAME, ACCOUNT_PASSWORD);
 	}
 
 	protected void removeModelFiles() {
@@ -53,8 +56,9 @@ public class ModelControllerTests extends AbstractMvcTest {
 	}
 
 	protected void removeEntityFiles() throws IOException {
-		for (HubEntity entity : getEntityManager().getEntities()) {
-			getEntityManager().deleteEntity(entity.getInfo().getTitle());
+		EntityManager entityManager = getEntityManager();
+		for (HubEntity entity : entityManager.getEntities()) {
+			entityManager.deleteEntity(entity.getInfo().getTitle());
 		}
 	}
 
@@ -64,9 +68,15 @@ public class ModelControllerTests extends AbstractMvcTest {
 
 		// remove models
 		removeModelFiles();
+		envisionConfig.setMultiTenant(true);
 		removeEntityFiles();
 
+		envisionConfig.setMultiTenant(false);
+		removeEntityFiles();
+
+
 		removeUser(ACCOUNT_NAME);
+		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
 	}
@@ -96,7 +106,61 @@ public class ModelControllerTests extends AbstractMvcTest {
 	}
 
 	@Test
-	void getAllModels() throws Exception {
+	void getAllModelsMultiTenant() throws Exception {
+		envisionConfig.setMultiTenant(true);
+		getJson(ALL_MODELS_URL)
+			.andExpect(status().isUnauthorized());
+
+		registerAccount();
+		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+		login();
+		getJson(ALL_MODELS_URL)
+			.andDo(
+				result -> {
+					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(1, models.size());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
+				})
+			.andExpect(status().isOk());
+
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
+		modelService.saveModel(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD), getResourceStream("models/model.json"));
+
+		getJson(ALL_MODELS_URL)
+			.andDo(
+				result -> {
+					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(2, models.size());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
+					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(1)), true);
+				})
+			.andExpect(status().isOk());
+
+		getEntityManager().saveEntity(HubEntity.fromJson("Orphan.entity.json", readJsonObject(getResourceStream("esEntities/Orphan.entity.json"))), false);
+		getEntityManager(ACCOUNT_NAME2, ACCOUNT_PASSWORD).saveEntity(HubEntity.fromJson("Orphan.entity.json", readJsonObject(getResourceStream("esEntities/Orphan.entity.json"))), false);
+		deployService.deployEntities(getNonAdminHubClient());
+
+		getJson(ALL_MODELS_URL)
+			.andDo(
+				result -> {
+					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(3, models.size());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
+
+					// get around sorting issues by getting the proper indexes for comparison
+					// prevents failing tests in CI
+					List<String> names = StreamSupport.stream(models.spliterator(), false).map(jsonNode -> jsonNode.get("name").asText()).collect(Collectors.toList());
+					int idx = names.indexOf("My Hub Model");
+					assertEquals("My Hub Model", models.get(idx).get("name").asText());
+					idx = names.indexOf("Test Model");
+					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(idx)), true);
+				})
+			.andExpect(status().isOk());
+	}
+
+	@Test
+	void getAllModelsSingleTenant() throws Exception {
+		envisionConfig.setMultiTenant(false);
 		getJson(ALL_MODELS_URL)
 			.andExpect(status().isUnauthorized());
 
@@ -144,7 +208,66 @@ public class ModelControllerTests extends AbstractMvcTest {
 	}
 
 	@Test
-	void deleteModel() throws Exception {
+	void deleteModelMultiTenant() throws Exception {
+		envisionConfig.setMultiTenant(true);
+		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+
+		registerAccount();
+		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+
+		postJson(DELETE_MODEL_URL, readJsonObject("{\"name\": \"Test Model\"}"))
+			.andExpect(status().isUnauthorized());
+
+		login();
+		postJson(DELETE_MODEL_URL, readJsonObject("{\"name\": \"Test Model\"}"))
+			.andExpect(status().isNotFound());
+
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
+
+		assertEquals(2, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(5, getEntityCount());
+		assertEquals(5, getEntityManager().getEntities().size());
+
+		getJson(ALL_MODELS_URL)
+			.andDo(
+				result -> {
+					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(2, models.size());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
+					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(1)), true);
+				})
+			.andExpect(status().isOk());
+
+		postJson(DELETE_MODEL_URL, readJsonObject("{\"name\": \"Test Model\"}"))
+			.andExpect(status().isNoContent());
+
+		getJson(ALL_MODELS_URL)
+			.andDo(
+				result -> {
+					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(1, models.size());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
+				})
+			.andExpect(status().isOk());
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+	}
+
+	@Test
+	void deleteModelSingleTenant() throws Exception {
+		envisionConfig.setMultiTenant(false);
 		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
 		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
 		assertEquals(0, getEntityCount());
@@ -199,7 +322,94 @@ public class ModelControllerTests extends AbstractMvcTest {
 	}
 
 	@Test
-	void saveModel() throws Exception {
+	void saveModelMultiTenant() throws Exception {
+		envisionConfig.setMultiTenant(true);
+		installEnvisionModules();
+		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+
+		registerAccount();
+		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+
+		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
+			.andExpect(status().isUnauthorized());
+
+		loginAsUser(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
+			.andExpect(status().isNoContent());
+
+		assertEquals(0, getEntityCount());
+
+		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/model.json")))
+			.andExpect(status().isNoContent());
+
+		assertEquals(5, getEntityCount());
+		assertEquals(5, getDocCount(getAdminHubClient().getFinalSchemasClient(), "ml-data-hub-xml-schema"));
+		assertEquals(5, getDocCount(getAdminHubClient().getFinalSchemasClient(), "ml-data-hub-json-schema"));
+		assertEquals(5, getDocCount(getAdminHubClient().getFinalSchemasClient(), "http://marklogic.com/entity-services/models"));
+		logout();
+
+		login();
+
+		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
+			.andExpect(status().isNoContent());
+
+		assertEquals(2, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(5, getEntityCount());
+		assertEquals(0, getEntityManager().getEntities().size());
+
+		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/model.json")))
+			.andExpect(status().isNoContent());
+		assertEquals(3, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(10, getEntityCount());
+		assertEquals(5, getEntityManager().getEntities().size());
+		String[] uris = StreamSupport.stream(getEntities().spliterator(), false)
+			.map(jsonNode -> jsonNode.get("uri").asText())
+			.sorted().toArray(String[]::new);
+		assertEquals("/entities/bob.smith@marklogic.com/Department.entity.json", uris[0]);
+		assertEquals("/entities/bob.smith@marklogic.com/Employee.entity.json", uris[1]);
+		assertEquals("/entities/bob.smith@marklogic.com/MegaCorp.entity.json", uris[2]);
+		assertEquals("/entities/bob.smith@marklogic.com/Organization.entity.json", uris[3]);
+		assertEquals("/entities/bob.smith@marklogic.com/Planet.entity.json", uris[4]);
+
+		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/MyWackyModel.json")))
+			.andExpect(status().isNoContent());
+
+		assertEquals(4, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(7, getEntityCount());
+		assertEquals(2, getEntityManager().getEntities().size());
+		uris = StreamSupport.stream(getEntities().spliterator(), false)
+			.map(jsonNode -> jsonNode.get("uri").asText())
+			.sorted().toArray(String[]::new);
+		assertEquals("/entities/bob.smith@marklogic.com/Department.entity.json", uris[0]);
+		assertEquals("/entities/bob.smith@marklogic.com/Employee.entity.json", uris[1]);
+
+		logout();
+		loginAsUser(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+
+		assertEquals(4, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(7, getEntityCount());
+		assertEquals(5, getEntityManager(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getEntities().size());
+		uris = StreamSupport.stream(getEntities().spliterator(), false)
+			.map(jsonNode -> jsonNode.get("uri").asText())
+			.sorted().toArray(String[]::new);
+		assertEquals("/entities/bob.smith@marklogic.com/Department.entity.json", uris[0]);
+		assertEquals("/entities/bob.smith@marklogic.com/Employee.entity.json", uris[1]);
+		assertEquals("/entities/jim.jones@marklogic.com/Department.entity.json", uris[2]);
+		assertEquals("/entities/jim.jones@marklogic.com/Employee.entity.json", uris[3]);
+		assertEquals("/entities/jim.jones@marklogic.com/MegaCorp.entity.json", uris[4]);
+		assertEquals("/entities/jim.jones@marklogic.com/Organization.entity.json", uris[5]);
+		assertEquals("/entities/jim.jones@marklogic.com/Planet.entity.json", uris[6]);
+	}
+
+	@Test
+	void saveModelSingleTenant() throws Exception {
+		envisionConfig.setMultiTenant(false);
 		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
 		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
 		assertEquals(0, getEntityCount());
@@ -210,10 +420,9 @@ public class ModelControllerTests extends AbstractMvcTest {
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
-		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
-			.andExpect(status().isUnauthorized());
-
 		login();
+
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
 
 		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
 			.andExpect(status().isNoContent());
@@ -230,11 +439,11 @@ public class ModelControllerTests extends AbstractMvcTest {
 		String[] uris = StreamSupport.stream(getEntities().spliterator(), false)
 			.map(jsonNode -> jsonNode.get("uri").asText())
 			.sorted().toArray(String[]::new);
-		assertEquals("/entities/bob.smith@marklogic.com/Department.entity.json", uris[0]);
-		assertEquals("/entities/bob.smith@marklogic.com/Employee.entity.json", uris[1]);
-		assertEquals("/entities/bob.smith@marklogic.com/MegaCorp.entity.json", uris[2]);
-		assertEquals("/entities/bob.smith@marklogic.com/Organization.entity.json", uris[3]);
-		assertEquals("/entities/bob.smith@marklogic.com/Planet.entity.json", uris[4]);
+		assertEquals("/entities/Department.entity.json", uris[0]);
+		assertEquals("/entities/Employee.entity.json", uris[1]);
+		assertEquals("/entities/MegaCorp.entity.json", uris[2]);
+		assertEquals("/entities/Organization.entity.json", uris[3]);
+		assertEquals("/entities/Planet.entity.json", uris[4]);
 
 		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/MyWackyModel.json")))
 			.andExpect(status().isNoContent());
@@ -245,8 +454,8 @@ public class ModelControllerTests extends AbstractMvcTest {
 		uris = StreamSupport.stream(getEntities().spliterator(), false)
 			.map(jsonNode -> jsonNode.get("uri").asText())
 			.sorted().toArray(String[]::new);
-		assertEquals("/entities/bob.smith@marklogic.com/Department.entity.json", uris[0]);
-		assertEquals("/entities/bob.smith@marklogic.com/Employee.entity.json", uris[1]);
+		assertEquals("/entities/Department.entity.json", uris[0]);
+		assertEquals("/entities/Employee.entity.json", uris[1]);
 	}
 
 	@Test

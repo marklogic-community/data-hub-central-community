@@ -17,11 +17,15 @@ import java.util.Properties;
 
 public class DeployEnvisionModulesCommand extends AbstractCommand {
 	private final DatabaseClient modulesClient;
+	private final boolean isMultitenant;
 
 	private Throwable caughtException;
 
-	public DeployEnvisionModulesCommand(DatabaseClient modulesClient) {
+
+
+	public DeployEnvisionModulesCommand(DatabaseClient modulesClient, boolean isMultitenant) {
 		this.modulesClient = modulesClient;
+		this.isMultitenant = isMultitenant;
 		setExecuteSortOrder(SortOrderConstants.LOAD_MODULES - 1);
 	}
 
@@ -39,6 +43,12 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 		});
 		if (caughtException == null) {
 			modulesLoader.loadModules("classpath*:/envision-modules", new DefaultModulesFinder(), modulesClient);
+
+			// for multi-tenant installs we need to replace some DHF triggers for entities. this allows us to support
+			// per-user entities
+			if (isMultitenant) {
+				modulesLoader.loadModules("classpath*:/multitenant-modules", new DefaultModulesFinder(), modulesClient);
+			}
 		}
 
 		if (caughtException != null) {
