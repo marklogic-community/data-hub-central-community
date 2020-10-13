@@ -9,17 +9,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ExportControllerTests extends AbstractMvcTest {
 
 	private static final String GET_EXPORT_URL = "/api/export/runExports";
 	private static final String GET_EXPORTS_URL = "/api/export";
+	private static final String GET_FILE_URL = "/api/export/";
 
 	@Autowired
 	ModelService modelService;
@@ -117,5 +122,37 @@ public class ExportControllerTests extends AbstractMvcTest {
 				})
 			.andExpect(status().isOk());
 
+	}
+
+	@Test
+	void getFile() throws Exception {
+		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+		List<String> entityNames = new ArrayList<>();
+		entityNames.add("col1");
+		entityNames.add("col2");
+		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+		assertEquals(2, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+
+		String exportId = exportService.getExports(getNonAdminHubClient()).get(0).id;
+
+		getJson(GET_FILE_URL + exportId)
+			.andExpect(status().isUnauthorized());
+
+		login();
+
+		getJson(GET_FILE_URL + exportId)
+			.andDo(
+				result -> {
+					assertEquals("application/zip", result.getResponse().getHeader("Content-Type"));
+					ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(result.getResponse().getContentAsByteArray()));
+					ZipEntry zipEntry = zipInputStream.getNextEntry();
+					assertEquals("col1.csv", zipEntry.getName());
+					zipEntry = zipInputStream.getNextEntry();
+					assertEquals("col2.csv", zipEntry.getName());
+					zipEntry = zipInputStream.getNextEntry();
+					assertNull(zipEntry);
+				})
+			.andExpect(status().isOk());
 	}
 }

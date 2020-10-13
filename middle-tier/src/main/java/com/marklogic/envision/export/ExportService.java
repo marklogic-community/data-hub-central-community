@@ -5,24 +5,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentPage;
+import com.marklogic.client.document.DocumentRecord;
 import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.JacksonHandle;
-import com.marklogic.client.io.StringHandle;
 import com.marklogic.client.pojo.PojoQueryDefinition;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.hub.HubClient;
+import com.marklogic.grove.boot.error.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -85,7 +83,7 @@ public class ExportService {
 		mgr.write(pojoUri(exportPojo.username, exportPojo.id), meta, handle);
 	}
 
-	public List<ExportPojo> getExports(HubClient hubClient) {
+	public List<ExportInfo> getExports(HubClient hubClient) {
 		QueryManager queryMgr = hubClient.getFinalClient().newQueryManager();
 		JSONDocumentManager mgr = hubClient.getFinalClient().newJSONDocumentManager();
 
@@ -93,16 +91,29 @@ public class ExportService {
 		PojoQueryDefinition query = qb.collection(USER_EXPORT_COLLECTION + hubClient.getUsername());
 		DocumentPage page =  mgr.search(query, 1);
 
-		List<ExportPojo> exports = new ArrayList<>();
+		List<ExportInfo> exports = new ArrayList<>();
 		page.forEach(documentRecord -> {
 			try {
 				JsonNode node = documentRecord.getContent(new JacksonHandle()).get();
-				exports.add(objectMapper.treeToValue(node, ExportPojo.class));
+				exports.add(new ExportInfo(objectMapper.treeToValue(node, ExportPojo.class)));
 			} catch (JsonProcessingException e) {
 				e.printStackTrace();
 			}
 		});
 
 		return exports;
+	}
+
+	public InputStream getFile(DatabaseClient client, String username, String exportId) throws JsonProcessingException, FileNotFoundException {
+		JSONDocumentManager mgr = client.newJSONDocumentManager();
+		DocumentPage page = mgr.read(pojoUri(username, exportId));
+
+		if (!page.hasNext()) {
+			throw new NotFoundException();
+		}
+		DocumentRecord documentRecord = page.next();
+		JsonNode node = documentRecord.getContent(new JacksonHandle()).get();
+		ExportPojo exportPojo = objectMapper.treeToValue(node, ExportPojo.class);
+		return new FileInputStream(new File(exportPojo.zipUri));
 	}
 }

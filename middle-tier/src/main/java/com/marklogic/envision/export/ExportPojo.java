@@ -6,6 +6,7 @@ import java.util.UUID;
 public class ExportPojo {
 	public String id;
 	public String zipUri;
+
 	public Date creationDate;
 	public String username;
 
