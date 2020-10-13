@@ -32,10 +32,12 @@ public class ExportControllerTests extends AbstractMvcTest {
 		logout();
 
 		removeUser(ACCOUNT_NAME);
+		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
 
 		registerAccount();
+		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
 
 		HubClient hc = getNonAdminHubClient();
 		for (int i = 0; i < 100; i++) {
@@ -85,9 +87,9 @@ public class ExportControllerTests extends AbstractMvcTest {
 		entityNames.add("col1");
 		entityNames.add("col2");
 		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
-//		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 
-		assertEquals(1, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+		assertEquals(2, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 
 		getJson(GET_EXPORTS_URL)
 			.andDo(

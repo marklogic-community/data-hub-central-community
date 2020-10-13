@@ -81,7 +81,6 @@ public class ExportService {
 		JSONDocumentManager mgr = client.newJSONDocumentManager();
 		DocumentMetadataHandle meta = new DocumentMetadataHandle();
 		meta.getCollections().addAll(EXPORT_INFO_COLLECTION, USER_EXPORT_COLLECTION + exportPojo.username);
-		meta.getPermissions().add("envision", DocumentMetadataHandle.Capability.READ, DocumentMetadataHandle.Capability.UPDATE);
 		JacksonHandle handle = new JacksonHandle(objectMapper.valueToTree(exportPojo));
 		mgr.write(pojoUri(exportPojo.username, exportPojo.id), meta, handle);
 	}
