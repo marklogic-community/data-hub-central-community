@@ -130,7 +130,7 @@ export default {
 		},
 		async removeData(collection) {
 			this.deleteInProgress = true
-			await axios.post("/api/system/deleteCollection", { database: 'staging', collection: this.collection })
+			await axios.post("/api/system/deleteCollection", { database: 'staging', collection: collection })
 			this.deleteInProgress = false
 			this.stagingData = this.stagingData.filter(c => c.collection !== collection)
 		}
