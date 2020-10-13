@@ -1,6 +1,6 @@
 package com.marklogic.envision.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.envision.export.ExportService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ExportControllerTests extends AbstractMvcTest {
 
 	private static final String GET_EXPORT_URL = "/api/export/runExports";
+	private static final String GET_EXPORTS_URL = "/api/export";
 
 	@Autowired
 	ModelService modelService;
@@ -53,10 +54,48 @@ public class ExportControllerTests extends AbstractMvcTest {
 
 	@Test
 	void serviceExport() throws IOException {
+		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 		List<String> entityNames = new ArrayList<>();
 		entityNames.add("col1");
 		entityNames.add("col2");
 		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+		assertEquals(1, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+	}
+
+	@Test
+	void getExports() throws Exception {
+		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+
+
+		getJson(GET_EXPORTS_URL)
+			.andExpect(status().isUnauthorized());
+
+		login();
+
+		getJson(GET_EXPORTS_URL)
+			.andDo(
+				result -> {
+					ArrayNode response = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(0, response.size());
+				})
+			.andExpect(status().isOk());
+
+		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+		List<String> entityNames = new ArrayList<>();
+		entityNames.add("col1");
+		entityNames.add("col2");
+		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+//		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+
+		assertEquals(1, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+
+		getJson(GET_EXPORTS_URL)
+			.andDo(
+				result -> {
+					ArrayNode response = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(1, response.size());
+				})
+			.andExpect(status().isOk());
 	}
 
 	@Test

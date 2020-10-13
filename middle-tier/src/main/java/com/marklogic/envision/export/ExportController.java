@@ -25,4 +25,9 @@ public class ExportController extends AbstractController {
 	public void runExports(@RequestBody List<String> entityNames) throws IOException {
 		exportService.runExportsAsync(getHubClient().getFinalClient(), getHubClient().getUsername(), entityNames);
 	}
+
+	@RequestMapping(method = RequestMethod.GET)
+	public List<ExportPojo> getExports() throws IOException {
+		return exportService.getExports(getHubClient());
+	}
 }
