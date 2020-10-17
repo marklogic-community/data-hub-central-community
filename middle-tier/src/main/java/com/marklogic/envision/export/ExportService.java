@@ -103,8 +103,7 @@ public class ExportService {
 
 		return exports;
 	}
-
-	public InputStream getFile(DatabaseClient client, String username, String exportId) throws JsonProcessingException, FileNotFoundException {
+	public File getFile(DatabaseClient client, String username, String exportId) throws JsonProcessingException, FileNotFoundException {
 		JSONDocumentManager mgr = client.newJSONDocumentManager();
 		DocumentPage page = mgr.read(pojoUri(username, exportId));
 
@@ -114,6 +113,6 @@ public class ExportService {
 		DocumentRecord documentRecord = page.next();
 		JsonNode node = documentRecord.getContent(new JacksonHandle()).get();
 		ExportPojo exportPojo = objectMapper.treeToValue(node, ExportPojo.class);
-		return new FileInputStream(new File(exportPojo.zipUri));
+		return new File(exportPojo.zipUri);
 	}
 }

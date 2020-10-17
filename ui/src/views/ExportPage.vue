@@ -11,6 +11,7 @@ export default {
 		exportError: '' ,
 		datahub: '',
 		entities: [],
+		exportJobs: [],
 		showExportStatus:false,
 		requestStatus:"green",
 		headers: [
@@ -70,12 +71,55 @@ export default {
 			this.exportError = ""
 			this.requestStatus="green"
 			this.showExportStatus = true;
-			return axios.get("/api/os/runExport/", null, {params: {entityName}})
+			return axios
+			.get("/api/os/runExport/", null, {params: {entityName}})
 			.then(response => {
 				this.exportMsg =response.statusText
 				this.requestStatus="green"
 				this.showExportStatus = true;
 				return response.data
+			})
+			.catch(error => {
+				console.error('error:', error);
+				this.exportError = error
+				this.requestStatus="red"
+				this.showExportStatus = true;
+				return error;
+			});
+
+		},
+		getExports(){
+			this.exportMsg = "Checking for exports."
+			this.exportError = ""
+			this.requestStatus="green"
+			this.showExportStatus = true;
+			return axios.get("/api/export/getExports/")
+			.then(response => {
+				this.exportMsg =response.statusText
+				this.requestStatus="green"
+				this.showExportStatus = true;
+				this.parseExports(response.data)
+				return response.data
+			})
+			.catch(error => {
+				console.error('error:', error);
+				this.exportError = error
+				this.requestStatus="red"
+				this.showExportStatus = true;
+				return error;
+			});
+		},
+		downloadExport(exportId){
+			this.exportMsg = "Downoading " + exportId + " ."
+			this.exportError = ""
+			this.requestStatus="green"
+			this.showExportStatus = true;
+			return axios.get(`/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}`)
+			.then(response => {
+				this.exportMsg =response.statusText
+				this.requestStatus="green"
+				this.showExportStatus = true;
+				return response.status
 			})
 			.catch(error => {
 				console.error('error:', error);
@@ -96,13 +140,44 @@ export default {
 			// eslint-disable-next-line no-useless-escape
 			this.entities = entStr.match(/[^,\s,\",\[][^\,]*[^,\s,]*[^,\",\]]/g);
 		},
+		parseExports(myExports){
+			this.exportJobs = myExports;
+		},
 		handleEntityTableClick(entity){
 			this.runExport(entity);
 			console.log(entity);
+		},
+		handleExportsTableClick(myExport)
+		{
+			console.log("Downloading: " + myExport.id);
+			this.downloadExport(myExport.id)
+		},
+		downloadLink(exportId) {
+			return `/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`
+		},
+		refreshInfo() {
+			this.exportMsg = "Status updated: " + this.getNow()
+			this.exportError = ""
+			this.requestStatus="green"
+			this.showExportStatus = true;
+		},
+		getNow() {
+			const today = new Date();
+			const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+			const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+			const dateTime = date +' '+ time;
+			return dateTime;
 		}
 	},
 	mounted() {
 		this.getDataHubConfig();
+		this.$ws.subscribe('/topic/status', tick => {
+			const msg = tick.body
+			if (msg.percentComplete >= 100) {
+				this.refreshInfo()
+			}
+		})
+		this.refreshInfo()
 	}
 }
 
@@ -140,6 +215,17 @@ export default {
 				</tbody>
 			</v-simple-table>
 			<v-btn color="primary" class="right" v-on:click="runExports" aria-label="Export entities.">Export All</v-btn>
+		</fieldset>
+		<fieldset class="col-sm-9" v-if="!cloud">
+			<legend>Exports</legend>
+				<v-simple-table dense>
+				<tbody>
+					<tr v-for="myExport in exportJobs" :key="myExport" class='clickable-row' @click="handleExportsTableClick(myExport)">
+						<td ><a :href="downloadLink(myExport.id)">{{myExport.creationDate}}</a></td>
+					</tr>
+				</tbody>
+			</v-simple-table>
+			<v-btn color="primary" class="right" v-on:click="getExports" aria-label="Export entities.">Refresh Exports</v-btn>
 		</fieldset>
 	</div>
 </template>
