@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ExportControllerTests extends AbstractMvcTest {
 
 	private static final String GET_EXPORT_URL = "/api/export/runExports";
-	private static final String GET_EXPORTS_URL = "/api/export";
-	private static final String GET_FILE_URL = "/api/export/";
+	private static final String GET_EXPORTS_URL = "/api/export/getExports";
+	private static final String GET_FILE_URL = "/api/export/downloadExport";
 
 	@Autowired
 	ModelService modelService;
@@ -136,12 +136,12 @@ public class ExportControllerTests extends AbstractMvcTest {
 
 		String exportId = exportService.getExports(getNonAdminHubClient()).get(0).id;
 
-		getJson(GET_FILE_URL + exportId)
+		getJson(GET_FILE_URL + "?exportId=" + exportId)
 			.andExpect(status().isUnauthorized());
 
 		login();
 
-		getJson(GET_FILE_URL + exportId)
+		getJson(GET_FILE_URL + "?exportId=" + exportId)
 			.andDo(
 				result -> {
 					assertEquals("application/zip", result.getResponse().getHeader("Content-Type"));
