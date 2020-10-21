@@ -1,152 +1,153 @@
-<script>
-import axios from 'axios';
-
-const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
-const isTesting = process.env.NODE_ENV === 'test'
-
-export default {
-	name:'ExportPage',
-	data: ()=> ({
-		exportMsg: '',
-		exportError: '' ,
-		entityMsg: '',
-		entityError: '',
-		datahub: '',
-		entities: '',
-		showEntityStatus:false,
-		headers: [
-			{
-				text: 'Property',
-				align: 'start',
-				sortable: false,
-				value: 'prop',
-			},
-			{ text: 'Setting', value: 'val' }
-		],
-		cloud: isHosted && !isTesting
-	}),
-
-	methods: {
-		getDataHubConfig() {
-			return axios
-			.get('/api/os/getDHprojectConfig/')
-			.then(response => {
-			console.log('Returning ' + response.data);
-			this.datahub= response.data;
-			this.entities= parseEntities(response.data);
-			return response.data;
-			})
-			.catch(error => {
-				console.error('Error getting DHS config:', error);
-				return error;
-			});
-		},
-		getEntityNames() {
-			return axios
-			.get('/api/os/getEntityNames/')
-			.then(response => {
-				console.log('Returning ' + response.data);
-				this.entities=response.data;
-				return response.data;
-			})
-			.catch(error => {
-				console.error('Error getting flows:', error);
-				return error;
-			});
-		},
-		async runExports(){
-			this.exportMsg = "Running exports."
-			this.exportError = ""
-			axios.post("/api/os/runExports/")
-			.then(response => {
-				this.entityMsg =response.statusText
-				return response.data
-			})
-			.catch(error => {
-				console.error('error:', error);
-				this.exportError = error
-				return error;
-			});
-		},
-		async runExport(entityName){
-			this.exportMsg = "Exporting " + entityName + "."
-			this.exportError = ""
-			this.showExportStatus = true;
-			axios.post("/api/os/runExport/", null, {params: {entityName}})
-			.then(response => {
-				this.exportMsg =response.statusText
-				this.showExportStatus = true;
-				return response.data
-			})
-			.catch(error => {
-				console.error('error:', error);
-				this.exportError = error
-				this.showExportStatus = true;
-				return error;
-			});
-		},
-		parseEntities(hubConfig){
-			hubConfig.filter(item => item.prop === "Entities")
-				.array.forEach(item => {
-					this.entities = item.value
-				});
-		},
-		handleDataHubTableClick(event){
-			console.log(event);
-		}},
-	mounted() {
-		this.getDataHubConfig();
-		this.getEntityNames();
-	}
-}
-
-</script>
-
 <template>
 	<div id="exportContainer">
-		<v-snackbar
-			v-model="showEntityStatus"
-			right
-			top
-		>
-			{{ entityMsg + " " + entityError }}
-
-			<template v-slot:action="{ attrs }">
-				<v-btn
-				color="red"
-				text
-				v-bind="attrs"
-				@click="snackbar = false"
-				>
-				Close
-				</v-btn>
-			</template>
-		</v-snackbar>
 		<h1>Envision Export Page</h1>
-		<fieldset class="col-sm-9" v-if="!cloud">
+		<fieldset class="col-sm-9" v-if="entityNames.length > 0">
 			<legend>Entities</legend>
-				<v-simple-table dense>
+			<v-simple-table dense>
+				<thead>
+					<tr>
+						<th>
+							<v-checkbox
+								data-cy="export.checkAll"
+								v-model="allChecked"
+							></v-checkbox>
+						</th>
+						<th>Entity</th>
+					</tr>
+				</thead>
 				<tbody>
-					<tr v-for="entity in entities" :key="entity" class='clickable-row' @click="handleEntityTableClick(dhprop)">
+					<tr v-for="(entity, index) in entityNames" :key="entity">
+						<td class="smallcol">
+							<v-checkbox dense :data-cy="`export.${entity}`" v-model="checkEntities[index]"></v-checkbox>
+						</td>
 						<td >{{entity}}</td>
 					</tr>
 				</tbody>
 			</v-simple-table>
-			<v-btn color="primary" class="right" v-on:click="runExports" aria-label="Export entities.">Export All</v-btn>
+			<v-btn color="primary" data-cy="export.exportButton" class="right" :disabled="selectedEntities.length <= 0" v-on:click="runExports" aria-label="Export entities.">Export</v-btn>
 		</fieldset>
-		<fieldset class="col-sm-9" v-if="!cloud">
-			<legend>Data Hub properties</legend>
-			<v-simple-table dense>
+		<div v-else>
+			You need to define some Entities on the <router-link :to="{name: 'root.modeler'}">Connect Page</router-link>.
+		</div>
+		<fieldset class="col-sm-9" v-if="exportJobs.length > 0">
+			<legend>Exports</legend>
+				<v-simple-table dense>
 				<tbody>
-					<tr v-for="dhprop in datahub" :key="dhprop.prop" class='clickable-row' @click="handleDataHubTableClick(dhprop)">
-						<td >{{dhprop.prop}}</td>
-						<td >{{dhprop.val}}</td>
+					<tr v-for="job in exportJobs" :key="job.id" :data-cy="`export.${job.id}`">
+						<td><a :href="downloadLink(job.id)"><v-icon>cloud_download</v-icon> {{job.name}}</a></td>
+						<td>{{timeAgo(job.creationDate)}}</td>
+						<td>
+							<delete-data-confirm
+									tooltip="Delete Exported Data"
+									message="Do you really want to delete this exported data?"
+									:collection="job.id"
+									:deleteInProgress="deleteInProgress"
+									@deleted="removeData($event)"/>
+						</td>
 					</tr>
 				</tbody>
 			</v-simple-table>
-			</fieldset>
+		</fieldset>
 	</div>
 </template>
+
+
+<script>
+import axios from 'axios'
+import { mapState, mapActions } from 'vuex'
+import DeleteDataConfirm from '@/components/DeleteDataConfirm'
+
+export default {
+	name:'ExportPage',
+	components: {
+		DeleteDataConfirm
+	},
+	data: ()=> ({
+		deleteInProgress: false,
+		checkEntities: {},
+		exportError: '' ,
+		datahub: '',
+		exportJobs: [],
+		showExportStatus:false,
+		requestStatus: "green",
+	}),
+	computed:{
+		...mapState({
+			entities: state => Object.values(state.flows.entities)
+		}),
+		entityNames() {
+			return this.entities.map(e => e.info.title)
+		},
+		allChecked: {
+			get() {
+				return this.checkedIndexes.length > 0 && this.checkedIndexes.length === this.entityNames.length
+			},
+			set(val) {
+				this.entityNames.forEach((n, index) => {
+					this.$set(this.checkEntities, index, val)
+				})
+			}
+		},
+		checkedIndexes() {
+			return Object.keys(this.checkEntities).filter(key => this.checkEntities[key])
+		},
+		selectedEntities() {
+			return this.entityNames.filter((v, idx) => this.checkedIndexes.findIndex(x => x == idx) >= 0)
+		},
+	},
+	created () {
+		this.getEntities()
+	},
+	methods: {
+		...mapActions({
+			getEntities: 'flows/getEntities'
+		}),
+		timeAgo(time) {
+			return this.$moment(time).fromNow()
+		},
+		async runExports() {
+			axios.post("/api/export/runExports", this.selectedEntities)
+				.then(response => {
+					return response.data
+				})
+				.catch(error => {
+					console.error('error:', error)
+					return error
+				})
+		},
+		getExports() {
+			return axios.get("/api/export/getExports/")
+			.then(response => {
+				this.exportJobs = response.data.sort((a,b) => this.$moment(b.creationDate).diff(this.$moment(a.creationDate)))
+				return response.data
+			})
+			.catch(error => {
+				console.error('error:', error)
+				return error
+			})
+		},
+		downloadLink(exportId) {
+			return `/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`
+		},
+		async removeData(exportId) {
+			this.deleteInProgress = true
+			await axios.get(`/api/export/deleteExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`)
+			this.deleteInProgress = false
+			this.exportJobs = this.exportJobs.filter(c => c.id !== exportId)
+		}
+	},
+	mounted() {
+		this.$ws.subscribe('/topic/status', tick => {
+			const msg = tick.body
+			if (msg.percentComplete >= 100) {
+				this.getExports()
+			}
+		})
+		this.getExports()
+	}
+}
+
+</script>
 
 <style scoped>
 	#exportContainer {
@@ -180,6 +181,9 @@ export default {
 		border-radius: 3px;
 		padding-left: 5px;
 	}
+	.smallcol {
+		width: 100px;
+	}
 	.code {
 		padding-left: 20px;
 		font-size: 1.1em;
@@ -187,5 +191,9 @@ export default {
 	}
 	.clickable-row {
 		cursor: pointer;
+	}
+
+	a {
+		text-decoration: none;
 	}
 </style>

@@ -48,14 +48,13 @@ describe('Integrate Tab', () => {
 		cy.visit('/upload')
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.fixture('test.csv', 'base64').then(fileContent => {
-			console.log(fileContent)
 			cy.get('[data-cy="uploadfileInput"]').should('exist')
         .attachFile(
 					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
 					{ subjectType: 'drag-n-drop' },
 				);
 
-				cy.wait('@uploadFile')
+			cy.wait('@uploadFile')
 				.its('request.body')
 					.should(body => {
 						expect(body.get('collection')).to.eq('test.csv')
