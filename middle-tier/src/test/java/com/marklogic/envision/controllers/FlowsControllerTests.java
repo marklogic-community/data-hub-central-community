@@ -48,6 +48,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		logout();
 
 		removeUser(ACCOUNT_NAME);
+		envisionConfig.setMultiTenant(true);
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
 

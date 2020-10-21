@@ -46,9 +46,10 @@ public class AuthenticationTests extends AbstractMvcTest {
 		removeUser(ACCOUNT_NAME);
 		removeUser(ADMIN_ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
+		envisionConfig.setMultiTenant(true);
 
 		// remove models
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
+		File modelDir = modelService.getModelsDir(true, ACCOUNT_NAME);
 		for (File file: Objects.requireNonNull(modelDir.listFiles())) {
 			file.delete();
 		}
@@ -114,7 +115,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertNull(finalUser.token);
 		assertNull(authToken);
 
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
+		File modelDir = modelService.getModelsDir(true, ACCOUNT_NAME);
 		File modelFile = new File(modelDir, "MyModel.json");
 		jsonAssertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", FileUtils.readFileToString(modelFile));
 	}
@@ -160,7 +161,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertFalse(finalUser.validated);
 		assertNull(authToken);
 
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
+		File modelDir = modelService.getModelsDir(true, ACCOUNT_NAME);
 		File modelFile = new File(modelDir, "MyModel.json");
 		assertTrue(modelFile.exists());
 	}

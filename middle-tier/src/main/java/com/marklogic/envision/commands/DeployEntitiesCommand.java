@@ -127,7 +127,7 @@ public class DeployEntitiesCommand extends LoggingObject {
 	//5.2 lib makes this method protected in base class so mut change to public
 	//private DocumentMetadataHandle buildMetadata(String collection, String permissions) {
 	public DocumentMetadataHandle buildMetadata(String collection, String permissions) {
-			DocumentMetadataHandle meta = new DocumentMetadataHandle();
+		DocumentMetadataHandle meta = new DocumentMetadataHandle();
 		meta.getCollections().add(collection);
 		documentPermissionsParser.parsePermissions(permissions, meta.getPermissions());
 		return meta;

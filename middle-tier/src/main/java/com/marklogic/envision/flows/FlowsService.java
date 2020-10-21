@@ -110,12 +110,14 @@ public class FlowsService {
 		Flow flow = getFlow(hubClient, flowName);
 		Step step = Step.deserialize(stepJson);
 
-		// update the permissions to be the user's unique role
-		// so that when the flow runs, the output docs are visible only to the current user
-		// user's unique role is an md5 hash of the username
-		String email = hubClient.getUsername();
-		String roleName = DigestUtils.md5Hex(email);
-		step.getOptions().put("permissions", String.format("%s,read,%s,update", roleName, roleName));
+		if (hubClient.isMultiTenant()) {
+			// update the permissions to be the user's unique role
+			// so that when the flow runs, the output docs are visible only to the current user
+			// user's unique role is an md5 hash of the username
+			String email = hubClient.getUsername();
+			String roleName = DigestUtils.md5Hex(email);
+			step.getOptions().put("permissions", String.format("%s,read,%s,update", roleName, roleName));
+		}
 
 		Map<String, Step> steps = flow.getSteps();
 		final String[] existingIndex = {String.valueOf(steps.size() + 1)};

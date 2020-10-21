@@ -56,16 +56,19 @@ public class ModelService {
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	public File getModelsDir(String username) {
-		File userModelsDir = new File(modelsDir, username);
-		if (!userModelsDir.exists()) {
-			userModelsDir.mkdirs();
+	public File getModelsDir(boolean isMultiTenant, String username) {
+		if (isMultiTenant) {
+			File userModelsDir = new File(modelsDir, username);
+			if (!userModelsDir.exists()) {
+				userModelsDir.mkdirs();
+			}
+			return userModelsDir;
 		}
-		return userModelsDir;
+		return modelsDir;
 	}
 
-	private File getModelFile(String username, String modelName) {
-		File userModelDir = getModelsDir(username);
+	private File getModelFile(boolean isMultiTenant, String username, String modelName) {
+		File userModelDir = getModelsDir(isMultiTenant, username);
 		String fileName = modelName.replace(" ", "") + ".json";
 		return new File(userModelDir, fileName);
 	}
@@ -91,7 +94,7 @@ public class ModelService {
     }
 
     public void deleteAllModels(HubClient hubClient, String username) throws IOException {
-		File userModelDir = getModelsDir(username);
+		File userModelDir = getModelsDir(hubClient.isMultiTenant(), username);
 		File[] files = userModelDir.listFiles();
 		for (File file : files) {
 			JsonNode model = objectMapper.readTree(file);
@@ -101,7 +104,7 @@ public class ModelService {
 	}
 
     public boolean deleteModel(HubClient hubClient, String username, String modelName) throws IOException {
-		File jsonFile = getModelFile(username, modelName);
+		File jsonFile = getModelFile(hubClient.isMultiTenant(), username, modelName);
 		if (jsonFile.exists()) {
 			JsonNode model = objectMapper.readTree(jsonFile);
 			model.get("nodes").forEach(jsonNode -> {
@@ -121,7 +124,7 @@ public class ModelService {
 	public void renameModel(String username, HubClient client, InputStream stream) throws IOException {
     	JsonNode node = objectMapper.readTree(stream);
 		String originalModelName = node.get("originalname").asText();
-		File originalModelFile = getModelFile(username, originalModelName);
+		File originalModelFile = getModelFile(client.isMultiTenant(), username, originalModelName);
 
 		saveModel(client, node.get("model"));
 		originalModelFile.delete();
@@ -155,14 +158,14 @@ public class ModelService {
 		meta.getCollections().addAll("http://marklogic.com/envision/model");
 		JacksonHandle content = new JacksonHandle(model);
 		client.getFinalClient().newJSONDocumentManager().write("/envision/" + client.getUsername() + "/currentModel.json", meta, content);
-		saveModelFile(client.getUsername(), model);
+		saveModelFile(client.isMultiTenant(), client.getUsername(), model);
 
 		toDataHub(client);
 		createModelTDEs(client.getFinalClient());
 	}
 
-	public void saveModelFile(String username, JsonNode model) throws IOException {
-		File jsonFile = getModelFile(username, model.get("name").asText());
+	public void saveModelFile(boolean isMultiTenant, String username, JsonNode model) throws IOException {
+		File jsonFile = getModelFile(isMultiTenant, username, model.get("name").asText());
 		objectMapper.writeValue(jsonFile, model);
 	}
 
@@ -175,12 +178,12 @@ public class ModelService {
 	}
 
 	public List<JsonNode> getAllModels(HubClient client, String username) throws IOException {
-		List<JsonNode> names = listAllModels(username);
+		List<JsonNode> names = listAllModels(client.isMultiTenant(), username);
 
 		ArrayNode models = objectMapper.convertValue(names, ArrayNode.class);
 		if (EntityModeller.on(client.getFinalClient()).needsImport(models)) {
 			this.importModel(client);
-			names = listAllModels(username);
+			names = listAllModels(client.isMultiTenant(), username);
 		}
 		return names;
 	}
@@ -189,9 +192,9 @@ public class ModelService {
 		return EntityModeller.on(client).getActiveIndexes();
 	}
 
-	private List<JsonNode> listAllModels(String username) {
+	private List<JsonNode> listAllModels(boolean isMultiTenant, String username) {
 		List<JsonNode> names = new ArrayList<>();
-		File modelsDir = getModelsDir(username);
+		File modelsDir = getModelsDir(isMultiTenant, username);
 		File[] modelFiles = modelsDir.listFiles(pathname -> pathname.toString().endsWith(".json"));
 		if (modelFiles != null) {
 			try {

@@ -79,7 +79,7 @@ public class UserService {
 
 		saveUser(user);
 
-		modelService.saveModelFile(user.email, objectMapper.readTree("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}"));
+		modelService.saveModelFile(envisionConfig.isMultiTenant(), user.email, objectMapper.readTree("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}"));
 
 		eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user));
 		return user;
