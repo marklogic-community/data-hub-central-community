@@ -25,6 +25,7 @@ public class ExportControllerTests extends AbstractMvcTest {
 	private static final String GET_EXPORT_URL = "/api/export/runExports";
 	private static final String GET_EXPORTS_URL = "/api/export/getExports";
 	private static final String GET_FILE_URL = "/api/export/downloadExport";
+	private static final String DELETE_FILE_URL = "/api/export/deleteExport";
 
 	@Autowired
 	ModelService modelService;
@@ -154,5 +155,28 @@ public class ExportControllerTests extends AbstractMvcTest {
 					assertNull(zipEntry);
 				})
 			.andExpect(status().isOk());
+	}
+
+	@Test
+	void deleteFile() throws Exception {
+		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+		List<String> entityNames = new ArrayList<>();
+		entityNames.add("col1");
+		entityNames.add("col2");
+		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
+		assertEquals(2, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
+
+		String exportId = exportService.getExports(getNonAdminHubClient()).get(0).id;
+
+		getJson(GET_FILE_URL + "?exportId=" + exportId)
+			.andExpect(status().isUnauthorized());
+
+		login();
+
+		getJson(DELETE_FILE_URL + "?exportId=" + exportId)
+			.andExpect(status().isOk());
+
+		assertEquals(1, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 	}
 }

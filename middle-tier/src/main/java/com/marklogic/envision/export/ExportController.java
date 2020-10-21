@@ -46,4 +46,9 @@ public class ExportController extends AbstractController {
 		InputStream inputStream = new FileInputStream(exportJobsFile);
 		IOUtils.copy(inputStream, response.getOutputStream());
 	}
+
+	@RequestMapping(value = "/deleteExport", method = RequestMethod.GET)
+	void deleteExport(@RequestParam String exportId) throws IOException {
+		exportService.removeExport(getHubClient().getFinalClient(), getHubClient().getUsername(), exportId);
+	}
 }

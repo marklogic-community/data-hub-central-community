@@ -12,11 +12,12 @@ import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.pojo.PojoQueryDefinition;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
-import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.hub.HubClient;
+import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.grove.boot.error.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +33,12 @@ public class ExportService {
 	public static final String EXPORT_INFO_COLLECTION = "http://marklogic.com/envision/export-info";
 	public static final String USER_EXPORT_COLLECTION = "http://marklogic.com/envision/export/";
 
-	private final EnvisionConfig envisionConfig;
 	private final ObjectMapper objectMapper = new ObjectMapper();
+	final private SimpMessagingTemplate template;
 
 	@Autowired
-	public ExportService(EnvisionConfig envisionConfig) {
-		this.envisionConfig = envisionConfig;
+	public ExportService(SimpMessagingTemplate template) {
+		this.template = template;
 	}
 
 	@Async
@@ -68,7 +69,7 @@ public class ExportService {
 		}
 		zipOutputStream.close();
 
-		saveExportInfo(client, new ExportPojo(zipFile.getAbsolutePath(), username));
+		saveExportInfo(client, new ExportPojo(zipFile.getAbsolutePath(), String.join(",", entityNames), username));
 	}
 
 	private String pojoUri(String username, String id) {
@@ -81,6 +82,7 @@ public class ExportService {
 		meta.getCollections().addAll(EXPORT_INFO_COLLECTION, USER_EXPORT_COLLECTION + exportPojo.username);
 		JacksonHandle handle = new JacksonHandle(objectMapper.valueToTree(exportPojo));
 		mgr.write(pojoUri(exportPojo.username, exportPojo.id), meta, handle);
+		this.template.convertAndSend("/topic/status", StatusMessage.newStatus(exportPojo.name).withMessage("Export Complete").withPercentComplete(100));
 	}
 
 	public List<ExportInfo> getExports(HubClient hubClient) {
@@ -103,7 +105,15 @@ public class ExportService {
 
 		return exports;
 	}
-	public File getFile(DatabaseClient client, String username, String exportId) throws JsonProcessingException, FileNotFoundException {
+
+	public void removeExport(DatabaseClient client, String username, String exportId) throws JsonProcessingException {
+		File zipFile = getFile(client, username, exportId);
+		zipFile.delete();
+		JSONDocumentManager mgr = client.newJSONDocumentManager();
+		mgr.delete(pojoUri(username, exportId));
+	}
+
+	public File getFile(DatabaseClient client, String username, String exportId) throws JsonProcessingException {
 		JSONDocumentManager mgr = client.newJSONDocumentManager();
 		DocumentPage page = mgr.read(pojoUri(username, exportId));
 
