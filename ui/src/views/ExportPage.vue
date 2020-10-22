@@ -48,9 +48,6 @@ export default {
 			this.exportError = ""
 			this.requestStatus="green"
 			this.showExportStatus = true;
-			//get the entitiy names
-			//let ents=JSON.stringify(this.entities);
-			//let entityNames={json_data:ents}
 			axios.post("/api/export/runExports", this.entities)
 			.then(response => {
 				this.exportMsg =response.statusText
@@ -71,12 +68,11 @@ export default {
 			this.exportError = ""
 			this.requestStatus="green"
 			this.showExportStatus = true;
-			return axios
-			.get("/api/os/runExport/", null, {params: {entityName}})
+			axios.post("/api/os/runExport", entityName)
 			.then(response => {
 				this.exportMsg =response.statusText
-				this.requestStatus="green"
 				this.showExportStatus = true;
+				console.log("runExport: " + response.data)
 				return response.data
 			})
 			.catch(error => {
@@ -156,6 +152,7 @@ export default {
 			return `/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`
 		},
 		refreshInfo() {
+			this.getExports()
 			this.exportMsg = "Status updated: " + this.getNow()
 			this.exportError = ""
 			this.requestStatus="green"
@@ -171,12 +168,14 @@ export default {
 	},
 	mounted() {
 		this.getDataHubConfig();
+		//allow this page to update the list of exports
 		this.$ws.subscribe('/topic/status', tick => {
 			const msg = tick.body
 			if (msg.percentComplete >= 100) {
 				this.refreshInfo()
 			}
 		})
+		//update export list
 		this.refreshInfo()
 	}
 }
@@ -225,7 +224,7 @@ export default {
 					</tr>
 				</tbody>
 			</v-simple-table>
-			<v-btn color="primary" class="right" v-on:click="getExports" aria-label="Export entities.">Refresh Exports</v-btn>
+			<!-- <v-btn color="primary" class="right" v-on:click="getExports" data-cy="export.getExports" aria-label="Refresh Exports.">Refresh Exports</v-btn> -->
 		</fieldset>
 	</div>
 </template>

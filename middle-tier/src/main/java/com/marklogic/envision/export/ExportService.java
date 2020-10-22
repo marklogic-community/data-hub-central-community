@@ -7,6 +7,7 @@ import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.document.DocumentPage;
 import com.marklogic.client.document.DocumentRecord;
 import com.marklogic.client.document.JSONDocumentManager;
+import com.marklogic.client.ext.helper.LoggingObject;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.pojo.PojoQueryDefinition;
@@ -17,8 +18,10 @@ import com.marklogic.envision.hub.HubClient;
 import com.marklogic.grove.boot.error.NotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import com.marklogic.envision.pojo.StatusMessage;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -34,10 +37,12 @@ public class ExportService {
 
 	private final EnvisionConfig envisionConfig;
 	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final SimpMessagingTemplate template;
 
 	@Autowired
-	public ExportService(EnvisionConfig envisionConfig) {
+	public ExportService(EnvisionConfig envisionConfig, SimpMessagingTemplate template) {
 		this.envisionConfig = envisionConfig;
+		this.template = template;
 	}
 
 	@Async
@@ -68,7 +73,13 @@ public class ExportService {
 		}
 		zipOutputStream.close();
 
-		saveExportInfo(client, new ExportPojo(zipFile.getAbsolutePath(), username));
+		String zipPath = zipFile.getAbsolutePath();
+		saveExportInfo(client, new ExportPojo(zipPath, username));
+
+		//inform topic subscribers that the export is done
+		StatusMessage msg = StatusMessage.newStatus(zipPath)
+			.withPercentComplete(100);
+		this.template.convertAndSend("/topic/status", msg);
 	}
 
 	private String pojoUri(String username, String id) {
