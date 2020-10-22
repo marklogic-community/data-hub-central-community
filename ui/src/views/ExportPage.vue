@@ -203,7 +203,7 @@ export default {
 				</v-btn>
 			</template>
 		</v-snackbar>
-		<h1>Envision Export Page</h1>
+		<!-- <h1>Envision Export Page</h1> -->
 		<fieldset class="col-sm-9" v-if="!cloud">
 			<legend>Entities</legend>
 				<v-simple-table dense>
@@ -216,7 +216,7 @@ export default {
 			<v-btn color="primary" class="right" v-on:click="runExports" aria-label="Export entities.">Export All</v-btn>
 		</fieldset>
 		<fieldset class="col-sm-9" v-if="!cloud">
-			<legend>Exports</legend>
+			<legend>Completed Exports</legend>
 				<v-simple-table dense>
 				<tbody>
 					<tr v-for="myExport in exportJobs" :key="myExport" class='clickable-row' @click="handleExportsTableClick(myExport)">
