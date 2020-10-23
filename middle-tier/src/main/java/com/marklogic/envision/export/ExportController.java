@@ -3,10 +3,6 @@ package com.marklogic.envision.export;
 import com.marklogic.grove.boot.AbstractController;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,5 +41,10 @@ public class ExportController extends AbstractController {
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename =\"" + exportJobsFile.getName() + "\"");
 		InputStream inputStream = new FileInputStream(exportJobsFile);
 		IOUtils.copy(inputStream, response.getOutputStream());
+	}
+
+	@RequestMapping(value = "/deleteExport", method = RequestMethod.GET)
+	void deleteExport(@RequestParam String exportId) throws IOException {
+		exportService.removeExport(getHubClient().getFinalClient(), getHubClient().getUsername(), exportId);
 	}
 }

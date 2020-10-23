@@ -1,233 +1,152 @@
-<script>
-import axios from 'axios';
-
-const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
-const isTesting = process.env.NODE_ENV === 'test'
-
-export default {
-	name:'ExportPage',
-	data: ()=> ({
-		exportMsg: '',
-		exportError: '' ,
-		datahub: '',
-		entities: [],
-		exportJobs: [],
-		showExportStatus:false,
-		requestStatus:"green",
-		headers: [
-			{
-				text: 'Property',
-				align: 'start',
-				sortable: false,
-				value: 'prop',
-			},
-			{ text: 'Setting', value: 'val' }
-		],
-		cloud: isHosted && !isTesting
-	}),
-	computed:{
-		getRequestStatus(){return this.requestStatus}
-	},
-	methods: {
-		getDataHubConfig() {
-			return axios
-			.get('/api/os/getDHprojectConfig/')
-			.then(response => {
-			console.log('Returning ' + response.data);
-			this.datahub= response.data;
-			this.parseEntities(response.data);
-			return response.data;
-			})
-			.catch(error => {
-				console.error('Error getting DHS config:', error);
-				return error;
-			});
-		},
-		async runExports(){
-			this.exportMsg = "Exporting entities."
-			this.exportError = ""
-			this.requestStatus="green"
-			this.showExportStatus = true;
-			axios.post("/api/export/runExports", this.entities)
-			.then(response => {
-				this.exportMsg =response.statusText
-				this.showExportStatus = true;
-				console.log("runExports: " + response.data)
-				return response.data
-			})
-			.catch(error => {
-				console.error('error:', error);
-				this.exportError = error
-				this.requestStatus="red"
-				this.showExportStatus = true;
-				return error;
-			});
-		},
-		async runExport(entityName){
-			this.exportMsg = "Exporting " + entityName + "."
-			this.exportError = ""
-			this.requestStatus="green"
-			this.showExportStatus = true;
-			axios.post("/api/os/runExport", entityName)
-			.then(response => {
-				this.exportMsg =response.statusText
-				this.showExportStatus = true;
-				console.log("runExport: " + response.data)
-				return response.data
-			})
-			.catch(error => {
-				console.error('error:', error);
-				this.exportError = error
-				this.requestStatus="red"
-				this.showExportStatus = true;
-				return error;
-			});
-
-		},
-		getExports(){
-			this.exportMsg = "Checking for exports."
-			this.exportError = ""
-			this.requestStatus="green"
-			this.showExportStatus = true;
-			return axios.get("/api/export/getExports/")
-			.then(response => {
-				this.exportMsg =response.statusText
-				this.requestStatus="green"
-				this.showExportStatus = true;
-				this.parseExports(response.data)
-				return response.data
-			})
-			.catch(error => {
-				console.error('error:', error);
-				this.exportError = error
-				this.requestStatus="red"
-				this.showExportStatus = true;
-				return error;
-			});
-		},
-		downloadExport(exportId){
-			this.exportMsg = "Downoading " + exportId + " ."
-			this.exportError = ""
-			this.requestStatus="green"
-			this.showExportStatus = true;
-			return axios.get(`/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}`)
-			.then(response => {
-				this.exportMsg =response.statusText
-				this.requestStatus="green"
-				this.showExportStatus = true;
-				return response.status
-			})
-			.catch(error => {
-				console.error('error:', error);
-				this.exportError = error
-				this.requestStatus="red"
-				this.showExportStatus = true;
-				return error;
-			});
-		},
-		parseEntities(hubConfig){
-			//filter out the Entities item from hubConfig
-			let ents  = hubConfig.filter(item => item.prop === "Entities");
-			//have to parse this into an array- it's a string
-			let entStr = JSON.parse(JSON.stringify(ents[0].val));
-			//this regex pulls the entity names out of a serilaized string representation
-			//and puts them in an array; a great way to come up with this regex is an
-			//interactive regex pattern matcher like BBEdit
-			// eslint-disable-next-line no-useless-escape
-			this.entities = entStr.match(/[^,\s,\",\[][^\,]*[^,\s,]*[^,\",\]]/g);
-		},
-		parseExports(myExports){
-			this.exportJobs = myExports;
-		},
-		handleEntityTableClick(entity){
-			this.runExport(entity);
-			console.log(entity);
-		},
-		handleExportsTableClick(myExport)
-		{
-			console.log("Downloading: " + myExport.id);
-			this.downloadExport(myExport.id)
-		},
-		downloadLink(exportId) {
-			return `/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`
-		},
-		refreshInfo() {
-			this.getExports()
-			this.exportMsg = "Status updated: " + this.getNow()
-			this.exportError = ""
-			this.requestStatus="green"
-			this.showExportStatus = true;
-		},
-		getNow() {
-			const today = new Date();
-			const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-			const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-			const dateTime = date +' '+ time;
-			return dateTime;
-		}
-	},
-	mounted() {
-		this.getDataHubConfig();
-		//allow this page to update the list of exports
-		this.$ws.subscribe('/topic/status', tick => {
-			const msg = tick.body
-			if (msg.percentComplete >= 100) {
-				this.refreshInfo()
-			}
-		})
-		//update export list
-		this.refreshInfo()
-	}
-}
-
-</script>
-
 <template>
 	<div id="exportContainer">
-		<v-snackbar
-			v-model="showExportStatus"
-			right
-			top
-			:color="this.requestStatus"
-		>
-			{{ exportMsg + " " + exportError }}
-
-			<template v-slot:action="{ attrs }">
-				<v-btn
-				color="this.requestStatus"
-				text
-				v-bind="attrs"
-				@click="showExportStatus = false"
-				>
-				Close
-				</v-btn>
-			</template>
-		</v-snackbar>
-		<!-- <h1>Envision Export Page</h1> -->
-		<fieldset class="col-sm-9" v-if="!cloud">
+	<fieldset class="col-sm-9" v-if="entityNames.length > 0">
 			<legend>Entities</legend>
-				<v-simple-table dense>
+			<v-simple-table dense>
+				<thead>
+					<tr>
+						<th>
+							<v-checkbox
+								data-cy="export.checkAll"
+								v-model="allChecked"
+							></v-checkbox>
+						</th>
+						<th>Select All</th>
+					</tr>
+				</thead>
 				<tbody>
-					<tr v-for="entity in entities" :key="entity" class='clickable-row' @click="handleEntityTableClick(entity)">
+					<tr v-for="(entity, index) in entityNames" :key="entity">
+						<td class="smallcol">
+							<v-checkbox dense :data-cy="`export.${entity}`" v-model="checkEntities[index]"></v-checkbox>
+						</td>
 						<td >{{entity}}</td>
 					</tr>
 				</tbody>
 			</v-simple-table>
-			<v-btn color="primary" class="right" v-on:click="runExports" aria-label="Export entities.">Export All</v-btn>
+			<v-btn color="primary" data-cy="export.exportButton" class="right" :disabled="selectedEntities.length <= 0" v-on:click="runExports" aria-label="Export entities.">Export</v-btn>
 		</fieldset>
-		<fieldset class="col-sm-9" v-if="!cloud">
-			<legend>Completed Exports</legend>
+		<div v-else>
+			You need to define some Entities on the <router-link :to="{name: 'root.modeler'}">Connect Page</router-link>.
+		</div>
+		<fieldset class="col-sm-9" v-if="exportJobs.length > 0">
+			<legend>Exports</legend>
 				<v-simple-table dense>
 				<tbody>
-					<tr v-for="myExport in exportJobs" :key="myExport" class='clickable-row' @click="handleExportsTableClick(myExport)">
-						<td ><a :href="downloadLink(myExport.id)">{{myExport.creationDate}}</a></td>
+					<tr v-for="job in exportJobs" :key="job.id" :data-cy="`export.${job.id}`">
+						<td><a :href="downloadLink(job.id)"><v-icon>cloud_download</v-icon> {{job.name}}</a></td>
+						<td>{{timeAgo(job.creationDate)}}</td>
+						<td>
+							<delete-data-confirm
+									tooltip="Delete Exported Data"
+									message="Do you really want to delete this exported data?"
+									:collection="job.id"
+									:deleteInProgress="deleteInProgress"
+									@deleted="removeData($event)"/>
+						</td>
 					</tr>
 				</tbody>
 			</v-simple-table>
-			<!-- <v-btn color="primary" class="right" v-on:click="getExports" data-cy="export.getExports" aria-label="Refresh Exports.">Refresh Exports</v-btn> -->
 		</fieldset>
 	</div>
 </template>
+
+
+<script>
+import axios from 'axios'
+import { mapState, mapActions } from 'vuex'
+import DeleteDataConfirm from '@/components/DeleteDataConfirm'
+
+export default {
+	name:'ExportPage',
+	components: {
+		DeleteDataConfirm
+	},
+	data: ()=> ({
+		deleteInProgress: false,
+		checkEntities: {},
+		exportError: '' ,
+		datahub: '',
+		exportJobs: [],
+		showExportStatus:false,
+		requestStatus: "green",
+	}),
+	computed:{
+		...mapState({
+			entities: state => Object.values(state.flows.entities)
+		}),
+		entityNames() {
+			return this.entities.map(e => e.info.title)
+		},
+		allChecked: {
+			get() {
+				return this.checkedIndexes.length > 0 && this.checkedIndexes.length === this.entityNames.length
+			},
+			set(val) {
+				this.entityNames.forEach((n, index) => {
+					this.$set(this.checkEntities, index, val)
+				})
+			}
+		},
+		checkedIndexes() {
+			return Object.keys(this.checkEntities).filter(key => this.checkEntities[key])
+		},
+		selectedEntities() {
+			return this.entityNames.filter((v, idx) => this.checkedIndexes.findIndex(x => x == idx) >= 0)
+		},
+	},
+	created () {
+		this.getEntities()
+	},
+	methods: {
+		...mapActions({
+			getEntities: 'flows/getEntities'
+		}),
+		timeAgo(time) {
+			return this.$moment(time).fromNow()
+		},
+		async runExports() {
+			axios.post("/api/export/runExports", this.selectedEntities)
+				.then(response => {
+					return response.data
+				})
+				.catch(error => {
+					console.error('error:', error)
+					return error
+				})
+		},
+		getExports() {
+			return axios.get("/api/export/getExports/")
+			.then(response => {
+				this.exportJobs = response.data.sort((a,b) => this.$moment(b.creationDate).diff(this.$moment(a.creationDate)))
+				return response.data
+			})
+			.catch(error => {
+				console.error('error:', error)
+				return error
+			})
+		},
+		downloadLink(exportId) {
+			return `/api/export/downloadExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`
+		},
+		async removeData(exportId) {
+			this.deleteInProgress = true
+			await axios.get(`/api/export/deleteExport/?exportId=${encodeURIComponent(exportId)}&token=${localStorage.getItem('access_token')}`)
+			this.deleteInProgress = false
+			this.exportJobs = this.exportJobs.filter(c => c.id !== exportId)
+		}
+	},
+	mounted() {
+		this.$ws.subscribe('/topic/status', tick => {
+			const msg = tick.body
+			if (msg.percentComplete >= 100) {
+				this.getExports()
+			}
+		})
+		this.getExports()
+	}
+}
+
+</script>
 
 <style scoped>
 	#exportContainer {
@@ -261,6 +180,9 @@ export default {
 		border-radius: 3px;
 		padding-left: 5px;
 	}
+	.smallcol {
+		width: 100px;
+	}
 	.code {
 		padding-left: 20px;
 		font-size: 1.1em;
@@ -268,5 +190,9 @@ export default {
 	}
 	.clickable-row {
 		cursor: pointer;
+	}
+
+	a {
+		text-decoration: none;
 	}
 </style>

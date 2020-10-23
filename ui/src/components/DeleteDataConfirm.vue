@@ -10,7 +10,7 @@
 				<template v-slot:activator="{ on: tooltip }">
 					<v-btn
 						:disabled="disabled"
-						data-cy="upload.deleteButton"
+						data-cy="deleteDataConfirm.deleteButton"
 						right
 						icon
 						small
