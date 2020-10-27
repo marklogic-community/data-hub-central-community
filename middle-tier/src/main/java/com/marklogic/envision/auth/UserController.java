@@ -72,6 +72,10 @@ public class UserController extends AbstractController {
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public UserProfile profile() {
-		return userService.getUser(getHubClient().getFinalClient(), getCurrentUser()).toUserProfile();
+		UserPojo user = userService.getUser(getHubClient().getFinalClient(), getCurrentUser());
+		if (user != null) {
+			return user.toUserProfile();
+		}
+		return null;
 	}
 }

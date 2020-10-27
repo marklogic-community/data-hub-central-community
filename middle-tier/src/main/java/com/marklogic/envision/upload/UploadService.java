@@ -53,8 +53,10 @@ public class UploadService extends LoggingObject {
 		DocumentMetadataHandle metadataHandle = new DocumentMetadataHandle();
 		metadataHandle.withCollections(collectionName);
 		metadataHandle.getPermissions().clear();
-		String roleName = DigestUtils.md5Hex(client.getUsername());
-		metadataHandle.withPermission(roleName, DocumentMetadataHandle.Capability.READ, DocumentMetadataHandle.Capability.UPDATE);
+		if (client.isMultiTenant()) {
+			String roleName = DigestUtils.md5Hex(client.getUsername());
+			metadataHandle.withPermission(roleName, DocumentMetadataHandle.Capability.READ, DocumentMetadataHandle.Capability.UPDATE);
+		}
 		DocumentMetadataHandle.DocumentMetadataValues metadataValues = metadataHandle.getMetadataValues();
 		metadataValues.add("datahubCreatedByJob", jobId);
 		metadataValues.add("datahubCreatedOn", DATE_TIME_FORMAT.format(new Date()));

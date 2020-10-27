@@ -154,7 +154,6 @@ public class EnvisionConfig {
 			hubConfig.setMlPassword(password);
 			hubConfig.resetAppConfigs();
 
-			String roleName = DigestUtils.md5Hex(username);
 			String envName = dhfEnv;
 			if (envName == null || envName.isEmpty()) {
 				envName = "local";
@@ -165,7 +164,10 @@ public class EnvisionConfig {
 			hubConfig.refreshProject();
 			hubConfig.getAppConfig().setAppServicesUsername(username);
 			hubConfig.getAppConfig().setAppServicesPassword(password);
-			hubConfig.setEntityModelPermissions(String.format("%s,read,%s,update", roleName, roleName));
+			if (isMultiTenant()) {
+				String roleName = DigestUtils.md5Hex(username);
+				hubConfig.setEntityModelPermissions(String.format("%s,read,%s,update", roleName, roleName));
+			}
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);

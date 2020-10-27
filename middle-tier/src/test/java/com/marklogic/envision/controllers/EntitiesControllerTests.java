@@ -25,6 +25,7 @@ public class EntitiesControllerTests extends AbstractMvcTest {
 
 	@BeforeEach
 	void setup() throws IOException {
+		envisionConfig.setMultiTenant(true);
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(hubClient, getResourceStream("models/model.json"));
 	}
@@ -53,7 +54,7 @@ public class EntitiesControllerTests extends AbstractMvcTest {
 
 		login();
 
-		String filename = getHubConfig().getHubProject().getHubEntitiesDir().resolve("Planet.entity.json").toAbsolutePath().toString();
+		String filename = getNonAdminHubClient().getHubConfig().getHubProject().getHubEntitiesDir().resolve("Planet.entity.json").toAbsolutePath().toString();
 		ObjectNode fileEntity = readJsonObject(getResourceFile("output/getEntityPlanet.json"));
 		JsonNode expectedEntity = fileEntity.set("filename", new TextNode(filename));
 		getJson(GET_ENTITY_URL + "/Planet")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.deploy.commands.DeployHubDatabaseCommand;
@@ -48,9 +49,9 @@ public class ModelControllerTests extends AbstractMvcTest {
 		return getEntityManager(ACCOUNT_NAME, ACCOUNT_PASSWORD);
 	}
 
-	protected void removeModelFiles() {
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		for (File file: Objects.requireNonNull(modelDir.listFiles())) {
+	protected void removeModelFiles(boolean isMultiTenant, String username) {
+		File modelDir = modelService.getModelsDir(isMultiTenant, username);
+		for (File file: Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json")))) {
 			file.delete();
 		}
 	}
@@ -67,7 +68,9 @@ public class ModelControllerTests extends AbstractMvcTest {
 		logout();
 
 		// remove models
-		removeModelFiles();
+		removeModelFiles(false, null);
+		removeModelFiles(true, ACCOUNT_NAME);
+		removeModelFiles(true, ACCOUNT_NAME2);
 		envisionConfig.setMultiTenant(true);
 		removeEntityFiles();
 
@@ -210,15 +213,15 @@ public class ModelControllerTests extends AbstractMvcTest {
 	@Test
 	void deleteModelMultiTenant() throws Exception {
 		envisionConfig.setMultiTenant(true);
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		File modelDir = modelService.getModelsDir(true, ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
@@ -229,13 +232,13 @@ public class ModelControllerTests extends AbstractMvcTest {
 		postJson(DELETE_MODEL_URL, readJsonObject("{\"name\": \"Test Model\"}"))
 			.andExpect(status().isNotFound());
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
 
-		assertEquals(2, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(2, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(5, getEntityCount());
 		assertEquals(5, getEntityManager().getEntities().size());
 
@@ -260,7 +263,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
 				})
 			.andExpect(status().isOk());
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 	}
@@ -268,13 +271,13 @@ public class ModelControllerTests extends AbstractMvcTest {
 	@Test
 	void deleteModelSingleTenant() throws Exception {
 		envisionConfig.setMultiTenant(false);
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		File modelDir = modelService.getModelsDir(false, ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		registerAccount();
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
@@ -285,13 +288,13 @@ public class ModelControllerTests extends AbstractMvcTest {
 		postJson(DELETE_MODEL_URL, readJsonObject("{\"name\": \"Test Model\"}"))
 			.andExpect(status().isNotFound());
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
 
-		assertEquals(2, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(2, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(5, getEntityCount());
 		assertEquals(5, getEntityManager().getEntities().size());
 
@@ -316,7 +319,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
 				})
 			.andExpect(status().isOk());
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 	}
@@ -325,14 +328,14 @@ public class ModelControllerTests extends AbstractMvcTest {
 	void saveModelMultiTenant() throws Exception {
 		envisionConfig.setMultiTenant(true);
 		installEnvisionModules();
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		File modelDir = modelService.getModelsDir(true, ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
@@ -359,13 +362,13 @@ public class ModelControllerTests extends AbstractMvcTest {
 		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
 			.andExpect(status().isNoContent());
 
-		assertEquals(2, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(2, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(5, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/model.json")))
 			.andExpect(status().isNoContent());
-		assertEquals(3, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(3, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(10, getEntityCount());
 		assertEquals(5, getEntityManager().getEntities().size());
 		String[] uris = StreamSupport.stream(getEntities().spliterator(), false)
@@ -380,7 +383,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/MyWackyModel.json")))
 			.andExpect(status().isNoContent());
 
-		assertEquals(4, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(4, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(7, getEntityCount());
 		assertEquals(2, getEntityManager().getEntities().size());
 		uris = StreamSupport.stream(getEntities().spliterator(), false)
@@ -392,7 +395,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 		logout();
 		loginAsUser(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
 
-		assertEquals(4, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(4, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(7, getEntityCount());
 		assertEquals(5, getEntityManager(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getEntities().size());
 		uris = StreamSupport.stream(getEntities().spliterator(), false)
@@ -410,30 +413,30 @@ public class ModelControllerTests extends AbstractMvcTest {
 	@Test
 	void saveModelSingleTenant() throws Exception {
 		envisionConfig.setMultiTenant(false);
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		File modelDir = modelService.getModelsDir(false, ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		registerAccount();
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		login();
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 
 		putJson(SAVE_MODEL_URL, readJsonObject("{\"name\":\"My Empty Model\",\"edges\":{},\"nodes\":{}}"))
 			.andExpect(status().isNoContent());
 
-		assertEquals(2, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(2, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/model.json")))
 			.andExpect(status().isNoContent());
-		assertEquals(3, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(3, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(5, getEntityCount());
 		assertEquals(5, getEntityManager().getEntities().size());
 		String[] uris = StreamSupport.stream(getEntities().spliterator(), false)
@@ -448,7 +451,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 		putJson(SAVE_MODEL_URL, readJsonObject(getResourceStream("models/MyWackyModel.json")))
 			.andExpect(status().isNoContent());
 
-		assertEquals(4, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(4, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(2, getEntityCount());
 		assertEquals(2, getEntityManager().getEntities().size());
 		uris = StreamSupport.stream(getEntities().spliterator(), false)
@@ -460,23 +463,23 @@ public class ModelControllerTests extends AbstractMvcTest {
 
 	@Test
 	void importModel() throws Exception {
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		File modelDir = modelService.getModelsDir(false, ACCOUNT_NAME);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		registerAccount();
-		removeModelFiles();
+		removeModelFiles(false, ACCOUNT_NAME);
 		removeEntityFiles();
 
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		putJson(IMPORT_MODEL_URL, readJsonObject("{}"))
 			.andExpect(status().isUnauthorized());
 
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
@@ -485,28 +488,28 @@ public class ModelControllerTests extends AbstractMvcTest {
 		putJson(IMPORT_MODEL_URL, readJsonObject("{}"))
 			.andExpect(status().isNoContent());
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
-		removeModelFiles();
+		removeModelFiles(false, ACCOUNT_NAME);
 		removeEntityFiles();
 
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(0, getEntityCount());
 		assertEquals(0, getEntityManager().getEntities().size());
 
 		getEntityManager().saveEntity(HubEntity.fromJson("Planet.entity.json", readJsonObject(getResourceStream("esEntities/Planet.entity.json"))), false);
 		deployService.deployEntities(getNonAdminHubClient());
 
-		assertEquals(0, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(0, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(1, getEntityCount());
 		assertEquals(1, getEntityManager().getEntities().size());
 
 		putJson(IMPORT_MODEL_URL, readJsonObject("{}"))
 			.andExpect(status().isNoContent());
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
 		assertEquals(1, getEntityCount());
 		assertEquals(1, getEntityManager().getEntities().size());
 
@@ -564,15 +567,15 @@ public class ModelControllerTests extends AbstractMvcTest {
 		registerAccount();
 		login();
 
-		File modelDir = modelService.getModelsDir(ACCOUNT_NAME);
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
-		assertEquals("MyModel.json", Objects.requireNonNull(modelDir.listFiles())[0].getName());
+		File modelDir = modelService.getModelsDir(false, ACCOUNT_NAME);
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
+		assertEquals("MyModel.json", Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json")))[0].getName());
 
 		postJson(RENAME_MODEL_URL, readJsonObject("{\"originalname\": \"My Model\", \"model\": {\"name\":\"My Updated Model\",\"edges\":{},\"nodes\":{} } }"))
 			.andExpect(status().isNoContent());
 
-		assertEquals(1, Objects.requireNonNull(modelDir.listFiles()).length);
-		assertEquals("MyUpdatedModel.json", Objects.requireNonNull(modelDir.listFiles())[0].getName());
+		assertEquals(1, Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json"))).length);
+		assertEquals("MyUpdatedModel.json", Objects.requireNonNull(modelDir.listFiles((dir, name) -> name.endsWith("json")))[0].getName());
 
 		assertEquals("My Updated Model", modelService.getModel(getNonAdminHubClient().getFinalClient()).get("name").asText());
 	}
