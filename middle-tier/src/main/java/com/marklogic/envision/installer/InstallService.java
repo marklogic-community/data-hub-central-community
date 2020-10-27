@@ -43,6 +43,7 @@ public class InstallService {
 		AppDeployer appDeployer = new SimpleAppDeployer(manageClient, config.getAdminManager(), new DeployEnvisionModulesCommand(config.getModulesClient(), config.isMultiTenant()));
 		AppConfig appConfig = config.getAdminHubConfig().getAppConfig();
 		appConfig.getCustomTokens().put("%%envisionVersion%%", config.getVersion());
+		appConfig.getCustomTokens().put("%%envisionIsMultiTenant%%", String.valueOf(config.isMultiTenant()));
 		appDeployer.deploy(appConfig);
 		createAmps(manageClient, appConfig.getModulesDatabaseName());
 		createEnvisionRole(manageClient, config.getClient());

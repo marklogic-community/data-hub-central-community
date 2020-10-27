@@ -1,5 +1,6 @@
 const tde = require('/MarkLogic/tde.xqy');
 const model = require('/envision/model.sjs').model;
+const config = require('/envision/config.sjs');
 
 function createTdes() {
 	if (!model) {
@@ -94,10 +95,17 @@ function createTdes() {
 
 		// doesn't apply to concepts - eg ${entity.idField} won't exist, no concept of collection for concept
 		if ( entity.type !== "concept") {
+			const user = xdmp.getCurrentUser()
+			let collections = [entity.entityName]
+
+			if (config.isMultiTenant) {
+				collections.push(`http://marklogic.com/envision/user/${user}`)
+				collections = [{ collectionsAnd: collections}]
+			}
 			let template = {
 				template: {
 					context: '//*:instance/*:' + entity.entityName,
-					collections: [entity.entityName]
+					collections: collections
 				}
 			}
 
@@ -152,7 +160,7 @@ function createTdes() {
 				xdmp.permission("data-hub-developer", "update"),
 				xdmp.permission("data-hub-operator", "read")
 			]
-			tde.templateInsert(`/${xdmp.getCurrentUser()}/${entity.id}-relationships-tde.json`, template, permissions, [xdmp.getCurrentUser()]);
+			tde.templateInsert(`/${user}/${entity.id}-relationships-tde.json`, template, permissions, [user]);
 		}
 	}
 

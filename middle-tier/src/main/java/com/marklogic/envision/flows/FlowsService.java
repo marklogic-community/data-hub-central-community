@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.dataServices.Flows;
@@ -117,6 +118,8 @@ public class FlowsService {
 			String email = hubClient.getUsername();
 			String roleName = DigestUtils.md5Hex(email);
 			step.getOptions().put("permissions", String.format("%s,read,%s,update", roleName, roleName));
+			ArrayNode collections = (ArrayNode)step.getOptions().get("collections");
+			collections.add("http://marklogic.com/envision/user/" + hubClient.getUsername());
 		}
 
 		Map<String, Step> steps = flow.getSteps();
