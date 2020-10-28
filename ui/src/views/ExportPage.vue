@@ -1,7 +1,6 @@
 <template>
 	<div id="exportContainer">
-		<h1>Envision Export Page</h1>
-		<fieldset class="col-sm-9" v-if="entityNames.length > 0">
+	<fieldset class="col-sm-9" v-if="entityNames.length > 0">
 			<legend>Entities</legend>
 			<v-simple-table dense>
 				<thead>
@@ -12,7 +11,7 @@
 								v-model="allChecked"
 							></v-checkbox>
 						</th>
-						<th>Entity</th>
+						<th>Select All</th>
 					</tr>
 				</thead>
 				<tbody>
