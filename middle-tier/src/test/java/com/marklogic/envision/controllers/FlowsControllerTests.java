@@ -51,6 +51,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		envisionConfig.setMultiTenant(true);
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
+		installHubModules();
 
 		registerAccount();
 	}
@@ -288,7 +289,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		flowsService.addMapping(hubClient, readJsonObject(getResource("mappings/myMappingStep.json")));
 		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/runnable.flow.json")));
 
-		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/doc1.json");
+		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/doc1.json", "myFile.csv");
 
 		postJson(RUN_STEP_URL, "{\"flowName\", \"RunnableFlow\", \"steps\": [\"1\"]}")
 			.andExpect(status().isUnauthorized());

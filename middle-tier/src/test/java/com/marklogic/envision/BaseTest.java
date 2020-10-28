@@ -29,6 +29,7 @@ import com.marklogic.grove.boot.error.NotAuthenticatedException;
 import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.HubConfig;
 import com.marklogic.hub.HubProject;
+import com.marklogic.hub.deploy.commands.LoadHubArtifactsCommand;
 import com.marklogic.hub.deploy.commands.LoadHubModulesCommand;
 import com.marklogic.hub.impl.DataHubImpl;
 import com.marklogic.hub.impl.HubConfigImpl;
@@ -100,6 +101,9 @@ public class BaseTest {
 
 	@Autowired
 	protected LoadHubModulesCommand loadHubModulesCommand;
+
+	@Autowired
+	protected LoadHubArtifactsCommand loadHubArtifactsCommand;
 
 	private File dhfDir;
 
@@ -349,6 +353,7 @@ public class BaseTest {
 		logger.debug("Installing Data Hub modules into MarkLogic");
 		List<Command> commands = new ArrayList<>();
 		commands.add(loadHubModulesCommand);
+		commands.add(loadHubArtifactsCommand);
 
 		SimpleAppDeployer deployer = new SimpleAppDeployer(getHubConfig().getManageClient(), getHubConfig().getAdminManager());
 		deployer.setCommands(commands);

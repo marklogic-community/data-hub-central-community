@@ -23,6 +23,7 @@ public class IndexController {
 		"/notifications",
 		"/notifications/compare",
 		"/detail",
+		"/export",
 		"/404",
 		"/upload",
 		"/integrate/**"

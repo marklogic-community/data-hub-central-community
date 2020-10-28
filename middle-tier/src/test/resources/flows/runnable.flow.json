@@ -21,7 +21,7 @@
 				},
 				"targetEntity" : "Person",
 				"sourceDatabase" : "data-hub-STAGING",
-				"collections" : [ "Person" ],
+				"collections" : [ "Person", "http://marklogic.com/envision/user/bob.smith@marklogic.com" ],
 				"permissions" : "envision,read,envision,update",
 				"sourceCollection" : "myFile.csv",
 				"outputFormat" : "json",

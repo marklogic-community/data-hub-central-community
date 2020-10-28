@@ -30,7 +30,7 @@
 									:prop="Object.assign({}, prop)"
 									:entityName="currentEntity.entityName"
 									:existingProperties="properties"
-									@save="btnSaveProperty">	
+									@save="btnSaveProperty">
 										<span v-if="prop.isPii" title="PII">pii</span>
 										<span v-if="prop.isPrimaryKey" title="Primary Key">key</span>
 										<span v-if="prop.isRequired" title="Required">req</span>
@@ -259,6 +259,9 @@ export default {
 	watch: {
 		activeTab(newVal) {
 			this.whichTab = newVal
+		},
+		entity() {
+			this.updateValues()
 		}
 	},
 	mounted() {
