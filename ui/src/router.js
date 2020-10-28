@@ -45,117 +45,123 @@ const redirectBasedOnAuth = (to, from, next) => {
 };
 
 const routes = [
-    {
-      path: '/',
-      name: 'root.landing',
+  {
+		path: '/',
+		name: 'root.landing',
 		redirect: isHosted ? '/upload' : '/model',
-			meta: {}
-		},
-    {
-      path: '/model',  //url path
-      name: 'root.modeler', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/ModelerPage.vue'),
-      meta: {
-        label: 'Connect',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    {
-      path: '/explore',  //url path
-      name: 'root.explorer', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-			import(/* webpackChunkName: "explorerpage" */ './views/ExplorerPage.vue'),
-      meta: {
-        label: 'Explore',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-		},
-		{
-      path: '/explore/compare',  //url path
-      name: 'root.explorer.compare', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-			import(/* webpackChunkName: "mergedcompare" */ './views/MergedCompare.vue'),
-      meta: {
-        label: 'Compare',
-        // navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    {
-      path: '/notifications',  //url path
-      name: 'root.notifications', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-			import(/* webpackChunkName: "masteringnotifications" */ './views/MasteringNotifications.vue'),
-      meta: {
-        label: 'Notifications',
-        requiresLogin: true,
-        checkLogin
-      }
-		},
-    {
-      path: '/notifications/compare',  //url path
-      name: 'root.notifications.compare', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-			import(/* webpackChunkName: "masteringnotificationcompare" */ './views/MasteringNotificationCompare.vue'),
-      meta: {
-        label: 'Compare',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-		{
-      path: '/login',
-      name: 'root.login',
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "login" */ './views/LoginPage.vue'),
-      meta: {
-        label: 'Login',
-        navArea: 'usermenu'
-      }
-    },
-		{
-      path: '/export',  //url path
-      name: 'root.export', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-			import(/* webpackChunkName: "exportpage" */ './views/ExportPage.vue'),
-      meta: {
-        label: 'Export',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    {
-      path: '/detail',
-      name: 'root.details',
-      // lazy-loading of page
-      component: () => import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
-      meta: {
-        label: 'View',
-        navArea: 'document',
-				requiresLogin: true,
-				checkLogin
-      }
+		meta: {}
+	},
+	{
+		path: '/model',  //url path
+		name: 'root.modeler', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "modeler" */ './views/ModelerPage.vue'),
+		meta: {
+			label: 'Connect',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=4QauKnTPbcU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=2',
+			tutorialName: 'Connect Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/explore',  //url path
+		name: 'root.explorer', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "explorerpage" */ './views/ExplorerPage.vue'),
+		meta: {
+			label: 'Explore',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=0NODwUBNPKU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=5',
+			tutorialName: 'Explore Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/explore/compare',  //url path
+		name: 'root.explorer.compare', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "mergedcompare" */ './views/MergedCompare.vue'),
+		meta: {
+			label: 'Compare',
+			// navArea: 'header',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '/notifications',  //url path
+		name: 'root.notifications', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "masteringnotifications" */ './views/MasteringNotifications.vue'),
+		meta: {
+			label: 'Notifications',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '/notifications/compare',  //url path
+		name: 'root.notifications.compare', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "masteringnotificationcompare" */ './views/MasteringNotificationCompare.vue'),
+		meta: {
+			label: 'Compare',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '/login',
+		name: 'root.login',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "login" */ './views/LoginPage.vue'),
+		meta: {
+			label: 'Login',
+			navArea: 'usermenu'
+		}
+	},
+	{
+		path: '/export',  //url path
+		name: 'root.export', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "exportpage" */ './views/ExportPage.vue'),
+		meta: {
+			label: 'Export',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=9XaD-0oPfuQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=6',
+			tutorialName: 'Export Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/detail',
+		name: 'root.details',
+		// lazy-loading of page
+		component: () => import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
+		meta: {
+			label: 'View',
+			navArea: 'document',
+			requiresLogin: true,
+			checkLogin
+		}
 	},
 	{
 		path: '*',
 		component: () => import(/* webpackChunkName: "detail" */ './views/NotFoundPage.vue'),
 		meta: {}
-    }
-  ]
+	}
+]
 
 if (isHosted || isTesting) {
 	routes.splice(1, 0, {
@@ -171,6 +177,8 @@ if (isHosted || isTesting) {
 			label: 'Upload',
 			navArea: 'header',
 			requiresUpdates: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=Hcamr-WomQQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=1',
+			tutorialName: 'Upload Tutorial',
 			checkLogin
 		}
 	})
@@ -185,6 +193,8 @@ if (isHosted || isTesting) {
 			label: 'Integrate',
 			navArea: 'header',
 			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=n5epxcHiEBw&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=3',
+			tutorialName: 'Integrate Tutorial',
 			checkLogin
 		}
 	})
