@@ -18,6 +18,7 @@ import com.marklogic.envision.flows.FlowsService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,7 @@ public class UserService {
 		if (envisionConfig.isMultiTenant()) {
 			String roleName = DigestUtils.md5Hex(username);
 			flowsService.deleteFlow(hubClient, roleName);
+			FileUtils.deleteDirectory(envisionConfig.getHubConfig().getHubEntitiesDir().resolve(username).toFile());
 		}
 		else {
 			flowsService.deleteAllFlows(hubClient);

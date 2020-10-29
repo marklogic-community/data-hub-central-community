@@ -192,6 +192,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		registerEnvisionAdminAccount();
 		HubClient adminHubClient = getAdminHubClient();
 		HubClient hubClient = getNonAdminHubClient();
+		File user1EntitiesDir = hubClient.getHubConfig().getHubEntitiesDir().toFile();
 		File user1ModelFile = new File(modelService.getModelsDir(true, ACCOUNT_NAME), "MyModel.json");
 		File user1Mapping = hubClient.getHubConfig().getHubMappingsDir().resolve("81e946846cda588e6b5c4890ad1ef229-myMappingStep").resolve("81e946846cda588e6b5c4890ad1ef229-myMappingStep-1.mapping.json").toFile();
 		File user1Flow = hubClient.getHubConfig().getFlowsDir().resolve("81e946846cda588e6b5c4890ad1ef229.flow.json").toFile();
@@ -210,6 +211,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		installDoc(hubClient.getFinalClient(), "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
 
 		hubClient = getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+		File user2EntitiesDir = hubClient.getHubConfig().getHubEntitiesDir().toFile();
 		File user2ModelFile = new File(modelService.getModelsDir(true, ACCOUNT_NAME2), "MyModel.json");
 		File user2Mapping = hubClient.getHubConfig().getHubMappingsDir().resolve("fa1a9549cde6d640d92a988b68a8840b-myMappingStep").resolve("fa1a9549cde6d640d92a988b68a8840b-myMappingStep-1.mapping.json").toFile();
 		File user2Flow = hubClient.getHubConfig().getFlowsDir().resolve("fa1a9549cde6d640d92a988b68a8840b.flow.json").toFile();
@@ -226,9 +228,11 @@ public class AuthenticationTests extends AbstractMvcTest {
 		installDoc(hubClient.getFinalClient(), "data/stagingDoc.json", "/data/" + ACCOUNT_NAME2 + "/doc1.json", "http://marklogic.com/envision/user/" + ACCOUNT_NAME2);
 		installDoc(hubClient.getFinalClient(), "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e9.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered", "http://marklogic.com/envision/user/" + ACCOUNT_NAME2);
 
+		assertTrue(user1EntitiesDir.exists());
 		assertTrue(user1ModelFile.exists());
 		assertTrue(user1Mapping.exists());
 		assertTrue(user1Flow.exists());
+		assertTrue(user2EntitiesDir.exists());
 		assertTrue(user2ModelFile.exists());
 		assertTrue(user2Mapping.exists());
 		assertTrue(user2Flow.exists());
@@ -270,9 +274,11 @@ public class AuthenticationTests extends AbstractMvcTest {
 		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME)
 			.andExpect(status().isOk());
 
+		assertFalse(user1EntitiesDir.exists());
 		assertFalse(user1ModelFile.exists());
 		assertFalse(user1Mapping.exists());
 		assertFalse(user1Flow.exists());
+		assertTrue(user2EntitiesDir.exists());
 		assertTrue(user2ModelFile.exists());
 		assertTrue(user2Mapping.exists());
 		assertTrue(user2Flow.exists());
@@ -313,9 +319,11 @@ public class AuthenticationTests extends AbstractMvcTest {
 		getJson(DELETE_USER_URL + "?username=" + ACCOUNT_NAME2)
 			.andExpect(status().isOk());
 
+		assertFalse(user1EntitiesDir.exists());
 		assertFalse(user1ModelFile.exists());
 		assertFalse(user1Mapping.exists());
 		assertFalse(user1Flow.exists());
+		assertFalse(user2EntitiesDir.exists());
 		assertFalse(user2ModelFile.exists());
 		assertFalse(user2Mapping.exists());
 		assertFalse(user2Flow.exists());
