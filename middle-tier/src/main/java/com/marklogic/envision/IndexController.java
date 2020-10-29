@@ -20,6 +20,7 @@ public class IndexController {
 		"/explore/compare",
 		"/know",
 		"/admin",
+		"/hostedadmin",
 		"/notifications",
 		"/notifications/compare",
 		"/detail",

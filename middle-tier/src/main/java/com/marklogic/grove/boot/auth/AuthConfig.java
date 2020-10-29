@@ -140,6 +140,7 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
 			"/notifications",
 			"/notifications/compare",
 			"/admin",
+			"/hostedadmin",
             "/404",
             "/assets/**",
             "/static/**",
