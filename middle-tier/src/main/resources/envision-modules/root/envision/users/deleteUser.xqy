@@ -19,6 +19,7 @@ declare function local:delete-envision-assets($user, $role-name) {
 	  xdmp:invoke-function(function() {
 			cts:uri-match("/entities/" || $user || "*.entity.json") ! xdmp:document-delete(.),
 			cts:uri-match("/envision/" || $user || "*") ! xdmp:document-delete(.),
+			xdmp:collection-delete("http://marklogic.com/envision/user/" || $user),
 
 			let $uri := "/envision/users/" || $role-name || ".json"
 			where fn:doc-available($uri)
@@ -32,8 +33,8 @@ declare function local:delete-envision-assets($user, $role-name) {
 
 			cts:uri-match("/ingest/" || $user || "*") ! xdmp:document-delete(.),
 			cts:uri-match("/data/" || $user || "*") ! xdmp:document-delete(.),
-			cts:uris((), (), cts:collection-query($user)) ! xdmp:document-delete(.),
-			cts:uris((), (), cts:collection-query("http://marklogic.com/envision/" || $user || "_mappings")) ! xdmp:document-delete(.)
+			xdmp:collection-delete($user),
+			xdmp:collection-delete("http://marklogic.com/envision/" || $user || "_mappings")
 		}, map:entry("database", $db))
 };
 

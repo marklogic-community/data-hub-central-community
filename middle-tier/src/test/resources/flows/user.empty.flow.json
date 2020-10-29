@@ -1,0 +1,12 @@
+{
+	"name" : "81e946846cda588e6b5c4890ad1ef229",
+	"description" : "flow description",
+	"batchSize" : 100,
+	"threadCount" : 4,
+	"stopOnError" : false,
+	"options" : {
+		"identifier" : ""
+	},
+	"version" : 0,
+	"steps" : {}
+}

@@ -22,10 +22,12 @@ import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.mapping.Mapping;
 import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -86,7 +88,28 @@ public class FlowsService {
 	}
 
 	public void deleteFlow(HubClient hubClient, String flowName) {
+		Flow flow = flowManager.getFlow(flowName);
+		flow.getSteps().forEach((stepName, step) -> {
+			String mappingName = step.getMappingName();
+			if (mappingName != null) {
+				File mappingFile  = hubClient.getHubConfig().getHubMappingsDir().resolve(flowName + "-" + mappingName).toFile();
+				try {
+					FileUtils.deleteDirectory(mappingFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		flowManager.deleteFlow(flowName);
+	}
+
+	public void deleteAllFlows(HubClient hubClient) {
+		List<String> flowNames = flowManager.getFlows().stream().map(Flow::getName).collect(Collectors.toList());
+		flowNames.forEach(flowName -> {
+			Flow flow = flowManager.getFlow(flowName);
+			flow.getSteps().forEach((stepName, step) -> flowManager.deleteStep(flow, stepName));
+			deleteFlow(hubClient, flowName);
+		});
 	}
 
 	public String getMapping(String mapName) {

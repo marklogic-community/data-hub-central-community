@@ -14,6 +14,7 @@ import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.dataServices.Users;
+import com.marklogic.envision.flows.FlowsService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -26,7 +27,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,10 +37,12 @@ public class UserService {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private final ModelService modelService;
+	private final FlowsService flowsService;
 
 	@Autowired
-	UserService(ModelService modelService, EnvisionConfig envisionConfig, ApplicationEventPublisher eventPublisher) {
+	UserService(ModelService modelService, FlowsService flowService, EnvisionConfig envisionConfig, ApplicationEventPublisher eventPublisher) {
 		this.modelService = modelService;
+		this.flowsService = flowService;
 		this.envisionConfig = envisionConfig;
 		this.eventPublisher = eventPublisher;
 	}
@@ -100,6 +102,13 @@ public class UserService {
 
 	public void deleteUser(String username) throws IOException {
 		HubClient hubClient = envisionConfig.newAdminHubClient();
+		if (envisionConfig.isMultiTenant()) {
+			String roleName = DigestUtils.md5Hex(username);
+			flowsService.deleteFlow(hubClient, roleName);
+		}
+		else {
+			flowsService.deleteAllFlows(hubClient);
+		}
 		modelService.deleteAllModels(hubClient, username);
 		Users.on(hubClient.getFinalClient()).deleteUser(username);
 	}

@@ -229,7 +229,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		JsonNode flow = flowsService.getJsonFlow(hubClient, "MyCrazyFlow");
 		assertFalse(flow.get("steps").has("1"));
 
-		postJson(CREATE_STEP_URL, "{ \"flowName\": \"MyCrazyFlow\", \"steps\": " + getResource("steps/MyMappingStep.json") + " }")
+		postJson(CREATE_STEP_URL, "{ \"flowName\": \"MyCrazyFlow\", \"step\": " + getResource("steps/MyMappingStep.json") + " }")
 			.andExpect(status().isUnauthorized());
 
 		login();

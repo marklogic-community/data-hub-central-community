@@ -16,8 +16,4 @@ public class MultiTenantProjectImpl extends HubProjectImpl {
 	}
 
 	@Override public Path getHubEntitiesDir() { return getProjectDir().resolve("entities").resolve(username); }
-
-	@Override public Path getHubMappingsDir() {
-		return getProjectDir().resolve("mappings").resolve(username);
-	}
 }
