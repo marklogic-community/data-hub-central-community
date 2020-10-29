@@ -41,7 +41,7 @@ export default {
   },
   computed: {
 		showVideoLinks() {
-			return isTesting || isHosted
+			return (isTesting || isHosted) && this.currentRoute.meta.tutorialName
 		},
     currentRoute() {
       return this.$route;
