@@ -33,6 +33,7 @@
     "isomorphic-fetch": "^2.2.1",
     "litegraph.js": "^0.7.8",
     "lodash": "^4.17.20",
+    "logrocket": "^1.0.14",
     "material-design-icons-iconfont": "^5.0.1",
     "md5": "^2.3.0",
     "ml-visjs-graph": "^0.5.1",
