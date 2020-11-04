@@ -17,6 +17,7 @@ import md5 from 'md5'
 Vue.use(Vuex);
 
 const debug = true; //(process !== undefined) ? process.env.NODE_ENV !== "production" : true;
+const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 
 const mastering = {
 	namespaced: true,
@@ -150,6 +151,12 @@ const auth = {
 		},
 		setProfile(state, { profile }) {
 			state.profile = profile || {};
+			if (isHosted) {
+				this.$logRocket.identify(profile.email, {
+					...profile,
+					environment: process.env.NODE_ENV
+				})
+			}
 		}
 	},
 	actions: {

@@ -28,6 +28,21 @@ module.exports = {
 	configureWebpack: {
 		devtool: 'eval-source-maps'
 	},
+	chainWebpack: config => {
+		config.plugin('html')
+		.tap(args => {
+			args[0].tracking = (process.env.GTAG_ID && process.env.VUE_APP_IS_HOSTED === 'true') ? `<!-- Global site tag (gtag.js) - Google Analytics -->
+			<script async src="https://www.googletagmanager.com/gtag/js?id=G-TH5YWDQ8KL"></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+
+				gtag('config', '${process.env.GTAG_ID}');
+			</script>` : ''
+			return args
+		})
+	},
 	devServer: {
 		port: process.env.VUE_APP_DEV_PORT || 8081,
 		https: appFrontendUsesHttps,
