@@ -3,7 +3,8 @@ import store from '../store'
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 const logRocketID = process.env.VUE_APP_LOGROCKET_ID
 const LogRocket = (isHosted && logRocketID) ? require('logrocket') : {
-	identify: function() {}
+	identify: function() {},
+	init: function() {}
 }
 
 export default {
