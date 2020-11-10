@@ -50,7 +50,7 @@ function getEntities(uris, opts) {
 	if (labels && labels.length > 0) {
 		labelFilter = `FILTER( ?lbl IN ( ${labels.map(label => `rdf:${label}`).join(', ')} ) )`
 	}
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray().map(c => c.toString())
 
 	// this query gets all the edges for the given list of uris
 	// with a limit applied to not return everything
@@ -267,7 +267,7 @@ function getEntities(uris, opts) {
 					label: t.to.toString().replace(/(.+)#(.+)/, '$2'),
 					entityName: model.getName(t.toType),
 					isConcept: true,
-					edgeCounts: edgeCounts[t.to] || {} 
+					edgeCounts: edgeCounts[t.to] || {}
 				}
 			}	else {
 				// from side has concept
@@ -334,7 +334,7 @@ function getEdgeCounts(uris) {
 	}
 
 	// build a cts.query that omits archived documents from smart mastering
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray().map(c => c.toString())
 	const query = cts.notQuery(cts.collectionQuery(archivedCollections))
 
 	// run the sparql query while ignoring archived docs
@@ -475,80 +475,90 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 	`
 
 	// build a cts.query that omits archived documents from smart mastering
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray().map(c => c.toString())
 	const query = cts.notQuery(cts.collectionQuery(archivedCollections))
 
 	// run the sparql query while ignoring archived docs
 	const triples = sem.sparql(sparql, null, null, sem.store(null, query))
 	let uris = []
- for (let t of triples) {
-	 uris.push(t.from)
-	 uris.push(t.to)
- }
+	for (let t of triples) {
+		uris.push(t.from)
+		uris.push(t.to)
+	}
 
  const edgeCounts = getEdgeCounts(uris)
 
  // now add the edges from the concept
  for (let t of triples) {
-	 resp.edges[t.id] = {
-		 from: t.from,
-		 to: t.to,
-		 id: t.id,
-		 label: t.label,
-		 fromType: t.fromType,
-		 toType: t.toType
-	 }
-	 let uri = t.from
-	 let doc = cts.doc(uri)
-	 let haveDoc = false
-	 // the actual entity which could be on the to or from side
-	 if (fn.exists(doc)) {
-		 haveDoc = true
-	 } else {
-		 uri = t.to
-		 doc = cts.doc(uri)
-		 if (fn.exists(doc)) {
-			 haveDoc=true
-		 }
-	 }
-	 if( haveDoc) {
-		 let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
+		let uri = t.from
+		console.log('uri', uri)
+		const cols = xdmp.documentGetCollections(uri)
+		console.log('cols', cols)
+		const collections = fn.head(cols)
+			.filter(c => archivedCollections.indexOf(c) !== -1)
+		console.log('collections', collections)
+		if (collections.length === 0) {
+			resp.edges[t.id] = {
+				from: t.from,
+				to: t.to,
+				id: t.id,
+				label: t.label,
+				fromType: t.fromType,
+				toType: t.toType
+			}
 
-		 // use metadata from the model to grab the "label" out of the entity
-		 // the label is specified in envision's UI on the Modeler page
-		 const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
-		 const entityId = entityName.toLowerCase()
-		 const modelNode = model.nodes[entityId] || {};
-		 const labelField = modelNode.labelField;
+			let doc = cts.doc(uri)
+			let haveDoc = false
+			// the actual entity which could be on the to or from side
+			if (fn.exists(doc)) {
+				haveDoc = true
+			} else {
+				uri = t.to
+				doc = cts.doc(uri)
+				if (fn.exists(doc)) {
+					haveDoc=true
+				}
+			}
+			if (haveDoc) {
+				let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
 
-		 // grab the label or default to the uri
-		 const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
+				// use metadata from the model to grab the "label" out of the entity
+				// the label is specified in envision's UI on the Modeler page
+				const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
+				const entityId = entityName.toLowerCase()
+				const modelNode = model.nodes[entityId] || {};
+				const labelField = modelNode.labelField;
 
-		 // convert xml to json map
-		 if (entity instanceof Element) {
-			 entity = entity.xpath('node()').toArray().reduce((item, el) => {
-				 item[el.xpath('local-name(.)')] = el.xpath('string(.)')
-				 return item;
-			 }, {})
-		 }
+				// grab the label or default to the uri
+				const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
 
-		 resp.nodes[uri] = {
-			 id: uri,
-			 uri: uri,
-			 entityName: entityName,
-			 label: label,
-			 entity: entity,
-			 edgeCounts: edgeCounts[uri] || {},
+				// convert xml to json map
+				if (entity instanceof Element) {
+					entity = entity.xpath('node()').toArray().reduce((item, el) => {
+						item[el.xpath('local-name(.)')] = el.xpath('string(.)')
+						return item;
+					}, {})
+				}
 
-			 // grab the DHF provenance data out of the jobs db
-			 prov: provHelper.getProv(uri),
-			 isConcept: false
-		 }
-	 }
- }
+				resp.nodes[uri] = {
+					id: uri,
+					uri: uri,
+					entityName: entityName,
+					label: label,
+					entity: entity,
+					edgeCounts: edgeCounts[uri] || {},
 
- return resp
+					// grab the DHF provenance data out of the jobs db
+					prov: provHelper.getProv(uri),
+					isConcept: false
+				}
+			}
+		}
+	}
 
+	console.log('resp', resp)
+
+	return resp
 }
 
 exports.getEntitiesRelatedToConcept = getEntitiesRelatedToConcept;

@@ -1,0 +1,84 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "EmployeesMastering"
+				}
+			],
+			"createdOn": "2020-11-02T16:02:02.792631Z",
+			"createdBy": "admin"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Employee": {
+				"lastName": "Finn",
+				"jobEffectiveDate": "2011-09-28",
+				"jobStatus": "Active (Full-time)",
+				"address": "7821 Aberg Park ",
+				"city": "Charleston",
+				"mobileNumber": "1(914)688-6665",
+				"departmentId": "2",
+				"jobTitle": "Senior Engineer",
+				"postalCode": "25313",
+				"employeeId": "55000",
+				"languageSkills": "C++",
+				"firstName": "Adrianna",
+				"toolSkills": "Hadoop , Mulesoft",
+				"state": "WV",
+				"productSkills": "general ledger",
+				"email": "adrianna.finn@coastal.com"
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [
+						{
+							"name": "EmployeesMastering"
+						}
+					],
+					"createdOn": "2020-11-02T16:02:02.792631Z",
+					"createdBy": "admin"
+				},
+				"triples": [],
+				"instance": {
+					"employee_id": 55000,
+					"status": "Active (Full-time)",
+					"f_name": "Adrianna",
+					"l_name": "Finn",
+					"dob": "1978-11-03",
+					"address1": "7821 Aberg Park",
+					"city": "Charleston",
+					"state": "WV",
+					"zip": "25313",
+					"cell_phone": "1(914)688-6665",
+					"job_title": "Senior Engineer",
+					"start_date": "2011-09-28",
+					"email": "adrianna.finn@coastal.com",
+					"reports_to": 77000,
+					"dept_num": 2,
+					"primary_prod": "general ledger",
+					"competency": {
+						"products": [
+							"procurement"
+						],
+						"languages": [
+							"C++"
+						],
+						"tools": [
+							"Hadoop",
+							"Mulesoft"
+						]
+					}
+				},
+				"attachments": null
+			}
+		}
+	}
+}

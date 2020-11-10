@@ -1,0 +1,373 @@
+{
+	"name": "HR Employee 360",
+	"edges": {
+		"department-hasjobopening-jobopening": {
+			"id": "department-hasjobopening-jobopening",
+			"from": "department",
+			"label": "hasJobOpening",
+			"to": "jobopening",
+			"cardinality": "1:Many",
+			"keyFrom": "departmentId",
+			"keyTo": "departmentId",
+			"smooth": {
+				"roundness": 0.5
+			}
+		},
+		"employee-hasjobreview-jobreview": {
+			"id": "employee-hasjobreview-jobreview",
+			"from": "employee",
+			"label": "hasJobReview",
+			"to": "jobreview",
+			"cardinality": "1:Many",
+			"keyFrom": "employeeId",
+			"keyTo": "employeeId",
+			"smooth": {
+				"roundness": 0.5
+			}
+		},
+		"employee-hasresume-resume": {
+			"id": "employee-hasresume-resume",
+			"from": "employee",
+			"label": "hasResume",
+			"to": "resume",
+			"cardinality": "1:1",
+			"keyFrom": "employeeId",
+			"keyTo": "employeeId",
+			"smooth": {
+				"roundness": 0.5
+			}
+		},
+		"employee-hasproductskill-projectskill": {
+			"from": "employee",
+			"label": "hasProductSkill",
+			"to": "projectskill",
+			"keyFrom": "employeeId",
+			"keyTo": "productSkills",
+			"id": "employee-hasproductskill-projectskill",
+			"smooth": {
+				"roundness": 0.5
+			},
+			"dashes": [
+				4,
+				3
+			],
+			"color": {
+				"color": "#3cdbc0"
+			}
+		},
+		"jobopening-hasfocusarea-projectskill": {
+			"from": "jobopening",
+			"label": "hasFocusArea",
+			"to": "projectskill",
+			"keyFrom": "jobId",
+			"keyTo": "focusArea",
+			"id": "jobopening-hasfocusarea-projectskill",
+			"smooth": {
+				"roundness": 0.5
+			},
+			"dashes": [
+				4,
+				3
+			],
+			"color": {
+				"color": "#3cdbc0"
+			}
+		},
+		"employee-belongsto-department": {
+			"id": "employee-belongsto-department",
+			"from": "employee",
+			"label": "belongsTo",
+			"to": "department",
+			"cardinality": "1:1",
+			"keyFrom": "departmentId",
+			"keyTo": "departmentId",
+			"smooth": {
+				"roundness": 0.5
+			}
+		}
+	},
+	"nodes": {
+		"employee": {
+			"id": "employee",
+			"x": 201.571428571429,
+			"y": -107.799461599427,
+			"label": "Employee",
+			"entityName": "Employee",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7",
+					"name": "address",
+					"type": "string"
+				},
+				{
+					"_propId": "712e78bb-4473-4083-8c5b-989b35db61b1",
+					"name": "city",
+					"type": "string"
+				},
+				{
+					"_propId": "020b57b0-051f-4343-8e3d-55f4b232065d",
+					"name": "country",
+					"type": "string"
+				},
+				{
+					"_propId": "4882dd7e-caa0-4305-a83a-2a75a38bae9f",
+					"name": "departmentId",
+					"type": "string"
+				},
+				{
+					"_propId": "bd2d186e-6ea3-4fc5-ab99-535371cbae94",
+					"name": "email",
+					"type": "string"
+				},
+				{
+					"_propId": "d5af2406-5ba3-4f8d-98b1-aedfd34d2758",
+					"name": "employeeId",
+					"type": "string"
+				},
+				{
+					"_propId": "8510e739-06ce-4d68-bda9-e68a60ec2b74",
+					"name": "firstName",
+					"type": "string"
+				},
+				{
+					"_propId": "00c532e4-9a11-4e1e-a6d9-aecc6770df6e",
+					"name": "geoLocation",
+					"type": "decimal"
+				},
+				{
+					"_propId": "4804ed0e-c492-4fac-871a-231e392507de",
+					"name": "jobEffectiveDate",
+					"type": "date",
+					"isArray": false,
+					"isRequired": false
+				},
+				{
+					"_propId": "abb8581f-9d72-4987-aa7b-e01a8c9bf1a8",
+					"name": "jobStatus",
+					"type": "string"
+				},
+				{
+					"_propId": "2b4dd979-786a-4021-ad30-845affc00cbb",
+					"name": "jobTitle",
+					"type": "string"
+				},
+				{
+					"_propId": "cf05008d-43ca-4ae2-886f-46103dad0c89",
+					"name": "languageSkills",
+					"type": "string"
+				},
+				{
+					"_propId": "53d69fb9-8dda-48fb-8814-c84529fa84c8",
+					"name": "lastName",
+					"type": "string"
+				},
+				{
+					"_propId": "b8e25154-c117-445f-9167-dc3c5e3ca3c7",
+					"name": "mobileNumber",
+					"type": "string"
+				},
+				{
+					"_propId": "7e539466-48ee-41b3-b595-c6956a2ee986",
+					"name": "postalCode",
+					"type": "string"
+				},
+				{
+					"_propId": "ef02169c-ac44-4e2c-a10e-e473a3e2c4a4",
+					"name": "productSkills",
+					"type": "string"
+				},
+				{
+					"_propId": "75def622-299d-4264-9eae-2687fa550a98",
+					"name": "state",
+					"type": "string"
+				},
+				{
+					"_propId": "c8b3a052-c40b-489e-8f7c-8251656b76e8",
+					"name": "toolSkills",
+					"type": "string"
+				}
+			],
+			"idField": "employeeId",
+			"labelField": "lastName"
+		},
+		"department": {
+			"id": "department",
+			"x": -36.9265306122449,
+			"y": -105.766808538202,
+			"label": "Department",
+			"entityName": "Department",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "a038d3ec-81e0-478f-9355-6dd98d422ee5",
+					"name": "departmentId",
+					"type": "string"
+				},
+				{
+					"_propId": "553ed488-567f-4ea3-9c39-87cdc92aae5e",
+					"name": "departmentName",
+					"type": "string"
+				},
+				{
+					"_propId": "8b565f4e-d6e3-4f7b-a8e8-41f624d2dd41",
+					"name": "employeeId",
+					"type": "string"
+				},
+				{
+					"_propId": "65ae9443-910e-4272-bc91-c82d9349c3f4",
+					"name": "location",
+					"type": "string"
+				}
+			],
+			"idField": "departmentId",
+			"labelField": "departmentId"
+		},
+		"jobopening": {
+			"id": "jobopening",
+			"label": "JobOpening",
+			"x": 414.322448979592,
+			"y": -86.1178289463657,
+			"entityName": "JobOpening",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "285054b9-d34a-4be9-9541-d4366955c10f",
+					"name": "departmentId",
+					"type": "string"
+				},
+				{
+					"_propId": "1a35c170-3ebe-4293-b9c6-537ca2131eb2",
+					"name": "employeeStartDate",
+					"type": "date",
+					"isArray": false,
+					"isElementRangeIndex": false
+				},
+				{
+					"_propId": "1ec0daaf-3ceb-43b6-a5eb-5106fcdcf36d",
+					"name": "focusArea",
+					"type": "string"
+				},
+				{
+					"_propId": "b7cd8916-22fd-45e3-ab40-67219ea47a9c",
+					"name": "jobId",
+					"type": "string"
+				},
+				{
+					"_propId": "e65b9b2f-b4c0-4b92-b21d-da8cbf12b515",
+					"name": "jobTitle",
+					"type": "string"
+				},
+				{
+					"_propId": "eb2381e5-1201-4918-bf13-036af2c5bab7",
+					"name": "reqStatus",
+					"type": "string"
+				},
+				{
+					"_propId": "5893af75-c507-4f94-8eb4-8a91c51a6e24",
+					"name": "requiredCompetency",
+					"type": "string"
+				}
+			],
+			"idField": "jobId",
+			"labelField": "jobTitle"
+		},
+		"resume": {
+			"id": "resume",
+			"x": -181.83332824707,
+			"y": 141.16667175293,
+			"label": "Resume",
+			"entityName": "Resume",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "3465ff76-5a65-47a8-a492-1d0b1546b23e",
+					"name": "category",
+					"type": "string"
+				},
+				{
+					"_propId": "fbb154e6-8186-49ad-9871-09afbb6a4cd2",
+					"name": "employeeId",
+					"type": "string"
+				},
+				{
+					"_propId": "e6a639e4-a93b-46bc-a227-c7dc2c0e16c0",
+					"name": "resumeId",
+					"type": "string"
+				},
+				{
+					"_propId": "dfb319a1-04d8-4fb5-824f-b1e61399f41e",
+					"name": "resumeText",
+					"type": "string"
+				}
+			],
+			"idField": "resumeId",
+			"labelField": "category"
+		},
+		"jobreview": {
+			"id": "jobreview",
+			"x": 131.600006103516,
+			"y": 168.100006103516,
+			"label": "JobReview",
+			"entityName": "JobReview",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "4e602f12-0e36-420d-ade7-c6288e8faa67",
+					"name": "employeeId",
+					"type": "string"
+				},
+				{
+					"_propId": "660941a6-4c40-4956-91ab-c1f3761875ee",
+					"name": "reasonType",
+					"type": "string"
+				},
+				{
+					"_propId": "3d781069-8202-40b0-ba02-89c6e9e5bdbc",
+					"name": "reviewCode",
+					"type": "string"
+				},
+				{
+					"_propId": "1bb4f581-bbd5-46f5-84e4-b361f96a64b1",
+					"name": "reviewDate",
+					"type": "date"
+				},
+				{
+					"_propId": "2dfb846f-8cda-484a-b6d5-f7a8616ced83",
+					"name": "reviewer",
+					"type": "string"
+				},
+				{
+					"_propId": "a32ec9b4-a9c4-456c-8aed-e2f77129dd60",
+					"name": "reviewId",
+					"type": "string"
+				}
+			],
+			"idField": "reviewId",
+			"labelField": "reviewCode"
+		},
+		"projectskill": {
+			"id": "projectskill",
+			"x": 369.901734104046,
+			"y": 100.612426068971,
+			"label": "projectSkill",
+			"entityName": "projectSkill",
+			"shapeProperties": {
+				"borderDashes": [
+					4,
+					3
+				]
+			},
+			"type": "concept",
+			"properties": [],
+			"color": {
+				"border": "#3cdbc0",
+				"highlight": {
+					"border": "#3cdbc0",
+					"background": "#c9f5ed"
+				}
+			}
+		}
+	},
+	"img": "data:image/png;base64,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"
+}

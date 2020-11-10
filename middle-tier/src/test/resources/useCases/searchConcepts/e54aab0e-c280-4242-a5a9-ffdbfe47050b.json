@@ -1,0 +1,87 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [
+				{
+					"name": "MountainTopEmployees"
+				}
+			],
+			"createdOn": "2020-11-02T16:01:56.983744Z",
+			"createdBy": "admin",
+			"createdUsingFile": "/envision/datahub/data/MountainTopEmployees/HR360-Employee-CSV.csv"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.com/envision/"
+			},
+			"Employee": {
+				"lastName": "Finn",
+				"jobEffectiveDate": "2016-03-23",
+				"jobStatus": "Active - Regular Exempt (Full-time)",
+				"address": "7821 Aberg Park ",
+				"city": "Charleston",
+				"mobileNumber": "1(914)688-6665",
+				"departmentId": "2",
+				"postalCode": "25313",
+				"jobTitle": "Engineering Director",
+				"employeeId": "14",
+				"languageSkills": "[\"RDF\"]",
+				"firstName": "Adrianna",
+				"toolSkills": "[\"Teradata\", \"Mulesoft\", \"Kafka\", \"Hadoop\", \"Linux\", \"Windows\"]",
+				"state": "WV",
+				"productSkills": "general ledger",
+				"email": "Adrianna.Finn@mountaintop.com"
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [
+						{
+							"name": "MountainTopEmployees"
+						}
+					],
+					"createdOn": "2020-11-02T16:01:56.983744Z",
+					"createdBy": "admin",
+					"createdUsingFile": "/envision/datahub/data/MountainTopEmployees/HR360-Employee-CSV.csv"
+				},
+				"triples": [],
+				"instance": {
+					"emp_id": "14",
+					"status": "Active - Regular Exempt (Full-time)",
+					"first_name": "Adrianna",
+					"last_name": "Finn",
+					"dob": "11/3/1978",
+					"addr1": "7821 Aberg Park",
+					"addr2": "",
+					"city": "Charleston",
+					"latitude": "34.7269",
+					"longitude": "-92.344",
+					"state": "WV",
+					"zip": "25313",
+					"home_phone": "1(501)332-2809",
+					"mobile": "1(914)688-6665",
+					"pager": "",
+					"home_email": "",
+					"job_title": "Engineering Director",
+					"hire_date": "3/23/2016",
+					"work_phone": "1(941)875-4175",
+					"work_email": "Adrianna.Finn@mountaintop.com",
+					"reports_to": "5",
+					"dept_num": "2",
+					"products": "[\"general ledger\", \"logistics\"]",
+					"products[1-2]": "",
+					"languages": "[\"RDF\"]",
+					"languages[1-4]": "",
+					"tools": "[\"Teradata\", \"Mulesoft\", \"Kafka\", \"Hadoop\", \"Linux\", \"Windows\"]",
+					"tools[1-6]": "",
+					"primaryProduct": "general ledger"
+				},
+				"attachments": null
+			}
+		}
+	}
+}
