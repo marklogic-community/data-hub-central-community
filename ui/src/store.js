@@ -95,12 +95,12 @@ const mastering = {
 				commit('setBlocks', blocks)
 			})
 		},
-		getDocs({ state, commit }, uris) {
+		getDocs({ state, commit }, { uris, force }) {
 			uris.forEach(uri => {
-				if (!state.docs[uri]) {
-				masteringApi.getDoc(uri).then(doc => {
-					commit('setDoc', { uri, doc })
-				})
+				if (force || !state.docs[uri]) {
+					masteringApi.getDoc(uri).then(doc => {
+						commit('setDoc', { uri, doc })
+					})
 				}
 			})
 		},

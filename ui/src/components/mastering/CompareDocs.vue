@@ -178,11 +178,11 @@ export default {
 		}
 	},
 	mounted: function() {
-		this.$store.dispatch('mastering/getDocs', this.uris.slice(0, 6))
+		this.$store.dispatch('mastering/getDocs', { uris: this.uris.slice(0, 6) })
 	},
 	watch: {
 		uris() {
-			this.$store.dispatch('mastering/getDocs', this.uris.slice(0, 6))
+			this.$store.dispatch('mastering/getDocs', { uris: this.uris.slice(0, 6) })
 		}
 	}
 }
