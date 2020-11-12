@@ -17,19 +17,3 @@ if (flowsToGet) {
 }
 
 flows;
-// const flowNames = flows.map(flow => flow.name)
-
-// const jobs = fn.head(xdmp.invokeFunction(function() {
-// 	return datahub.jobs.getJobDocsForFlows(flowNames)
-// }, {
-// 	database: xdmp.database(config.JOBDATABASE)
-// }))
-
-// flows.map(flow => {
-// 	const jobInfo = jobs[flow.name]
-// 	return {
-// 		...flow,
-// 		jobs: jobInfo.jobIds,
-// 		latestJob: jobInfo.latestJob ? jobInfo.latestJob.job : {}
-// 	}
-// })

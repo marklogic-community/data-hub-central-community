@@ -89,7 +89,15 @@ export default {
     adminPage() {
       this.$router.push({ name: 'root.admin' });
     }
-  }
+	},
+	mounted() {
+		this.$ws.subscribe('/topic/status', tick => {
+			const msg = tick.body
+			if (msg.percentComplete >= 100) {
+				this.$store.dispatch('mastering/getNotifications', {})
+			}
+		})
+	}
 };
 </script>
 <style lang="less" scoped>
