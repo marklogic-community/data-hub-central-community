@@ -3,7 +3,7 @@ cases:
 
 1. For development, you want to run the UI as you normally would (e.g. npm start), but you want it to talk to a Spring 
 Boot middle tier instead of a Node middle tier
-1. For production, you want to deploy an executable Spring Boot jar that includes all of the static UI resources
+1. For production, you want to deploy an executable Spring Boot jar that includes all the static UI resources
 
 The instructions below assume that you've already [created a Grove project](https://marklogic-community.github.io/grove/guides/getting-started/).
 
@@ -21,7 +21,7 @@ Alternatively, you can also run the com.marklogic.grove.boot.Application class i
 
 You'll see in the logging that Tomcat is listening on port 9003. This is configured via the server.port file in 
 src/main/resources/application.properties. The Grove UI defaults to connecting to this port, which is defined in the 
-ui/package.json file via the "proxy" property. You're free to change this to any port that you wish.
+ui/package.json file via the "proxy" property. You're free to change this to any port you wish.
 
 Next, instead of running "npm start" from the root Grove project directory (which starts both the UI and the Node 
 middle tier), you should run "npm start" from the "ui" project directory:

@@ -6,14 +6,18 @@ import searchApi from './api/SearchApi';
 import modelApi from './api/ModelApi';
 import triplesApi from './api/TriplesApi';
 import masteringApi from './api/MasteringApi';
+import flowsApi from './api/FlowsApi';
+import entitiesApi from './api/EntitiesApi';
 import crudApi from './api/CRUDApi';
 import axios from 'axios';
 import * as _ from 'lodash';
 import SearchApi from './api/SearchApi';
+import md5 from 'md5'
 
 Vue.use(Vuex);
 
 const debug = true; //(process !== undefined) ? process.env.NODE_ENV !== "production" : true;
+const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 
 const mastering = {
 	namespaced: true,
@@ -67,9 +71,6 @@ const mastering = {
 		getNotifications({ state, commit }, { page, pageLength, extractions }) {
 			const newPage = page || 1
 			const newPageLength = pageLength || state.pageLength
-			if (state.needsInstall) {
-				return
-			}
 			return masteringApi.getNotifications(newPage, newPageLength, extractions || []).then(result => {
 				commit('setPagination', { page: newPage, pageLength: result.pageLength, total: result.total, totalUnread: result.totalUnread })
 				commit('setNotifications', result.notifications)
@@ -94,12 +95,12 @@ const mastering = {
 				commit('setBlocks', blocks)
 			})
 		},
-		getDocs({ state, commit }, uris) {
+		getDocs({ state, commit }, { uris, force }) {
 			uris.forEach(uri => {
-				if (!state.docs[uri]) {
-				masteringApi.getDoc(uri).then(doc => {
-					commit('setDoc', { uri, doc })
-				})
+				if (force || !state.docs[uri]) {
+					masteringApi.getDoc(uri).then(doc => {
+						commit('setDoc', { uri, doc })
+					})
 				}
 			})
 		},
@@ -122,8 +123,8 @@ const auth = {
 		initialized: false,
 		authenticated: false,
 		username: undefined,
-		profile: undefined,
-		needsInstall: false,
+		authorities: [],
+		profile: undefined
 	},
 	mutations: {
 		isInitialized(state, { initialized }) {
@@ -136,21 +137,26 @@ const auth = {
 				state.profile = undefined;
 			}
 		},
-		loggedIn(state, { username, needsInstall }) {
+		async loggedIn(state, { username, authorities }) {
 			state.authenticated = true;
 			state.username = username;
-			state.needsInstall = needsInstall;
+			state.authorities = authorities;
+			await this.$ws.connect()
 		},
 		loggedOut(state) {
 			state.authenticated = false;
 			state.username = undefined;
 			state.profile = undefined;
+			this.$ws.disconnect()
 		},
 		setProfile(state, { profile }) {
 			state.profile = profile || {};
-		},
-		setNeedsInstall(state, { needsInstall }) {
-			state.needsInstall = needsInstall;
+			if (isHosted) {
+				this.$logRocket.identify(profile.email, {
+					...profile,
+					environment: process.env.NODE_ENV
+				})
+			}
 		}
 	},
 	actions: {
@@ -169,7 +175,7 @@ const auth = {
 							'loggedIn',
 							{
 								username: result.username,
-								needsInstall: result.needsInstall
+								authorities: result.authorities
 							},
 							{ root: true }
 						);
@@ -200,11 +206,19 @@ const auth = {
 						'loggedIn',
 						{
 							username: user,
-							needsInstall: result.needsInstall
+							authorities: result.authorities
 						},
 						{ root: true }
 					);
 					dispatch('getProfile')
+				}
+			});
+		},
+		signup({ dispatch }, { email, name, password }) {
+			return authApi.signup(email, name, password).then(result => {
+				if (result.isError) {
+					// error
+					return result;
 				}
 			});
 		},
@@ -251,8 +265,8 @@ const explore = {
 		setDocs(state, response) {
 			if (response) {
 				state.total = response.total
-				state.page = response.page || Math.ceil (response.start / response.['page-length']) // different server response between staging/final
-				state.pageLength = response.pageLength || response.['page-length']
+				state.page = response.page || Math.ceil (response.start / response['page-length']) // different server response between staging/final
+				state.pageLength = response.pageLength || response['page-length']
 				state.colors = {};
 				state.edges = response.edges
 				state.nodes = response.nodes
@@ -433,11 +447,7 @@ const model = {
 		}
 	},
 	actions: {
-		async init({ commit, dispatch }) {
-			if (auth.state.needsInstall) {
-				await authApi.install()
-				await commit('auth/setNeedsInstall', { needsInstall: false }, { root: true })
-			}
+		async init({ dispatch }) {
 			await dispatch('getAll')
 			await dispatch('getModel')
 		},
@@ -570,11 +580,73 @@ const crud = {
 	}
 }
 
+const flows = {
+	namespaced: true,
+	state: {
+		entities: [],
+		flows: {}
+	},
+	mutations: {
+		setFlows(state, flows) {
+			state.flows = flows.reduce((output, flow) => {
+				output[flow.name] = flow
+				return output
+			}, {})
+		},
+		setFlow(state, flow) {
+			Vue.set(state.flows, flow.name, flow)
+		},
+		deleteFlow(state, flow) {
+			Vue.delete(state.flows, flow.name)
+		},
+		setFlowSteps(state, {flowName, steps}) {
+			Vue.set(state.flows[flowName], 'steps', steps)
+		},
+		setEntities(state, entities) {
+			//state.entities = entities
+			state.entities = entities.reduce((output, entity) => {
+				output[entity.info.title] = {
+					properties: entity.definitions.definitions[entity.info.title].properties,
+					filename: entity.filename,
+					info: entity.info
+				}
+				return output
+			}, {})
+		}
+	},
+	actions: {
+		getFlows({ commit }) {
+			return flowsApi.getFlows().then(result => {
+				commit('setFlows', result)
+			})
+		},
+		getFlow({ rootState, commit }) {
+			const flowId = md5(rootState.auth.username)
+			return flowsApi.getFlow(flowId).then(result => {
+				return commit('setFlow', result)
+			})
+		},
+		saveFlow({ commit }, flow) {
+			commit('setFlow', flow)
+			return flowsApi.saveFlow(flow)
+		},
+		async deleteFlow({ commit }, flow) {
+			await flowsApi.deleteFlow(flow.id)
+			commit('deleteFlow', flow)
+		},
+		getEntities({ commit }) {
+			return entitiesApi.getEntities().then(result => {
+				commit('setEntities', result)
+			})
+		}
+	}
+}
 
 export default new Vuex.Store({
 	strict: debug,
 	state: {
-		initialized: false
+		initialized: false,
+		isHosted: process.env.VUE_APP_IS_HOSTED === 'true'
 	},
 	mutations: {
 		isInitialized(state, { initialized }) {
@@ -603,6 +675,7 @@ export default new Vuex.Store({
 		model,
 		triples,
 		mastering,
-		crud
+		crud,
+		flows
 	}
 });

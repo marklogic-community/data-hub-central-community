@@ -1,0 +1,15 @@
+{
+	"activities": [
+		{
+			"auditUri": "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml",
+			"type": "merge",
+			"label": "merge by maverick",
+			"resultUri": "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json",
+			"wasDerivedFromUris": [
+				"/CoastalEmployees/55002.json",
+				"/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json"
+			],
+			"time": "2020-03-11T15:13:52.314304Z"
+		}
+	]
+}

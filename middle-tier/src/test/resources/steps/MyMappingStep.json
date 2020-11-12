@@ -1,0 +1,30 @@
+{
+	"name" : "myMappingStep",
+	"description" : "",
+	"options" : {
+		"additionalCollections" : [ ],
+		"sourceQuery" : "cts.collectionQuery([\"MyData.csv\"])",
+		"mapping" : {
+			"name" : "myMappingStep",
+			"version" : 1
+		},
+		"targetEntity" : "Planet",
+		"sourceDatabase" : "data-hub-STAGING",
+		"collections" : [ "Planet" ],
+		"permissions" : "envision,read,envision,update",
+		"sourceCollection" : "MyData.csv",
+		"outputFormat" : "json",
+		"targetDatabase" : "data-hub-FINAL"
+	},
+	"customHook" : {
+		"module" : "/envision/customHooks/uriRemapper.sjs",
+		"parameters" : { },
+		"user" : "",
+		"runBefore" : false
+	},
+	"retryLimit" : 0,
+	"batchSize" : 100,
+	"threadCount" : 4,
+	"stepDefinitionName" : "entity-services-mapping",
+	"stepDefinitionType" : "MAPPING"
+}

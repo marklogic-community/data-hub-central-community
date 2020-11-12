@@ -6,6 +6,11 @@ import $store from './store';
 
 Vue.use(Router);
 
+let entryUrl = null
+
+const isTesting = process.env.NODE_ENV === 'test'
+const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
+
 const checkLogin = (to, from, next) => {
   if (!$store.state.initialized) {
     $store.dispatch('init').then(function() {
@@ -17,25 +22,20 @@ const checkLogin = (to, from, next) => {
 };
 
 const redirectBasedOnAuth = (to, from, next) => {
-	if (to.name !== 'root.install' && $store.state.auth.authenticated && $store.state.auth.needsInstall) {
-		next({
-			replace: true,
-			name: 'root.install',
-			params: { state: to.name, params: to.params }
-		})
-	}
-	else if (to.name == 'root.install' && $store.state.auth.authenticated && !$store.state.auth.needsInstall) {
-		next({
-			replace: true,
-			name: 'root.landing'
-		})
-	}
-	else if (
+	if (
     $store.state.auth.authenticated ||
     !(to.meta.requiresLogin || to.meta.requiresUpdates)
   ) {
+		if (to.name !== 'root.login' && entryUrl) {
+			const url = entryUrl;
+			entryUrl = null;
+			next(url); // goto stored url
+		}
+		else {
     next();
+		}
   } else {
+		// entryUrl = to.path
     next({
       replace: true,
       name: 'root.login',
@@ -44,240 +44,240 @@ const redirectBasedOnAuth = (to, from, next) => {
   }
 };
 
-const $router = new Router({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'root.landing',
-			redirect: '/model',
+const routes = [
+  {
+		path: '/',
+		name: 'root.landing',
+		redirect: isHosted ? '/upload' : '/model',
+		meta: {}
+	},
+	{
+		path: '/model',  //url path
+		name: 'root.modeler', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "modeler" */ './views/ModelerPage.vue'),
+		meta: {
+			label: 'Connect',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=4QauKnTPbcU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=2',
+			tutorialName: 'Connect Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/explore',  //url path
+		name: 'root.explorer', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "explorerpage" */ './views/ExplorerPage.vue'),
+		meta: {
+			label: 'Explore',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=0NODwUBNPKU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=5',
+			tutorialName: 'Explore Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/explore/compare',  //url path
+		name: 'root.explorer.compare', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "mergedcompare" */ './views/MergedCompare.vue'),
+		meta: {
+			label: 'Compare',
+			// navArea: 'header',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '/notifications',  //url path
+		name: 'root.notifications', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "masteringnotifications" */ './views/MasteringNotifications.vue'),
+		meta: {
+			label: 'Notifications',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '/notifications/compare',  //url path
+		name: 'root.notifications.compare', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "masteringnotificationcompare" */ './views/MasteringNotificationCompare.vue'),
+		meta: {
+			label: 'Compare',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '/login',
+		name: 'root.login',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "login" */ './views/LoginPage.vue'),
+		meta: {
+			label: 'Login',
+			navArea: 'usermenu'
+		}
+	},
+	{
+		path: '/export',  //url path
+		name: 'root.export', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "exportpage" */ './views/ExportPage.vue'),
+		meta: {
+			label: 'Export',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=9XaD-0oPfuQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=6',
+			tutorialName: 'Export Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/detail',
+		name: 'root.details',
+		// lazy-loading of page
+		component: () => import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
+		meta: {
+			label: 'View',
+			navArea: 'document',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
+		path: '*',
+		component: () => import(/* webpackChunkName: "detail" */ './views/NotFoundPage.vue'),
+		meta: {}
+	}
+]
+
+if (isHosted || isTesting) {
+	routes.splice(1, 0, {
+		path: '/upload',
+		name: 'root.upload',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "upload" */ './views/UploadPage.vue'),
+		props: {
+			type: 'all'
+		},
+		meta: {
+			label: 'Upload',
+			navArea: 'header',
+			requiresUpdates: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=Hcamr-WomQQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=1',
+			tutorialName: 'Upload Tutorial',
+			checkLogin
+		}
+	})
+
+	routes.splice(3, 0, {
+		path: '/integrate/:stepName?',	//url path
+		name: 'root.integrate', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "integratepage" */ './views/IntegratePage.vue'),
+		meta: {
+			label: 'Integrate',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=n5epxcHiEBw&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=3',
+			tutorialName: 'Integrate Tutorial',
+			checkLogin
+		}
+	})
+
+	routes.push({
+		path: '/signup',
+		name: 'root.signup',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "login" */ './views/SignupPage.vue'),
+		meta: {
+			label: 'Signup',
+			navArea: 'usermenu'
+		}
+	})
+	routes.push({
+		path: '/forgotPassword',
+		name: 'root.forgotPassword',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "login" */ './views/ForgotPasswordPage.vue'),
+		meta: {}
+	})
+	routes.push({
+		path: '/updatePassword',
+		name: 'root.updatePassword',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "login" */ './views/UpdatePasswordPage.vue'),
 			meta: {}
-		},
-		// {
-    //   path: '/home',
-    //   name: 'root.home',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "landing" */ './views/LandingPage.vue'),
-    //   meta: {
-    //     label: 'Home',
-    //     navArea: 'header'
-    //   }
-    // },
-    // {
-    //   path: '/upload/all',
-    //   name: 'root.upload',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "upload" */ './views/UploadPage.vue'),
-    //   props: {
-    //     type: 'all'
-    //   },
-    //   meta: {
-    //     label: 'Upload',
-    //     navArea: 'header',
-    //     requiresUpdates: true,
-    //     checkLogin
-    //   }
-    // },
-    {
-      path: '/model',  //url path
-      name: 'root.modeler', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/ModelerPage.vue'),
-      meta: {
-        label: 'Connect',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    {
-      path: '/explore',  //url path
-      name: 'root.explorer', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/ExplorerPage.vue'),
-      meta: {
-        label: 'Explore',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-		},
-		{
-      path: '/explore/compare',  //url path
-      name: 'root.explorer.compare', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/MergedCompare.vue'),
-      meta: {
-        label: 'Compare',
-        // navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    {
-      path: '/know',  //url path
-      name: 'root.know', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/KnowPage.vue'),
-      meta: {
-        label: 'Know',
-        navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-		},
-    {
-      path: '/notifications',  //url path
-      name: 'root.notifications', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/MasteringNotifications.vue'),
-      meta: {
-        label: 'Notifications',
-        // navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-		},
-    {
-      path: '/notifications/compare',  //url path
-      name: 'root.notifications.compare', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/MasteringNotificationCompare.vue'),
-      meta: {
-        label: 'Compare',
-        // navArea: 'header',
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    /*{
-      path: '/map',  //url path
-      name: 'root.mapper', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "mapper" * /
-        './views/MapPage.vue'),
-      meta: {
-        label: 'Map',
-        navArea: 'header'
-      }
-    },*/
-    // {
-    //   path: '/search/all',
-    //   name: 'root.search',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "search" */ './views/SearchPage.vue'),
-    //   props: {
-    //     type: 'all'
-    //   },
-    //   meta: {
-    //     label: 'Search',
-    //     navArea: 'header',
-    //     requiresLogin: true,
-    //     checkLogin
-    //   }
-    // },
-    // {
-    //   path: '/create/all',
-    //   name: 'root.create',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "create" */ './views/CreatePage.vue'),
-    //   props: {
-    //     type: 'all'
-    //   },
-    //   meta: {
-    //     label: 'Create',
-    //     navArea: 'header',
-    //     requiresUpdates: true
-    //   }
-    // },
-    {
-      path: '/install',
-      name: 'root.install',
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "login" */ './views/InstallPage.vue'),
-      meta: {
-        requiresLogin: true,
-        checkLogin
-      }
-		},
-		{
-      path: '/login',
-      name: 'root.login',
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "login" */ './views/LoginPage.vue'),
-      meta: {
-        label: 'Login',
-        navArea: 'usermenu'
-      }
-    },
-    {
-      path: '/admin',  //url path
-      name: 'root.admin', //use to navigate to page
-      // lazy-loading of page
-      component: () =>
-        import(/* webpackChunkName: "modeler" */ './views/AdminPage.vue'),
-      meta: {
-        requiresLogin: true,
-        checkLogin
-      }
-    },
-    // {
-    //   path: '/profile',
-    //   name: 'root.profile',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "profile" */ './views/ProfilePage.vue'),
-    //   meta: {
-    //     label: 'Profile',
-    //     navArea: 'usermenu',
-    //     requiresLogin: true
-    //   }
-    // },
-    // {
-    //   path: '/edit/all/:id',
-    //   name: 'root.edit',
-    //   // lazy-loading of page
-    //   component: () =>
-    //     import(/* webpackChunkName: "create" */ './views/CreatePage.vue'),
-    //   props($route) {
-    //     return {
-    //       type: 'all',
-    //       id: $route.params.id
-    //     };
-    //   },
-    //   meta: {
-    //     label: 'Edit',
-    //     navArea: 'document',
-    //     requiresUpdates: true
-    //   }
-    // },
-    {
-      path: '/detail',
-      name: 'root.details',
-      // lazy-loading of page
-      component: () => import(/* webpackChunkName: "detail" */ './views/DetailPage.vue'),
-      meta: {
-        label: 'View',
-        navArea: 'document',
-				requiresLogin: true,
-				checkLogin
-      }
-    }
-  ]
+	})
+	routes.push({
+		path: '/registrationComplete',
+		name: 'root.registrationComplete',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "login" */ './views/RegistrationCompletePage.vue'),
+			meta: {}
+	})
+
+	routes.push({
+		path: '/hostedadmin',  //url path
+		name: 'root.hostedadmin', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "hostedadminpage" */ './views/HostedAdminPage.vue'),
+		meta: {
+			requiresLogin: true,
+			checkLogin
+		}
+	})
+}
+if (!isHosted || isTesting) {
+	routes.push({
+		path: '/admin',  //url path
+		name: 'root.admin', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "adminpage" */ './views/AdminPage.vue'),
+		meta: {
+			requiresLogin: true,
+			checkLogin
+		}
+	})
+	routes.push({
+		path: '/know',	//url path
+		name: 'root.know', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "knowpage" */ './views/KnowPage.vue'),
+		meta: {
+			label: 'Know',
+			navArea: 'header',
+			requiresLogin: true,
+			checkLogin
+		}
+	})
+}
+
+const $router = new Router({
+	mode: 'history',
+	base: process.env.BASE_URL,
+	routes: routes
 });
 
 // Keep the router in sync with vuex store

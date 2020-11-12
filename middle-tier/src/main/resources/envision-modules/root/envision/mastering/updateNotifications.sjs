@@ -2,10 +2,8 @@
 
 var uris;
 var status;
-var model;
 
 uris = uris.toObject();
-model = model.toObject();
 
 const mastering = require('/envision/mastering.sjs')
 
@@ -20,7 +18,7 @@ xdmp.invokeFunction(function() {
 
 const notifications = xdmp.invokeFunction(function() {
 	return uris.map(uri => {
-		return mastering.getNotification(model, uri, cts.doc(uri));
+		return mastering.getNotification(uri, cts.doc(uri));
 	});
 });
 

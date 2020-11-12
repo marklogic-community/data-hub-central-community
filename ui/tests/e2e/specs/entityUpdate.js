@@ -1,7 +1,7 @@
 describe('End to end test to create and update model', () => {
 	beforeEach(() => {
 		cy.server()
-		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false,"needsInstall":false})
+		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false})
 		cy.route({
 			method: 'PUT',
 			url: '/api/models/',
@@ -27,7 +27,8 @@ describe('End to end test to create and update model', () => {
 		cy.url().should('include', '/model')
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{}}])
 		cy.wait('@getNotifications')
-		cy.get('[data-cy="cardMenu.createModelButton"]').click()
+		cy.get('[data-cy="cardMenu.createModelButton"]').click({force: true})
+		cy.get('.v-menu__content.menuable__content__active').should('be.visible')
 		cy.wait(1000)
 		cy.get('[data-cy="createModelVue.createModelNameField"]').type('Test Model')
 		cy.get('[data-cy="createModelVue.createSubmitButton"]').click()
@@ -74,7 +75,8 @@ describe('End to end test to create and update model', () => {
 		cy.url().should('include', '/model')
 		cy.route('GET', '/api/models/', [])
 		cy.wait('@getNotifications')
-		cy.get('[data-cy="cardMenu.renameModelButton"]').click()
+		cy.get('[data-cy="cardMenu.renameModelButton"]').click({force: true})
+		cy.get('.v-menu__content.menuable__content__active').should('be.visible')
 		cy.wait(1000)
 		cy.get('[data-cy="renameModelVue.renameModelNameField"]').type('A new Model Name')
 		cy.get('[data-cy="renameModelVue.renameSubmitButton"]').click()
@@ -90,13 +92,25 @@ describe('End to end test to create and update model', () => {
 
 	// add Customer entity
 	it('cannot add a new entity with invalid name', () => {
-		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}]).as('getModels')
 		cy.visit('/')
 		cy.url().should('include', '/model')
 
+		cy.wait('@getModels')
+			.its('response.body')
+				.should((body) => {
+					expect(body.length).to.equal(1)
+					expect(body[0].name).to.equal('Test Model')
+				})
+		cy.wait('@getModels')
+			.its('response.body')
+				.should((body) => {
+					expect(body.length).to.equal(1)
+					expect(body[0].name).to.equal('Test Model')
+				})
+		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
 		cy.get('.v-messages__message').should('not.contain', 'Entity name is required')
 		cy.get('.v-messages__message').should('not.contain', 'Entity Name cannot contain spaces. Only letters, numbers, and underscore')
-		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
 		cy.get('[data-cy="addEntity.entityNameField"]').clear()
 		cy.get('[data-cy="addEntity.createEntityButton"]').click()
 		cy.get('.v-messages__message').should('contain', 'Entity name is required')
@@ -107,6 +121,7 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('[data-cy="addEntity.entityNameField"]').clear().type('Poet')
 		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+		cy.wait(1000)
 		cy.get('.v-messages__message').should('contain', 'Entity already exists')
 	})
 
@@ -214,6 +229,100 @@ describe('End to end test to create and update model', () => {
 			.its('request.body')
 			.should(body => {
 				expect(body.edges).to.deep.equal({})
+			})
+	})
+
+	it.only('can create and edit 2 connected entities', () => {
+		cy.route('GET', '/api/models/', [ { "name": "Test Model", "edges": {}, "nodes": {} } ])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body).to.deep.equal({ "name": "Test Model", "edges": {}, "nodes": {} })
+			})
+
+		// create the poet entity
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}}}])
+		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
+		cy.get('[data-cy="addEntity.entityNameField"]').type('Poet')
+		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+
+		//see if the entity appears
+		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('contain', 'Test Model')
+		// cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		// cy.get('[data-cy="editProperty.propName"]').type('id')
+		// cy.get('[data-cy="editProperty.createBtn"]').click()
+		// cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
+		// cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body.nodes).to.deep.equal({ "poet": { "version": "0.0.1", "baseUri": "http://marklogic.envision.com/", "id": "poet", "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] }})
+			})
+
+		// create the philosopher entity
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[]}, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] }}}])
+		cy.get('[data-cy="modelerPageVue.addNodeButton"]').click({force:true})
+		cy.get('[data-cy="addEntity.entityNameField"]').type('Philosopher')
+		cy.get('[data-cy="addEntity.createEntityButton"]').click()
+
+		// //see if the entity appears
+		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('contain', 'Test Model')
+
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				delete body.img
+				expect(body).to.deep.equal({"name":"Test Model","edges":{},"nodes":{"poet":{"baseUri": "http://marklogic.envision.com/", "id":"poet","label":"Poet","entityName":"Poet","type":"entity","properties":[],"version":"0.0.1"}, "philosopher": { "baseUri": "http://marklogic.envision.com/", "id": "philosopher", "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [], "version": "0.0.1" }}})
+			})
+
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("poet").click()
+
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"isArray": false, "isElementRangeIndex": false, "isPii": false, "isPrimaryKey": false, "isRangeIndex": false, "isRequired": false, "isWordLexicon": false, "name": "id", "type": "string", "_propId": "6d743ab9-ca56-44b0-83a7-8684b531d60e"}]}, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] }}}])
+
+		// add id property
+		cy.contains('.v-expansion-panel-header--active', 'Poet').parent().find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="editProperty.propName"]').type('id')
+		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
+		cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
+
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				console.log('props', body.nodes.poet.properties)
+				expect(body.nodes.poet.properties.map(p => p.name)).to.deep.equal(['id'])
+				expect(body.nodes.philosopher.properties.map(p => p.name)).to.deep.equal([])
+			})
+
+			cy.contains('.v-expansion-panel-header--active', 'Poet').parent().find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('.menuable__content__active').find('[data-cy="editProperty.propName"]').type('firstName')
+		cy.get('.menuable__content__active').find('[data-cy="editProperty.createBtn"]').click()
+		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'idfirstName')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'stringstring')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				console.log('props', body.nodes.poet.properties)
+				expect(body.nodes.poet.properties.map(p => p.name)).to.deep.equal(['id', 'firstName'])
+				expect(body.nodes.philosopher.properties.map(p => p.name)).to.deep.equal([])
+			})
+		// cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"isArray": false, "isElementRangeIndex": false, "isPii": false, "isPrimaryKey": false, "isRangeIndex": false, "isRequired": false, "isWordLexicon": false, "name": "id", "type": "string", "_propId": "6d743ab9-ca56-44b0-83a7-8684b531d60e"},{"isArray": false, "isElementRangeIndex": false, "isPii": false, "isPrimaryKey": false, "isRangeIndex": false, "isRequired": false, "isWordLexicon": false, "name": "firstName", "type": "string", "_propId": "6d743ab9-ca56-44b0-83a7-8684b531d6ff"}]}, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] }}}])
+
+		cy.get('[data-cy=nodeList]').contains("philosopher").click()
+		cy.contains('.v-expansion-panel-header--active', 'Philosopher').parent().find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('.menuable__content__active').find('[data-cy="editProperty.propName"]').type('id')
+		cy.get('.menuable__content__active').find('[data-cy="editProperty.createBtn"]').click()
+		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'ididfirstName')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'stringstringstring')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				console.log('props', body.nodes.poet.properties)
+				expect(body.nodes.poet.properties.map(p => p.name)).to.deep.equal(['id', 'firstName'])
+				expect(body.nodes.philosopher.properties.map(p => p.name)).to.deep.equal(['id'])
 			})
 	})
 

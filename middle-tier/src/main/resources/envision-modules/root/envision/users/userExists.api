@@ -1,0 +1,12 @@
+{
+    "functionName": "userExists",
+    "params": [
+        {
+            "datatype": "string",
+            "name": "email"
+        }
+    ],
+    "return": {
+        "datatype": "boolean"
+    }
+}

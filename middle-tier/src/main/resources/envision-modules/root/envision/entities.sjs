@@ -3,6 +3,9 @@ const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
+const model = require('/envision/model.sjs').enhancedModel;
+const rdt = require('/MarkLogic/redaction');
+
 const extensions = xdmp.mimetypes()
 	.filter(m => m.format === 'binary' && !!m.extensions)
 	.map(m => m.extensions.split(' '))
@@ -29,8 +32,7 @@ function enrichValue(value) {
  * 		connectionLimit - # of connections to grab
  * 		labels - an array of edge labels to return, empty means all
  */
-function getEntities(model, uris, opts) {
-	console.log('model', model)
+function getEntities(uris, opts) {
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
@@ -48,7 +50,7 @@ function getEntities(model, uris, opts) {
 	if (labels && labels.length > 0) {
 		labelFilter = `FILTER( ?lbl IN ( ${labels.map(label => `rdf:${label}`).join(', ')} ) )`
 	}
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray().map(c => c.toString())
 
 	// this query gets all the edges for the given list of uris
 	// with a limit applied to not return everything
@@ -89,7 +91,7 @@ function getEntities(model, uris, opts) {
 				?toId rdf:hasEntityType ?entityType.
 				optional { ?toUri rdf:hasId ?toId }
 				FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-				FILTER( xdmp:document-get-collections(?toUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
+				${archivedCollections.length <= 0 ? '#': ''} FILTER( xdmp:document-get-collections(?toUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
 				${labelFilter}
 			}
 
@@ -100,7 +102,7 @@ function getEntities(model, uris, opts) {
 				?fromId rdf:hasEntityType ?entityType.
 				optional { ?fromUri rdf:hasId ?fromId }
 				FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-				FILTER( xdmp:document-get-collections(?fromUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
+				${archivedCollections.length <= 0 ? '#': ''} FILTER( xdmp:document-get-collections(?fromUri) NOT IN ( ${archivedCollections.map(uri => `"${uri}"`).join(', ')}))
 				${labelFilter}
 			}
 		}
@@ -147,11 +149,61 @@ function getEntities(model, uris, opts) {
 	uris = Object.keys(uriMap)
 	const edgeCounts = getEdgeCounts(uris)
 
+	// see if we have any redaction rules to apply
+	let thisUserId = xdmp.getCurrentUserid()
+	let seqUserRoles = xdmp.useridRoles(thisUserId)
+	let arrUserRoleNames = seqUserRoles.toArray().map(roleId => {
+		return xdmp.roleName(roleId)
+	})
+
+	let redactionRulesDoc
+	let arrRulesToApply = []
+
+	if (fn.exists(cts.doc("/redactionRules2Roles.json"))) {
+		redactionRulesDoc = cts.doc ("/redactionRules2Roles.json");
+		let redactionRules = redactionRulesDoc.toObject().rules
+		redactionRules.forEach((rule) => {
+			if( !rule.rolesThatDoNotUseRedaction.some(r=> arrUserRoleNames.includes(r)) ) {
+				arrRulesToApply.push(rule.redactionRuleCollection)
+			}
+		});
+	}
+
 	// iterate over the uris and create "nodes" for the graph ui
 	// do this by opening the docs at each uri
 	// then insert some additional metadata about each "node"
 	uris.forEach(uri => {
-		const doc = cts.doc(uri)
+		let doc
+		if (!redactionRulesDoc) {
+			// try to use piiRules - this will be applied for all users
+			try {
+				xdmp.log("/redactionRules2Roles.json doesn't exist, trying to apply only piiRules")
+				doc = fn.head( rdt.redact(cts.doc(uri), ["piiRules"] ) ).root
+			} catch (e) {
+				xdmp.log("No pii rules to apply?")
+				doc = cts.doc(uri)
+			}
+		} else {
+			try {
+				xdmp.log("trying to load doc with redaction rules " + arrRulesToApply.toString() )
+				doc = fn.head( rdt.redact(cts.doc(uri), arrRulesToApply ) ).root
+			} catch(e) {
+				xdmp.log("Failed to apply redaction rules. Do rules in collections '" + arrRulesToApply.toString() + "' exist in the schema db? Please read the documentation." )
+
+				if (arrRulesToApply.includes("piiRules")) {
+					try {
+						xdmp.log("Applying piiRules only")
+						doc = fn.head( rdt.redact(cts.doc(uri), ["piiRules"] ) ).root
+					} catch (e) {
+						xdmp.log("No pii rules to apply?")
+						doc = cts.doc(uri)
+					}
+				} else {
+					xdmp.log("No pii to apply, so just load doc")
+					doc = cts.doc(uri)
+				}
+			}
+		}
 
 		// the actual entity
 		let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
@@ -215,7 +267,7 @@ function getEntities(model, uris, opts) {
 					label: t.to.toString().replace(/(.+)#(.+)/, '$2'),
 					entityName: model.getName(t.toType),
 					isConcept: true,
-					edgeCounts: edgeCounts[t.to] || {} // DGB here and below to do differently
+					edgeCounts: edgeCounts[t.to] || {}
 				}
 			}	else {
 				// from side has concept
@@ -256,7 +308,7 @@ function getEdgeCounts(uris) {
 			?fromUri rdf:hasId ?s.
 			optional { ?toUri rdf:hasId ?o }
 			FILTER( ?fromUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId ) )
+			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId, rdf:hasLabel ) )
 		}
 		UNION
 		{
@@ -264,7 +316,7 @@ function getEdgeCounts(uris) {
 			?toUri rdf:hasId ?o.
 			optional { ?fromUri rdf:hasId ?s }
 			FILTER( ?toUri IN ( ${uris.map(uri => `"${uri}"`).join(', ')} ) )
-			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId ) )
+			FILTER( ?p NOT IN ( rdf:hasEntityType, rdf:hasId, rdf:hasLabel ) )
 		}
 	}`
 
@@ -282,7 +334,7 @@ function getEdgeCounts(uris) {
 	}
 
 	// build a cts.query that omits archived documents from smart mastering
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray().map(c => c.toString())
 	const query = cts.notQuery(cts.collectionQuery(archivedCollections))
 
 	// run the sparql query while ignoring archived docs
@@ -376,7 +428,7 @@ function getValues(qtext, query, facetName) {
 * 		Called from a concept - based on getEntities - finds entities related to the concept then
 *		calls getEntities to populate the graph
 */
-function getEntitiesRelatedToConcept(model, vconcepts, opts) {
+function getEntitiesRelatedToConcept(concepts, opts) {
 	let options = opts || {}
 	let start = (!!options.start) ? options.start : 0
 	let connectionLimit = (!!options.connectionLimit) ? options.connectionLimit : 10
@@ -408,95 +460,105 @@ function getEntitiesRelatedToConcept(model, vconcepts, opts) {
 	 (fn:head(fn:tokenize(?toId, "#")) as ?toType)
 	WHERE {
 	 {
-			 ## From concept to entity
-				?fromId  ?lbl ?toId .
-							?toUri rdf:hasId ?toId .
-						 optional { ?fromUri rdf:hasId ?fromId}
-						${conceptFilterFromConcept}
+			## From concept to entity
+			?fromId  ?lbl ?toId .
+			?toUri rdf:hasId ?toId .
+			optional { ?fromUri rdf:hasId ?fromId}
+			${conceptFilterFromConcept}
 		} UNION {
 			 ?fromId  ?lbl ?toId .
-							?fromUri rdf:hasId ?fromId .
-				 optional { ?toUri rdf:hasId ?toId}
-						 ${conceptFilterToConcept}
+				?fromUri rdf:hasId ?fromId .
+				optional { ?toUri rdf:hasId ?toId}
+				${conceptFilterToConcept}
 		 }
 	}
 	`
 
 	// build a cts.query that omits archived documents from smart mastering
-	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray()
+	const archivedCollections = cts.collectionMatch('sm-*-archived').toArray().map(c => c.toString())
 	const query = cts.notQuery(cts.collectionQuery(archivedCollections))
 
 	// run the sparql query while ignoring archived docs
 	const triples = sem.sparql(sparql, null, null, sem.store(null, query))
 	let uris = []
- for (let t of triples) {
-	 uris.push(t.from)
-	 uris.push(t.to)
- }
+	for (let t of triples) {
+		uris.push(t.from)
+		uris.push(t.to)
+	}
 
  const edgeCounts = getEdgeCounts(uris)
 
  // now add the edges from the concept
  for (let t of triples) {
-	 resp.edges[t.id] = {
-		 from: t.from,
-		 to: t.to,
-		 id: t.id,
-		 label: t.label,
-		 fromType: t.fromType,
-		 toType: t.toType
-	 }
-	 let uri = t.from
-	 let doc = cts.doc(uri)
-	 let haveDoc = false
-	 // the actual entity which could be on the to or from side
-	 if (fn.exists(doc)) {
-		 haveDoc = true
-	 } else {
-		 uri = t.to
-		 doc = cts.doc(uri)
-		 if (fn.exists(doc)) {
-			 haveDoc=true
-		 }
-	 }
-	 if( haveDoc) {
-		 let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
+		let uri = t.from
+		console.log('uri', uri)
+		const cols = xdmp.documentGetCollections(uri)
+		console.log('cols', cols)
+		const collections = fn.head(cols)
+			.filter(c => archivedCollections.indexOf(c) !== -1)
+		console.log('collections', collections)
+		if (collections.length === 0) {
+			resp.edges[t.id] = {
+				from: t.from,
+				to: t.to,
+				id: t.id,
+				label: t.label,
+				fromType: t.fromType,
+				toType: t.toType
+			}
 
-		 // use metadata from the model to grab the "label" out of the entity
-		 // the label is specified in envision's UI on the Modeler page
-		 const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
-		 const entityId = entityName.toLowerCase()
-		 const modelNode = model.nodes[entityId] || {};
-		 const labelField = modelNode.labelField;
+			let doc = cts.doc(uri)
+			let haveDoc = false
+			// the actual entity which could be on the to or from side
+			if (fn.exists(doc)) {
+				haveDoc = true
+			} else {
+				uri = t.to
+				doc = cts.doc(uri)
+				if (fn.exists(doc)) {
+					haveDoc=true
+				}
+			}
+			if (haveDoc) {
+				let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
 
-		 // grab the label or default to the uri
-		 const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
+				// use metadata from the model to grab the "label" out of the entity
+				// the label is specified in envision's UI on the Modeler page
+				const entityName = doc.xpath('*:envelope/*:instance/*:info/*:title/string()').toString();
+				const entityId = entityName.toLowerCase()
+				const modelNode = model.nodes[entityId] || {};
+				const labelField = modelNode.labelField;
 
-		 // convert xml to json map
-		 if (entity instanceof Element) {
-			 entity = entity.xpath('node()').toArray().reduce((item, el) => {
-				 item[el.xpath('local-name(.)')] = el.xpath('string(.)')
-				 return item;
-			 }, {})
-		 }
+				// grab the label or default to the uri
+				const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
 
-		 resp.nodes[uri] = {
-			 id: uri,
-			 uri: uri,
-			 entityName: entityName,
-			 label: label,
-			 entity: entity,
-			 edgeCounts: edgeCounts[uri] || {},
+				// convert xml to json map
+				if (entity instanceof Element) {
+					entity = entity.xpath('node()').toArray().reduce((item, el) => {
+						item[el.xpath('local-name(.)')] = el.xpath('string(.)')
+						return item;
+					}, {})
+				}
 
-			 // grab the DHF provenance data out of the jobs db
-			 prov: provHelper.getProv(uri),
-			 isConcept: false
-		 }
-	 }
- }
+				resp.nodes[uri] = {
+					id: uri,
+					uri: uri,
+					entityName: entityName,
+					label: label,
+					entity: entity,
+					edgeCounts: edgeCounts[uri] || {},
 
- return resp
+					// grab the DHF provenance data out of the jobs db
+					prov: provHelper.getProv(uri),
+					isConcept: false
+				}
+			}
+		}
+	}
 
+	console.log('resp', resp)
+
+	return resp
 }
 
 exports.getEntitiesRelatedToConcept = getEntitiesRelatedToConcept;

@@ -1,0 +1,44 @@
+{
+	"databases": {
+		"staging": "data-hub-STAGING",
+		"final": "data-hub-FINAL"
+	},
+	"collections": {
+		"staging": [
+			{
+				"collection": "DataSource1",
+				"count": 100
+			},
+			{
+				"collection": "DataSource2",
+				"count": 100
+			},
+			{
+				"collection": "DataSource3",
+				"count": 100
+			},
+			{
+				"collection": "DataSource4",
+				"count": 100
+			}
+		],
+		"final": [
+			{
+				"collection": "DataSource1",
+				"count": 44
+			},
+			{
+				"collection": "DataSource2",
+				"count": 44
+			},
+			{
+				"collection": "DataSource3",
+				"count": 44
+			},
+			{
+				"collection": "DataSource4",
+				"count": 44
+			}
+		]
+	}
+}

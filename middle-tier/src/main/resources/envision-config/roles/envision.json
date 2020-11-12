@@ -4,12 +4,24 @@
   "role": [
     "data-hub-module-writer",
     "data-hub-operator",
-    "data-hub-developer",
-    "data-hub-entity-model-writer"
-  ],
+		"data-hub-entity-model-writer",
+		"data-hub-flow-writer",
+		"data-hub-mapping-writer",
+		"ps-internal"
+	],
   "permission": [
   ],
   "privilege": [
+		{
+			"privilege-name": "xdmp:with-namespaces",
+			"action": "http://marklogic.com/xdmp/privileges/xdmp-with-namespaces",
+			"kind": "execute"
+		},
+		{
+			"privilege-name":"xdmp:user-roles",
+			"action":"http://marklogic.com/xdmp/privileges/xdmp-user-roles",
+			"kind":"execute"
+		},
     {
       "privilege-name": "admin-database",
       "action": "http://marklogic.com/xdmp/privileges/admin/database",
@@ -18,6 +30,11 @@
     {
       "privilege-name": "dhf-internal-entities",
       "action": "/entities/",
+      "kind": "uri"
+		},
+		{
+      "privilege-name": "dhf-internal-mappings",
+      "action": "/mappings/",
       "kind": "uri"
     }
   ]

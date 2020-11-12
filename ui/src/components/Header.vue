@@ -17,12 +17,22 @@
 			</template>
     </v-toolbar-items>
 		<v-spacer />
+		<v-btn v-if="showVideoLinks" color="blue-grey" class="ma-2 white--text" :href="currentRoute.meta.tutorialLink" target="_blank">
+			<v-icon
+        left
+        dark
+      >
+        fa-youtube
+      </v-icon>
+			{{currentRoute.meta.tutorialName}}</v-btn>
 		<UserMenu/>
 	</v-app-bar>
 </template>
 
 <script>
 import UserMenu from '@/components/UserMenu.vue'
+const isTesting = process.env.NODE_ENV === 'test'
+const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 
 export default {
   name: 'Header',
@@ -30,6 +40,9 @@ export default {
     UserMenu
   },
   computed: {
+		showVideoLinks() {
+			return (isTesting || isHosted) && this.currentRoute.meta.tutorialName
+		},
     currentRoute() {
       return this.$route;
     },

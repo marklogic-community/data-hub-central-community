@@ -1,0 +1,20 @@
+{
+	"Employee": {
+		"lastName": "McIlreavy",
+		"jobEffectiveDate": "2015-07-21",
+		"jobStatus": "Active (Full-time)",
+		"address": "9920 Carioca Terrace ",
+		"city": "Washington",
+		"mobileNumber": "1(202)284-7141",
+		"departmentId": "3",
+		"jobTitle": "Financial Analyst",
+		"postalCode": "20220",
+		"employeeId": "55006",
+		"languageSkills": "C# , C++ , Java , JavaScript",
+		"firstName": "Saidee",
+		"toolSkills": "Nifi , Teradata , Kafka",
+		"state": "DC",
+		"productSkills": "general ledger",
+		"email": "saidee.mcilreavy@coastal.com"
+	}
+}

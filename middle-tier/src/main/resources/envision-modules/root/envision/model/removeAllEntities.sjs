@@ -1,6 +1,8 @@
 declareUpdate();
 
-for (let uri of cts.uris(null, null, cts.collectionQuery('http://marklogic.com/entity-services/models'))) {
+var user
+
+for (let uri of cts.uriMatch(`/entities/${user || ''}*.entity.json`, null, cts.collectionQuery('http://marklogic.com/entity-services/models'))) {
   xdmp.documentDelete(uri)
 }
 

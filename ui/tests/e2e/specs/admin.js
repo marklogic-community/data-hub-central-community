@@ -3,7 +3,7 @@
 describe('AdminAccess', () => {
 	beforeEach(() => {
 		cy.server()
-		cy.route('/api/auth/status', {"appName":null,"authenticated":false,"username":null,"disallowUpdates":false,"appUsersOnly":false,"needsInstall":false})
+		cy.route('/api/auth/status', {"appName":null,"authenticated":false,"username":null,"disallowUpdates":false,"appUsersOnly":false})
 		cy.route({
 			method: 'POST',
 			url: '/api/auth/login',
@@ -27,7 +27,7 @@ describe('AdminAccess', () => {
 
   // when logged in, should be able to see the admin page
 	it('Should see the admin page', () => {
-		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false,"needsInstall":false})
+		cy.route('/api/auth/status', {"appName":null,"authenticated":true,"username":"admin","disallowUpdates":false,"appUsersOnly":false})
 		cy.visit('/admin')
 		cy.get('#adminContainer').should('exist')
 	})

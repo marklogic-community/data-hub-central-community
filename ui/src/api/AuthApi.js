@@ -3,6 +3,83 @@ import axios from 'axios';
 export default {
   name: 'AuthApi',
 
+  signup(email, name, password) {
+    return axios.post('/api/auth/signup', {
+			email, name, password
+		})
+		.then(response => {
+        if (response.status === 200) {
+					axios.defaults.headers.common['Authorization'] = response.headers.authorization;
+					localStorage.setItem('access_token', response.headers.authorization);
+          return response.data;
+        } else {
+          return { isError: true, error: response.data };
+        }
+			}
+		)
+		.catch(error => {
+			console.error('error:', error);
+			return { isError: true, error: error };
+		});
+	},
+
+	userExists(email) {
+		return axios.get(`/api/auth/userExists?email=${encodeURIComponent(email)}`)
+			.then(response => {
+				if (response.status === 200) {
+					return response.data;
+				} else {
+					return { isError: true, error: response.data };
+				}
+			})
+			.catch(error => {
+				return { isError: true, error: error };
+			})
+	},
+
+	resetPassword(email) {
+		return axios.get(`/api/auth/resetPassword?email=${encodeURIComponent(email)}`)
+			.then(response => {
+				if (response.status === 200) {
+					return response.data;
+				} else {
+					return { isError: true, error: response.data };
+				}
+			})
+			.catch(error => {
+				return { isError: true, error: error };
+			})
+	},
+
+	validateResetToken(token) {
+		return axios.get(`/api/auth/validateResetToken?token=${encodeURIComponent(token)}`)
+			.then(response => {
+				if (response.status === 200) {
+					return response.data;
+				} else {
+					return { isError: true, error: response.data };
+				}
+			})
+			.catch(error => {
+				return { isError: true, error: error };
+			})
+	},
+	setPassword(token, password) {
+		return axios.post(`/api/auth/updatePassword`, {
+			token, password
+		})
+		.then(response => {
+			if (response.status === 200) {
+				return response.data;
+			} else {
+				return { isError: true, error: response.data };
+			}
+		})
+		.catch(error => {
+			return { isError: true, error: error };
+		});
+	},
+
   login(user, pass) {
     return axios.post('/api/auth/login', {
 			username: '' + user,
@@ -49,6 +126,36 @@ export default {
 			}
 		})
 		.catch(error => {
+			return { isError: true, error: error };
+		});
+	},
+
+	deleteUser(user) {
+		return axios.get(`/api/auth/delete?username=${encodeURIComponent(user)}`)
+		.then(response => {
+			if (response.status === 200) {
+				return response.data;
+			} else {
+				return { isError: true, error: response.data };
+			}
+		})
+		.catch(error => {
+			console.error('error:', error);
+			return { isError: true, error: error };
+		});
+	},
+
+	getUsers() {
+		return axios.get('/api/auth/users')
+		.then(response => {
+			if (response.status === 200) {
+				return response.data;
+			} else {
+				return { isError: true, error: response.data };
+			}
+		})
+		.catch(error => {
+			console.error('error:', error);
 			return { isError: true, error: error };
 		});
 	},

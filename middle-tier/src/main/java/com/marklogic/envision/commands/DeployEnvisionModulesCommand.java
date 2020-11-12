@@ -6,35 +6,31 @@ import com.marklogic.appdeployer.command.CommandContext;
 import com.marklogic.appdeployer.command.SortOrderConstants;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.ext.file.*;
-import com.marklogic.client.ext.modulesloader.impl.*;
+import com.marklogic.client.ext.modulesloader.impl.AssetFileLoader;
+import com.marklogic.client.ext.modulesloader.impl.DefaultModulesFinder;
+import com.marklogic.client.ext.modulesloader.impl.DefaultModulesLoader;
 import com.marklogic.client.ext.tokenreplacer.DefaultTokenReplacer;
 import com.marklogic.client.ext.tokenreplacer.TokenReplacer;
-import com.marklogic.hub.HubConfig;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Properties;
 
-@Component
 public class DeployEnvisionModulesCommand extends AbstractCommand {
-	private HubConfig hubConfig;
+	private final DatabaseClient modulesClient;
+	private final boolean isMultitenant;
 
 	private Throwable caughtException;
 
-	public DeployEnvisionModulesCommand(HubConfig hubConfig) {
-		this.hubConfig = hubConfig;
+
+
+	public DeployEnvisionModulesCommand(DatabaseClient modulesClient, boolean isMultitenant) {
+		this.modulesClient = modulesClient;
+		this.isMultitenant = isMultitenant;
 		setExecuteSortOrder(SortOrderConstants.LOAD_MODULES - 1);
 	}
 
 	@Override
 	public void execute(CommandContext context) {
-		String timestampFile = hubConfig.getHubProject().getHubModulesDeployTimestampFile();
-		PropertiesModuleManager propsManager = new PropertiesModuleManager(timestampFile);
-		propsManager.deletePropertiesFile();
-
-		DatabaseClient modulesClient = hubConfig.newModulesDbClient();
-
 		AssetFileLoader assetFileLoader = new AssetFileLoader(modulesClient);
 		prepareAssetFileLoader(assetFileLoader, context);
 
@@ -45,11 +41,15 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 				caughtException = throwable;
 			}
 		});
-		modulesLoader.setModulesManager(propsManager);
 		if (caughtException == null) {
 			modulesLoader.loadModules("classpath*:/envision-modules", new DefaultModulesFinder(), modulesClient);
-		}
 
+			// for multi-tenant installs we need to replace some DHF triggers for entities. this allows us to support
+			// per-user entities
+			if (isMultitenant) {
+				modulesLoader.loadModules("classpath*:/multitenant-modules", new DefaultModulesFinder(), modulesClient);
+			}
+		}
 
 		if (caughtException != null) {
 			throw new RuntimeException(caughtException);
@@ -84,9 +84,5 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 		}
 
 		return r;
-	}
-
-	public void setHubConfig(HubConfig hubConfig) {
-		this.hubConfig = hubConfig;
 	}
 }

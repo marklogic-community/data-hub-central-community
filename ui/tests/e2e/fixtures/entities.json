@@ -1,0 +1,1595 @@
+[
+	{
+		"filename": "datahub/entities/Customer.entity.json",
+		"info": {
+			"title": "Customer",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"Order": {
+					"name": "Order",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "creditCardType",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "customerId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "pricePaid",
+							"datatype": "decimal",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "shipDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "status",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "has",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/Product"
+							},
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				},
+				"Customer": {
+					"name": "Customer",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "address",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "age",
+							"datatype": "integer",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "city",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "customerId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "email",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "estIncomeHHLD",
+							"datatype": "decimal",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "favoriteStoreType",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "firstName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "gender",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "lastName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "numberMinorsHHLD",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "phoneNumber",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "postalCode",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "segment",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "state",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "places",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/Order"
+							},
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				},
+				"Product": {
+					"name": "Product",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "brandName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "category",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "color",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "name",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "productId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "size",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "sku",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "texture",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/Order.entity.json",
+		"info": {
+			"title": "Order",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"Order": {
+					"name": "Order",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "creditCardType",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "customerId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "pricePaid",
+							"datatype": "decimal",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "shipDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "status",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "has",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/Product"
+							},
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				},
+				"Product": {
+					"name": "Product",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "brandName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "category",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "color",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "name",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "productId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "size",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "sku",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "texture",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/Department.entity.json",
+		"info": {
+			"title": "Department",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"Department": {
+					"name": "Department",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "departmentId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "departmentName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "location",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "hasJobOpening",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/JobOpening"
+							},
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employs",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/Employee"
+							},
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				},
+				"Employee": {
+					"name": "Employee",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "address",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "city",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "country",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "departmentId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "email",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "firstName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "geoLocation",
+							"datatype": "decimal",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobEffectiveDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobStatus",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobTitle",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "languageSkills",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "lastName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "mobileNumber",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "postalCode",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "productSkills",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "state",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "toolSkills",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "hasJobReview",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/JobReview"
+							},
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "hasResume",
+							"datatype": null,
+							"description": null,
+							"collation": null,
+							"items": null,
+							"subProperties": null,
+							"$ref": "#/definitions/Resume"
+						}
+					]
+				},
+				"JobOpening": {
+					"name": "JobOpening",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "departmentId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeStartDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "focusArea",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobTitle",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reqStatus",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "requiredCompetency",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/Employee.entity.json",
+		"info": {
+			"title": "Employee",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"Employee": {
+					"name": "Employee",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "address",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "city",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "country",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "departmentId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "email",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "firstName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "geoLocation",
+							"datatype": "decimal",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobEffectiveDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobStatus",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobTitle",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "languageSkills",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "lastName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "mobileNumber",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "postalCode",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "productSkills",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "state",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "toolSkills",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "hasJobReview",
+							"datatype": "array",
+							"description": null,
+							"collation": null,
+							"items": {
+								"datatype": null,
+								"collation": null,
+								"$ref": "#/definitions/JobReview"
+							},
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "hasResume",
+							"datatype": null,
+							"description": null,
+							"collation": null,
+							"items": null,
+							"subProperties": null,
+							"$ref": "#/definitions/Resume"
+						}
+					]
+				},
+				"JobReview": {
+					"name": "JobReview",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reasonType",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewCode",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewer",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				},
+				"Resume": {
+					"name": "Resume",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "category",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "resumeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "resumeText",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/JobOpening.entity.json",
+		"info": {
+			"title": "JobOpening",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"JobOpening": {
+					"name": "JobOpening",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "departmentId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeStartDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "focusArea",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "jobTitle",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reqStatus",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "requiredCompetency",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/Resume.entity.json",
+		"info": {
+			"title": "Resume",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"Resume": {
+					"name": "Resume",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "category",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "resumeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "resumeText",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/JobReview.entity.json",
+		"info": {
+			"title": "JobReview",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"JobReview": {
+					"name": "JobReview",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "employeeId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reasonType",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewCode",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewDate",
+							"datatype": "date",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewer",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "reviewId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"filename": "datahub/entities/Product.entity.json",
+		"info": {
+			"title": "Product",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"description": null
+		},
+		"definitions": {
+			"definitions": {
+				"Product": {
+					"name": "Product",
+					"description": null,
+					"primaryKey": null,
+					"namespace": null,
+					"namespacePrefix": null,
+					"required": [],
+					"pii": [],
+					"elementRangeIndex": [],
+					"rangeIndex": [],
+					"wordLexicon": [],
+					"properties": [
+						{
+							"name": "brandName",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "category",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "color",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "name",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "orderId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "productId",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "size",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "sku",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						},
+						{
+							"name": "texture",
+							"datatype": "string",
+							"description": null,
+							"collation": "http://marklogic.com/collation/codepoint",
+							"items": null,
+							"subProperties": null,
+							"$ref": null
+						}
+					]
+				}
+			}
+		}
+	}
+]

@@ -1,0 +1,13 @@
+{
+    "functionName": "deleteUser",
+    "params": [
+			{
+				"datatype": "string",
+				"name": "user"
+			}
+    ],
+    "return": {
+      "datatype": "boolean"
+    }
+}
+

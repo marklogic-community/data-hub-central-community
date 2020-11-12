@@ -90,11 +90,11 @@ export default {
 		}
 	},
 	mounted: function() {
-		this.$store.dispatch('mastering/getDocs', [this.$route.query.uri])
+		this.$store.dispatch('mastering/getDocs', { uris: [this.$route.query.uri], force: true })
 	},
 	watch: {
 		'$route.query.uri'() {
-			this.$store.dispatch('mastering/getDocs', [this.$route.query.uri])
+			this.$store.dispatch('mastering/getDocs', { uris: [this.$route.query.uri], force: true })
 		}
 	}
 }

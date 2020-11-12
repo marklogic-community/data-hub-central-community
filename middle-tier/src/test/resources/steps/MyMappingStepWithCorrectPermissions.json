@@ -1,0 +1,30 @@
+{
+	"name" : "myMappingStep",
+	"description" : "",
+	"options" : {
+		"additionalCollections" : [ ],
+		"sourceQuery" : "cts.collectionQuery([\"MyData.csv\"])",
+		"mapping" : {
+			"name" : "myMappingStep",
+			"version" : 1
+		},
+		"targetEntity" : "Planet",
+		"sourceDatabase" : "data-hub-STAGING",
+		"collections" : [ "Planet", "http://marklogic.com/envision/user/bob.smith@marklogic.com" ],
+		"permissions" : "81e946846cda588e6b5c4890ad1ef229,read,81e946846cda588e6b5c4890ad1ef229,update",
+		"sourceCollection" : "MyData.csv",
+		"outputFormat" : "json",
+		"targetDatabase" : "data-hub-FINAL"
+	},
+	"customHook" : {
+		"module" : "/envision/customHooks/uriRemapper.sjs",
+		"parameters" : { },
+		"user" : "",
+		"runBefore" : false
+	},
+	"retryLimit" : 0,
+	"batchSize" : 100,
+	"threadCount" : 4,
+	"stepDefinitionName" : "entity-services-mapping",
+	"stepDefinitionType" : "MAPPING"
+}

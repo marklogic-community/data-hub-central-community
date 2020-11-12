@@ -1,0 +1,26 @@
+{
+	"memoryLookup": {
+		"category": "builtin",
+		"signature": "memoryLookup(input,inputDictionary)"
+	},
+	"documentLookup": {
+		"category": "builtin",
+		"signature": "documentLookup(input,inputDictionaryPath)"
+	},
+	"parseDate": {
+		"category": "builtin",
+		"signature": "parseDate(value,pattern)"
+	},
+	"parseDateTime": {
+		"category": "builtin",
+		"signature": "parseDateTime(value,pattern)"
+	},
+	"unparsed-text": {
+		"category": "xpath",
+		"signature": "unparsed-text(xs:string)"
+	},
+	"minutes-from-duration": {
+		"category": "xpath",
+		"signature": "minutes-from-duration(xs:duration?)"
+	}
+}

@@ -20,8 +20,26 @@
 					</thead>
 					<draggable v-bind="dragOptions" v-model="properties" tag="tbody" class="properties">
 						<tr v-for="prop in properties" :key="prop.name" data-cy="entityPickList.propertyRow" :name="prop.name">
-							<td class="id-col" data-cy="entityPickList.entityPropertyId">
+							<!-- td class="id-col" data-cy="entityPickList.entityPropertyId">
 								<span v-if="currentEntity.idField === prop.name">id</span>
+							</td -->
+
+							<td class="id-col" data-cy="entityPickList.entityPropertyId">
+								<span v-if="currentEntity.idField === prop.name" title="ID field">id</span>
+								<edit-property-menu
+									:prop="Object.assign({}, prop)"
+									:entityName="currentEntity.entityName"
+									:existingProperties="properties"
+									@save="btnSaveProperty">
+										<span v-if="prop.isPii" title="PII">pii</span>
+										<span v-if="prop.isPrimaryKey" title="Primary Key">key</span>
+										<span v-if="prop.isRequired" title="Required">req</span>
+										<span v-if="prop.isElementRangeIndex || prop.isWordLexicon || prop.isRangeIndex" title="Advanced options">...</span>
+
+									</edit-property-menu>
+
+
+
 							</td>
 							<td data-cy="entityPickList.entityPropertyName">{{prop.name}}</td>
 							<td data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</td>
@@ -241,6 +259,9 @@ export default {
 	watch: {
 		activeTab(newVal) {
 			this.whichTab = newVal
+		},
+		entity() {
+			this.updateValues()
 		}
 	},
 	mounted() {
@@ -313,7 +334,6 @@ export default {
 	width: 30px;
 	height: 30px;
 }
-
 .id-col {
 	padding: 0px;
 	span {
@@ -323,6 +343,7 @@ export default {
     padding: 4px;
     border-radius: 10px;
     background-color: lightblue;
+	margin-right: 2px;
 	}
 }
 

@@ -19,6 +19,4 @@ package com.marklogic.grove.boot.auth;
 public class LoginInfo {
     public String username;
     public String password;
-    public int projectId;
-    public String environment;
 }

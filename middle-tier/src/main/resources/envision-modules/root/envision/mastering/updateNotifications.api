@@ -7,11 +7,6 @@
 				"$javaClass": "com.fasterxml.jackson.databind.JsonNode"
 			},
 			{
-				"datatype": "jsonDocument",
-				"name": "model",
-				"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-			},
-			{
 				"datatype": "string",
 				"name": "status"
 			}

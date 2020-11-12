@@ -10,8 +10,8 @@ export default {
 		searchType = searchType !== undefined ? searchType : 'all';
 		qtext = qtext !== undefined ? qtext : '';
 
-		var facets = Object.keys(activeFacets || {}).map(function(facetName) {
-			var constraintType = activeFacets[facetName].type;
+		const facets = Object.keys(activeFacets || {}).map(function(facetName) {
+			let constraintType = activeFacets[facetName].type;
 			if (constraintType && constraintType.substring(0, 3) === 'xs:') {
 				constraintType = 'range';
 			}
@@ -57,8 +57,8 @@ export default {
 		start = start || 1;
 		pageLength = pageLength || 10;
 
-		var facets = Object.keys(activeFacets || {}).map(function(facetName) {
-			var constraintType = activeFacets[facetName].type;
+		const facets = Object.keys(activeFacets || {}).map(function(facetName) {
+			let constraintType = activeFacets[facetName].type;
 			if (constraintType && constraintType.substring(0, 3) === 'xs:') {
 				constraintType = 'range';
 			}
@@ -103,7 +103,7 @@ export default {
 		ptext = ptext !== undefined ? ptext : '';
 
 		/*var facets =*/ Object.keys(activeFacets || {}).map(function(facetName) {
-			var constraintType = activeFacets[facetName].type;
+			let constraintType = activeFacets[facetName].type;
 			if (constraintType && constraintType.substring(0, 3) === 'xs:') {
 				constraintType = 'range';
 			}
@@ -137,7 +137,7 @@ export default {
 	},
 	buildFilters(qtext, activeFacets) {
 		const facets = Object.keys(activeFacets || {}).map(function(facetName) {
-			var constraintType = activeFacets[facetName].type;
+			let constraintType = activeFacets[facetName].type;
 			if (constraintType && constraintType.substring(0, 3) === 'xs:') {
 				constraintType = 'range';
 			}
@@ -231,6 +231,15 @@ export default {
 			return error;
 		});
 	},
+	getResultsByQuery(database, ctsQuery, count, urisOnly) {
+		return axios.get(`/v1/resources/mlCollections?rs:sourceQuery=${encodeURIComponent(ctsQuery)}&rs:count=${encodeURIComponent(count)}&rs:database=${encodeURIComponent(database)}&rs:urisOnly=${encodeURIComponent(urisOnly)}`)
+			.then(response => response.data)
+			.catch(error => {
+				console.error('error:', error);
+				return error;
+			});
+
+  },
 	getEntitiesRelatedToConcept ({ concept, page, pageLength }) {
 		return axios.post('/api/explore/related-entities-to-concept/', { concept, page, pageLength })
 		.then(response => response.data)

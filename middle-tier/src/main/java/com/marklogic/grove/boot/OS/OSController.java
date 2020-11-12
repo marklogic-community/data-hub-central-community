@@ -33,8 +33,7 @@ public class OSController extends AbstractController {
 	private final DeployHubService deployService;
 
 	@Autowired
-	OSController(HubConfigImpl hubConfig, FlowManagerImpl flowManager, EntityManagerImpl entityManager, DeployHubService deployService) {
-		super(hubConfig);
+	OSController(FlowManagerImpl flowManager, EntityManagerImpl entityManager, DeployHubService deployService) {
 		this.flowManager = flowManager;
 		this.entityManager = entityManager;
 		this.deployService = deployService;
@@ -46,14 +45,14 @@ public class OSController extends AbstractController {
 		ArrayList<JSONObject> config = new ArrayList<>();
 
 		final JSONObject dirObj = new JSONObject();
-		final String dhfDir = getHubConfig().getHubProject().getProjectDirString();
+		final String dhfDir = getHubClient().getHubConfig().getHubProject().getProjectDirString();
 		dirObj.put("prop", "Project");
 		dirObj.put("val", dhfDir);
 
 		config.add(dirObj);
 
 		final JSONObject hostObj = new JSONObject();
-		final String myHostName = getHubConfig().getHost();
+		final String myHostName = getHubClient().getHubConfig().getHost();
 		hostObj.put("prop", "Host");
 		hostObj.put("val", myHostName);
 
@@ -151,7 +150,7 @@ public class OSController extends AbstractController {
 	@RequestMapping(value = "/deployToDH", method = RequestMethod.GET)
 	public String deployToDH() {
 		// if is provisioned environment we are deploying to the cloud
-		if (getHubConfig().getIsProvisionedEnvironment()) {
+		if (getHubClient().getHubConfig().getIsProvisionedEnvironment()) {
 			try {
 				this.deployToDHS();
 			} catch (final Exception e) {
@@ -171,7 +170,7 @@ public class OSController extends AbstractController {
 	private void deployToDHS() {
 		final DhsDeployer dhsDeployer = new DhsDeployer();
 
-		HubConfigImpl hubConfig = getHubConfig();
+		HubConfigImpl hubConfig = getHubClient().getHubConfig();
 		dhsDeployer.deployAsSecurityAdmin(hubConfig);
 		dhsDeployer.deployAsDeveloper(hubConfig);
 	}
@@ -188,7 +187,7 @@ public class OSController extends AbstractController {
 	}
 
 	private void _runFlow(final String flowName) {
-		final FlowRunner flowRunner = new FlowRunnerImpl(getHubConfig());
+		final FlowRunner flowRunner = new FlowRunnerImpl(getHubClient().getHubConfig());
 		System.out.println("Running flow: " + flowName);
 		final FlowInputs inputs = new FlowInputs(flowName);
 		final RunFlowResponse response = flowRunner.runFlow(inputs);

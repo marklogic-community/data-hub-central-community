@@ -15,12 +15,6 @@
 			"entityName": "Skill",
 			"isConcept": true
 		},
-		"skill#hrSkill2": {
-			"id": "skill#hrSkill2",
-			"label": "hrSkill1",
-			"entityName": "Skill",
-			"isConcept": true
-		},
 		"skill#procurement": {
 			"id": "skill#procurement",
 			"label": "procurement",
