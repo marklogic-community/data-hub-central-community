@@ -38,6 +38,14 @@
 			{
 				"collection": "DataSource4",
 				"count": 44
+			},
+			{
+				"collection": "Customer",
+				"count": 3
+			},
+			{
+				"collection": "Product",
+				"count": 5
 			}
 		]
 	}

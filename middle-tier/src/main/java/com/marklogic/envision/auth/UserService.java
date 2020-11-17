@@ -3,6 +3,7 @@ package com.marklogic.envision.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.ResourceNotFoundException;
 import com.marklogic.client.document.JSONDocumentManager;
@@ -93,6 +94,8 @@ public class UserService {
 		DocumentMetadataHandle meta = new DocumentMetadataHandle();
 		meta.getCollections().addAll("http://marklogic.com/envision/usr");
 		meta.getPermissions().add("envision", DocumentMetadataHandle.Capability.READ, DocumentMetadataHandle.Capability.UPDATE);
+		ObjectNode userNode = (ObjectNode)objectMapper.valueToTree(user);
+		userNode.remove("password");
 		JacksonHandle handle = new JacksonHandle(objectMapper.valueToTree(user));
 		mgr.write(userUri(user.email), meta, handle);
 	}

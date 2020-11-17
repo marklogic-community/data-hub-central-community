@@ -2,6 +2,7 @@
 	<div id="exportContainer">
 	<fieldset class="col-sm-9" v-if="entityNames.length > 0">
 			<legend>Entities</legend>
+			<div v-if="!hasEntities">You don't have any entity instances yet.</div>
 			<v-simple-table dense>
 				<thead>
 					<tr>
@@ -9,17 +10,23 @@
 							<v-checkbox
 								data-cy="export.checkAll"
 								v-model="allChecked"
+								:disabled="!hasEntities"
 							></v-checkbox>
 						</th>
-						<th>Select All</th>
+						<th>Entity Name</th>
+						<th>Document Count</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(entity, index) in entityNames" :key="entity">
 						<td class="smallcol">
-							<v-checkbox dense :data-cy="`export.${entity}`" v-model="checkEntities[index]"></v-checkbox>
+							<v-checkbox dense
+								:data-cy="`export.${entity}`"
+								v-model="checkEntities[index]"
+								:disabled="(collectionCounts[entity] || 0) === 0"></v-checkbox>
 						</td>
 						<td >{{entity}}</td>
+						<td>{{collectionCounts[entity] || 0}}</td>
 					</tr>
 				</tbody>
 			</v-simple-table>
@@ -54,6 +61,7 @@
 <script>
 import axios from 'axios'
 import { mapState, mapActions } from 'vuex'
+import flowsApi from '@/api/FlowsApi'
 import DeleteDataConfirm from '@/components/DeleteDataConfirm'
 
 export default {
@@ -69,6 +77,7 @@ export default {
 		exportJobs: [],
 		showExportStatus:false,
 		requestStatus: "green",
+		finalData: []
 	}),
 	computed:{
 		...mapState({
@@ -77,13 +86,18 @@ export default {
 		entityNames() {
 			return this.entities.map(e => e.info.title)
 		},
+		entityNamesWithDocs() {
+			return this.entityNames.filter(name => (this.collectionCounts[name] || 0) > 0)
+		},
 		allChecked: {
 			get() {
-				return this.checkedIndexes.length > 0 && this.checkedIndexes.length === this.entityNames.length
+				return this.checkedIndexes.length > 0 && this.checkedIndexes.length === this.entityNamesWithDocs.length
 			},
 			set(val) {
 				this.entityNames.forEach((n, index) => {
-					this.$set(this.checkEntities, index, val)
+					if ((this.collectionCounts[n] || 0) > 0) {
+						this.$set(this.checkEntities, index, val)
+					}
 				})
 			}
 		},
@@ -93,6 +107,17 @@ export default {
 		selectedEntities() {
 			return this.entityNames.filter((v, idx) => this.checkedIndexes.findIndex(x => x == idx) >= 0)
 		},
+		collectionCounts() {
+			return this.finalData.reduce((p, c) => {
+				p[c.collection] = c.count
+				return p
+			}, {})
+		},
+		hasEntities() {
+			return this.entityNames.reduce((p, c) => {
+				return p + (this.collectionCounts[c] || 0)
+			}, 0) > 0
+		}
 	},
 	created () {
 		this.getEntities()
@@ -116,13 +141,18 @@ export default {
 		},
 		getExports() {
 			return axios.get("/api/export/getExports/")
-			.then(response => {
-				this.exportJobs = response.data.sort((a,b) => this.$moment(b.creationDate).diff(this.$moment(a.creationDate)))
-				return response.data
-			})
-			.catch(error => {
-				console.error('error:', error)
-				return error
+				.then(response => {
+					this.exportJobs = response.data.sort((a,b) => this.$moment(b.creationDate).diff(this.$moment(a.creationDate)))
+					return response.data
+				})
+				.catch(error => {
+					console.error('error:', error)
+					return error
+				})
+		},
+		refreshInfo() {
+			flowsApi.getNewStepInfo().then(info => {
+				this.finalData = info.collections.final
 			})
 		},
 		downloadLink(exportId) {
@@ -143,6 +173,7 @@ export default {
 			}
 		})
 		this.getExports()
+		this.refreshInfo()
 	}
 }
 

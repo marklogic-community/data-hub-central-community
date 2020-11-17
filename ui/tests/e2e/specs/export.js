@@ -37,7 +37,7 @@ describe('Export Tab', () => {
 
 		it('should select all in header', () => {
 			cy.get('[data-cy="export.checkAll"]').should('not.be.checked')
-			const x = ['Customer', 'Order', 'Department', 'Employee', 'JobOpening', 'Resume', 'JobReview', 'Product']
+			const x = ['Customer', 'Product']
 			x.forEach(e => {
 				cy.get(`[data-cy="export.${e}"]`).parentsUntil('.v-input__control').first().click()
 			})
@@ -56,19 +56,18 @@ describe('Export Tab', () => {
 			cy.wait('@export')
 				.its('request.body')
 				.should((body) => {
-					expect(body).to.deep.equal(['Customer', 'Order', 'Department', 'Employee', 'JobOpening', 'Resume', 'JobReview', 'Product'])
+					expect(body).to.deep.equal(['Customer', 'Product'])
 				})
 		})
 
-		it('export two', () => {
+		it('export one', () => {
 			cy.get('[data-cy="export.exportButton"]').should('be.disabled')
 			cy.get('[data-cy="export.Customer"]').parentsUntil('.v-input__control').first().click()
-			cy.get('[data-cy="export.Product"]').parentsUntil('.v-input__control').first().click()
 			cy.get('[data-cy="export.exportButton"]').click()
 			cy.wait('@export')
 				.its('request.body')
 				.should((body) => {
-					expect(body).to.deep.equal(['Customer', 'Product'])
+					expect(body).to.deep.equal(['Customer'])
 				})
 		})
 
