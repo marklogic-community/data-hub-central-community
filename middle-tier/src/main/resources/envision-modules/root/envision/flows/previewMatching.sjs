@@ -47,23 +47,3 @@ function findMatches(start = 1, pageLength = 100, limit = 10, summary = {matchSu
 }
 
 findMatches()
-
-// let mergeOptions = new NodeBuilder().addNode({ options: options.mergeOptions }).toNode();
-// const matchSummaryJson = matching.main(content, options).value
-// const matchSummary = {
-//   matchSummary: {
-//     ...matchSummaryJson.matchSummary,
-//     URIsToProcess: undefined
-//   }
-// }
-// const matchUris = Object.keys(matchSummary.matchSummary.actionDetails)
-
-// const currentUri = matchUris[0]
-// let merged = mastering.buildContentObjectsFromMatchSummary(
-//   currentUri,
-//   matchSummaryJson,
-//   mergeOptions,
-//   datahub.prov.granularityLevel() === datahub.prov.FINE_LEVEL
-// )
-// merged
-// .find(x => x.uri === currentUri)
