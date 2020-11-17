@@ -265,7 +265,7 @@ function getEntities(uris, opts) {
 				resp.nodes[t.to] = {
 					id: t.to,
 					label: t.to.toString().replace(/(.+)#(.+)/, '$2'),
-					entityName: model.getName(t.toType),
+					entityName: model.getName(t.toType) || t.toType, // if the type doesn't exist, use the raw value
 					isConcept: true,
 					edgeCounts: edgeCounts[t.to] || {}
 				}
