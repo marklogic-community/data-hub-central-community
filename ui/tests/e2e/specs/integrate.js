@@ -65,7 +65,7 @@ describe('Integrate Tab', () => {
 		cy.get('.step-wrapper').should('have.length', 3)
 	})
 
-	it.only('properly shows manage data', () => {
+	it('properly shows manage data', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
 		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')

@@ -258,13 +258,13 @@ describe('Mastering', () => {
 					"/doc2.json"
 				]
 			}
-		})
+		}).as('merge')
 
 		cy.route('POST', '/api/mastering/blocks', {"/doc1.json":[],"/doc2.json":[]})
 		cy.route('PUT', '/api/mastering/notifications', {})
-		cy.visit('/notifications/compare?notification=%2Fnote1.xml')
 		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsWithMerge.json')
-
+		cy.visit('/notifications/compare?notification=%2Fnote1.xml')
+		cy.wait('@merge')
 		cy.get('th.doc0').should('contain', '/doc1.json')
 		cy.get('th.doc1').should('contain', '/doc2.json')
 		cy.get('th.preview').should('contain', 'Merged: /mastered1.json')
