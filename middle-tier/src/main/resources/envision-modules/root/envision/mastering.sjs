@@ -1,15 +1,14 @@
 const jobDB = require('/com.marklogic.hub/config.sjs').JOBDATABASE
 const matcher = require("/com.marklogic.smart-mastering/matcher.xqy");
+const model = require('/envision/model.sjs').model;
 
-let model = cts.doc('model.json');
-if (model) {
-	model = model.root;
+function getLabels() {
+	const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {
+		prev[cur.entityName] = cur.labelField
+		return prev;
+	}, {}) : {};
+	return labels;
 }
-
-const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {
-	prev[cur.entityName] = cur.labelField
-	return prev;
-}, {}) : {};
 
 function getNotificationFlowInfo(uri) {
 	const prov = fn.head(xdmp.invokeFunction(() => {
@@ -92,6 +91,7 @@ function isBlocked(uris) {
 }
 
 function getNotification(uri, doc) {
+	const labels = getLabels();
 	const flowInfo = getNotificationFlowInfo(uri);
 	const r = doc.root;
 	const uris = r.xpath('*:document-uris/*:document-uri/string()').toObject()
@@ -128,7 +128,6 @@ function getNotification(uri, doc) {
 		uris: uris,
 		merged: merged,
     labels: uris.reduce((prev, cur) => {
-			console.log('uri', cur);
 			let doc = cts.doc(cur);
 			if (doc) {
 				doc = doc.root;

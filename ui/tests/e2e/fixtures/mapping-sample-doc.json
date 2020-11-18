@@ -1,0 +1,53 @@
+[
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "employee_id",
+		"xpath": "employee_id",
+		"value": "55006"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "status",
+		"xpath": "status",
+		"value": "Active (Full-time)"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "competency",
+		"xpath": "competency",
+		"children": [
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "products",
+				"xpath": "competency/products",
+				"value": "general ledger"
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "languages",
+				"xpath": "competency/languages",
+				"children": [
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "nested",
+						"xpath": "its/nested",
+						"value": "general ledger"
+					},
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "languages",
+						"xpath": "competency/languages",
+						"value": "C#"
+					}
+				]
+			}
+		]
+	}
+]

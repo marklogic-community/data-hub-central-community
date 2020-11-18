@@ -1,0 +1,86 @@
+{
+	"nodes": {
+		"/com.marklogic.smart-mastering/merged/31cc48e1a9b992bda143be9514399b74.json": {
+			"id": "/com.marklogic.smart-mastering/merged/31cc48e1a9b992bda143be9514399b74.json",
+			"uri": "/com.marklogic.smart-mastering/merged/31cc48e1a9b992bda143be9514399b74.json",
+			"entityName": "Employee",
+			"label": "Finn",
+			"entity": {
+				"address": [
+					"7821 Aberg Park ",
+					"7821 Aberg Park  "
+				],
+				"postalCode": "25313",
+				"firstName": "Adrianna",
+				"jobStatus": [
+					"Active (Full-time)",
+					"Active - Regular Exempt (Full-time)"
+				],
+				"productSkills": [
+					"general ledger",
+					"Manufacturing"
+				],
+				"state": "WV",
+				"email": [
+					"adrianna.finn@coastal.com",
+					"Adrianna.Finn@mountaintop.com"
+				],
+				"jobTitle": [
+					"Senior Engineer",
+					"Engineering Director"
+				],
+				"jobEffectiveDate": [
+					"2011-09-28",
+					"2016-03-23",
+					null
+				],
+				"mobileNumber": "1(914)688-6665",
+				"city": "Charleston",
+				"toolSkills": [
+					"Hadoop , Mulesoft",
+					"[\"Teradata\", \"Mulesoft\", \"Kafka\", \"Hadoop\", \"Linux\", \"Windows\"]"
+				],
+				"departmentId": [
+					"2",
+					"3"
+				],
+				"lastName": "Finn",
+				"languageSkills": [
+					"C++",
+					"[\"RDF\"]"
+				],
+				"employeeId": [
+					"55000",
+					"14",
+					"A-5074P"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				},
+				"employee-hasproductskill-projectskill": {
+					"from": "employee",
+					"to": "projectskill",
+					"label": "hasProductSkill",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	},
+	"edges": {
+		"/com.marklogic.smart-mastering/merged/31cc48e1a9b992bda143be9514399b74.json-http://www.w3.org/2000/01/rdf-schema#hasProductSkill-projectskill#general ledger": {
+			"from": "/com.marklogic.smart-mastering/merged/31cc48e1a9b992bda143be9514399b74.json",
+			"to": "projectskill#general ledger",
+			"id": "/com.marklogic.smart-mastering/merged/31cc48e1a9b992bda143be9514399b74.json-http://www.w3.org/2000/01/rdf-schema#hasProductSkill-projectskill#general ledger",
+			"label": "hasProductSkill",
+			"fromType": "employee",
+			"toType": "projectskill"
+		}
+	}
+}

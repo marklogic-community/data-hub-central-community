@@ -1,6 +1,12 @@
 {
     "functionName": "removeAllEntities",
-    "params": [],
+    "params": [
+			{
+				"datatype": "string",
+				"name": "user",
+				"nullable": true
+			}
+		],
     "return": {
       "datatype": "boolean"
     }

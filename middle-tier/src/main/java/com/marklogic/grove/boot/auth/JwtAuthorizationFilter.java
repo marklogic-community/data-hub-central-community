@@ -1,5 +1,7 @@
 package com.marklogic.grove.boot.auth;
 
+import com.marklogic.envision.hub.HubClient;
+import com.marklogic.envision.session.SessionManager;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,8 +26,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    private final SessionManager sessionManager;
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, SessionManager sessionManager) {
         super(authenticationManager);
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -56,6 +60,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 							token = URLDecoder.decode(kv[1], "UTF-8");
 							break;
 						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
 						}
 					}
 				}
@@ -73,13 +78,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .getBody()
                         .getSubject();
 
-                List authorities = ((List<?>) parsedToken.getBody()
+				List<SimpleGrantedAuthority> authorities = ((List<?>) parsedToken.getBody()
                         .get("rol")).stream()
                         .map(authority -> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
+
                 if (StringUtils.isNotEmpty(username)) {
-                    return new UsernamePasswordAuthenticationToken(username, null, authorities);
+					HubClient hubClient = sessionManager.getHubClient(username);
+					if (hubClient != null) {
+						return new UsernamePasswordAuthenticationToken(username, null, authorities);
+					}
                 }
             } catch (ExpiredJwtException exception) {
                 log.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());

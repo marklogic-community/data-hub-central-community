@@ -7,11 +7,8 @@ import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/search")
@@ -20,13 +17,12 @@ public class SearchController extends AbstractController {
 	final private SearchService searchService;
 
 	@Autowired
-	SearchController(HubConfigImpl hubConfig, SearchService searchService) {
-		super(hubConfig);
+	SearchController(SearchService searchService) {
 		this.searchService = searchService;
 	}
 
 	@RequestMapping(value = "/{type}", method = RequestMethod.POST)
-	public JsonNode search(@PathVariable String type, @RequestBody ObjectNode searchRequest, HttpSession session) {
+	public JsonNode search(@PathVariable String type, @RequestBody ObjectNode searchRequest) {
 		long start = 1;
 		long pageLength = 10;
 		if (searchRequest.has("options")) {
@@ -39,7 +35,7 @@ public class SearchController extends AbstractController {
 			}
 		}
 
-		DatabaseClient client = getFinalClient();
+		DatabaseClient client = getHubClient().getFinalClient();
 
 		QueryManager mgr = client.newQueryManager();
 		mgr.setPageLength(pageLength);

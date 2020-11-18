@@ -9,15 +9,12 @@ import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.envision.dataServices.EntitySearcher;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.grove.boot.search.SearchService;
-import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @RestController
@@ -28,13 +25,12 @@ public class ExploreController extends AbstractController {
 	final private SearchService searchService;
 
 	@Autowired
-	ExploreController(HubConfigImpl hubConfig, SearchService searchService) {
-		super(hubConfig);
+	ExploreController(SearchService searchService) {
 		this.searchService = searchService;
 	}
 
     @RequestMapping(value = "/entities", method = RequestMethod.POST)
-    JsonNode getEntities(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    JsonNode getEntities(HttpServletRequest request) throws IOException {
 
         JsonNode node = om.readTree(request.getInputStream());
         String qtext = "";
@@ -66,10 +62,10 @@ public class ExploreController extends AbstractController {
 		}
 		DatabaseClient client;
 		if (database.equals("final")) {
-			client = getFinalClient();
+			client = getHubClient().getFinalClient();
 		}
 		else {
-			client = getStagingClient();
+			client = getHubClient().getStagingClient();
 		}
 
 		QueryManager mgr = client.newQueryManager();
@@ -77,9 +73,8 @@ public class ExploreController extends AbstractController {
 		StructuredQueryDefinition query = searchService.buildQueryWithCriteria(mgr.newStructuredQueryBuilder(), filters);
 
 		if (database.equals("final")) {
-			String filterString = ((StructuredQueryDefinition) query).serialize();
-			JsonNode resp = EntitySearcher.on(client).findEntities(qtext, page, pageLength, sort, filterString);
-			return resp;
+			String filterString = query.serialize();
+			return EntitySearcher.on(client).findEntities(qtext, page, pageLength, sort, filterString);
 		}
 		else {
 			long start = ((page - 1) * pageLength) + 1;
@@ -88,7 +83,7 @@ public class ExploreController extends AbstractController {
     }
 
 	@RequestMapping(value = "/values", method = RequestMethod.POST)
-	JsonNode getValus(HttpServletRequest request) throws IOException {
+	JsonNode getValues(HttpServletRequest request) throws IOException {
 
 		JsonNode node = om.readTree(request.getInputStream());
 		String facetName = node.get("facetName").asText();
@@ -109,23 +104,22 @@ public class ExploreController extends AbstractController {
 		}
 		DatabaseClient client;
 		if (database.equals("final")) {
-			client = getFinalClient();
+			client = getHubClient().getFinalClient();
 		}
 		else {
-			client = getStagingClient();
+			client = getHubClient().getStagingClient();
 		}
 
 		QueryManager mgr = client.newQueryManager();
 		StructuredQueryDefinition query = searchService.buildQueryWithCriteria(mgr.newStructuredQueryBuilder(), filters);
 
-		String filterString = ((StructuredQueryDefinition) query).serialize();
-		JsonNode resp = EntitySearcher.on(client).getValues(facetName, qtext, filterString);
-		return resp;
+		String filterString = query.serialize();
+		return EntitySearcher.on(client).getValues(facetName, qtext, filterString);
 	}
 
     @RequestMapping(value = "/related-entities", method = RequestMethod.POST)
-    JsonNode getRelatedEntities(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        DatabaseClient client = getFinalClient();
+    JsonNode getRelatedEntities(HttpServletRequest request) throws IOException {
+        DatabaseClient client = getHubClient().getFinalClient();
 
         JsonNode node = om.readTree(request.getInputStream());
         String uri = node.get("uri").asText();
@@ -136,8 +130,8 @@ public class ExploreController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/related-entities-to-concept", method = RequestMethod.POST)
-	JsonNode getRelatedEntitiesToConcept(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		DatabaseClient client = getFinalClient();
+	JsonNode getRelatedEntitiesToConcept(HttpServletRequest request) throws IOException {
+		DatabaseClient client = getHubClient().getFinalClient();
 
 		JsonNode node = om.readTree(request.getInputStream());
 		String concept = node.get("concept").asText();

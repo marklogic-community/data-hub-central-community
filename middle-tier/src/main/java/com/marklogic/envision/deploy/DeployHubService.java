@@ -2,7 +2,6 @@ package com.marklogic.envision.deploy;
 
 import com.marklogic.hub.DataHub;
 import com.marklogic.hub.deploy.util.HubDeployStatusListener;
-import com.marklogic.hub.impl.HubConfigImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +11,12 @@ import java.io.StringWriter;
 @Service
 public class DeployHubService {
 
+	private final DataHub dataHub;
+
 	@Autowired
-	private DataHub dataHub;
+	public DeployHubService(DataHub dataHub) {
+		this.dataHub = dataHub;
+	}
 
 	public boolean deployHubInstall(HubDeployStatusListener listener) {
         try {

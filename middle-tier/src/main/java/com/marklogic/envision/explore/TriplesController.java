@@ -5,15 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.dataServices.Triples;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.impl.HubConfigImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @RestController
@@ -22,13 +18,8 @@ public class TriplesController extends AbstractController {
 
 	private final ObjectMapper om = new ObjectMapper();
 
-	@Autowired
-	TriplesController(HubConfigImpl hubConfig) {
-		super(hubConfig);
-	}
-
 	@RequestMapping(value = "/browse", method = RequestMethod.POST)
-	JsonNode getTriples(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	JsonNode getTriples(HttpServletRequest request) throws IOException {
 		JsonNode node = om.readTree(request.getInputStream());
 		String qtext = null;
 		if (!node.get("qtext").isNull()) {
@@ -47,20 +38,20 @@ public class TriplesController extends AbstractController {
 		DatabaseClient client = null;
 		switch (database) {
 			case "staging":
-				client = getStagingClient();
+				client = getHubClient().getStagingClient();
 				break;
 			case "final":
-				client = getFinalClient();
+				client = getHubClient().getFinalClient();
 				break;
 			case "job":
-				client = getJobClient();
+				client = getHubClient().getJobsClient();
 				break;
 		}
 		return client;
 	}
 
 	@RequestMapping(value = "/related", method = RequestMethod.POST)
-	JsonNode getRelated(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	JsonNode getRelated(HttpServletRequest request) throws IOException {
 		JsonNode node = om.readTree(request.getInputStream());
 		String item = node.get("item").asText();
 		String itemId = node.get("itemId").asText();
@@ -72,7 +63,7 @@ public class TriplesController extends AbstractController {
 		}
 		String predicate = null;
 		if (!node.get("predicate").isNull()) {
-			qtext = node.get("predicate").asText();
+			predicate = node.get("predicate").asText();
 		}
 		int maxRelated = node.get("maxRelated").asInt();
 

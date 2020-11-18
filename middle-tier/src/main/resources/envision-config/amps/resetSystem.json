@@ -1,0 +1,6 @@
+{
+	"local-name" : "reset",
+	"document-uri" : "/envision/reset.sjs",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "data-hub-developer", "ps-internal" ]
+}

@@ -55,7 +55,7 @@ public interface Mastering {
                 .withParams(
                     BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)))
                 .withMethod("POST")
-                .responseSingle(false, Format.JSON)
+                .responseSingle(true, Format.JSON)
                 );
             }
 

@@ -2,26 +2,23 @@ package com.marklogic.envision;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.query.QueryManager;
-import com.marklogic.client.query.StructuredQueryDefinition;
 import com.marklogic.envision.dataServices.EntityModeller;
-import com.marklogic.envision.dataServices.EntitySearcher;
 import com.marklogic.envision.model.ModelService;
+import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.Customization;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
+import java.nio.file.Path;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -31,22 +28,34 @@ public class ModelTests extends BaseTest {
 	@Autowired
 	ModelService modelService;
 
+	@Autowired
+	SessionManager sessionManager;
+
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() throws Exception {
+		removeUser(ACCOUNT_NAME);
+
 		clearStagingFinalAndJobDatabases();
 		installEnvisionModules();
+
+		registerAccount();
+		sessionManager.setHubClient(ACCOUNT_NAME, getAdminHubClient());
 	}
 
 	@Test
-	public void toDatahub() throws IOException, JSONException {
-		modelService.saveModel(getFinalClient(), getResourceStream("models/model.json"));
-		DatabaseClient client = getFinalClient();
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahub() throws Exception {
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
-		JSONAssert.assertEquals(getResource("output/esEntities.json"), om.writeValueAsString(result), true);
+		jsonAssertEquals(getResource("output/esEntities.json"), result);
 	}
 
 	@Test
-	public void fromDatahub() throws IOException, JSONException {
+	public void fromDatahub() throws Exception {
 		CustomComparator resultCompare = new CustomComparator(JSONCompareMode.STRICT,
 			new Customization("nodes.*.properties[*]._propId", (o1, o2) -> true)
 		);
@@ -59,6 +68,6 @@ public class ModelTests extends BaseTest {
 
 		DatabaseClient client = getFinalClient();
 		JsonNode result = EntityModeller.on(client).fromDatahub();
-		JSONAssert.assertEquals(getResource("output/esModel.json"), om.writeValueAsString(result), resultCompare);
+		jsonAssertEquals(getResource("output/esModel.json"), result, resultCompare);
 	}
 }

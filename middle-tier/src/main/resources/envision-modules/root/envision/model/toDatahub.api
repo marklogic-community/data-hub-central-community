@@ -1,8 +1,8 @@
 {
-    "functionName": "toDatahub",
-    "params": [],
-    "return": {
-      "datatype": "jsonDocument",
-      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-    }
+		"functionName": "toDatahub",
+		"params": [],
+		"return": {
+			"datatype": "jsonDocument",
+			"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+		}
 }

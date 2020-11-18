@@ -37,7 +37,7 @@ As the sections below make clear, in most production-like situations, nothing ne
 
 You will most often want to use HTTPS in a production-like environment. Typically, in such an environment, this UI will have been transpiled and minified into a set of static files (possible to achieve by running `npm run build`). A file server (which could be a Grove middle-tier, but could also be Apache, Nginx, etc, which serves static assets and proxies back to a middle-tier) will then serve those files to clients. The file server should be configured to use HTTPS - and nothing special has to be done in this UI application.
 
-Sometimes, however, you will want to use HTTPS in development, when you are making use of the Webpack development server bundled with this Vue.js CLI based app. This is easy to setup: Simply set the `VUE_APP_ENABLE_HTTPS_IN_FRONTEND` environment variable to true.
+Sometimes, however, you will want to use HTTPS in development, when you are making use of the Webpack development server bundled with this Vue.js CLI based app. This is easy to set up: Simply set the `VUE_APP_ENABLE_HTTPS_IN_FRONTEND` environment variable to true.
 
 You can do this in .env.development (shared with your team) or .env.development.local (only for your local machine):
 

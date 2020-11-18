@@ -50,15 +50,21 @@ dependencies {
 	compile group: 'org.springframework.security', name: 'spring-security-web', version: springVersion
 
 	compile "org.springframework.boot:spring-boot-starter-web"
+	compile "org.springframework.boot:spring-boot-starter-websocket"
+	compile "org.springframework.boot:spring-boot-starter-mail"
+
 	// Issue 30 - upgrade to 5.2 compile "com.marklogic:marklogic-data-hub:5.1.0"
 	compile "com.marklogic:marklogic-data-hub:5.2.1"
 
 	compile("com.marklogic:marklogic-spring-web:1.0")
 
+	compile('org.apache.commons:commons-email:1.5')
+
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
 	testCompile group: 'org.springframework', name: 'spring-test'
 	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+	testCompile group: 'org.springframework.security', name: 'spring-security-test'
 
 	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
 	testCompile "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
@@ -73,6 +79,8 @@ dependencies {
 	testCompile 'org.easymock:easymock:3.4'
 	testCompile 'ch.qos.logback:logback-classic:1.1.11'
 	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
+	testCompile "org.mockito:mockito-core:3.0.0"
+	testCompile "org.mockito:mockito-junit-jupiter:3.0.0"
 }
 
 processResources {
@@ -89,13 +97,13 @@ task installDependencies(type: NpmTask, group: taskGroup) {
 
 task buildUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 	description = "Builds the UI files so that they can be copied to the Spring Boot application"
-	args = ["run", "build"]
+	args = ["run", (project.ext.has("env") && project.ext.env == "cloud") ? "build:cloud" : "build"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 
 task runUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 	description = "Run the UI in debug mode"
-	args = ["run", "start"]
+	args = ["run", (project.ext.has("env") && project.ext.env == "cloud") ? "serve:cloud" : "serve"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 
@@ -160,6 +168,10 @@ task generateFlows(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTas
     serviceDeclarationFile = 'src/main/resources/envision-modules/root/envision/flows/service.json'
 }
 
+task generateUsers(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/envision/users/service.json'
+}
+
 task makeServices {
 	dependsOn generateEntitySearcher
 	dependsOn generateEntityModeller
@@ -167,11 +179,11 @@ task makeServices {
 	dependsOn generateTripleBrowser
 	dependsOn generateSystemUtils
 	dependsOn generateFlows
+	dependsOn generateUsers
 }
 
 bootRun {
 	systemProperties = System.properties
-	jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=32323"]
 }
 
 test {

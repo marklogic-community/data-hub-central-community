@@ -1,10 +1,15 @@
 /**
- * Given an Envision model (model.json), create Entity Services
+ * Given an Envision model , create Entity Services
  * entities for each entity in the model.
+ *
  */
-const model = require('/envision/model.sjs');
+
+const model = require('/envision/model.sjs').enhancedModel;
+const finalDB = require('/com.marklogic.hub/config.sjs').FINALDATABASE
+
 let entities = {};
 
+if (model.nodes) {
 // first create the models
 Object.keys(model.nodes).forEach(key => {
 	let node = model.nodes[key];
@@ -53,6 +58,46 @@ Object.keys(model.nodes).forEach(key => {
 					collation: p.collation || "http://marklogic.com/collation/codepoint"
 				};
 			}
+			// if the entity has PII, create a redaction rule, if not, delete any PII rules
+			function ruleDefinition(entityName, propertyName, isPII) {
+				return {
+					piiRule: function piiRule() {
+						declareUpdate()
+
+						const ruleName = entityName + "-" + propertyName
+
+						if (isPII){
+							if (! fn.exists(cts.doc("/rules/pii/" + ruleName + ".json")) ) {
+
+								xdmp.documentInsert("/rules/pii/" + xdmp.getCurrentUser() + "/" + ruleName + ".json",
+									{ "rule": {
+											"description": "Redact " + entityName ,
+											"path": "/envelope/instance/" + entityName + "/" + propertyName,
+											"method": { "function": "redact-regex" },
+											"options": {
+												"pattern" : "^[\u0001-\uE007F].*",
+												"replacement" :  "### PII Redacted ###"
+											}
+										}
+									},
+									{
+										permissions : xdmp.defaultPermissions(),
+										collections : ["piiRules"]
+									}
+								)
+							}
+						} else {
+							if (fn.exists(cts.doc("/rules/pii/" + ruleName + ".json")) ) {
+								xdmp.documentDelete( "/rules/pii/" + ruleName + ".json")
+							}
+						}
+					}
+				}
+			}
+			const invokeRule = ruleDefinition (node.entityName, p.name, p.isPii)
+			xdmp.invokeFunction(invokeRule.piiRule,
+				{ "database" : xdmp.schemaDatabase(xdmp.database(finalDB)) }
+			);
 		});
 		let definition = {
 			"primaryKey": primaryKey,
@@ -79,7 +124,9 @@ Object.keys(model.nodes).forEach(key => {
 		entities[key].definitions[node.entityName] = definition;
 	}
 });
+}
 
+if (model.edges) {
 // now connect the entities according to the edge definitions in the model
 Object.keys(model.edges).forEach(key => {
 	let edge = model.edges[key];
@@ -119,5 +166,6 @@ Object.keys(model.edges).forEach(key => {
 	// 	}
 	// })
 });
+}
 
 entities;

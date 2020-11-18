@@ -1,6 +1,9 @@
 <script>
 import axios from 'axios';
 
+const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
+const isTesting = process.env.NODE_ENV === 'test'
+
 export default {
 	name:'AdminPage',
 	data: ()=> ({
@@ -20,6 +23,7 @@ export default {
 			},
 			{ text: 'Setting', value: 'val' }
 		],
+		cloud: isHosted && !isTesting
 	}),
 
 	methods: {
@@ -139,7 +143,7 @@ export default {
 			</template>
 		</v-snackbar>
 		<h1>Envision Admin Page</h1>
-		<fieldset class="col-sm-9">
+		<fieldset class="col-sm-9" v-if="!cloud">
 			<legend>Data Hub</legend>
 			<p>These are the properties of your Data Hub:</p>
 			<!-- <v-data-table dense

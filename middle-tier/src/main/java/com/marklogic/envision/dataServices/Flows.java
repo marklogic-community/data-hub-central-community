@@ -32,15 +32,61 @@ public interface Flows {
             }
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode getFlows() {
+            public com.fasterxml.jackson.databind.JsonNode newStepInfo() {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
-                .request("getFlows.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .request("newStepInfo.sjs", BaseProxy.ParameterValuesKind.NONE)
                 .withSession()
                 .withParams(
                     )
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
+            public com.fasterxml.jackson.databind.JsonNode getFlows(com.fasterxml.jackson.databind.node.ArrayNode flowsToGet) {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("getFlows.sjs", BaseProxy.ParameterValuesKind.SINGLE_NODE)
+                .withSession()
+                .withParams(
+                    BaseProxy.documentParam("flowsToGet", true, BaseProxy.ArrayType.fromArrayNode(flowsToGet)))
+                .withMethod("POST")
+                .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
+            public com.fasterxml.jackson.databind.JsonNode getSample(String uri, com.fasterxml.jackson.databind.JsonNode namespaces) {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("getSample.xqy", BaseProxy.ParameterValuesKind.MULTIPLE_MIXED)
+                .withSession()
+                .withParams(
+                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)),
+                    BaseProxy.documentParam("namespaces", false, BaseProxy.JsonDocumentType.fromJsonNode(namespaces)))
+                .withMethod("POST")
+                .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
+            public String previewMapping(String mappingName, Integer mappingVersion, String format, String uri) {
+              return BaseProxy.StringType.toString(
+                baseProxy
+                .request("previewMapping.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
+                .withSession()
+                .withParams(
+                    BaseProxy.atomicParam("mappingName", false, BaseProxy.StringType.fromString(mappingName)),
+                    BaseProxy.atomicParam("mappingVersion", false, BaseProxy.IntegerType.fromInteger(mappingVersion)),
+                    BaseProxy.atomicParam("format", false, BaseProxy.StringType.fromString(format)),
+                    BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)))
+                .withMethod("POST")
+                .responseSingle(false, null)
                 );
             }
 
@@ -50,11 +96,39 @@ public interface Flows {
     }
 
   /**
-   * Invokes the getFlows operation on the database server
+   * Invokes the newStepInfo operation on the database server
    *
    * 
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode getFlows();
+    com.fasterxml.jackson.databind.JsonNode newStepInfo();
+
+  /**
+   * Invokes the getFlows operation on the database server
+   *
+   * @param flowsToGet	provides input
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode getFlows(com.fasterxml.jackson.databind.node.ArrayNode flowsToGet);
+
+  /**
+   * Invokes the getSample operation on the database server
+   *
+   * @param uri	provides input
+   * @param namespaces	provides input
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode getSample(String uri, com.fasterxml.jackson.databind.JsonNode namespaces);
+
+  /**
+   * Invokes the previewMapping operation on the database server
+   *
+   * @param mappingName	provides input
+   * @param mappingVersion	provides input
+   * @param format	provides input
+   * @param uri	provides input
+   * @return	as output
+   */
+    String previewMapping(String mappingName, Integer mappingVersion, String format, String uri);
 
 }

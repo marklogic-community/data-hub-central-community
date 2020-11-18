@@ -1,19 +1,19 @@
 package com.marklogic.envision.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.marklogic.client.DatabaseClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marklogic.envision.hub.HubClient;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.impl.HubConfigImpl;
+import com.marklogic.grove.boot.error.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,54 +23,59 @@ public class ModelController extends AbstractController {
 
     final private ModelService modelService;
 
+    final private  ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
-	ModelController(HubConfigImpl hubConfig, ModelService modelService) {
-    	super(hubConfig);
+	ModelController(ModelService modelService) {
     	this.modelService = modelService;
 	}
 
-    @RequestMapping(value = "/{modelName}", method = RequestMethod.GET)
-    public JsonNode getModel(@PathVariable String modelName) {
-        DatabaseClient client = getFinalClient();
-        return modelService.getModel(client, modelName);
+    @RequestMapping(value = "/current", method = RequestMethod.GET)
+    public JsonNode getModel() {
+        JsonNode model = modelService.getModel(getHubClient().getFinalClient());
+        if (model != null) {
+        	return model;
+		}
+		throw new NotFoundException();
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<JsonNode> getAllModels() throws IOException {
-		DatabaseClient client = getFinalClient();
-    	return modelService.getAllModels(client);
+		HubClient hubClient = getHubClient();
+    	return modelService.getAllModels(hubClient, hubClient.getUsername());
     }
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void switchModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		modelService.deleteModel(request.getInputStream());
-		response.setStatus(HttpStatus.NO_CONTENT.value());
+		JsonNode node = objectMapper.readTree(request.getInputStream());
+		String modelName = node.get("name").asText();
+		if (modelService.deleteModel(getHubClient(), getHubClient().getUsername(), modelName)) {
+			response.setStatus(HttpStatus.NO_CONTENT.value());
+		}
+		else {
+			response.setStatus(HttpStatus.NOT_FOUND.value());
+		}
 	}
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public void saveModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        modelService.saveModel(getFinalClient(), request.getInputStream());
+        modelService.saveModel(getHubClient(), request.getInputStream());
         response.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
 	@RequestMapping(value = "/import", method = RequestMethod.PUT)
 	public void importModel(HttpServletResponse response) throws IOException {
-		modelService.importModel(getFinalClient());
+		modelService.importModel(getHubClient());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 
-    @RequestMapping(value = "/todatahub", method = RequestMethod.POST)
-    public void toDataHub() {
-        modelService.toDataHub(getFinalClient());
-    }
-
 	@RequestMapping(value = "/activeIndexes", method = RequestMethod.GET)
 	public JsonNode getActiveIndexes() {
-		return modelService.getActiveIndexes(getFinalClient());
+		return modelService.getActiveIndexes(getHubClient().getFinalClient());
     }
+
     @RequestMapping(value = "/rename", method = RequestMethod.POST)
 	public void renameModel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		modelService.renameModel(getFinalClient(), request.getInputStream());
+		modelService.renameModel(getHubClient().getUsername(), getHubClient(), request.getInputStream());
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 	}
 }

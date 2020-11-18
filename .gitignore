@@ -8,4 +8,10 @@ ModelerPageNew1.vue
 .DS_Store
 .gradle/
 build/
-.vscode
+.vscode/
+middle-tier/.settings/org.eclipse.jdt.core.prefs
+middle-tier/.settings/org.eclipse.buildship.core.prefs
+middle-tier/.project
+.project
+.settings/org.eclipse.buildship.core.prefs
+middle-tier/.classpath

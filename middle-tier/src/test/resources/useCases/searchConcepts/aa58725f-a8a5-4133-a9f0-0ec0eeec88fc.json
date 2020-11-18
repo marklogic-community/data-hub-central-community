@@ -1,0 +1,26 @@
+{
+	"envelope": {
+		"headers": {},
+		"triples": [],
+		"instance": {
+			"Employee": {
+				"address": "7821 Aberg Park  ",
+				"city": "Charleston",
+				"departmentId": "3",
+				"employeeId": "A-5074P",
+				"firstName": "Adrianna",
+				"jobEffectiveDate": null,
+				"lastName": "Finn",
+				"mobileNumber": "1(914)688-6665",
+				"postalCode": "25313",
+				"productSkills": "general ledger",
+				"state": "WV"
+			},
+			"info": {
+				"title": "Employee",
+				"version": "0.0.1"
+			}
+		},
+		"attachments": {}
+	}
+}

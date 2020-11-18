@@ -3,20 +3,25 @@
  * to provide extra functionality
  */
 function getModel() {
-	let model = cts.doc('model.json');
+	const uri = '/envision/' + xdmp.getCurrentUser() +'/currentModel.json';
+	let model = fn.head(cts.doc(uri));
 	if (model) {
 		model = model.toObject();
+		return model;
 	}
-	else {
-		return {};
-	}
+
+	return null;
+}
+
+function getEnhancedModel() {
+	let model = getModel();
+	if (!model) return null;
 
 	let names = {};
 	Object.keys(model.nodes).forEach(key => {
 		let node = model.nodes[key];
 		names[key] = node.entityName;
 		names[`${node.baseUri}${key}`] = node.entityName;
-
 	});
 
 	/**
@@ -29,4 +34,5 @@ function getModel() {
 	return model;
 }
 
-module.exports = getModel();
+module.exports.model = getModel();
+module.exports.enhancedModel = getEnhancedModel();

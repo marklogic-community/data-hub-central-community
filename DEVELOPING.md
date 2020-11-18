@@ -15,13 +15,14 @@ For the UI you need:
 
 First follow the instructions in the [Contributing doc](./CONTRIBUTING.md) for how to properly fork and clone and branch. Once you've done that come back here.
 
-### Running the project
+### Running the project (Single Tenant)
+Single tenant is the traditional way to run Envision. It relies on MarkLogic's users/roles to provide access.
 
-#### Development Mode
+#### Development Mode (single-tenant)
 
 Open 2 terminal tabs/windows
 
-##### Middle Tier
+##### Middle Tier (single-tenant)
 Open a terminal in the project root: /path/to/envision
 
 The command to run the middle tier is:  
@@ -39,22 +40,58 @@ You will still need a running Data Hub Framework
 
 `gradlew -DdhfDir=/full/path/to/your/datahub test`
 
-##### User Interface
+##### User Interface (single-tenant)
 Open a terminal in the project root: /path/to/envision
 
 launch the ui in develop mode
 `gradlew runui`
 
-#### Access the Envision UI
+### Running the project (Multi Tenant)
+Multi tenant mode allows you to run Envision in a hosted environment. It provides a signup flow for new users. It's main purpose is for running Envision as a self-service demo.
+
+#### Development Mode (multi-tenant)
+
+Open 2 terminal tabs/windows
+
+##### Middle Tier (multi-tenant)
+Open a terminal in the project root: /path/to/envision
+
+Edit application.properties:
+```
+envision.multiTenant=true
+```
+
+The command to run the middle tier is:  
+`gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub bootrun`
+
+**OPTIONAL** Also you might want to override where the Concept Connector models live. Otherwise the models go in `./conceptConnectorModels`  
+`gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir bootrun`
+
+##### User Interface (multi-tenant)
+Open a terminal in the project root: /path/to/envision
+
+launch the ui in develop mode
+`gradlew -Penv=cloud runui`
+
+### Running Middle Tier Tests
+You will still need a MarkLogic instance with no datahub installed.  
+**WARNING:** This command will wipe out all your data. Do not point it at a production instance of MarkLogic.
+
+`gradlew test`
+
+### Access the Envision UI (development mode)
 http://localhost:9999
 
 You can log in with your MarkLogic username and password.
 
-If you want to debug the middle tier while you run the ui in development mode, you might want to use a port for the middle tier other than the default.
-Say you you want to run the middle tier at 9004 by using -Dserver.port=9004 when you run bootRun.
+**Optional Config**  
+If you want to debug the middle tier while you run the ui in development mode, you might want to use a port for the middle tier other than the default. This usually happens if the default port (9003) is already in use.  
+Say you want to run the middle tier at 9004 by using `-Dserver.port=9004` when you run bootRun.
 
-First, edit ui/.env:
+First, edit ui/.env:  
+```
 VUE_APP_MIDDLETIER_PORT=9004
+```
 
 Open two terminal windows. In one run the middle tier at the port you like (in this case, 9004):
 `gradlew -Dserver.port=9004 -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -DdhfEnv=yourEnvironment bootRun`
@@ -63,7 +100,7 @@ In the other run the ui, as above:
 `gradlew runui`
 
 #### Running End to End UI Tests
-Open a terminal in the top level envision directory.
+Open a terminal in the top-level envision directory.
 
 `gradlew testUi`
 
@@ -74,14 +111,24 @@ Open a terminal window:
 
 ##### Build the jar
 
-###### Without tests
+###### Without tests (single tenant)
 `gradlew clean build -x test`
 
-###### With tests
+###### With tests (single tenant)
 Note that you do need a running Data Hub Framework instance with a project folder  
 **WARNING:** This command will wipe out all your data. Do not point it at a production instance.
 
 `gradlew -DdhfDir=/full/path/to/your/datahub clean build`
+
+###### Without tests (multi tenant)
+`gradlew -Penv=cloud clean build -x test`
+
+###### With tests (multi tenant)
+Note that you do need a running Data Hub Framework instance with a project folder  
+**WARNING:** This command will wipe out all your data. Do not point it at a production instance.
+
+`gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub clean build`
+
 
 ##### Run the jar
 `java -jar middle-tier/build/lib/envision.jar`
@@ -98,7 +145,7 @@ If you also need to specify a different models directory:
 
 `java -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
 
-And if you need to specify the Data Hub Framework environment (it defaults to local):
+If you need to specify the Data Hub Framework environment (it defaults to local):
 
 `java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
 
@@ -109,5 +156,5 @@ And if you need to specify the Data Hub Framework environment (it defaults to lo
 * Are you seeing URIs on the Explore tab instead of meaningful labels?  
 * Is the merge screen showing `   ,   ` instead of `Finn, Finn`?
 
-You have not loaded the proper concept connector model for current dataset in the Data Hub.  To get working again, navigate to the "Connect" tab.  On the right panel, select "Load Model" and select the proper model for your dataset.  For the standard HR use case, pick "HR Employee 360".    
+You have not loaded the proper concept connector model for the current dataset in the Data Hub. To get working again, navigate to the "Connect" tab.  On the right panel, select "Load Model" and select the proper model for your dataset.  For the standard HR use case, pick "HR Employee 360".    
 

@@ -1,0 +1,122 @@
+{
+	"lang": "zxx",
+	"name": "Envision-MapCoastalEmployees",
+	"description": "",
+	"version": 0,
+	"targetEntityType": "http://marklogic.com/envision/Employee-0.0.1/Employee",
+	"sourceContext": "/",
+	"sourceURI": "/envision/datahub/data/CoastalEmployees/55006.json",
+	"namespaces": {},
+	"properties": {
+		"lastName": {
+			"sourcedFrom": "l_name",
+			"output": "McIlreavy"
+		},
+		"country": {
+			"sourcedFrom": ""
+		},
+		"jobEffectiveDate": {
+			"sourcedFrom": "start_date",
+			"output": "2015-07-21"
+		},
+		"jobStatus": {
+			"sourcedFrom": "status",
+			"output": "Active (Full-time)"
+		},
+		"address": {
+			"sourcedFrom": "concat(address1,\" \",address2)",
+			"output": "9920 Carioca Terrace "
+		},
+		"city": {
+			"sourcedFrom": "city",
+			"output": "Washington"
+		},
+		"mobileNumber": {
+			"sourcedFrom": "cell_phone",
+			"output": "1(202)284-7141"
+		},
+		"departmentId": {
+			"sourcedFrom": "dept_num",
+			"output": "3"
+		},
+		"jobTitle": {
+			"sourcedFrom": "job_title",
+			"output": "Financial Analyst"
+		},
+		"postalCode": {
+			"sourcedFrom": "zip",
+			"output": "20220"
+		},
+		"employeeId": {
+			"sourcedFrom": "employee_id",
+			"output": "55006"
+		},
+		"hasJobReview": {
+			"sourcedFrom": "",
+			"properties": {
+				"employeeId": {
+					"sourcedFrom": ""
+				},
+				"reasonType": {
+					"sourcedFrom": ""
+				},
+				"reviewCode": {
+					"sourcedFrom": ""
+				},
+				"reviewDate": {
+					"sourcedFrom": ""
+				},
+				"reviewer": {
+					"sourcedFrom": ""
+				},
+				"reviewId": {
+					"sourcedFrom": ""
+				}
+			}
+		},
+		"languageSkills": {
+			"sourcedFrom": "string-join(competency/languages,\" , \")",
+			"output": "C# , C++ , Java , JavaScript"
+		},
+		"firstName": {
+			"sourcedFrom": "f_name",
+			"output": "Saidee"
+		},
+		"toolSkills": {
+			"sourcedFrom": "string-join(competency/tools,\" , \")",
+			"output": "Nifi , Teradata , Kafka"
+		},
+		"geoLocation": {
+			"sourcedFrom": ""
+		},
+		"hasResume": {
+			"sourcedFrom": "",
+			"properties": {
+				"category": {
+					"sourcedFrom": ""
+				},
+				"employeeId": {
+					"sourcedFrom": ""
+				},
+				"resumeId": {
+					"sourcedFrom": ""
+				},
+				"resumeText": {
+					"sourcedFrom": ""
+				}
+			}
+		},
+		"state": {
+			"sourcedFrom": "state",
+			"output": "DC"
+		},
+		"productSkills": {
+			"sourcedFrom": "primary_prod",
+			"output": "general ledger"
+		},
+		"email": {
+			"sourcedFrom": "email",
+			"output": "saidee.mcilreavy@coastal.com"
+		}
+	}
+}

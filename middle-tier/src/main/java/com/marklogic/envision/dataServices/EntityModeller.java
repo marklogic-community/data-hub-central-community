@@ -74,13 +74,13 @@ public interface EntityModeller {
 
 
             @Override
-            public Boolean removeAllEntities() {
+            public Boolean removeAllEntities(String user) {
               return BaseProxy.BooleanType.toBoolean(
                 baseProxy
-                .request("removeAllEntities.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .request("removeAllEntities.sjs", BaseProxy.ParameterValuesKind.SINGLE_ATOMIC)
                 .withSession()
                 .withParams(
-                    )
+                    BaseProxy.atomicParam("user", true, BaseProxy.StringType.fromString(user)))
                 .withMethod("POST")
                 .responseSingle(false, null)
                 );
@@ -97,6 +97,20 @@ public interface EntityModeller {
                     )
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
+                );
+            }
+
+
+            @Override
+            public com.fasterxml.jackson.databind.JsonNode getCurrentModel() {
+              return BaseProxy.JsonDocumentType.toJsonNode(
+                baseProxy
+                .request("getCurrentModel.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .withSession()
+                .withParams(
+                    )
+                .withMethod("POST")
+                .responseSingle(true, Format.JSON)
                 );
             }
 
@@ -146,10 +160,10 @@ public interface EntityModeller {
   /**
    * Invokes the removeAllEntities operation on the database server
    *
-   * 
+   * @param user	provides input
    * @return	as output
    */
-    Boolean removeAllEntities();
+    Boolean removeAllEntities(String user);
 
   /**
    * Invokes the fromDatahub operation on the database server
@@ -158,6 +172,14 @@ public interface EntityModeller {
    * @return	as output
    */
     com.fasterxml.jackson.databind.JsonNode fromDatahub();
+
+  /**
+   * Invokes the getCurrentModel operation on the database server
+   *
+   * 
+   * @return	as output
+   */
+    com.fasterxml.jackson.databind.JsonNode getCurrentModel();
 
   /**
    * Invokes the toDatahub operation on the database server

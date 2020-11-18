@@ -1,0 +1,12 @@
+{
+		"functionName": "deleteDatasource",
+		"params": [
+			{
+				"datatype": "string",
+				"name": "collection"
+			}
+		],
+		"return": {
+      "datatype": "boolean"
+    }
+}

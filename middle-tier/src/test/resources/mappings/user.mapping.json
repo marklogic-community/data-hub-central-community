@@ -1,0 +1,18 @@
+{
+	"lang" : "zxx",
+	"name" : "81e946846cda588e6b5c4890ad1ef229-myMappingStep",
+	"description" : "Default description",
+	"version" : 1,
+	"targetEntityType" : "http://marklogic.envision.com/Person-0.0.1/Person",
+	"sourceContext" : "/",
+	"sourceURI" : "",
+	"properties" : {
+		"name" : {
+			"sourcedFrom" : "name"
+		},
+		"age" : {
+			"sourcedFrom" : "age"
+		}
+	},
+	"namespaces" : { }
+}

@@ -1,0 +1,6 @@
+{
+	"local-name" : "createTdes",
+	"document-uri" : "/envision/tde-lib.sjs",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "data-hub-developer", "tde-admin" ]
+}

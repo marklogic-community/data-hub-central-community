@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/envision/users",
+	"$javaClass": "com.marklogic.envision.dataServices.Users"
+}

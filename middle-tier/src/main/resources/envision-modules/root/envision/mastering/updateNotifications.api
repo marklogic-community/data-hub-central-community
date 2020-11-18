@@ -1,18 +1,18 @@
 {
-    "functionName": "updateNotifications",
-    "params": [
+		"functionName": "updateNotifications",
+		"params": [
 			{
 				"datatype": "jsonDocument",
 				"name": "uris",
 				"$javaClass": "com.fasterxml.jackson.databind.JsonNode"
 			},
 			{
-        "datatype": "string",
-        "name": "status"
-      }
-    ],
-    "return": {
-      "datatype": "jsonDocument",
-      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-    }
+				"datatype": "string",
+				"name": "status"
+			}
+		],
+		"return": {
+			"datatype": "jsonDocument",
+			"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+		}
 }

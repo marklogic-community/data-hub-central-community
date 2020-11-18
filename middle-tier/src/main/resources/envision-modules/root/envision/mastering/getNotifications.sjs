@@ -1,11 +1,11 @@
 'use strict'
 
+const mastering = require('/envision/mastering.sjs')
+
 var qtext;
 var page;
 var pageLength;
 var sort;
-
-const mastering = require('/envision/mastering.sjs')
 
 let start = ((page - 1) * pageLength) + 1;
 const collections = cts.collectionMatch("sm-*-notification")

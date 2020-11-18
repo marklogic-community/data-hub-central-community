@@ -1,5 +1,7 @@
 package com.marklogic.grove.boot.auth;
 
+import java.util.List;
+
 public class SessionStatus {
 
 	private String appName;
@@ -7,21 +9,14 @@ public class SessionStatus {
 
 	// These aren't currently documented, but they're being set by the Node middle tier
 	private String username;
+	private final List<String> authorities;
 	private boolean disallowUpdates;
 	private boolean appUsersOnly;
-	private boolean needsInstall;
 
-	public SessionStatus() {
-	}
-
-	public SessionStatus(boolean authenticated) {
-		this.authenticated = authenticated;
-	}
-
-	public SessionStatus(String username, boolean authenticated, boolean needsInstall) {
+	public SessionStatus(String username, List<String> authorities, boolean authenticated) {
 		this.username = username;
+		this.authorities = authorities;
 		this.authenticated = authenticated;
-		this.needsInstall = needsInstall;
 	}
 
 	public String getAppName() {
@@ -31,6 +26,8 @@ public class SessionStatus {
 	public void setAppName(String appName) {
 		this.appName = appName;
 	}
+
+	public List<String> getAuthorities() { return authorities; }
 
 	public boolean isAuthenticated() {
 		return authenticated;
@@ -62,9 +59,5 @@ public class SessionStatus {
 
 	public void setAppUsersOnly(boolean appUsersOnly) {
 		this.appUsersOnly = appUsersOnly;
-	}
-
-	public boolean isNeedsInstall() {
-		return needsInstall;
 	}
 }

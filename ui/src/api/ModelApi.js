@@ -8,7 +8,7 @@ export default {
 		return models
 	},
   view() {
-		return axios.get(`/api/models/model.json`)
+		return axios.get(`/api/models/current`)
 			.then(response => response.data)
 	},
 	needsImport() {
@@ -49,6 +49,6 @@ export default {
 			console.error('error:', error);
 			return { isError: true, error: error };
 		});
-	
+
 	}
 };

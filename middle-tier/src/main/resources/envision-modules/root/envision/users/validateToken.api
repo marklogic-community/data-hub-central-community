@@ -1,0 +1,12 @@
+{
+    "functionName": "validateToken",
+    "params": [
+        {
+            "datatype": "string",
+            "name": "token"
+        }
+    ],
+    "return": {
+        "datatype": "boolean"
+    }
+}

@@ -1,13 +1,14 @@
 {
-    "functionName": "getNotification",
-    "params": [
-      {
-        "datatype": "string",
-        "name": "uri"
-      }
-    ],
-    "return": {
-      "datatype": "jsonDocument",
-      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-    }
+		"functionName": "getNotification",
+		"params": [
+			{
+				"datatype": "string",
+				"name": "uri"
+			}
+		],
+		"return": {
+			"datatype": "jsonDocument",
+			"nullable": true,
+			"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+		}
 }

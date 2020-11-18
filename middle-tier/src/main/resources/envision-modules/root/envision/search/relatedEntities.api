@@ -1,25 +1,25 @@
 {
-    "functionName": "relatedEntities",
-    "params": [
-      {
-        "datatype": "string",
-        "name": "uri"
-      },
-			{
-        "datatype": "string",
-        "name": "label"
-      },
-			{
-        "datatype": "int",
-        "name": "page"
-      },
-			{
-        "datatype": "int",
-        "name": "pageLength"
-      }
-    ],
-    "return": {
-      "datatype": "jsonDocument",
-      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
-    }
+	"functionName": "relatedEntities",
+	"params": [
+		{
+			"datatype": "string",
+			"name": "uri"
+		},
+		{
+			"datatype": "string",
+			"name": "label"
+		},
+		{
+			"datatype": "int",
+			"name": "page"
+		},
+		{
+			"datatype": "int",
+			"name": "pageLength"
+		}
+	],
+	"return": {
+		"datatype": "jsonDocument",
+		"$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+	}
 }

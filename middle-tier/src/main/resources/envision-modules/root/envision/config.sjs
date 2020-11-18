@@ -1,3 +1,4 @@
 module.exports = {
-  version: "%%envisionVersion%%"
+  version: "%%envisionVersion%%",
+  isMultiTenant: %%envisionIsMultiTenant%%
 };
