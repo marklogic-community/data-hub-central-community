@@ -26,6 +26,7 @@ describe('Integrate Tab', () => {
 		cy.route('POST', '/api/flows/steps', {}).as('updateStep')
 		cy.route('POST', '/api/flows/steps/delete', {}).as('deleteStep')
 		cy.route('PUT', '/api/flows/21232f297a57a5a743894a0e4a801fc3', {}).as('saveFlow')
+		cy.route('POST', '/api/system/deleteCollection', {}).as('deleteCollection')
 	})
 
 	it('should suggest uploading data', () => {
@@ -62,5 +63,32 @@ describe('Integrate Tab', () => {
 		cy.get('[data-cy="integrate.runStepBtn"]').should('not.be.disabled')
 
 		cy.get('.step-wrapper').should('have.length', 3)
+	})
+
+	it.only('properly shows manage data', () => {
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.route('GET', '/api/entities', 'fixture:entities.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.visit('/integrate')
+		cy.get('[data-cy="manageData.table"] tr').should('have.length', 8)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 8)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
+
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
+		cy.get('button').contains('Cancel').click()
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
+		cy.get('button').contains('Delete').click()
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
+		cy.wait('@deleteCollection')
+			.its('request.body')
+				.should(body => {
+					expect(body).to.deep.equal({"collection": "Customer", "database": "final"})
+				})
+
+		cy.get('[data-cy="manageData.toggle"]').click()
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+
+		cy.get('[data-cy="manageData.toggle"]').click()
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 	})
 })
