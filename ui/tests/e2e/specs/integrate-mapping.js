@@ -33,11 +33,11 @@ describe('Integrate Tab', () => {
 		})
 
 		it('can filter properties', () => {
-			cy.get('tbody tr').should('have.length', 4)
-			cy.get('[data-cy="mappingStep.filterProps"]').type('cat')
-			cy.get('tbody tr').should('have.length', 1)
-			cy.get('.v-input__icon--clear').click()
-			cy.get('tbody tr').should('have.length', 4)
+			cy.get('.stepsPane tbody tr').should('have.length', 4)
+			cy.get('.stepsPane [data-cy="mappingStep.filterProps"]').type('cat')
+			cy.get('.stepsPane tbody tr').should('have.length', 1)
+			cy.get('.stepsPane .v-input__icon--clear').click()
+			cy.get('.stepsPane tbody tr').should('have.length', 4)
 		})
 
 		it('can paginate through samples', () => {
