@@ -81,25 +81,17 @@ describe('Integrate Tab', () => {
 		cy.get('button').contains('Cancel').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
 		cy.get('button').contains('Delete').click()
-<<<<<<< HEAD
-=======
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
->>>>>>> develop
 		cy.wait('@deleteCollection')
 			.its('request.body')
 				.should(body => {
 					expect(body).to.deep.equal({"collection": "Customer", "database": "final"})
 				})
-<<<<<<< HEAD
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
-=======
->>>>>>> develop
 
 		cy.get('[data-cy="manageData.toggle"]').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
 
 		cy.get('[data-cy="manageData.toggle"]').click()
-<<<<<<< HEAD
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
 	})
 
@@ -138,8 +130,5 @@ describe('Integrate Tab', () => {
 		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 0)
 		cy.get('[data-cy="manageData.toggleFlows"]').click()
 		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 1)
-=======
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
->>>>>>> develop
 	})
 })
