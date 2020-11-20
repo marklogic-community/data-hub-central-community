@@ -60,7 +60,7 @@ describe('Integrate Tab', () => {
 	it('shows all the steps', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
-		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.route('GET', '/api/flows', 'fixture:flowsEnvision.json')
 		cy.visit('/integrate')
 		cy.get('[data-cy="integrate.addStepBtn"]').should('not.be.disabled')
 		cy.get('[data-cy="integrate.runStepBtn"]').should('not.be.disabled')
@@ -81,21 +81,21 @@ describe('Integrate Tab', () => {
 		cy.get('button').contains('Cancel').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
 		cy.get('button').contains('Delete').click()
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 		cy.wait('@deleteCollection')
 			.its('request.body')
 				.should(body => {
 					expect(body).to.deep.equal({"collection": "Customer", "database": "final"})
 				})
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 
 		cy.get('[data-cy="manageData.toggle"]').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
 
 		cy.get('[data-cy="manageData.toggle"]').click()
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
 	})
 
-	it('properly shows manage data', () => {
+	it('properly shows run history data', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
 		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
