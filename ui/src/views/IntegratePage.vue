@@ -73,7 +73,7 @@
 								<span>Manage Flows</span>
 							</v-tooltip>
 						</span>
-						<span v-if="!isHosted" class="manageDataToggle">
+						<span class="manageDataToggle">
 							<v-tooltip bottom>
 								<template v-slot:activator="{ on }">
 									<span v-on="on">
@@ -85,7 +85,7 @@
 								<span>Manage Integrated Data</span>
 							</v-tooltip>
 						</span>
-						<span class="manageHistoryToggle">
+						<span v-if="!isHosted" class="manageHistoryToggle">
 							<v-tooltip bottom>
 								<template v-slot:activator="{ on }">
 									<span v-on="on">
