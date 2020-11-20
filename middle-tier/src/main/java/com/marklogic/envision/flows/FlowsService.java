@@ -14,12 +14,14 @@ import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.MappingManager;
+import com.marklogic.hub.StepDefinitionManager;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.mapping.Mapping;
+import com.marklogic.hub.step.StepDefinition;
 import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 public class FlowsService {
 	final private ObjectMapper mapper = new ObjectMapper();
 	final private FlowManager flowManager;
+	final private StepDefinitionManager stepDefinitionManager;
 	final private MappingManager mappingManager;
 	final private DeployService deployService;
 	final private SimpMessagingTemplate template;
@@ -46,12 +49,14 @@ public class FlowsService {
 	@Autowired
 	FlowsService(
 		FlowManager flowManager,
+		StepDefinitionManager stepDefinitionManager,
 		MappingManager mappingManager,
 		DeployService deployService,
 		SimpMessagingTemplate template
 	) {
 
 		this.flowManager = flowManager;
+		this.stepDefinitionManager = stepDefinitionManager;
 		this.mappingManager = mappingManager;
 		this.deployService = deployService;
 		this.template = template;
@@ -114,6 +119,10 @@ public class FlowsService {
 
 	public String getMapping(String mapName) {
 		return mappingManager.getMappingAsJSON(mapName, -1, true);
+	}
+
+	public StepDefinition getCustomStep(String stepName) {
+		return stepDefinitionManager.getStepDefinition(stepName, StepDefinition.StepDefinitionType.CUSTOM);
 	}
 
 	public void addMapping(HubClient hubClient, JsonNode mappingJson) throws IOException {

@@ -151,12 +151,10 @@ const auth = {
 		},
 		setProfile(state, { profile }) {
 			state.profile = profile || {};
-			if (isHosted) {
-				this.$logRocket.identify(profile.email, {
-					...profile,
-					environment: process.env.NODE_ENV
-				})
-			}
+			this.$logRocket.identify(profile.email, {
+				...profile,
+				environment: process.env.NODE_ENV
+			})
 		}
 	},
 	actions: {
@@ -596,8 +594,8 @@ const flows = {
 		setFlow(state, flow) {
 			Vue.set(state.flows, flow.name, flow)
 		},
-		deleteFlow(state, flow) {
-			Vue.delete(state.flows, flow.name)
+		deleteFlow(state, flowName) {
+			Vue.delete(state.flows, flowName)
 		},
 		setFlowSteps(state, {flowName, steps}) {
 			Vue.set(state.flows[flowName], 'steps', steps)
@@ -620,19 +618,21 @@ const flows = {
 				commit('setFlows', result)
 			})
 		},
-		getFlow({ rootState, commit }) {
-			const flowId = md5(rootState.auth.username)
-			return flowsApi.getFlow(flowId).then(result => {
+		getFlow({ rootState, commit }, flowName) {
+			flowName = flowName || md5(rootState.auth.username)
+			return flowsApi.getFlow(flowName).then(result => {
 				return commit('setFlow', result)
 			})
 		},
-		saveFlow({ commit }, flow) {
-			commit('setFlow', flow)
-			return flowsApi.saveFlow(flow)
+		async saveFlow({ commit }, flow) {
+			await flowsApi.saveFlow(flow)
+			return flowsApi.getFlow(flow.name).then(result => {
+				return commit('setFlow', result)
+			})
 		},
-		async deleteFlow({ commit }, flow) {
-			await flowsApi.deleteFlow(flow.id)
-			commit('deleteFlow', flow)
+		async deleteFlow({ commit }, flowName) {
+			await flowsApi.deleteFlow(flowName)
+			commit('deleteFlow', flowName)
 		},
 		getEntities({ commit }) {
 			return entitiesApi.getEntities().then(result => {

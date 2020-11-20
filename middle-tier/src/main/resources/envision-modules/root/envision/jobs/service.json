@@ -1,0 +1,4 @@
+{
+	"endpointDirectory": "/envision/jobs",
+	"$javaClass": "com.marklogic.envision.dataServices.Jobs"
+}

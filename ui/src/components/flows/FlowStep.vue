@@ -4,9 +4,10 @@
 			<v-flex md12>
 				<v-card>
 					<v-card-title>
-						<h2>{{entityName}} => {{step.name}}</h2>
+						<h2><span v-if="entityName">{{entityName}} => </span>{{step.name}}</h2>
 						<v-spacer></v-spacer>
 						<v-btn
+							v-if="!['CUSTOM', 'INGESTION'].includes(step.stepDefinitionType)"
 							data-cy="flowStep.editButton"
 							right
 							icon
@@ -53,17 +54,32 @@
 								@saveStep="saveStep"
 							></mapping-step>
 						</div>
-						<div id="step-type-matching-container" v-if="step.stepDefinitionType === 'MATCHING'">
+						<div id="step-type-matching-container" v-else-if="step.stepDefinitionType === 'MATCHING'">
 							<matching-step
 								:step="step"
 								@saveStep="saveStep"
 							></matching-step>
 						</div>
-						<div id="step-type-merging-container" v-if="step.stepDefinitionType === 'MERGING'">
+						<div id="step-type-merging-container" v-else-if="step.stepDefinitionType === 'MERGING'">
 							<merging-step
 								:step="step"
 								@saveStep="saveStep"
 							></merging-step>
+						</div>
+						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType === 'INGESTION'">
+							<ingestion-step
+								:step="step"
+								@saveStep="saveStep"
+							></ingestion-step>
+						</div>
+						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType === 'CUSTOM'">
+							<custom-step
+								:step="step"
+								@saveStep="saveStep"
+							></custom-step>
+						</div>
+						<div id="step-type-unsupported-container" v-else>
+							<div>Editing/Viewing this step type is unsupported in Envision. <strong>You can still run it.</strong></div>
 						</div>
 					</v-card-text>
 				</v-card>
@@ -84,6 +100,8 @@
 <script>
 import { mapActions } from 'vuex'
 import Confirm from '@/components/Confirm.vue';
+import IngestionStep from '@/components/flows/IngestionStep'
+import CustomStep from '@/components/flows/CustomStep'
 import MappingStep from '@/components/flows/MappingStep'
 import MatchingStep from '@/components/flows/MatchingStep'
 import MergingStep from '@/components/flows/MergingStep'
@@ -107,6 +125,8 @@ export default {
 	},
 	components: {
 		AddStepDialog,
+		IngestionStep,
+		CustomStep,
 		MappingStep,
 		MatchingStep,
 		MergingStep,

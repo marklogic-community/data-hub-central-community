@@ -29,7 +29,7 @@ public class HubClientImpl implements HubClient {
 		username = hubConfig.getMlUsername();
 		stagingClient = hubConfig.newStagingClient(null);
 		finalClient = newFinalClient(hubConfig);
-		jobsClient = hubConfig.newJobDbClient();
+		jobsClient = newJobClient(hubConfig);
 		modulesClient = hubConfig.newModulesDbClient();
 		stagingSchemasClient = hubConfig.newStagingClient(hubConfig.getDbName(DatabaseKind.STAGING_SCHEMAS));
 		finalSchemasClient = hubConfig.newStagingClient(hubConfig.getDbName(DatabaseKind.FINAL_SCHEMAS));
@@ -49,6 +49,22 @@ public class HubClientImpl implements HubClient {
 		config.setCertPassword(hubConfig.getCertPassword(DatabaseKind.FINAL));
 		config.setExternalName(hubConfig.getExternalName(DatabaseKind.FINAL));
 		config.setTrustManager(hubConfig.getTrustManager(DatabaseKind.FINAL));
+		if (hubConfig.getIsHostLoadBalancer()) {
+			config.setConnectionType(DatabaseClient.ConnectionType.GATEWAY);
+		}
+		return appConfig.getConfiguredDatabaseClientFactory().newDatabaseClient(config);
+	}
+
+	private DatabaseClient newJobClient(HubConfigImpl hubConfig) {
+		AppConfig appConfig = hubConfig.getAppConfig();
+		DatabaseClientConfig config = new DatabaseClientConfig(appConfig.getHost(), hubConfig.getPort(DatabaseKind.JOB), hubConfig.getMlUsername(), hubConfig.getMlPassword());
+		config.setSecurityContextType(SecurityContextType.valueOf(hubConfig.getAuthMethod(DatabaseKind.JOB).toUpperCase()));
+		config.setSslHostnameVerifier(hubConfig.getSslHostnameVerifier(DatabaseKind.JOB));
+		config.setSslContext(hubConfig.getSslContext(DatabaseKind.JOB));
+		config.setCertFile(hubConfig.getCertFile(DatabaseKind.JOB));
+		config.setCertPassword(hubConfig.getCertPassword(DatabaseKind.JOB));
+		config.setExternalName(hubConfig.getExternalName(DatabaseKind.JOB));
+		config.setTrustManager(hubConfig.getTrustManager(DatabaseKind.JOB));
 		if (hubConfig.getIsHostLoadBalancer()) {
 			config.setConnectionType(DatabaseClient.ConnectionType.GATEWAY);
 		}

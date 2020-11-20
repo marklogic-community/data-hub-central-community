@@ -1,0 +1,174 @@
+[
+	{
+		"job": {
+			"jobId": "5a94df52-da2d-4294-9ae8-d3d5a0bacde9",
+			"flow": "21232f297a57a5a743894a0e4a801fc3",
+			"user": "maverick",
+			"lastAttemptedStep": "4",
+			"lastCompletedStep": "4",
+			"jobStatus": "finished_with_errors",
+			"timeStarted": "2020-11-20T19:24:30.171898Z",
+			"timeEnded": "2020-11-20T19:24:30.627748Z",
+			"stepResponses": {
+				"1": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "PerformanceEvaluations",
+					"stepDefinitionName": "default-ingestion",
+					"stepDefinitionType": "ingestion",
+					"stepOutput": [
+						"java.lang.RuntimeException: The path doesn't exist or is not a directory\n\tat com.marklogic.hub.collector.impl.FileCollector.run(FileCollector.java:34)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.runFileCollector(WriteStepRunner.java:419)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.run(WriteStepRunner.java:271)\n\tat com.marklogic.hub.flow.impl.FlowRunnerImpl$FlowRunnerTask.run(FlowRunnerImpl.java:337)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)\n\tat java.base/java.lang.Thread.run(Thread.java:835)\n"
+					],
+					"fullOutput": null,
+					"status": "failed step 1",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": false,
+					"stepStartTime": "2020-11-20T19:24:30.212463Z",
+					"stepEndTime": "2020-11-20T19:24:30.230336Z"
+				},
+				"2": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "Resumes",
+					"stepDefinitionName": "default-ingestion",
+					"stepDefinitionType": "ingestion",
+					"stepOutput": [
+						"java.lang.RuntimeException: The path doesn't exist or is not a directory\n\tat com.marklogic.hub.collector.impl.FileCollector.run(FileCollector.java:34)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.runFileCollector(WriteStepRunner.java:419)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.run(WriteStepRunner.java:271)\n\tat com.marklogic.hub.flow.impl.FlowRunnerImpl$FlowRunnerTask.run(FlowRunnerImpl.java:337)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)\n\tat java.base/java.lang.Thread.run(Thread.java:835)\n"
+					],
+					"fullOutput": null,
+					"status": "failed step 2",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": false,
+					"stepStartTime": "2020-11-20T19:24:30.274886Z",
+					"stepEndTime": "2020-11-20T19:24:30.297849Z"
+				},
+				"3": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "MapPerfEvaluations",
+					"stepDefinitionName": "entity-services-mapping",
+					"stepDefinitionType": "mapping",
+					"stepOutput": null,
+					"fullOutput": null,
+					"status": "completed step 3",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": true,
+					"stepStartTime": "2020-11-20T19:24:30.352379Z",
+					"stepEndTime": "2020-11-20T19:24:30.393272Z"
+				},
+				"4": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "MapCoastalResumes",
+					"stepDefinitionName": "entity-services-mapping",
+					"stepDefinitionType": "mapping",
+					"stepOutput": null,
+					"fullOutput": null,
+					"status": "completed step 4",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": true,
+					"stepStartTime": "2020-11-20T19:24:30.490233Z",
+					"stepEndTime": "2020-11-20T19:24:30.579849Z"
+				}
+			}
+		}
+	},
+	{
+		"job": {
+			"jobId": "826eee08-e55d-4931-a247-bc39924fe9ca",
+			"flow": "21232f297a57a5a743894a0e4a801fc3",
+			"user": "maverick",
+			"lastAttemptedStep": "4",
+			"lastCompletedStep": "4",
+			"jobStatus": "finished_with_errors",
+			"timeStarted": "2020-11-20T19:24:22.958469Z",
+			"timeEnded": "2020-11-20T19:24:23.836183Z",
+			"stepResponses": {
+				"1": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "PerformanceEvaluations",
+					"stepDefinitionName": "default-ingestion",
+					"stepDefinitionType": "ingestion",
+					"stepOutput": [
+						"java.lang.RuntimeException: The path doesn't exist or is not a directory\n\tat com.marklogic.hub.collector.impl.FileCollector.run(FileCollector.java:34)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.runFileCollector(WriteStepRunner.java:419)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.run(WriteStepRunner.java:271)\n\tat com.marklogic.hub.flow.impl.FlowRunnerImpl$FlowRunnerTask.run(FlowRunnerImpl.java:337)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)\n\tat java.base/java.lang.Thread.run(Thread.java:835)\n"
+					],
+					"fullOutput": null,
+					"status": "failed step 1",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": false,
+					"stepStartTime": "2020-11-20T19:24:22.990147Z",
+					"stepEndTime": "2020-11-20T19:24:23.009581Z"
+				},
+				"2": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "Resumes",
+					"stepDefinitionName": "default-ingestion",
+					"stepDefinitionType": "ingestion",
+					"stepOutput": [
+						"java.lang.RuntimeException: The path doesn't exist or is not a directory\n\tat com.marklogic.hub.collector.impl.FileCollector.run(FileCollector.java:34)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.runFileCollector(WriteStepRunner.java:419)\n\tat com.marklogic.hub.step.impl.WriteStepRunner.run(WriteStepRunner.java:271)\n\tat com.marklogic.hub.flow.impl.FlowRunnerImpl$FlowRunnerTask.run(FlowRunnerImpl.java:337)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)\n\tat java.base/java.lang.Thread.run(Thread.java:835)\n"
+					],
+					"fullOutput": null,
+					"status": "failed step 2",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": false,
+					"stepStartTime": "2020-11-20T19:24:23.05508Z",
+					"stepEndTime": "2020-11-20T19:24:23.070579Z"
+				},
+				"3": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "MapPerfEvaluations",
+					"stepDefinitionName": "entity-services-mapping",
+					"stepDefinitionType": "mapping",
+					"stepOutput": null,
+					"fullOutput": null,
+					"status": "completed step 3",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": true,
+					"stepStartTime": "2020-11-20T19:24:23.119208Z",
+					"stepEndTime": "2020-11-20T19:24:23.383254Z"
+				},
+				"4": {
+					"flowName": "21232f297a57a5a743894a0e4a801fc3",
+					"stepName": "MapCoastalResumes",
+					"stepDefinitionName": "entity-services-mapping",
+					"stepDefinitionType": "mapping",
+					"stepOutput": null,
+					"fullOutput": null,
+					"status": "completed step 4",
+					"totalEvents": 0,
+					"successfulEvents": 0,
+					"failedEvents": 0,
+					"successfulBatches": 0,
+					"failedBatches": 0,
+					"success": true,
+					"stepStartTime": "2020-11-20T19:24:23.761472Z",
+					"stepEndTime": "2020-11-20T19:24:23.802212Z"
+				}
+			}
+		}
+	}
+]

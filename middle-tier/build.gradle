@@ -172,6 +172,10 @@ task generateUsers(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTas
     serviceDeclarationFile = 'src/main/resources/envision-modules/root/envision/users/service.json'
 }
 
+task generateJobs(type: com.marklogic.client.tools.gradle.EndpointProxiesGenTask) {
+    serviceDeclarationFile = 'src/main/resources/envision-modules/root/envision/jobs/service.json'
+}
+
 task makeServices {
 	dependsOn generateEntitySearcher
 	dependsOn generateEntityModeller

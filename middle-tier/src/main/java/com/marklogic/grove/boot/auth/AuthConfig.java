@@ -147,7 +147,8 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
             "/shutdown",
             "/img/**",
             "/**/*.ico",
-            "/**/manifest.json"
+            "/**/manifest.json",
+			"/robots.txt"
         };
     }
 }

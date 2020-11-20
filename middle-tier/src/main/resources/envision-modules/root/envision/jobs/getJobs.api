@@ -1,0 +1,13 @@
+{
+    "functionName": "getJobs",
+    "params": [
+			{
+				"datatype": "string",
+				"name": "flowName"
+			}
+    ],
+    "return": {
+      "datatype": "jsonDocument",
+      "$javaClass":"com.fasterxml.jackson.databind.JsonNode"
+    }
+}

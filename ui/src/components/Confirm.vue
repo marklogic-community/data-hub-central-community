@@ -1,28 +1,29 @@
 <template>
-    <v-card>
-        <v-card-text v-show="!!message" class="pa-4">{{ message }}</v-card-text>
-        <v-card-actions class="pt-0">
-        <v-spacer></v-spacer>
-        <v-btn color="secondary" text @click.native="cancel">Cancel</v-btn>
-		<v-btn :disabled="disabled" color="primary" text @click.native="confirm">{{ confirmText || 'Confirm' }}</v-btn>
-        </v-card-actions>
-    </v-card>
+	<v-card>
+		<v-card-text v-show="!!message" class="pa-4">{{ message }}</v-card-text>
+		<v-card-actions class="pt-0">
+			<v-spacer></v-spacer>
+			<v-btn v-if="showCancel" color="secondary" text @click.native="cancel">Cancel</v-btn>
+			<v-btn :disabled="disabled" color="primary" text @click.native="confirm">{{ confirmText || 'Confirm' }}</v-btn>
+		</v-card-actions>
+	</v-card>
 </template>
 
 <script>
 export default {
-    props: {
+	props: {
 		disabled: { type: Boolean, default: false },
-        message: {type: String},
-        confirmText: {type: String}
+		message: { type: String },
+		confirmText: { type: String },
+		showCancel: { type: Boolean, default: true }
 	},
-    methods: {
-        confirm() {
-            this.$emit('confirm')
-        },
-        cancel() {
-            this.$emit('cancel')
-        }
-    }
+	methods: {
+		confirm() {
+			this.$emit('confirm')
+		},
+		cancel() {
+			this.$emit('cancel')
+		}
+	}
 }
 </script>
