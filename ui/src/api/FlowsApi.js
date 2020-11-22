@@ -13,7 +13,7 @@ export default {
 		return axios.put(`/api/flows/${encodeURIComponent(flow.name)}`, flow)
 	},
 	deleteFlow(flowId) {
-		return axios.post('/api/flows/delete', { flowId })
+		return axios.post(`/api/flows/delete?flowId=${encodeURIComponent(flowId)}`)
 	},
 	getMapping(mapName) {
 		return axios.get(`/api/flows/mappings/${encodeURIComponent(mapName)}`)
@@ -25,6 +25,10 @@ export default {
 	},
 	validateMapping(mapping, uri) {
 		return axios.post(`/api/flows/mappings/validate?uri=${encodeURIComponent(uri)}`, mapping)
+			.then(response => response.data)
+	},
+	getCustomStep(stepName) {
+		return axios.get(`/api/flows/customSteps/${encodeURIComponent(stepName)}`)
 			.then(response => response.data)
 	},
 	getFunctions() {

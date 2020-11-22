@@ -14,6 +14,8 @@ describe('Integrate Tab', () => {
 		cy.route('/api/models/current', 'fixture:model.json')
 		cy.route('GET', '/api/entities', [])
 		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-no-steps.json')
+		cy.route('GET', '/api/flows', 'fixture:flowsEmpty.json')
+		cy.route('GET', '/api/jobs?flowName=21232f297a57a5a743894a0e4a801fc3', 'fixture:jobs.json')
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfoEmptyData.json')
 		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json')
 		cy.route('GET', '/api/flows/mappings/functions', 'fixture:functions.json')
@@ -30,6 +32,7 @@ describe('Integrate Tab', () => {
 	})
 
 	it('should suggest uploading data', () => {
+		// cy.route('GET', '/api/flows', 'fixture:flowsEmpty.json')
 		cy.visit('/integrate')
 		cy.contains('Start by Uploading data.')
 		cy.get('[data-cy="integrate.addStepBtn"]').should('be.disabled')
@@ -57,7 +60,7 @@ describe('Integrate Tab', () => {
 	it('shows all the steps', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
-		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.route('GET', '/api/flows', 'fixture:flowsEnvision.json')
 		cy.visit('/integrate')
 		cy.get('[data-cy="integrate.addStepBtn"]').should('not.be.disabled')
 		cy.get('[data-cy="integrate.runStepBtn"]').should('not.be.disabled')
@@ -78,17 +81,54 @@ describe('Integrate Tab', () => {
 		cy.get('button').contains('Cancel').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
 		cy.get('button').contains('Delete').click()
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 		cy.wait('@deleteCollection')
 			.its('request.body')
 				.should(body => {
 					expect(body).to.deep.equal({"collection": "Customer", "database": "final"})
 				})
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 
 		cy.get('[data-cy="manageData.toggle"]').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
 
 		cy.get('[data-cy="manageData.toggle"]').click()
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
+	})
+
+	it('properly shows run history data', () => {
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.route('GET', '/api/entities', 'fixture:entities.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.visit('/integrate')
+		cy.get('[data-cy="manageData.table"] tr').should('have.length', 8)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 8)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
+
+		cy.get('[data-cy="jobStatus"]').should('have.length', 0)
+
+		cy.get('[data-cy="manageData.toggleRunHistory"]').click()
+		cy.get('[data-cy="jobStatus"]').should('have.length', 2)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+
+		cy.get('[data-cy="manageData.toggle"]').click()
+		cy.get('[data-cy="jobStatus"]').should('have.length', 0)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
+
+		cy.get('[data-cy="manageData.toggle"]').click()
+		cy.get('[data-cy="jobStatus"]').should('have.length', 0)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+	})
+
+	it('properly shows flows', () => {
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.route('GET', '/api/entities', 'fixture:entities.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.visit('/integrate')
+
+		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 1)
+		cy.get('[data-cy="manageData.toggleFlows"]').click()
+		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 0)
+		cy.get('[data-cy="manageData.toggleFlows"]').click()
+		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 1)
 	})
 })

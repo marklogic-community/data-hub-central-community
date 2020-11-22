@@ -52,6 +52,24 @@ const routes = [
 		meta: {}
 	},
 	{
+		path: '/upload',
+		name: 'root.upload',
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "upload" */ './views/UploadPage.vue'),
+		props: {
+			type: 'all'
+		},
+		meta: {
+			label: 'Upload',
+			navArea: 'header',
+			requiresUpdates: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=Hcamr-WomQQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=1',
+			tutorialName: 'Upload Tutorial',
+			checkLogin
+		}
+	},
+	{
 		path: '/model',  //url path
 		name: 'root.modeler', //use to navigate to page
 		// lazy-loading of page
@@ -63,6 +81,21 @@ const routes = [
 			requiresLogin: true,
 			tutorialLink: 'https://www.youtube.com/watch?v=4QauKnTPbcU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=2',
 			tutorialName: 'Connect Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/integrate',	//url path
+		name: 'root.integrate', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "integratepage" */ './views/IntegratePage.vue'),
+		meta: {
+			label: 'Integrate',
+			navArea: 'header',
+			requiresLogin: true,
+			tutorialLink: 'https://www.youtube.com/watch?v=n5epxcHiEBw&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=3',
+			tutorialName: 'Integrate Tutorial',
 			checkLogin
 		}
 	},
@@ -164,41 +197,6 @@ const routes = [
 ]
 
 if (isHosted || isTesting) {
-	routes.splice(1, 0, {
-		path: '/upload',
-		name: 'root.upload',
-		// lazy-loading of page
-		component: () =>
-			import(/* webpackChunkName: "upload" */ './views/UploadPage.vue'),
-		props: {
-			type: 'all'
-		},
-		meta: {
-			label: 'Upload',
-			navArea: 'header',
-			requiresUpdates: true,
-			tutorialLink: 'https://www.youtube.com/watch?v=Hcamr-WomQQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=1',
-			tutorialName: 'Upload Tutorial',
-			checkLogin
-		}
-	})
-
-	routes.splice(3, 0, {
-		path: '/integrate/:stepName?',	//url path
-		name: 'root.integrate', //use to navigate to page
-		// lazy-loading of page
-		component: () =>
-			import(/* webpackChunkName: "integratepage" */ './views/IntegratePage.vue'),
-		meta: {
-			label: 'Integrate',
-			navArea: 'header',
-			requiresLogin: true,
-			tutorialLink: 'https://www.youtube.com/watch?v=n5epxcHiEBw&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=3',
-			tutorialName: 'Integrate Tutorial',
-			checkLogin
-		}
-	})
-
 	routes.push({
 		path: '/signup',
 		name: 'root.signup',

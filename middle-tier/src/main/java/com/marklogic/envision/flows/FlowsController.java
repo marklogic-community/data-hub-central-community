@@ -5,6 +5,7 @@ import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.hub.mapping.MappingFunctions;
 import com.marklogic.hub.mapping.MappingValidator;
+import com.marklogic.hub.step.StepDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,10 +43,23 @@ public class FlowsController extends AbstractController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> deleteFlow(@RequestParam String flowId) {
+		flowsService.deleteFlow(getHubClient(), flowId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/mappings/{mapName}", method = RequestMethod.GET)
 	@ResponseBody
 	public String getMapping(@PathVariable String mapName) {
 		return flowsService.getMapping(mapName);
+	}
+
+	@RequestMapping(value = "/customSteps/{stepName}", method = RequestMethod.GET)
+	@ResponseBody
+	public StepDefinition getCustomStep(@PathVariable String stepName) {
+		return flowsService.getCustomStep(stepName);
 	}
 
 	@RequestMapping(value = "/mappings", method = RequestMethod.POST)

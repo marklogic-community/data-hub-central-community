@@ -329,7 +329,7 @@ export default {
 			}
 			flowsApi.createStep(this.flowName, step)
 				.then(() => {
-					return this.getFlow()
+					return this.getFlow(this.flowName)
 				})
 				.then(() => {
 					this.open = false

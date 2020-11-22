@@ -75,7 +75,7 @@ export default {
 					stepOrder: key
 				})
 			}
-			return steps.filter(step => step.stepDefinitionType !== 'INGESTION')
+			return steps
 		},
 
 		open: {
