@@ -6,12 +6,19 @@ permalink: /
 ---
 
 # Envision for MarkLogic Data Hub
-<p>Envision for MarkLogic Data Hub provides a visual data modeler and two graphical explorers for harmonized and connected data in your true multi-model data hub.</p>
-Use **Connect** to model your data visually, **Explore** to view your harmonized data graph along with provenance, and **Know** to search and navigate your semantics ontology.
-## Integration with MarkLogic Data Hub
-Envision integrates requires **[MarkLogic Data Hub Framework](https://github.com/marklogic/marklogic-data-hub/releases)** 5.1 or greater and **[MarkLogic 10](https://developer.marklogic.com/products/marklogic-server/10.0)** or greater. It will work with on-prem data hubs as well as with cloud including MarkLogic Data Hub Service (DHS)
+<p>Envision for MarkLogic Data Hub provides a visual way to interact with and experience your true multi-model data hub.  You can go from loading data, to integrating, exploring, validating, and exporting curated results using the following components:  </p>
 
-You can use Connect to create models that you can visualize in Explore with new as well as existing data hubs.  Know provides a visualization for Semantics triples only.
+* **Upload** to load source csv files as-is into the data hub via drag and drop
+* **Connect** to visually model the specification for how you want to express your integrated business concepts as entities and relationships
+* **Integrate** to map your source data to your model as well as deduplicate and master it
+* **Explore** to view your harmonized data graph along with provenance
+* **Export** to export your newly haromnized entities as .csv files for consumption by BI tools
+*  **Know** to search and navigate your semantics ontology.
+
+## Integration with MarkLogic Data Hub
+Envision requires **[MarkLogic Data Hub Framework](https://github.com/marklogic/marklogic-data-hub/releases)** 5.1 or greater and **[MarkLogic 10](https://developer.marklogic.com/products/marklogic-server/10.0)** or greater. It will work with on-prem data hubs as well as with cloud including MarkLogic Data Hub Service (DHS)
+
+You can use Connect to create models that you can visualize in Explore with new as well as existing data hubs. Integrate also works with new as well as existing data hubs.  Know provides a visualization for Semantics triples only.
 <br>
 ### Run the jar
 
