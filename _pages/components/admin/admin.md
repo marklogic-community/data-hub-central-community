@@ -11,12 +11,6 @@ Envision is platform neutral and can be used with on-prem and cloud deployed Dat
 
 Envision (1.0.5 and greater) requires **[Data Hub Framework 5.2.3 (DHF)](https://developer.marklogic.com/products/data-hub/)**  to be used with the current **[MarkLogic Data Hub Service on Azure (DHS)](https://docs.marklogic.com/cloudservices/azure/getting-started-azure.html)**.
 
-Select "Admin" from the dropdown menu available by clicking on the 3 vertical dots found in the upper right corner of Envision.  This will take you to the Admin page where you can view the details of the hub you're currently running Envision with.
-
-![Data Hub](/envision/images/Admin-1.png) 
-
-Data Hub Flows can be run by clicking the "Run Flows" button.  
-
 To use Envision with DHS, start by downloading the gradle config file for your DHS instance. After downloading, remember to update the username and password with your DHS credentials. <br><br>
 
 ![DHS](/envision/images/DHS-1.png)

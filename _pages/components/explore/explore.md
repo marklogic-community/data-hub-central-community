@@ -11,12 +11,15 @@ An Entity Explorer for visualizing the results of data harmonized using the mode
 
 ### Getting Started
 
-Exploring is pretty self-explanatory.  
-
 Search on entities by entering a term or phrase in the search field.  
 
-You can expand relationships for an entity by right clicking on the entity or by selecting the entity and viewing it's Relationship pane. The Info pane of a selected entity will display the provenance associated with that entity.
-<br><br> 
+You can expand relationships for an entity by right clicking on the entity or by selecting the entity and viewing it's Relationship pane. The Info pane of a selected entity will display the provenance associated with that entity.  You can also take advantage of faceted navigation and toggle between graph and grid views.
+
+<br> 
 ![Explore](/envision/images/ExploreGH.png)
-<br><br>
+<br>
+
+<br> 
+![Explore](/envision/images/ExploreGH-2.png)
+<br>
 

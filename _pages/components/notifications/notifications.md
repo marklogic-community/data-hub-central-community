@@ -7,6 +7,8 @@ permalink: /components/notifications/
 
 # Notification Inbox and Mastering Validation
 
+This capability enables Human In The Loop (HITL) validation of entity deduplication and mastering through a notification inbox. 
+
 1. Notification Inbox 
 	* An inbox alerting users which records have been identified as similar by Smart Mastering.
 2. Mastering Validation

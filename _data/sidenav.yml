@@ -20,11 +20,14 @@ main:
     url: '/components/',
     text: 'Component Guides',
     childPages: [
+			{ url: '/components/upload/', text: 'Upload' },
       { url: '/components/connect/', text: 'Connect' },
+			{ url: '/components/integrate/', text: 'Integrate' },
       { url: '/components/explore/', text: 'Explore' },
-			{ url: '/components/know/', text: 'Know' },
 			{ url: '/components/notifications/', text: 'Mastering Notifications' },
-			{ url: '/components/admin/', text: 'Deploy to DHS' },
+			{ url: '/components/export/', text: 'Export' },
+			{ url: '/components/know/', text: 'Know' },
+			{ url: '/components/admin/', text: 'Deploy to DHS' }
       #{
       #  url: '/subpages/subsubpages/',
       #  text: 'Subsub pages',
