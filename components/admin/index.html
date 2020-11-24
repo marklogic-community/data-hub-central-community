@@ -1,0 +1,233 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html itemscope itemtype="http://schema.org/Organization" id="ie6" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 7 ]>   <html itemscope itemtype="http://schema.org/Organization" id="ie7" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 8 ]>   <html itemscope itemtype="http://schema.org/Organization" id="ie8" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 9 ]>   <html itemscope itemtype="http://schema.org/Organization" id="ie9" class="ie" lang="en-US"><![endif]-->
+<!--[if gt IE 9]><!--><html itemscope itemtype="http://schema.org/Organization" lang="en-US"><!--<![endif]-->
+<head>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <title>Administration - Envision</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" sizes="16x16 24x24 32x32 48x48 64x64 96x96" href="/envision/favicon.ico">
+    <meta name="application-name" content="Envision - Envision">
+    <link type="text/css" rel="stylesheet" href="/envision/assets/bundle.css">
+</head>
+<body class="">
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/envision">
+                  <span class="logo">
+                    <img src="/envision/images/logo-marklogic.svg" width="180px" height="38px" alt="MarkLogic" title="MarkLogic" scale="0">
+                  </span>
+                  Envision
+                </a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    
+                        <li  >
+                            
+                            <a href="/envision/">Getting Started</a>
+                            
+                        </li>
+                    
+                        <li  >
+                            
+                            <a href="https://github.com/marklogic-community/envision">GitHub</a>
+                            
+                        </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="side-nav col-md-3 hide-small">
+          <div class="panel panel-default">
+  <div class="panel-heading">Navigation</div>
+  <ul class="list-group">
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/">Getting Started</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/how-to-use/">How Do I Use it?</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/">Component Guides</a>
+    
+    
+      <ul class="list-group">
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/upload/">Upload</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/connect/">Connect</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/integrate/">Integrate</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/explore/">Explore</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/notifications/">Mastering Notifications</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/export/">Export</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/know/">Know</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item active"  >
+    
+    <a href="/envision/components/admin/">Deploy to DHS</a>
+    
+    
+  </li>
+  
+</ul>
+
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/faqs/">FAQs</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/troubleshooting/">Troubleshooting</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="https://github.com/marklogic-community/envision">Envision on GitHub</a>
+    
+    
+  </li>
+  
+</ul>
+
+</div>
+
+        </div>
+        <div class="col-md-9">
+          <h1 id="deploy-to-dhs">Deploy to DHS</h1>
+
+<p>Envision is platform neutral and can be used with on-prem and cloud deployed Data Hubs as well as with the MarkLogic Data Hub Service (DHS).</p>
+
+<p>Envision (1.0.5 and greater) requires <strong><a href="https://developer.marklogic.com/products/data-hub/">Data Hub Framework 5.2.3 (DHF)</a></strong>  to be used with the current <strong><a href="https://docs.marklogic.com/cloudservices/azure/getting-started-azure.html">MarkLogic Data Hub Service on Azure (DHS)</a></strong>.</p>
+
+<p>To use Envision with DHS, start by downloading the gradle config file for your DHS instance. After downloading, remember to update the username and password with your DHS credentials. <br /><br /></p>
+
+<p><img src="/envision/images/DHS-1.png" alt="DHS" /></p>
+
+<p>Save this file in your data hub root directory as         “gradle-dhs.properties”.<br /></p>
+
+<p>Use gradle deploy your data hub to DHS.<br />
+<code class="highlighter-rouge">gradlew hubDeploy -PenvironmentName=dhs -i </code></p>
+
+<p>Stop Envision, and restart it using the new properties file so that it points to your DHS instance.<br />
+<code class="highlighter-rouge">java -DdhfEnv=dhs -jar envision-1.0.5.jar</code></p>
+
+<p>Login to Envision and revisit the Admin pane to confirm your using Envision with your Data Hub Instance.<br /></p>
+
+<p>You can load your data and run your flows using gradle of course, and then use Envision Explore to explore your data and to curate entities that require mastering.  You can also load data and run your flows from Envision. <br /></p>
+
+<p>To run your flows in Envision, navigate to the Admin pane and click the “Run Flows” button to run your flows.  Data from any ingest steps will be loaded from the location the ingest step points to where Envision is currently running and transfer that data to the DHS Data Hub for processing.  Any flows defined will all be run then as well.<br /></p>
+
+<p>Using either method above you can then explore and master your data in DHS using Envision.</p>
+
+        </div>
+      </div>
+    </div>
+  </article>
+
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                    Copyright © 2020 MarkLogic Corporation. All Rights Reserved. MARKLOGIC® is a registered trademark of MarkLogic Corporation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="/envision/js/respond.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="/envision/assets/bundle.js" id="1"></script>
+  </body>
+</html>
+

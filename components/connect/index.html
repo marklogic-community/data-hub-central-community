@@ -1,0 +1,292 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html itemscope itemtype="http://schema.org/Organization" id="ie6" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 7 ]>   <html itemscope itemtype="http://schema.org/Organization" id="ie7" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 8 ]>   <html itemscope itemtype="http://schema.org/Organization" id="ie8" class="ie ie-old" lang="en-US"><![endif]-->
+<!--[if IE 9 ]>   <html itemscope itemtype="http://schema.org/Organization" id="ie9" class="ie" lang="en-US"><![endif]-->
+<!--[if gt IE 9]><!--><html itemscope itemtype="http://schema.org/Organization" lang="en-US"><!--<![endif]-->
+<head>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <title>Connect - Envision</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" sizes="16x16 24x24 32x32 48x48 64x64 96x96" href="/envision/favicon.ico">
+    <meta name="application-name" content="Envision - Envision">
+    <link type="text/css" rel="stylesheet" href="/envision/assets/bundle.css">
+</head>
+<body class="">
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/envision">
+                  <span class="logo">
+                    <img src="/envision/images/logo-marklogic.svg" width="180px" height="38px" alt="MarkLogic" title="MarkLogic" scale="0">
+                  </span>
+                  Envision
+                </a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    
+                        <li  >
+                            
+                            <a href="/envision/">Getting Started</a>
+                            
+                        </li>
+                    
+                        <li  >
+                            
+                            <a href="https://github.com/marklogic-community/envision">GitHub</a>
+                            
+                        </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="side-nav col-md-3 hide-small">
+          <div class="panel panel-default">
+  <div class="panel-heading">Navigation</div>
+  <ul class="list-group">
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/">Getting Started</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/how-to-use/">How Do I Use it?</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/">Component Guides</a>
+    
+    
+      <ul class="list-group">
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/upload/">Upload</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item active"  >
+    
+    <a href="/envision/components/connect/">Connect</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/integrate/">Integrate</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/explore/">Explore</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/notifications/">Mastering Notifications</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/export/">Export</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/know/">Know</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/components/admin/">Deploy to DHS</a>
+    
+    
+  </li>
+  
+</ul>
+
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/faqs/">FAQs</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="/envision/troubleshooting/">Troubleshooting</a>
+    
+    
+  </li>
+  
+  <li  class="list-group-item"  >
+    
+    <a href="https://github.com/marklogic-community/envision">Envision on GitHub</a>
+    
+    
+  </li>
+  
+</ul>
+
+</div>
+
+        </div>
+        <div class="col-md-9">
+          <h1 id="connect">Connect</h1>
+
+<p>Connect provides a whiteboard like canvas for modeling the key business concepts required to solve a business problem by expressing them as entities and relationships.</p>
+
+<p>As the model is created, entity services descriptors are generated in the MarkLogic Data Hub that can be used for mapping and harmonizing source data.</p>
+
+<p>When creating an entity, you can add an “Entity” or a “Concept” to the whiteboard.  Entities result in an entity services model and will be persisted as the model and subsequently as harmonized records in the data hub. Concepts are projections of a property value from an entity.  Concepts result in a Semantics triple in the system.</p>
+
+<p>Simply put, on the modeling canvas: solid line circles are documents, dotted line circles are IRIs.
+<br /><br /> 
+<img src="/envision/images/ConnectGH.png" alt="Connect" />
+<br /><br /></p>
+
+<h3 id="getting-started">Getting Started</h3>
+
+<p>If you are working with an existing data hub, the first time you open Connect you will see your current model displayed.  You can now name relationships and edit the model and whatever you edit or append will be roundtripped back to the data hub.</p>
+
+<p>If you are starting from scratch, as you create the new model, it will be stored in the data hub.</p>
+
+<p>Note: Whenever you change models in Connect, the model in the hub is also updated. Connect only allows you to use one model at a time in the data hub.</p>
+
+<h3 id="defining-connections-between-entities">Defining Connections between Entities</h3>
+<p>A key is required to connect entities.</p>
+
+<p>Assuming the data is coming from csv files, then it will not be far-fetched to expect the existence of a key in the values to join the data.  The property names don’t have to be the same, but there must be a value in each entity that you can point to and say “If the value for EntityA.property and EntityB.property are equal, then the relationship exists.</p>
+
+<p>For this to work, the following conditions must be met in the model:</p>
+
+<ul>
+  <li>
+    <p>An identifier must be defined for one of the 2 entities participating in a connection with each other 
+The identifier sets the property to be used as the unique id for an entity
+Identifiers for an entity in the Connect app can be arrays</p>
+  </li>
+  <li>
+    <p>A property name for the key MUST exist in both entities.<br />
+An Order has an orderId related to a Product with an orderId
+This property name does not need to be the same in both entities
+The value for the properties defined is what is important for making the connection
+Order.orderId, Product.ord_id == GOOD!</p>
+  </li>
+</ul>
+
+<h3 id="making-the-connection">Making the Connection</h3>
+<p>Ideally, we’ll have ways to define relationships by more complex rules, but we are just getting started and for our purposes, this is sufficient to make our beginning.</p>
+
+<h4 id="create-an-id-for-an-entity"><strong>Create an id for an Entity</strong></h4>
+<ul>
+  <li>Select an entity from the Connect canvas</li>
+  <li>Select the ‘INFO tab for that entity</li>
+  <li>Select the property for the selected Entity to be used as its identifier.
+<br /><br /> 
+<img src="/envision/images/connect-1.png" alt="Create an id." />
+<br /><br /></li>
+  <li>Once set, the property used as the identifier will be noted with an ‘id’ in the properties pane.
+<br /><br /> 
+<img src="/envision/images/connect-2.png" alt="View in Properties Pane." />
+<br /><br /></li>
+</ul>
+
+<h4 id="define-the-join-keys-for-the-relationship"><strong>Define the join keys for the Relationship</strong></h4>
+<ul>
+  <li>Select an entity from the Connect canvas</li>
+  <li>Select the ‘RELATIONSHIPS’ tab for that entity</li>
+  <li>Click the pencil icon to edit the relationship you wish to define the key for</li>
+  <li>For the key fields, select the property from the dropdown properties from each list that exists in the ‘Target Entity’ that points back to the ‘From Entity’</li>
+  <li>If one of these entities does not have an identifier defined, an error message will be displayed. You will not be able to link the entities until you define an identifier for one of the entities.</li>
+  <li>Click ‘SAVE’
+<br /><br /> 
+<img src="/envision/images/connect-3.png" alt="Define Join Keys." />
+<br /><br /></li>
+</ul>
+
+<h4 id="setting-the-label-for-what-is-visualized-in-the-concept-explorer"><strong>Setting the Label for What is Visualized in the Concept Explorer</strong></h4>
+<ul>
+  <li>The label is set in Concept Connector.  You can change the label here at any time to change what the label is in the Concept Explorer.</li>
+  <li>Select an entity from the Connect canvas</li>
+  <li>Select the ‘INFO’ tab</li>
+  <li>Select the ‘Entity Label’ from the dropdown menu
+<br /><br /> 
+<img src="/envision/images/connect-4.png" alt="Setting Node Label." />
+<br /><br /></li>
+</ul>
+
+
+        </div>
+      </div>
+    </div>
+  </article>
+
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                    Copyright © 2020 MarkLogic Corporation. All Rights Reserved. MARKLOGIC® is a registered trademark of MarkLogic Corporation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="/envision/js/respond.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="/envision/assets/bundle.js" id="1"></script>
+  </body>
+</html>
+
