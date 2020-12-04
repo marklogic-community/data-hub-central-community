@@ -29,7 +29,7 @@
     "file-dropzone-element": "0.0.3",
     "font-awesome": "^4.7.0",
     "grove-vue-visjs-graph": "git+https://project.marklogic.com/repo/scm/~gjosten/grove-vue-visjs-graph.git",
-    "highlight.js": "^9.18.3",
+    "highlight.js": "^10.4.1",
     "isomorphic-fetch": "^2.2.1",
     "litegraph.js": "^0.7.8",
     "lodash": "^4.17.20",
