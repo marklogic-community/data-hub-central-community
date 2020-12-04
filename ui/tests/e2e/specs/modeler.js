@@ -15,6 +15,7 @@ describe('End to end test to create and update model', () => {
 			response: {}
 		}).as('renameModel')
 		cy.route('GET', '/api/models/', [])
+		cy.route('GET', '/api/entities', 'fixture:entities.json')
 		cy.route('/api/auth/profile', {"username":"admin","fullname":null,"emails":null})
 		cy.route('/api/models/current', 'fixture:model.json')
 		cy.route('POST', '/api/explore/entities', 'fixture:searchResults.json')
@@ -159,7 +160,7 @@ describe('End to end test to create and update model', () => {
 
 		//see if the entity appears
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('contain', 'Test Model')
-		cy.get('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('[data-cy="editProperty.propName"]').type('id')
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
@@ -232,7 +233,7 @@ describe('End to end test to create and update model', () => {
 			})
 	})
 
-	it.only('can create and edit 2 connected entities', () => {
+	it('can create and edit 2 connected entities', () => {
 		cy.route('GET', '/api/models/', [ { "name": "Test Model", "edges": {}, "nodes": {} } ])
 		cy.visit('/')
 		cy.url().should('include', '/model')
@@ -250,11 +251,6 @@ describe('End to end test to create and update model', () => {
 
 		//see if the entity appears
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('contain', 'Test Model')
-		// cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.addPropertyBtn"]').click()
-		// cy.get('[data-cy="editProperty.propName"]').type('id')
-		// cy.get('[data-cy="editProperty.createBtn"]').click()
-		// cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
-		// cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
@@ -283,7 +279,7 @@ describe('End to end test to create and update model', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"isArray": false, "isElementRangeIndex": false, "isPii": false, "isPrimaryKey": false, "isRangeIndex": false, "isRequired": false, "isWordLexicon": false, "name": "id", "type": "string", "_propId": "6d743ab9-ca56-44b0-83a7-8684b531d60e"}]}, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] }}}])
 
 		// add id property
-		cy.contains('.v-expansion-panel-header--active', 'Poet').parent().find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('[data-cy="editProperty.propName"]').type('id')
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
@@ -292,12 +288,11 @@ describe('End to end test to create and update model', () => {
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
-				console.log('props', body.nodes.poet.properties)
 				expect(body.nodes.poet.properties.map(p => p.name)).to.deep.equal(['id'])
 				expect(body.nodes.philosopher.properties.map(p => p.name)).to.deep.equal([])
 			})
 
-			cy.contains('.v-expansion-panel-header--active', 'Poet').parent().find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('.menuable__content__active').find('[data-cy="editProperty.propName"]').type('firstName')
 		cy.get('.menuable__content__active').find('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'idfirstName')
@@ -305,14 +300,13 @@ describe('End to end test to create and update model', () => {
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
-				console.log('props', body.nodes.poet.properties)
 				expect(body.nodes.poet.properties.map(p => p.name)).to.deep.equal(['id', 'firstName'])
 				expect(body.nodes.philosopher.properties.map(p => p.name)).to.deep.equal([])
 			})
 		// cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"isArray": false, "isElementRangeIndex": false, "isPii": false, "isPrimaryKey": false, "isRangeIndex": false, "isRequired": false, "isWordLexicon": false, "name": "id", "type": "string", "_propId": "6d743ab9-ca56-44b0-83a7-8684b531d60e"},{"isArray": false, "isElementRangeIndex": false, "isPii": false, "isPrimaryKey": false, "isRangeIndex": false, "isRequired": false, "isWordLexicon": false, "name": "firstName", "type": "string", "_propId": "6d743ab9-ca56-44b0-83a7-8684b531d6ff"}]}, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] }}}])
 
 		cy.get('[data-cy=nodeList]').contains("philosopher").click()
-		cy.contains('.v-expansion-panel-header--active', 'Philosopher').parent().find('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="panel-philosopher"] [data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('.menuable__content__active').find('[data-cy="editProperty.propName"]').type('id')
 		cy.get('.menuable__content__active').find('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'ididfirstName')
@@ -320,7 +314,6 @@ describe('End to end test to create and update model', () => {
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
-				console.log('props', body.nodes.poet.properties)
 				expect(body.nodes.poet.properties.map(p => p.name)).to.deep.equal(['id', 'firstName'])
 				expect(body.nodes.philosopher.properties.map(p => p.name)).to.deep.equal(['id'])
 			})
@@ -339,7 +332,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
-		cy.get('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('[data-cy="editProperty.propName"]').type('firstName')
 		cy.get('[data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'firstName')
@@ -366,7 +359,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
-		cy.get('[data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
 		cy.get('[data-cy="editProperty.propName"]').type('arrayProp')
 		cy.get('[data-cy="editProperty.dataType"]').click()
 		cy.get('.v-list-item__title:visible').contains('array').parentsUntil('.v-list-item').click()
@@ -418,7 +411,7 @@ describe('End to end test to create and update model', () => {
 		})
 
 		cy.get('[data-cy="entityPickList.propertyRow"][name="c"]')
-			.move('tbody.properties', '[data-cy="entityPickList.propertyRow"]', 0)
+			.move('div.properties', '[data-cy="entityPickList.propertyRow"]', 0)
 
 		cy.get('[data-cy="entityPickList.propertyRow"]').eq(0).within(() => {
 			cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'a')
@@ -504,7 +497,8 @@ describe('End to end test to create and update model', () => {
 						"_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7",
 						"name": "arrayProp",
 						"type": "boolean",
-						"isArray": true
+						"isArray": true,
+						"isStructured": false
 					}
 				])
 			})
@@ -577,7 +571,7 @@ describe('End to end test to create and update model', () => {
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
-				expect(body.nodes.poet.properties).to.deep.equal([{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": false, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string", "isArray": false, "isPrimaryKey": true }])
+				expect(body.nodes.poet.properties).to.deep.equal([{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": false, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string", "isArray": false, "isPrimaryKey": true, "isStructured": false }])
 			})
 
 		// check id attr
@@ -596,7 +590,7 @@ describe('End to end test to create and update model', () => {
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
-				expect(body.nodes.poet.properties).to.deep.equal([{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": false, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string", "isArray": false, "isPrimaryKey": false }])
+				expect(body.nodes.poet.properties).to.deep.equal([{"_propId": "abc123", "name": "id", "type": "string", "isPrimaryKey": false, "isPii": true},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string", "isArray": false, "isPrimaryKey": false, "isStructured": false }])
 			})
 
 		// check id attr
@@ -619,5 +613,60 @@ describe('End to end test to create and update model', () => {
 		cy.get('.v-messages__message').should('contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
 		cy.get('[data-cy="infoPane.baseUri"]').clear().type('http://blah.com/')
 		cy.get('.v-messages__message').should('not.contain', 'A valid IRI is required, e.g. http://marklogic.envision.com/')
+	})
+
+	it('can model nested entities', () => {
+		cy.route('GET', '/api/models/', 'fixture:models.json')
+		cy.visit('/')
+		cy.url().should('include', '/model')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("customer").click()
+
+		cy.get('[data-cy="panel-customer"] [data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('.menuable__content__active [data-cy="editProperty.propName"]').type('address1')
+		cy.get('.menuable__content__active [data-cy="editProperty.dataType"]').click()
+		cy.get('.menuable__content__active [data-cy="editProperty.dataType"]').type('{backspace}')
+		cy.get('.menuable__content__active [data-cy="editProperty.dataType"]').type('addr')
+		cy.get('.v-list-item__title:visible').contains('Address').parentsUntil('.v-list-item').click()
+		cy.get('.menuable__content__active [data-cy="editProperty.createBtn"]').click()
+
+		cy.get('.fa.fa-angle-right').should('be.visible')
+		cy.get('[data-cy="entityPickList.entityPropertyName"]').contains('address1').should('be.visible')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').contains('Address').should('be.visible')
+		cy.get('.structured').should('have.css', 'max-height').and('eq', '0px')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line1').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line2').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('city').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('state').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('zip').should('be.visible')
+
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').contains('Address').click()
+		cy.get('.structured').should('have.css', 'max-height').and('eq', 'none')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line1').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line2').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('city').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('state').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('zip').should('be.visible')
+
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').contains('Address').click()
+		cy.get('.structured').should('have.css', 'max-height').and('eq', '0px')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line1').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line2').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('city').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('state').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('zip').should('be.visible')
+
+		cy.get('[data-cy=nodeList]').contains("address").click()
+		cy.get('[data-cy="panel-address"] [data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('.menuable__content__active [data-cy="editProperty.propName"]').type('stuff')
+		cy.get('.menuable__content__active [data-cy="editProperty.createBtn"]').click()
+
+		cy.get('[data-cy=nodeList]').contains("customer").click()
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line1').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line2').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('city').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('state').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('zip').should('be.visible')
+		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('stuff').should('be.visible')
 	})
 })

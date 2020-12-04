@@ -9,57 +9,14 @@
 		</v-tabs>
 		<v-tabs-items v-model="whichTab">
 			<v-tab-item>
-				<v-simple-table v-if="properties.length > 0">
-					<thead>
-						<tr>
-							<th class="id-col"></th>
-							<th class="primary--text">Name</th>
-							<th class="primary--text">Type</th>
-							<th class="primary--text">Action</th>
-						</tr>
-					</thead>
-					<draggable v-bind="dragOptions" v-model="properties" tag="tbody" class="properties">
-						<tr v-for="prop in properties" :key="prop.name" data-cy="entityPickList.propertyRow" :name="prop.name">
-							<!-- td class="id-col" data-cy="entityPickList.entityPropertyId">
-								<span v-if="currentEntity.idField === prop.name">id</span>
-							</td -->
-
-							<td class="id-col" data-cy="entityPickList.entityPropertyId">
-								<span v-if="currentEntity.idField === prop.name" title="ID field">id</span>
-								<edit-property-menu
-									:prop="Object.assign({}, prop)"
-									:entityName="currentEntity.entityName"
-									:existingProperties="properties"
-									@save="btnSaveProperty">
-										<span v-if="prop.isPii" title="PII">pii</span>
-										<span v-if="prop.isPrimaryKey" title="Primary Key">key</span>
-										<span v-if="prop.isRequired" title="Required">req</span>
-										<span v-if="prop.isElementRangeIndex || prop.isWordLexicon || prop.isRangeIndex" title="Advanced options">...</span>
-
-									</edit-property-menu>
-
-
-
-							</td>
-							<td data-cy="entityPickList.entityPropertyName">{{prop.name}}</td>
-							<td data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</td>
-							<td class="action">
-								<edit-property-menu
-									:prop="Object.assign({}, prop)"
-									:entityName="currentEntity.entityName"
-									:existingProperties="properties"
-									@save="btnSaveProperty">
-									<button data-cy="entityPickList.editPropertyBtn" class="fa fa-pencil" aria-label="Edit Property" />
-								</edit-property-menu>
-								<button
-									data-cy="entityPickList.deletePropertyBtn"
-									class="fa fa-trash"
-									v-on:click="btnDeleteProperties(currentEntity, prop.name)"
-									aria-label="Delete property"></button>
-							</td>
-						</tr>
-					</draggable>
-				</v-simple-table>
+				<edit-properties
+					:properties="properties"
+					:entity="currentEntity"
+					@deleteProperties="btnDeleteProperties"
+					@updated="propertiesUpdated"
+					@save="btnSaveProperty"
+					v-if="properties.length > 0"
+				></edit-properties>
 				<p class="grey--text darken-4" v-else>No properties</p>
 				<edit-property-menu
 					v-if="currentEntity"
@@ -189,9 +146,9 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
 import EditRelationship from '@/components/EditRelationship.vue';
 import EditPropertyMenu from '@/components/EditPropertyMenu.vue'
+import EditProperties from './EditProperties.vue';
 
 const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+(\/)$/
 
@@ -204,19 +161,13 @@ export default {
 		activeTab: {type: Number}
 	},
 	components: {
-		draggable,
 		EditRelationship,
-		EditPropertyMenu
+		EditPropertyMenu,
+		EditProperties
 	},
 	computed: {
-		properties: {
-			get() {
-				return this.currentEntity ? this.currentEntity.properties : []
-			},
-			set(props) {
-				this.currentEntity.properties = props
-				this.save()
-			}
+		properties() {
+			return this.currentEntity ? this.currentEntity.properties : []
 		},
 		baseUri: {
 			get() {
@@ -250,10 +201,7 @@ export default {
 			relationshipsPopover: {},
 			whichTab: null,
 			errorIRI: false,
-			errorMsgIRI: null,
-			dragOptions: {
-				animation: 200,
-			}
+			errorMsgIRI: null
 		}
 	},
 	watch: {
@@ -275,6 +223,10 @@ export default {
 		cancelRelationshipsPopover(id) {
 			this.$set(this.relationshipsPopover, id, false)
 		},
+		propertiesUpdated(properties) {
+			this.currentEntity.properties = properties
+			this.save()
+		},
 		btnSaveProperty({oldProp, newProp}) {
 			const idx = this.currentEntity.properties.findIndex(p => p._propId === (oldProp || {})._propId)
 			if (idx >= 0) {
@@ -283,13 +235,12 @@ export default {
 			else {
 				this.currentEntity.properties.push(newProp)
 			}
-			console.log(this.currentEntity.properties)
 			this.save()
 		},
 		save() {
 			this.$emit('updated', this.currentEntity)
 		},
-		btnDeleteProperties(entity, propName){
+		btnDeleteProperties({entity, propName}){
 			this.$emit ("deleteProperties", {entity, propName})
 		},
 		btnSaveNewEdge(item, relInfo) {

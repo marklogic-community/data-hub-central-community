@@ -60,7 +60,7 @@
 				<template v-slot:activator="{ on }">
 					<v-btn
 						data-cy="entity.hideBtn"
-						@click="$emit('hideDetails')"
+						@click="$emit('hide-details')"
 						right icon small class="small-btn" v-on="on">
 						<v-icon>unfold_less</v-icon>
 					</v-btn>
@@ -80,45 +80,11 @@
 				<v-tab ripple>Relationships</v-tab>
 				<v-tab ripple>Info</v-tab>
 				<v-tab-item>
-					<p class="no-rels" v-if="filteredProperties.length == 0">No properties</p>
-					<v-simple-table v-else>
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Type</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr class="dragrow" v-for="(prop, index) in filteredProperties" :key="index">
-								<td>{{prop.label}}</td>
-								<td>
-									<div v-for="(value, idx) in asArray(prop.value)" :key="idx">
-										<template v-if="value && value.contentType">
-											<v-tooltip bottom>
-												<template v-slot:activator="{ on: tooltip }">
-													<span class="clickable-binary"
-														v-on="{ ...tooltip }"
-														@click="showBinary(value)">
-														<i :class="typeIcon(value.contentType)"></i>
-														<span>{{value.value}}</span>
-													</span>
-												</template>
-												<span>Preview {{value.value}}</span>
-											</v-tooltip>
-										</template>
-										<template v-else-if="value && value.length > 100 && !expandedProperty[prop.label]">
-											<span>{{value | truncate(100, '')}}</span>
-											<a class="more-less" @click="$set(expandedProperty, prop.label, true)">(more...)</a>
-										</template>
-										<template v-else>
-											<span>{{value}}</span>
-											<a class="more-less" v-if="value && value.length > 100" @click="$set(expandedProperty, prop.label, false)">(less...)</a>
-										</template>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</v-simple-table>
+					<entity-properties
+						:properties="entityDef.properties"
+						:entity="entity.entity"
+						@showBinary="showBinary"
+					/>
 				</v-tab-item>
 				<v-tab-item>
 					<v-simple-table v-if="hasRelationships">
@@ -133,7 +99,6 @@
 							<tr v-for="edge in Object.keys(entity.edgeCounts)" :key="edge">
 								<td>
 									<a @click="expandRelationships(entity.edgeCounts[edge])">{{entity.edgeCounts[edge].label}}</a>
-									<!-- <span v-else>{{edge.label}}</span> -->
 								</td>
 								<td>{{entity.edgeCounts[edge].to}}</td>
 								<td>{{entity.edgeCounts[edge].count}}</td>
@@ -224,11 +189,11 @@
 </template>
 
 <script>
-
 import Confirm from '@/components/Confirm.vue'
 import BinaryViewDialog from '@/components/BinaryViewDialog.vue'
 import { mapState } from 'vuex'
 import _ from 'lodash'
+import EntityProperties from './EntityProperties.vue'
 
 export default {
 	name: 'entity-details',
@@ -237,21 +202,15 @@ export default {
 	},
 	components: {
 		Confirm,
-		BinaryViewDialog
+		BinaryViewDialog,
+		EntityProperties
 	},
 	data() {
 		return {
 			active: null,
-			activePanel: 'active',
-			activeTab: 1,
-			provExpanded: {},
 			expandedProv: null,
 			confirmUnmergeMenu: null,
-			expandedProperty: {},
-			currentBinary: null,
-			dragOptions: {
-				animation: 200
-			}
+			currentBinary: null
 		}
 	},
 	computed: {
@@ -272,14 +231,6 @@ export default {
 				.sort((a, b) => this.$moment(a.entity.time).diff(this.$moment(b.entity.time)))
 				.reverse()
 		},
-		filteredProperties() {
-			return this.entityDef ? this.entityDef.properties.map(p => {
-				return {
-					label: p.name,
-					value: this.entity.entity[p.name]
-				}
-			}) : []
-		},
 		advancedProperties() {
 			return _.pickBy(this.entity, (v, k) => {
 				return (k === 'uri');
@@ -299,28 +250,6 @@ export default {
 		}),
 	},
 	methods: {
-		asArray(prop) {
-			if (prop instanceof Array) {
-				return prop
-			}
-			return [prop]
-		},
-		typeIcon(type) {
-			let icon = null
-			if (type.match('application/pdf')) {
-				icon = "fa fa-file-pdf-o"
-			}
-			else if (type.match(/^audio\//)) {
-				icon = "fa fa-file-audio-o"
-			}
-			else if (type.match(/^video\//)) {
-				icon = "fa fa-file-video-o"
-			}
-			else if (type.match(/^image\//)) {
-				icon = "fa fa-file-image-o"
-			}
-			return icon
-		},
 		unmerge() {
 			this.$emit('unmerge', this.entity.uri);
 			this.confirmUnmergeMenu = false;
@@ -507,26 +436,32 @@ th {
 	overflow-y: auto;
 }
 
-.more-less {
-	float: right;
-}
-
 .v-input {
 	flex: 0 0 auto;
 }
 
-.fa {
-	font-size: 24px;
-}
+/deep/ .prop-grid {
+	display: grid;
+	grid-template-columns: 0.5fr 1fr;
+	grid-template-rows: auto;
+	grid-column-gap: 0px;
+	grid-row-gap: 0px;
+	color: black;
+	padding: 0 16px;
+	line-height: 48px;
 
-span.clickable-binary {
-	i {
-		margin-right: 5px;
+	&.grid-row {
+		&:hover {
+			background-color: #eee;
+		}
+
+		&.expanded {
+			border: 1px solid rgb(68, 73, 156);
+			background-color: rgb(68, 73, 156);
+			color: white;
+			border-bottom: 0px;
+		}
 	}
-	span {
-		font-size: 10px;
-	}
-	cursor: pointer;
 }
 
 </style>

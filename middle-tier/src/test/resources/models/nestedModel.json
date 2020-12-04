@@ -62,16 +62,9 @@
 					"collation": "http://marklogic.com/collation/codepoint"
 				},
 				{
-					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8",
 					"name": "address",
 					"type": "Address",
-					"isArray": false,
-					"isRequired": false,
-					"isPii": false,
-					"isElementRangeIndex": false,
-					"isRangeIndex": false,
-					"isWordLexicon": false,
-					"description": null
+					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8"
 				}
 			]
 		},

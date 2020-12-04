@@ -32,7 +32,7 @@
 				v-model="arrayType"
 				:menu-props="{ 'content-class': 'menuDataTypeArray'}"
 			></v-autocomplete>
-			<v-expansion-panels v-model="advancedState">
+			<v-expansion-panels v-if="!isStructured" v-model="advancedState">
 				<v-expansion-panel data-cy="editProperty.advancedBtn">
 					<v-expansion-panel-header>Advanced</v-expansion-panel-header>
 					<v-expansion-panel-content>
@@ -55,7 +55,7 @@
 								></v-checkbox>
 							</v-flex>
 							<v-flex md6>
-								
+
 								<v-checkbox
 									v-if="primaryKey == '' || (prop && primaryKey == prop.name) "
 									data-cy="prop.isPrimaryKey"
@@ -98,6 +98,7 @@
 
 <script>
 import uuidv4 from 'uuid/v4';
+import { mapState, mapActions } from 'vuex'
 
 export default {
 	props: {
@@ -109,8 +110,17 @@ export default {
 		visible: {type: Boolean}
 	},
 	computed: {
+		...mapState({
+			model: state => state.model.model
+		}),
+		entityNames() {
+			return this.model ? Object.values(this.model.nodes).map(node => node.entityName) : []
+		},
 		isNew() {
 			return !(this.prop)
+		},
+		isStructured() {
+			return this.entityNames.indexOf(this.type) >= 0
 		},
 		isArray() {
 			return this.type === 'array'
@@ -124,9 +134,9 @@ export default {
 			})
 		},
 		dataTypeWithArray() {
-			return [{ text: "array", value: "array" }].concat(this.dataTypes)
+			return [{ text: "array", value: "array" }].concat(this.dataTypes).concat(this.entityNames)
 		},
-		primaryKey() { 
+		primaryKey() {
 			// feature/issue-12 - check to see if any prop is defined as a primary key
 			if (this.existingProperties) {
 				for (var i=0; i<this.existingProperties.length; i++) {
@@ -173,7 +183,7 @@ export default {
 				for (var i=0; i<this.existingProperties.length; i++) {
 					if (this.existingProperties[i].name != this.name ) {
 						this.existingProperties[i].isPrimaryKey = false
-					}	
+					}
 				}
 			}
 			this.isPrimaryKey = true
@@ -251,6 +261,7 @@ export default {
 				name: this.name,
 				type: this.isArray ? this.arrayType : this.type,
 				isArray: this.isArray,
+				isStructured: this.isStructured,
 				isRequired: this.isRequired,
 				isPii: this.isPii,
 				isPrimaryKey: this.isPrimaryKey,

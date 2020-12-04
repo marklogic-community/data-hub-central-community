@@ -48,7 +48,7 @@ public class ModelTests extends BaseTest {
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
 		modelService.setModelsDir(modelsDir.toFile());
-		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModel.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
 		jsonAssertEquals(getResource("output/esEntities.json"), result);
@@ -68,6 +68,24 @@ public class ModelTests extends BaseTest {
 
 		DatabaseClient client = getFinalClient();
 		JsonNode result = EntityModeller.on(client).fromDatahub();
+		jsonAssertEquals(getResource("output/esModel.json"), result, resultCompare);
+	}
+
+	@Test
+	public void fromDatahubNested() throws Exception {
+		CustomComparator resultCompare = new CustomComparator(JSONCompareMode.STRICT,
+			new Customization("nodes.*.properties[*]._propId", (o1, o2) -> true),
+			new Customization("nodes.*.properties[*].properties[*]._propId", (o1, o2) -> true)
+		);
+
+		installFinalDoc("esEntities/Address.entity.json", "/entities/Address.entity.json", "http://marklogic.com/entity-services/models");
+		installFinalDoc("esEntities/nestedEntities.json", "/entities/Employee.entity.json", "http://marklogic.com/entity-services/models");
+		installFinalDoc("esEntities/Department.entity.json", "/entities/Department.entity.json", "http://marklogic.com/entity-services/models");
+		installFinalDoc("esEntities/Organization.entity.json", "/entities/Organization.entity.json", "http://marklogic.com/entity-services/models");
+
+		DatabaseClient client = getFinalClient();
+		JsonNode result = EntityModeller.on(client).fromDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
 		jsonAssertEquals(getResource("output/esModel.json"), result, resultCompare);
 	}
 }

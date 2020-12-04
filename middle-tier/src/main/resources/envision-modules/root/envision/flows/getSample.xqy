@@ -28,7 +28,7 @@ declare function local:speed-walk($o, $nodes as node()*, $root-xpath) {
 
 declare function local:speed-walk-json($o, $nodes as node(), $parent) {
 	for $n in $nodes
-	let $xpath := $parent || fn:node-name($n)
+	let $xpath := $parent || fn:string(fn:node-name($n))
 	let $oo := (map:get($o, $xpath), json:object())[1]
 	let $_ := map:put($o, $xpath, $oo)
 	let $_ :=
@@ -42,7 +42,8 @@ declare function local:speed-walk-json($o, $nodes as node(), $parent) {
 declare function local:walk($o, $n as node()) {
 	for $xpath in map:keys($o)
 	let $obj := map:get($o, $xpath)
-	let $node := (xdmp:value("$n/*[fn:local-name(.) = '" || $xpath || "']"))[1]
+	let $local-name := fn:string((fn:tokenize($xpath, "/"))[fn:last()])
+	let $node := (xdmp:value("$n/*[fn:local-name(.) = '" || $local-name || "']"), object-node {})[1]
 	let $oo := json:object()
 	let $ns := fn:namespace-uri-from-QName(fn:node-name($node))
 	let $ns-prefix := fn:prefix-from-QName(fn:node-name($node))
@@ -58,7 +59,7 @@ declare function local:walk($o, $n as node()) {
 	let $_ := map:put($oo, "xpath", $xpath)
 	let $_ :=
 		if (map:count($obj) > 0) then
-			map:put($oo, "children", json:to-array(local:walk($obj, $n)))
+			map:put($oo, "children", json:to-array(local:walk($obj, $node)))
 		else
 			map:put($oo, "value", $node/string())
 	return

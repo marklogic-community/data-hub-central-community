@@ -16,25 +16,67 @@
 				"properties": {
 					"departmentId": {
 						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
+						"collation": "http://marklogic.com/collation/codepoint",
+						"description": null
 					},
 					"employeeId": {
 						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
+						"collation": "http://marklogic.com/collation/codepoint",
+						"description": null
 					},
 					"name": {
 						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
+						"collation": "http://marklogic.com/collation/codepoint",
+						"description": null
 					},
 					"skills": {
 						"datatype": "array",
+						"description": null,
 						"items": {
 							"datatype": "string",
 							"collation": "http://marklogic.com/collation/codepoint"
 						}
 					},
+					"address": {
+						"$ref": "#/definitions/Address"
+					},
 					"belongsTo": {
 						"$ref": "http://marklogic.com/envision/Department-0.0.1/Department"
+					}
+				}
+			},
+			"Address" : {
+				"primaryKey": null,
+				"required" : [ ],
+				"pii" : [ ],
+				"elementRangeIndex" : [ ],
+				"rangeIndex" : [ ],
+				"wordLexicon" : [ ],
+				"properties" : {
+					"line1" : {
+						"datatype" : "string",
+						"collation" : "http://marklogic.com/collation/codepoint",
+						"description": null
+					},
+					"line2" : {
+						"datatype" : "string",
+						"collation" : "http://marklogic.com/collation/codepoint",
+						"description": null
+					},
+					"city" : {
+						"datatype" : "string",
+						"collation" : "http://marklogic.com/collation/codepoint",
+						"description": null
+					},
+					"state" : {
+						"datatype" : "string",
+						"collation" : "http://marklogic.com/collation/codepoint",
+						"description": null
+					},
+					"zip" : {
+						"datatype" : "string",
+						"collation" : "http://marklogic.com/collation/codepoint",
+						"description": null
 					}
 				}
 			}
@@ -57,10 +99,12 @@
 				"properties": {
 					"departmentId": {
 						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
+						"collation": "http://marklogic.com/collation/codepoint",
+						"description": null
 					},
 					"employeeIds": {
 						"datatype": "array",
+						"description": null,
 						"items": {
 							"datatype": "string",
 							"collation": "http://marklogic.com/collation/codepoint"
@@ -68,13 +112,8 @@
 					},
 					"name": {
 						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"hasEmployee": {
-						"datatype": "array",
-						"items": {
-							"$ref": "http://marklogic.com/envision/Employee-0.0.1/Employee"
-						}
+						"collation": "http://marklogic.com/collation/codepoint",
+						"description": null
 					},
 					"belongsTo": {
 						"$ref": "http://marklogic.com/envision/Organization-0.0.1/Organization"
@@ -98,125 +137,56 @@
 				"rangeIndex": [],
 				"wordLexicon": [],
 				"properties": {
-					"partOf": {
-						"$ref": "http://marklogic.com/envision/MegaCorp-0.0.1/MegaCorp"
+					"organizationId": {
+						"datatype": "string",
+						"collation": "http://marklogic.com/collation/codepoint",
+						"description": null
 					}
 				}
 			}
 		}
 	},
-	"megacorp": {
+	"address": {
 		"info": {
-			"title": "MegaCorp",
+			"title": "Address",
 			"version": "0.0.1",
 			"baseUri": "http://marklogic.com/envision/"
 		},
 		"definitions": {
-			"MegaCorp": {
-				"primaryKey": "isPrimaryKey",
-				"required": [
-					"isRequired1",
-					"isRequired2"
-				],
-				"pii": [
-					"isPii1",
-					"isPii2"
-				],
-				"elementRangeIndex": [
-					"isElementRangeIndex1",
-					"isElementRangeIndex2"
-				],
-				"rangeIndex": [
-					"isRangeIndex1",
-					"isRangeIndex2"
-				],
-				"wordLexicon": [
-					"isWordLexicon1",
-					"isWordLexicon2"
-				],
-				"properties": {
-					"isPrimaryKey": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isElementRangeIndex1": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isElementRangeIndex2": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isRangeIndex1": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isRangeIndex2": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isWordLexicon1": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isWordLexicon2": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isPii1": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isPii2": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isRequired1": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isRequired2": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"isArray": {
-						"datatype": "array",
-						"items": {
-							"datatype": "string",
-							"collation": "http://marklogic.com/collation/codepoint"
-						}
-					},
-					"crazyCollation": {
-						"datatype": "string",
-						"collation": "http://marklogic.com/collation/fr/S1/T0020/AS/MO"
-					},
-					"hasDesc": {
-						"datatype": "string",
-						"description": "has a desc",
-						"collation": "http://marklogic.com/collation/codepoint"
-					},
-					"existsOn": {
-						"$ref": "http://marklogic.com/envision/Planet-0.0.1/Planet"
-					}
-				}
-			}
-		}
-	},
-	"planet": {
-		"info": {
-			"title": "Planet",
-			"version": "0.0.1",
-			"baseUri": "http://marklogic.com/envision/"
-		},
-		"definitions": {
-			"Planet": {
+			"Address": {
 				"primaryKey": null,
 				"required": [],
 				"pii": [],
 				"elementRangeIndex": [],
 				"rangeIndex": [],
 				"wordLexicon": [],
-				"properties": {}
+				"properties": {
+					"line1": {
+						"datatype": "string",
+						"description": null,
+						"collation": "http://marklogic.com/collation/codepoint"
+					},
+					"line2": {
+						"datatype": "string",
+						"description": null,
+						"collation": "http://marklogic.com/collation/codepoint"
+					},
+					"city": {
+						"datatype": "string",
+						"description": null,
+						"collation": "http://marklogic.com/collation/codepoint"
+					},
+					"state": {
+						"datatype": "string",
+						"description": null,
+						"collation": "http://marklogic.com/collation/codepoint"
+					},
+					"zip": {
+						"datatype": "string",
+						"description": null,
+						"collation": "http://marklogic.com/collation/codepoint"
+					}
+				}
 			}
 		}
 	}

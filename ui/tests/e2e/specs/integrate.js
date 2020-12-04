@@ -79,6 +79,7 @@ describe('Integrate Tab', () => {
 
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
 		cy.get('button').contains('Cancel').click()
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfoPostDelete.json')
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
 		cy.get('button').contains('Delete').click()
 		cy.wait('@deleteCollection')
@@ -92,7 +93,7 @@ describe('Integrate Tab', () => {
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
 
 		cy.get('[data-cy="manageData.toggle"]').click()
-		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 	})
 
 	it('properly shows run history data', () => {

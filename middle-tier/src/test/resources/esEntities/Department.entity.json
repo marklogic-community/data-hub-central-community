@@ -27,79 +27,10 @@
           "datatype" : "string",
           "collation" : "http://marklogic.com/collation/codepoint"
         },
-        "hasEmployee" : {
-          "datatype" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Employee"
-          }
-        },
-        "belongsTo" : {
-          "$ref" : "#/definitions/Organization"
-        }
+				"belongsTo": {
+					"$ref": "http://marklogic.com/envision/Organization-0.0.1/Organization"
+				}
       }
-    },
-    "Employee" : {
-      "required" : [ ],
-      "pii" : [ ],
-      "elementRangeIndex" : [ ],
-      "rangeIndex" : [ ],
-      "wordLexicon" : [ ],
-      "properties" : {
-        "departmentId" : {
-          "datatype" : "string",
-          "collation" : "http://marklogic.com/collation/codepoint"
-        },
-        "employeeId" : {
-          "datatype" : "string",
-          "collation" : "http://marklogic.com/collation/codepoint"
-        },
-        "name" : {
-          "datatype" : "string",
-          "collation" : "http://marklogic.com/collation/codepoint"
-        },
-        "skills" : {
-          "datatype" : "array",
-          "items" : {
-            "datatype" : "string",
-            "collation" : "http://marklogic.com/collation/codepoint"
-          }
-        },
-        "belongsTo" : {
-          "$ref" : "#/definitions/Department"
-        }
-      }
-    },
-    "Organization" : {
-      "required" : [ ],
-      "pii" : [ ],
-      "elementRangeIndex" : [ ],
-      "rangeIndex" : [ ],
-      "wordLexicon" : [ ],
-      "properties" : {
-        "partOf" : {
-          "$ref" : "#/definitions/MegaCorp"
-        }
-      }
-    },
-    "MegaCorp" : {
-      "required" : [ ],
-      "pii" : [ ],
-      "elementRangeIndex" : [ ],
-      "rangeIndex" : [ ],
-      "wordLexicon" : [ ],
-      "properties" : {
-        "existsOn" : {
-          "$ref" : "#/definitions/Planet"
-        }
-      }
-    },
-    "Planet" : {
-      "required" : [ ],
-      "pii" : [ ],
-      "elementRangeIndex" : [ ],
-      "rangeIndex" : [ ],
-      "wordLexicon" : [ ],
-      "properties" : { }
     }
   }
 }

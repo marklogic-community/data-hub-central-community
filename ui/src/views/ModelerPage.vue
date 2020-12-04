@@ -25,7 +25,7 @@
 							:nodes="nodes"
 							:entity="currentNode"
 							:currentEdge="currentEdge"
-							:edges="edges"
+							:edges="modelEdges"
 							@selectedNode="onSelectedNode"
 							@deleteModel="deleteModel"
 							@saveGraphImage="saveGraphImage"
@@ -192,7 +192,34 @@ export default {
 				return newNode
 			}) : []
 		},
-		edges() {
+		entityNames() {
+			return this.model ? Object.values(this.model.nodes).map(node => node.entityName) : []
+		},
+		embeddedEdges() {
+			let edges = []
+			if (this.model) {
+				Object.values(this.model.nodes).forEach(node => {
+					node.properties
+						.filter(p => this.entityNames.indexOf(p.type) >= 0)
+						.forEach(p => {
+							edges.push({
+								cardinality: p.isArray ? '1:Many' : '1:1',
+								from: node.id,
+								id: `${node.id}-${p.name}-${p.type.toLowerCase()}`,
+								label: p.name,
+								to: p.type.toLowerCase(),
+								dashes: [5, 10],
+								color: {
+									color: '#b0cb2c'
+								},
+								embedded: true
+							})
+						})
+				})
+			}
+			return edges
+		},
+		modelEdges() {
 			return this.model ? Object.values(this.model.edges).map(edge => {
 				const newEdge = { ...edge }
 				if ((this.model.nodes[newEdge.to] && this.model.nodes[newEdge.to].type === 'concept') ||
@@ -204,8 +231,11 @@ export default {
 				return newEdge
 			}) : []
 		},
+		edges() {
+			return this.modelEdges.concat(this.embeddedEdges)
+		},
 		edgeIds() {
-			return this.edges.map(e => e.id)
+			return this.modelEdges.map(e => e.id)
 		},
 		...mapState({
 			model: state => state.model.model
@@ -253,7 +283,6 @@ export default {
 			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
 		},
 		updateEntity(entity) {
-			console.log('nodes', this.nodes)
 			const idx = this.nodes.findIndex(n => n.id === entity.id)
 			if (idx >= 0) {
 				this.nodes[idx] = entity
@@ -308,11 +337,11 @@ export default {
 					id: id,
 					smooth: { roundness: roundness }
 				}
-				const idx = this.edges.indexOf(e => e.id === id)
+				const idx = this.modelEdges.indexOf(e => e.id === id)
 				if (idx >= 0) {
-					this.edges[idx] = newEdge
+					this.modelEdges[idx] = newEdge
 				} else {
-					this.edges.push(newEdge)
+					this.modelEdges.push(newEdge)
 				}
 				this.doMLSave()
 			}
@@ -325,7 +354,7 @@ export default {
 			let minRoundness = roundness
 
 			// loop througn all the edges and find the range of roundness's
-			this.edges.forEach(edge => {
+			this.modelEdges.forEach(edge => {
 				if (edge.to == toNode && edge.from == fromNode) {
 					if (edge.smooth.roundness > maxRoundness) {
 						maxRoundness = edge.smooth.roundness
@@ -350,9 +379,9 @@ export default {
 		},
 		deleteEdge(edgeId, save = true) {
 			// deletes an individual edge
-			const idx = this.edges.findIndex(e => e.id === edgeId)
+			const idx = this.modelEdges.findIndex(e => e.id === edgeId)
 			if (idx >= 0) {
-				this.edges.splice(idx, 1)
+				this.modelEdges.splice(idx, 1)
 			}
 			if (save) {
 				this.doMLSave()
@@ -372,7 +401,7 @@ export default {
 					output[entity.id] = entity
 					return output
 				}, {}),
-				edges: this.edges.reduce((output, edge) => {
+				edges: this.modelEdges.reduce((output, edge) => {
 					output[edge.id] = edge
 					return output
 				}, {}),
