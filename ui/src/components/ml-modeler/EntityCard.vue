@@ -15,23 +15,7 @@
 					@deleteProperties="btnDeleteProperties"
 					@updated="propertiesUpdated"
 					@save="btnSaveProperty"
-					v-if="properties.length > 0"
 				></edit-properties>
-				<p class="grey--text darken-4" v-else>No properties</p>
-				<edit-property-menu
-					v-if="currentEntity"
-					:existingProperties="properties"
-					:entityName="currentEntity.entityName"
-					@save="btnSaveProperty">
-					<v-btn
-						color="primary"
-						fab
-						dark
-						data-cy="entityPickList.addPropertyBtn"
-					>
-						<v-icon dark>add</v-icon>
-					</v-btn>
-				</edit-property-menu>
 			</v-tab-item>
 			<v-tab-item>
 				<v-simple-table v-if="edges && edges.length > 0">
@@ -147,7 +131,6 @@
 
 <script>
 import EditRelationship from '@/components/EditRelationship.vue';
-import EditPropertyMenu from '@/components/EditPropertyMenu.vue'
 import EditProperties from './EditProperties.vue';
 
 const BASE_URI_REGEX = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+(\/)$/
@@ -162,7 +145,6 @@ export default {
 	},
 	components: {
 		EditRelationship,
-		EditPropertyMenu,
 		EditProperties
 	},
 	computed: {

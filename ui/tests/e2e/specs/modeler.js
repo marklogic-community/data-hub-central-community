@@ -161,8 +161,8 @@ describe('End to end test to create and update model', () => {
 		//see if the entity appears
 		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('contain', 'Test Model')
 		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('[data-cy="editProperty.propName"]').type('id')
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('id')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 		cy.wait('@saveModel')
@@ -280,8 +280,8 @@ describe('End to end test to create and update model', () => {
 
 		// add id property
 		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('[data-cy="editProperty.propName"]').type('id')
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('id')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'id')
 		cy.get(".v-expansion-panel--active").find('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 
@@ -293,8 +293,8 @@ describe('End to end test to create and update model', () => {
 			})
 
 		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('.menuable__content__active').find('[data-cy="editProperty.propName"]').type('firstName')
-		cy.get('.menuable__content__active').find('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('firstName')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'idfirstName')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'stringstring')
 		cy.wait('@saveModel')
@@ -307,8 +307,8 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('[data-cy=nodeList]').contains("philosopher").click()
 		cy.get('[data-cy="panel-philosopher"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('.menuable__content__active').find('[data-cy="editProperty.propName"]').type('id')
-		cy.get('.menuable__content__active').find('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('id')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'ididfirstName')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'stringstringstring')
 		cy.wait('@saveModel')
@@ -333,8 +333,8 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
 		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('[data-cy="editProperty.propName"]').type('firstName')
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('firstName')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'firstName')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
 		cy.wait('@saveModel')
@@ -360,7 +360,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy=nodeList]').contains("poet").click()
 
 		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('[data-cy="editProperty.propName"]').type('arrayProp')
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('arrayProp')
 		cy.get('[data-cy="editProperty.dataType"]').click()
 		cy.get('.v-list-item__title:visible').contains('array').parentsUntil('.v-list-item').click()
 		cy.get('[data-cy="editProperty.arrayDataType"]').click()
@@ -373,7 +373,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="prop.isRangeIndex"]').should('not.be.checked')
 		cy.get('[data-cy="prop.isWordLexicon"]').should('not.be.checked')
 
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'arrayProp')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'boolean[]')
 		cy.wait('@saveModel')
@@ -450,8 +450,11 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'address')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'string')
-
-		cy.get('[data-cy="entityPickList.deletePropertyBtn"]').click()
+		cy.wait(1000)
+		cy.get('[data-cy="deleteDataConfirm.deleteButton"]').click()
+		cy.get('.menuable__content__active button').contains('Cancel').click()
+		cy.get('[data-cy="deleteDataConfirm.deleteButton"]').click()
+		cy.get('.menuable__content__active button').contains('Delete').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('not.contain', 'address')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('not.contain', 'string')
 		cy.contains('No properties')
@@ -475,13 +478,13 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').last().should('have.text', 'string')
 
 		cy.get('[data-cy="entityPickList.editPropertyBtn"]').last().click()
-		cy.get('[data-cy="editProperty.propName"]').clear().type('arrayProp')
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').clear().type('arrayProp')
 		cy.get('[data-cy="editProperty.dataType"]').click()
 		cy.contains('.v-menu__content:visible .v-list-item', 'array').click()
 		cy.wait(1000)
 		cy.get('[data-cy="editProperty.arrayDataType"]').click()
 		cy.get('.v-menu__content:visible .v-list-item:visible').contains('boolean').parentsUntil('.v-list-item').click()
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').last().should('have.text', 'arrayProp')
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').last().should('have.text', 'boolean[]')
 		cy.wait('@saveModel')
@@ -516,8 +519,8 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="entityPickList.entityPropertyType"]').last().should('have.text', 'string')
 
 		cy.get('[data-cy="entityPickList.editPropertyBtn"]').last().click()
-		cy.get('[data-cy="editProperty.propName"]').clear().type('id')
-		cy.get('[data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').clear().type('id')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 		cy.get('.v-messages__message').should('have.text', 'Property already exists')
 	})
 
@@ -567,7 +570,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('not.be.checked')
 		cy.get('[data-cy="prop.isPrimaryKey"]').last().parentsUntil('.v-input__slot').first().click()
 		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('be.checked')
-		cy.get('[data-cy="editProperty.createBtn"]').last().click()
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').last().click()
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
@@ -586,7 +589,7 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('be.checked')
 		cy.get('[data-cy="prop.isPrimaryKey"]').last().parentsUntil('.v-input__slot').first().click()
 		cy.get('[data-cy="prop.isPrimaryKey"]').last().should('not.be.checked')
-		cy.get('[data-cy="editProperty.createBtn"]').last().click()
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').last().click()
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
@@ -623,12 +626,12 @@ describe('End to end test to create and update model', () => {
 		cy.get('[data-cy=nodeList]').contains("customer").click()
 
 		cy.get('[data-cy="panel-customer"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('.menuable__content__active [data-cy="editProperty.propName"]').type('address1')
-		cy.get('.menuable__content__active [data-cy="editProperty.dataType"]').click()
-		cy.get('.menuable__content__active [data-cy="editProperty.dataType"]').type('{backspace}')
-		cy.get('.menuable__content__active [data-cy="editProperty.dataType"]').type('addr')
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('address1')
+		cy.get('.v-dialog--active [data-cy="editProperty.dataType"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.dataType"]').type('{backspace}')
+		cy.get('.v-dialog--active [data-cy="editProperty.dataType"]').type('addr')
 		cy.get('.v-list-item__title:visible').contains('Address').parentsUntil('.v-list-item').click()
-		cy.get('.menuable__content__active [data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 
 		cy.get('.fa.fa-angle-right').should('be.visible')
 		cy.get('[data-cy="entityPickList.entityPropertyName"]').contains('address1').should('be.visible')
@@ -658,8 +661,8 @@ describe('End to end test to create and update model', () => {
 
 		cy.get('[data-cy=nodeList]').contains("address").click()
 		cy.get('[data-cy="panel-address"] [data-cy="entityPickList.addPropertyBtn"]').click()
-		cy.get('.menuable__content__active [data-cy="editProperty.propName"]').type('stuff')
-		cy.get('.menuable__content__active [data-cy="editProperty.createBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('stuff')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
 
 		cy.get('[data-cy=nodeList]').contains("customer").click()
 		cy.get('.structured [data-cy="entityPickList.entityPropertyName"]').contains('line1').should('be.visible')

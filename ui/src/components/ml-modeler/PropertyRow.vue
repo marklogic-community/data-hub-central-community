@@ -7,12 +7,27 @@
 			<div data-cy="entityPickList.entityPropertyName">{{prop.name}}</div>
 			<div data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</div>
 			<div class="action" v-if="!readOnly">
-				<i data-cy="entityPickList.editPropertyBtn" class="fa fa-pencil" aria-label="Edit Property" @click.stop="editProperty" />
-				<button
+				<v-tooltip bottom>
+					<template v-slot:activator="{ on }">
+						<v-btn
+							data-cy="entityPickList.editPropertyBtn"
+							right
+							icon
+							small
+							@click.stop="editProperty"
+							v-on="on"
+						>
+							<v-icon>edit</v-icon>
+						</v-btn>
+					</template>
+					<span>Edit {{prop.name}}</span>
+				</v-tooltip>
+				<delete-data-confirm
 					data-cy="entityPickList.deletePropertyBtn"
-					class="fa fa-trash"
-					@click.stop="deleteProperty"
-					aria-label="Delete property"></button>
+					tooltip="Delete property"
+					:message="`Do you really want to delete ${prop.name}?`"
+					:collection="prop.name"
+					@deleted="deleteProperty"/>
 			</div>
 		</div>
 		<div class="structured" :class="expanded ? 'expanded': ''">
@@ -40,20 +55,41 @@
 			<div data-cy="entityPickList.entityPropertyName">{{prop.name}}</div>
 			<div data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</div>
 			<div class="action" v-if="!readOnly">
-				<i data-cy="entityPickList.editPropertyBtn" class="fa fa-pencil" aria-label="Edit Property" @click.stop="editProperty" />
-				<button
+				<v-tooltip bottom>
+					<template v-slot:activator="{ on }">
+						<v-btn
+							data-cy="entityPickList.editPropertyBtn"
+							right
+							icon
+							small
+							@click.stop="editProperty"
+							v-on="on"
+						>
+							<v-icon>edit</v-icon>
+						</v-btn>
+					</template>
+					<span>Edit {{prop.name}}</span>
+				</v-tooltip>
+				<delete-data-confirm
 					data-cy="entityPickList.deletePropertyBtn"
-					class="fa fa-trash"
-					@click.stop="deleteProperty"
-					aria-label="Delete property"></button>
+					:small="true"
+					tooltip="Delete property"
+					:message="`Do you really want to delete ${prop.name}?`"
+					:collection="prop.name"
+					@deleted="deleteProperty"/>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import DeleteDataConfirm from '@/components/DeleteDataConfirm'
+
 export default {
 	name: "PropertyRow",
+	components: {
+		DeleteDataConfirm
+	},
 	props: {
 		entity: { type: Object },
 		prop: { type: Object },
@@ -62,7 +98,7 @@ export default {
 	},
 	data() {
 		return {
-			expanded: false
+			expanded: false,
 		}
 	},
 	methods: {
@@ -122,6 +158,21 @@ export default {
 	margin-left: 0.5rem;
 	&.expanded {
 		transform: rotate(90deg);
+	}
+}
+
+.grid-row div {
+	padding: 5px;
+}
+
+/deep/ .v-btn--icon {
+	width: 20px;
+	height: 20px;
+
+	i.v-icon {
+		width: 18px;
+		height: 18px;
+		font-size: 18px;
 	}
 }
 </style>

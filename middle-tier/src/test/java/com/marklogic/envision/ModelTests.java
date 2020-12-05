@@ -62,12 +62,12 @@ public class ModelTests extends BaseTest {
 
 		installFinalDoc("esEntities/Department.entity.json", "/entities/Department.entity.json", "http://marklogic.com/entity-services/models");
 		installFinalDoc("esEntities/Employee.entity.json", "/entities/Employee.entity.json", "http://marklogic.com/entity-services/models");
-		installFinalDoc("esEntities/MegaCorp.entity.json", "/entities/MegaCorp.entity.json", "http://marklogic.com/entity-services/models");
 		installFinalDoc("esEntities/Organization.entity.json", "/entities/Organization.entity.json", "http://marklogic.com/entity-services/models");
-		installFinalDoc("esEntities/Planet.entity.json", "/entities/Planet.entity.json", "http://marklogic.com/entity-services/models");
+		installFinalDoc("esEntities/Address.entity.json", "/entities/Address.entity.json", "http://marklogic.com/entity-services/models");
 
 		DatabaseClient client = getFinalClient();
 		JsonNode result = EntityModeller.on(client).fromDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
 		jsonAssertEquals(getResource("output/esModel.json"), result, resultCompare);
 	}
 

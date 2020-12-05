@@ -1,23 +1,37 @@
 <template>
 	<div>
-		<div class="prop-grid">
-			<div class="grid-head id-col"></div>
-			<div class="grid-head primary--text">Name</div>
-			<div class="grid-head primary--text">Type</div>
-			<div class="grid-head primary--text">Action</div>
-		</div>
-		<draggable v-bind="dragOptions" v-model="localProperties" tag="div" class="properties">
-			<property-row
-				v-for="prop in localProperties"
-				:key="prop.name"
-				:prop="prop"
-				:entity="entity"
-				:entities="entities"
-				@editProperty="showEdit"
-				@deleteProperty="deleteProperty"/>
-		</draggable>
+		<template v-if="localProperties.length > 0">
+			<div class="prop-grid">
+				<div class="grid-head id-col"></div>
+				<div class="grid-head primary--text">Name</div>
+				<div class="grid-head primary--text">Type</div>
+				<div class="grid-head primary--text">Action</div>
+			</div>
+			<draggable v-bind="dragOptions" v-model="localProperties" tag="div" class="properties">
+				<property-row
+					v-for="prop in localProperties"
+					:key="prop.name"
+					:prop="prop"
+					:entity="entity"
+					:entities="entities"
+					@editProperty="showEdit"
+					@deleteProperty="deleteProperty"/>
+			</draggable>
+		</template>
+		<p class="grey--text darken-4" v-else>No properties</p>
+		<v-btn
+			color="primary"
+			fab
+			dark
+			small
+			data-cy="entityPickList.addPropertyBtn"
+			@click="showEdit(null)"
+		>
+			<v-icon dark>add</v-icon>
+		</v-btn>
 		<edit-property-dialog ref="editPropertyDlg"></edit-property-dialog>
 	</div>
+
 </template>
 
 <script>
@@ -35,7 +49,7 @@ export default {
 	},
 	props: {
 		properties: { type: Array },
-		entity: { type: Object },
+		entity: { type: Object }
 	},
 	computed: {
 		...mapState({
@@ -133,6 +147,10 @@ export default {
 			background-color: rgb(68, 73, 156);
 			color: white;
 			border-bottom: 0px;
+
+			i {
+				color: white;
+			}
 		}
 	}
 }

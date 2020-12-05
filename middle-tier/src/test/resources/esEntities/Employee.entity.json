@@ -64,8 +64,11 @@
             "collation" : "http://marklogic.com/collation/codepoint"
           }
         },
+				"address": {
+					"$ref" : "#/definitions/Address"
+				},
         "belongsTo" : {
-          "$ref" : "#/definitions/Department"
+					"$ref" : "http://marklogic.com/envision/Department-0.0.1/Department"
         }
       }
     },
