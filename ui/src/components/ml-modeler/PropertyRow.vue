@@ -23,7 +23,6 @@
 					<span>Edit {{prop.name}}</span>
 				</v-tooltip>
 				<delete-data-confirm
-					data-cy="entityPickList.deletePropertyBtn"
 					tooltip="Delete property"
 					:message="`Do you really want to delete ${prop.name}?`"
 					:collection="prop.name"
@@ -71,7 +70,6 @@
 					<span>Edit {{prop.name}}</span>
 				</v-tooltip>
 				<delete-data-confirm
-					data-cy="entityPickList.deletePropertyBtn"
 					:small="true"
 					tooltip="Delete property"
 					:message="`Do you really want to delete ${prop.name}?`"
