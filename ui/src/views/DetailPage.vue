@@ -116,7 +116,7 @@
 import BinaryView from '@/components/BinaryView.vue'
 import friendlyJson from '@/components/friendly-json.vue'
 import friendlyXml from '@/components/friendly-xml.vue'
-import hljs from 'highlight.js/lib/highlight'
+import hljs from 'highlight.js/lib/core'
 import json from 'highlight.js/lib/languages/json'
 import xml from 'highlight.js/lib/languages/xml'
 import 'highlight.js/styles/github.css'
