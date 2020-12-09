@@ -1,0 +1,11 @@
+<envelope xmlns="http://marklogic.com/entity-services">
+	<headers/>
+	<triples/>
+	<instance>
+		<test xmlns="">
+			<name>sue</name>
+			<age>24</age>
+		</test>
+	</instance>
+	<attachments/>
+</envelope>

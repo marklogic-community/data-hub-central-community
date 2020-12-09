@@ -8,14 +8,14 @@ import com.marklogic.appdeployer.AppConfig;
 import com.marklogic.appdeployer.command.Command;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.document.DocumentPage;
 import com.marklogic.client.eval.EvalResult;
 import com.marklogic.client.eval.EvalResultIterator;
 import com.marklogic.client.eval.ServerEvaluationCall;
 import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
-import com.marklogic.client.io.DocumentMetadataHandle;
-import com.marklogic.client.io.FileHandle;
-import com.marklogic.client.io.JacksonHandle;
+import com.marklogic.client.io.*;
+import com.marklogic.client.io.marker.AbstractReadHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.auth.UserPojo;
@@ -213,6 +213,24 @@ public class BaseTest {
 		return BaseTest.class.getClassLoader().getResourceAsStream(resourceName);
 	}
 
+	protected byte[] getResourceBytes(String resourceName) {
+		try {
+			return IOUtils.toByteArray(BaseTest.class.getClassLoader().getResourceAsStream(resourceName));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected byte[] getDocumentBytes(DatabaseClient client, String uri) {
+		DocumentPage page = client.newDocumentManager().read(uri);
+		return page.next().getContent(new BytesHandle()).get();
+	}
+
+	protected String getDocumentString(DatabaseClient client, String uri) {
+		DocumentPage page = client.newDocumentManager().read(uri);
+		return page.next().getContent(new StringHandle()).get();
+	}
+
 	protected String getResource(String resourceName) {
 		InputStream inputStream = null;
 		String output;
@@ -226,6 +244,16 @@ public class BaseTest {
 			IOUtils.closeQuietly(inputStream);
 		}
 		return output;
+	}
+
+	protected String getCollectionDoc(DatabaseClient client, String collection, String query) {
+		String rest = ")[1]";
+		if (query != null) {
+			rest = ", '" + query + "')[1]";
+		}
+		String xquery = "cts:search(fn:collection('" + collection + "')" + rest;
+		EvalResultIterator it = client.newServerEval().xquery(xquery).eval();
+		return it.next().getString();
 	}
 
 	protected void installFinalDoc(String resource, String uri, String... collections) {

@@ -37,6 +37,6 @@ public class UploadControllerTests extends AbstractMvcTest {
 			.param("collection", "my-wacky-file.csv"))
 			.andExpect(status().isOk());
 
-		verify(uploadService, times(1)).asyncUploadFile(any(), any(), anyString());
+		verify(uploadService, times(1)).asyncUploadFiles(any(), any(), anyString());
 	}
 }

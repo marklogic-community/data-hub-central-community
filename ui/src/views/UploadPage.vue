@@ -55,6 +55,7 @@
 				</v-simple-table>
 			</v-col>
 		</v-row>
+		<upload-collection-dialog ref="uploadCollectionDlg" />
 	</v-container>
 </template>
 
@@ -65,12 +66,14 @@ import flowsApi from '@/api/FlowsApi'
 import FileUpload from '@/components/FileUpload'
 import DeleteDataConfirm from '@/components/DeleteDataConfirm'
 import axios from 'axios';
+import UploadCollectionDialog from '../components/UploadCollectionDialog.vue'
 
 export default {
 	name: 'UploadPage',
 	components: {
 		FileUpload,
-		DeleteDataConfirm
+		DeleteDataConfirm,
+		UploadCollectionDialog
 	},
 	props: ['type'],
 	computed: {
@@ -105,17 +108,18 @@ export default {
 	},
 	methods: {
 		uploadFiles(files) {
-			for (let i = 0; i < files.length; i++) {
-				const file = files[i]
-				this.uploadLabel = `Uploading ${file.name}`
-				this.percentComplete = 0
-				uploadApi.upload(file, (progressEvent) => {
-					this.percentComplete = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-					if (this.percentComplete >= 100) {
-						this.percentComplete = null
-					}
-				})
-			}
+			const collection = files.length === 1 ? files[0].name : null
+			this.$refs.uploadCollectionDlg.open(collection).then(collection => {
+				if (collection) {
+					this.percentComplete = 0
+					uploadApi.upload(collection, files, (progressEvent) => {
+						this.percentComplete = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+						if (this.percentComplete >= 100) {
+							this.percentComplete = null
+						}
+					})
+				}
+			})
 		},
 		inputErrors(field, fieldName) {
 			const errors = []

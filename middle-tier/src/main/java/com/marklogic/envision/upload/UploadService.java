@@ -7,6 +7,7 @@ import com.marklogic.client.datamovement.WriteBatcher;
 import com.marklogic.client.document.ServerTransform;
 import com.marklogic.client.ext.helper.LoggingObject;
 import com.marklogic.client.io.DocumentMetadataHandle;
+import com.marklogic.client.io.InputStreamHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.pojo.StatusMessage;
@@ -18,13 +19,16 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 @Service
 public class UploadService extends LoggingObject {
@@ -38,13 +42,81 @@ public class UploadService extends LoggingObject {
 	}
 
 	@Async
-	public void asyncUploadFile(HubClient client, InputStream stream, String collectionName) {
-		uploadFile(client, stream, collectionName);
+	public void asyncUploadFiles(HubClient client, UploadFile[] files, String collectionName) {
+		uploadFiles(client, files, collectionName);
 	}
 
-	public void uploadFile(HubClient client, InputStream stream, String collectionName) {
+	public void uploadFiles(HubClient client, UploadFile[] files, String collectionName) {
+		String username = client.getHubConfig().getMlUsername();
+		uploadFiles(client, collectionName, writeBatcher -> {
+			AtomicInteger filesWritten = new AtomicInteger(0);
+			filesWritten.addAndGet(1);
+			Arrays.stream(files).forEach(file -> {
+				String fileName = file.getFileName();
+				InputStream is = file.getInputStream();
+				String prefix = String.format("/ingest/%s/%s/%s", username, collectionName, fileName);
+				if (collectionName.equals(fileName)) {
+					prefix = String.format("/ingest/%s/%s", username, collectionName);
+				}
+				if (fileName.toLowerCase().endsWith("csv") || fileName.toLowerCase().endsWith("psv")) {
+					filesWritten.getAndAdd(uploadCsvFile(writeBatcher, is, prefix));
+				}
+				else if (fileName.toLowerCase().endsWith("zip")) {
+					filesWritten.getAndAdd(uploadZip(writeBatcher, is, prefix));
+				}
+				else {
+					writeBatcher.add(prefix, new InputStreamHandle(is));
+				}
+			});
+
+			return filesWritten.get();
+		});
+	}
+
+	public int uploadZip(WriteBatcher writeBatcher, InputStream stream, String prefix) {
+		AtomicInteger filesWritten = new AtomicInteger(0);
+		try {
+			try (BufferedInputStream bis = new BufferedInputStream(stream);
+				 ZipInputStream zis = new ZipInputStream(bis)) {
+
+				ZipEntry ze;
+				while ((ze = zis.getNextEntry()) != null) {
+					String fileName = ze.getName();
+					if (!ze.isDirectory() && !fileName.toLowerCase().contains("__macosx") && !fileName.contains(".DS_Store")) {
+						InputStream fileInputStream = readZipFileContents(zis);
+						String newPrefix = String.format("%s/%s", prefix, fileName);
+						if (fileName.toLowerCase().endsWith("csv") || fileName.toLowerCase().endsWith("psv")) {
+							filesWritten.getAndAdd(uploadCsvFile(writeBatcher, fileInputStream, newPrefix));
+						} else if (fileName.toLowerCase().endsWith("zip")) {
+							filesWritten.getAndAdd(uploadZip(writeBatcher, fileInputStream, newPrefix));
+						} else {
+							String uri = String.format("%s/%s", prefix, fileName);
+							writeBatcher.add(uri, new InputStreamHandle(fileInputStream));
+							filesWritten.getAndAdd(1);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			IOUtils.closeQuietly(stream);
+			throw new RuntimeException(e);
+		}
+		return filesWritten.get();
+	}
+
+	private InputStream readZipFileContents(InputStream is) throws IOException {
+		final byte[] contents = new byte[1024];
+		int bytesRead;
+		ByteArrayOutputStream streamBuilder = new ByteArrayOutputStream();
+		while ((bytesRead = is.read(contents)) >= 0) {
+			streamBuilder.write(contents, 0, bytesRead);
+		}
+		return new ByteArrayInputStream(streamBuilder.toByteArray());
+	}
+
+	public void uploadFiles(HubClient client, String collectionName, Function<WriteBatcher, Integer> fileIterator) {
 		DataMovementManager dataMovementManager = client.getStagingClient().newDataMovementManager();
-		ServerTransform serverTransform = new ServerTransform("mlRunIngest");
+		ServerTransform serverTransform = new ServerTransform("wrapEnvelope");
 		String jobId = UUID.randomUUID().toString();
 		serverTransform.addParameter("job-id", jobId);
 		String step = "1";
@@ -71,29 +143,16 @@ public class UploadService extends LoggingObject {
 			.withJobId(jobId)
 			.withTransform(serverTransform);
 
-		BOMInputStream bis = new BOMInputStream(stream, false);
-		CsvSchema schema = buildSchema(bis);
-		JacksonCSVSplitter splitter = new JacksonCSVSplitter().withCsvSchema(schema);
 		StatusMessage msg = StatusMessage.newStatus(collectionName);
 
-		String username = client.getHubConfig().getMlUsername();
 		try {
 			if (!writeBatcher.isStopped()) {
 				AtomicLong totalUris = new AtomicLong(0);
 				updateStatus(msg.withMessage("Splitting " + collectionName + "..."));
 				long startTime = System.nanoTime();
 
-				Stream<JacksonHandle> contentStream = splitter.split(bis);
-				contentStream.forEach(jacksonHandle -> {
-					String uri = String.format("/ingest/%s/%s/%s.json", username, collectionName, UUID.randomUUID());
-					try {
-						writeBatcher.add(uri, jacksonHandle);
-						totalUris.addAndGet(1);
-					}
-					catch (IllegalStateException e) {
-						logger.error("WriteBatcher has been stopped");
-					}
-				});
+				totalUris.addAndGet(fileIterator.apply(writeBatcher));
+
 				long endTime = System.nanoTime();
 				long duration = (endTime - startTime);
 				logger.error("Duration: " + (duration / 1000000) + " ms");
@@ -116,10 +175,29 @@ public class UploadService extends LoggingObject {
 				updateStatus(msg.withPercentComplete(100));
 			}
 		} catch (Exception e) {
-			IOUtils.closeQuietly(stream);
 			updateStatus(msg.withError(e.getMessage()));
 			throw new RuntimeException(e);
 		}
+	}
+
+	public int uploadCsvFile(WriteBatcher writeBatcher, InputStream stream, String prefix) {
+		BOMInputStream bis = new BOMInputStream(stream, false);
+		CsvSchema schema = buildSchema(bis);
+		AtomicInteger filesWritten = new AtomicInteger(0);
+		try {
+			JacksonCSVSplitter splitter = new JacksonCSVSplitter().withCsvSchema(schema);
+			Stream<JacksonHandle> contentStream = splitter.split(bis);
+			contentStream.forEach(jacksonHandle -> {
+				String uri = String.format("%s/%s.json", prefix, UUID.randomUUID());
+				writeBatcher.add(uri, jacksonHandle);
+				filesWritten.addAndGet(1);
+			});
+		}
+		catch (Exception e) {
+			IOUtils.closeQuietly(stream);
+			throw new RuntimeException(e);
+		}
+		return filesWritten.get();
 	}
 
 	private void updateStatus(StatusMessage message) {
