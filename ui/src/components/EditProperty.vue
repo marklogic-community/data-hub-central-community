@@ -120,7 +120,7 @@ export default {
 			return !(this.prop)
 		},
 		isStructured() {
-			return this.entityNames.indexOf(this.type) >= 0
+			return this.entityNames.indexOf(this.type) >= 0 || this.entityNames.indexOf(this.arrayType) >= 0
 		},
 		isArray() {
 			return this.type === 'array'
@@ -131,10 +131,10 @@ export default {
 					text: t,
 					value: t
 				}
-			})
+			}).concat(this.entityNames)
 		},
 		dataTypeWithArray() {
-			return [{ text: "array", value: "array" }].concat(this.dataTypes).concat(this.entityNames)
+			return [{ text: "array", value: "array" }].concat(this.dataTypes)
 		},
 		primaryKey() {
 			// feature/issue-12 - check to see if any prop is defined as a primary key

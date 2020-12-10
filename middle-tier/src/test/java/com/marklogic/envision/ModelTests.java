@@ -55,6 +55,30 @@ public class ModelTests extends BaseTest {
 	}
 
 	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubArrayOnly() throws Exception {
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModelArrayOnly.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		jsonAssertEquals(getResource("output/esEntitiesArrayOnly.json"), result);
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubNoArray() throws Exception {
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModelNoArray.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		jsonAssertEquals(getResource("output/esEntitiesNoArray.json"), result);
+	}
+
+	@Test
 	public void fromDatahub() throws Exception {
 		CustomComparator resultCompare = new CustomComparator(JSONCompareMode.STRICT,
 			new Customization("nodes.*.properties[*]._propId", (o1, o2) -> true)

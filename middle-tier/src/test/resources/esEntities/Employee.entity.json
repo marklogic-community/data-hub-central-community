@@ -67,6 +67,12 @@
 				"address": {
 					"$ref" : "#/definitions/Address"
 				},
+				"workAddresses": {
+					"datatype" : "array",
+					"items" : {
+						"$ref": "#/definitions/Address"
+					}
+				},
         "belongsTo" : {
 					"$ref" : "http://marklogic.com/envision/Department-0.0.1/Department"
         }

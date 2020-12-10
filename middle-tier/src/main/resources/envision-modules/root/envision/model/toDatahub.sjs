@@ -84,6 +84,10 @@ function buildDefinitions(node) {
 						"$ref": `#/definitions/${p.type}`
 					}
 				}
+				definitions = {
+					...definitions,
+					...buildDefinitions(model.nodes[p.type.toLowerCase()])
+				}
 			}
 			else {
 				properties[p.name] = {

@@ -1,49 +1,75 @@
 <template>
-	<div :class="prop.isStructured ? 'structured-card': ''">
-		<div class="prop-grid grid-row" :class="expanded ? 'expanded': ''">
-			<div @click="expanded = !expanded" :class="prop.isStructured ? 'is-structured': ''">
-				<i v-if="prop.isStructured" class="fa fa-angle-right" :class="expanded ? 'expanded': ''"></i>
-				{{prop.label}}
+	<div>
+		<div class="array" v-if="prop.isArray">
+			<div class="prop-grid grid-row array-header">
+				<div><i class="fa fa-angle-right hidden"></i> {{prop.label}}</div>
+				<div>[]</div>
 			</div>
-			<div v-if="prop.isStructured"></div> <!-- needed for grid layout -->
-			<template v-else>
-				<template v-for="(value, idx) in asArray(prop.value)">
-					<div :key="`${idx}-value`">
-						<template v-if="value && value.contentType">
-							<v-tooltip bottom>
-								<template v-slot:activator="{ on: tooltip }">
-									<span class="clickable-binary"
-										v-on="{ ...tooltip }"
-										@click="showBinary(value)">
-										<i :class="typeIcon(value.contentType)"></i>
-										<span>{{value.value}}</span>
-									</span>
-								</template>
-								<span>Preview {{value.value}}</span>
-							</v-tooltip>
-						</template>
-						<template v-else-if="value && value.length > 100 && !textExpanded">
-							<span>{{value | truncate(100, '')}}</span>
-							<a class="more-less" @click="textExpanded = true">(more...)</a>
-						</template>
-						<template v-else>
-							<span>{{value}}</span>
-							<a class="more-less" v-if="value && value.length > 100" @click="textExpanded = false">(less...)</a>
-						</template>
+			<div v-if="!prop.isStructured">
+				<template v-for="(value, idx) in prop.value">
+					<div :key="`${idx}-child`" class="prop-grid grid-row">
+						<div></div>
+						<div>{{value}}</div>
 					</div>
-					<div :key="`${idx}-blank`" v-if="idx < asArray(prop.value).length - 1"></div>
 				</template>
-			</template>
+			</div>
+			<div v-else>
+				<template v-for="(value, idx) in prop.value">
+					<div :key="`${idx}-array-expander`" @click="toggleExpanded(idx)" class="prop-grid grid-row clickable" :class="expanded[idx] ? 'expanded' : ''">
+						<div><i class="fa fa-angle-right" :class="expanded[idx] ? 'expanded': ''"></i> [{{idx}}]</div>
+						<div></div>
+					</div>
+					<div :key="`${idx}-array-value`" class="structured" :class="expanded[idx] ? 'expanded': ''">
+						<entity-properties
+							:properties="getProperties(prop.type)"
+							:entity="value[prop.type]"
+							:isNested="true"
+							@showBinary="showBinary"
+							/>
+					</div>
+				</template>
+			</div>
 		</div>
-		<template v-if="prop.isStructured">
-			<div></div> <!-- needed for grid layout -->
-			<div class="structured" :class="expanded ? 'expanded': ''">
+		<template v-else-if="prop.isStructured" class="structured-card">
+			<div class="prop-grid grid-row clickable" :class="expanded[0] ? 'expanded': ''" @click="toggleExpanded(0)">
+				<div><i v-if="prop.isStructured" class="fa fa-angle-right" :class="expanded[0] ? 'expanded': ''"></i> {{prop.label}}</div>
+				<div></div>
+			</div>
+			<div class="structured expanded" :class="expanded[0] ? 'expanded': ''" v-if="expanded[0]">
 				<entity-properties
 					:properties="getProperties(prop.type)"
-					:entity="prop.value[prop.type]"
+					:entity="prop.value ? prop.value[prop.type] : {}"
 					:isNested="true"
 					@showBinary="showBinary"
 					/>
+			</div>
+		</template>
+		<template v-else>
+			<div class="prop-grid grid-row">
+				<div><i class="fa fa-angle-right hidden"></i> {{prop.label}}</div>
+				<div>
+					<template v-if="prop.value && prop.value.contentType">
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on: tooltip }">
+								<span class="clickable-binary"
+									v-on="{ ...tooltip }"
+									@click="showBinary(prop.value)">
+									<i :class="typeIcon(prop.value.contentType)"></i>
+									<span>{{prop.value.value}}</span>
+								</span>
+							</template>
+							<span>Preview {{prop.value.value}}</span>
+						</v-tooltip>
+					</template>
+					<template v-else-if="prop.value && prop.value.length > 100 && !textExpanded">
+						<span>{{prop.value | truncate(100, '')}}</span>
+						<a class="more-less" @click="textExpanded = true">(more...)</a>
+					</template>
+					<template v-else>
+						<span>{{prop.value}}</span>
+						<a class="more-less" v-if="prop.value && prop.value.length > 100" @click="textExpanded = false">(less...)</a>
+					</template>
+				</div>
 			</div>
 		</template>
 	</div>
@@ -68,11 +94,14 @@ export default {
 	},
 	data() {
 		return {
-			expanded: false,
+			expanded: {},
 			textExpanded: false
 		}
 	},
 	methods: {
+		toggleExpanded(idx) {
+			this.$set(this.expanded, idx, !this.expanded[idx])
+		},
 		showBinary(meta) {
 			this.$emit('showBinary', meta)
 		},
@@ -128,6 +157,11 @@ i.fa-angle-right {
 	margin-right: 10px;
 	transition: 0.25s ease;
 	margin-left: 0.5rem;
+
+	&.hidden {
+		visibility: hidden;
+	}
+
 	&.expanded {
 		transform: rotate(90deg);
 	}
@@ -139,8 +173,9 @@ i.fa-angle-right {
 
 &.grid-row {
 	border-radius: 4px 4px 0px 0px;
-	&:hover {
-		background-color: #eee;
+
+	&.clickable {
+		cursor: pointer;
 	}
 
 	&.expanded {
@@ -148,11 +183,23 @@ i.fa-angle-right {
 		background-color: rgb(68, 73, 156);
 		color: white;
 		border-bottom: 0px;
+		margin: 5px;
+    margin-bottom: 0;
+	}
+}
+
+.array {
+	border: 1px solid #47ffde;
+	margin: 5px;
+	border-radius: 4px;
+	.array-header {
+		background-color: #47ffde;
+		border-bottom: 1px solid #47ffde;
+
 	}
 }
 
 .structured {
-	border: none;
 	max-height: 0;
 	overflow: auto;
 	transition: 0.25s ease;
@@ -164,6 +211,8 @@ i.fa-angle-right {
 		border: 1px solid rgb(68, 73, 156);
 		max-height: inherit;
 		transition: 0.25s ease;
+		margin: 5px;
+    margin-top: 0;
 	}
 }
 

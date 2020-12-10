@@ -185,7 +185,7 @@
 			:contentType="currentBinary.contentType"
 			:fileName="currentBinary.value"
 			@closed="currentBinary = null"></binary-view-dialog>
-	</v-card><!--end of panel-->
+	</v-card>
 </template>
 
 <script>
@@ -281,7 +281,7 @@ export default {
 			this.currentBinary = meta
 		}
 	}
-} //end of export
+}
 </script>
 
 <style lang="less" scoped>
@@ -438,30 +438,6 @@ th {
 
 .v-input {
 	flex: 0 0 auto;
-}
-
-/deep/ .prop-grid {
-	display: grid;
-	grid-template-columns: 0.5fr 1fr;
-	grid-template-rows: auto;
-	grid-column-gap: 0px;
-	grid-row-gap: 0px;
-	color: black;
-	padding: 0 16px;
-	line-height: 48px;
-
-	&.grid-row {
-		&:hover {
-			background-color: #eee;
-		}
-
-		&.expanded {
-			border: 1px solid rgb(68, 73, 156);
-			background-color: rgb(68, 73, 156);
-			color: white;
-			border-bottom: 0px;
-		}
-	}
 }
 
 </style>
