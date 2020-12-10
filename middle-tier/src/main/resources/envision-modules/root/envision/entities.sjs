@@ -5,6 +5,8 @@ const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
 const model = require('/envision/model.sjs').enhancedModel;
 const rdt = require('/MarkLogic/redaction');
+const finalDB = require('/com.marklogic.hub/config.sjs').FINALDATABASE
+const config = require('/envision/config.sjs');
 
 const extensions = xdmp.mimetypes()
 	.filter(m => m.format === 'binary' && !!m.extensions)
@@ -156,52 +158,84 @@ function getEntities(uris, opts) {
 		return xdmp.roleName(roleId)
 	})
 
-	let redactionRulesDoc
-	let arrRulesToApply = []
+	let redactionRolesDocUri = config.isMultiTenant ? "redactionRules2Roles4" + xdmp.getCurrentUser() + ".json" : "/redactionRules2Roles.json"
+	let piiRuleCollectionName = config.isMultiTenant ? "piiRule4" + xdmp.getCurrentUser() : "piiRule"
+	let redactionRuleCollectionPrefix = config.isMultiTenant ? "redactionRule4" + xdmp.getCurrentUser() : "redactionRule"
 
-	if (fn.exists(cts.doc("/redactionRules2Roles.json"))) {
-		redactionRulesDoc = cts.doc ("/redactionRules2Roles.json");
-		let redactionRules = redactionRulesDoc.toObject().rules
+	let arrRulesToApply = [ piiRuleCollectionName ]
+	let arrRulesNotToApply = []
+	// get all rules that could apply
+	var ext = {colls: redactionRuleCollectionPrefix + "*"};
+	let seqRuleCollections = xdmp.eval("cts.collectionMatch(colls)",  ext,
+			{
+			"database" : xdmp.schemaDatabase(xdmp.database(finalDB))
+			})
+
+	xdmp.log("DGB returned " + fn.count(seqRuleCollections ) + " possible rule collections")
+
+	for (var coll of seqRuleCollections ){
+		arrRulesToApply.push(coll)
+	}
+	xdmp.log("DGB rules to apply at start: " + arrRulesToApply)
+
+	//redactionRolesDocUri maps from rules to roles the rules should not apply to.
+	ext = {rulesDoc: redactionRolesDocUri };
+	let seqRedactionRules2Roles = xdmp.eval("cts.doc( rulesDoc )", ext,
+		{
+		"database" : xdmp.database("data-hub-FINAL")
+		})
+
+	if (fn.count(seqRedactionRules2Roles) > 0 ){
+		xdmp.log("DGB we have some redaction rules2Roles")
+		let redactionRules = fn.head(seqRedactionRules2Roles).toObject().rules
 		redactionRules.forEach((rule) => {
-			if( !rule.rolesThatDoNotUseRedaction.some(r=> arrUserRoleNames.includes(r)) ) {
-				arrRulesToApply.push(rule.redactionRuleCollection)
+			// each rule is like "redactionRuleCollection": "piiRules", "rolesThatDoNotUseRedaction": [ "pii-reader"]
+
+			if( rule.rolesThatDoNotUseRedaction.some(r=> arrUserRoleNames.includes(r)) ) {
+				arrRulesNotToApply.push(rule.redactionRuleCollection)
 			}
 		});
+
+		xdmp.log("DGB rules to apply: " + arrRulesToApply)
+		xdmp.log("DGB rules NOT to apply: " + arrRulesNotToApply)
+		arrRulesToApply = arrRulesToApply.filter( function( el ) {
+			return ! arrRulesNotToApply.includes( el.toString() );
+		} );
 	}
+	// rdt functions don't like if if there are no rules in a collection, which could be an edge case
+	let arrCollectionWithNoDocuments = []
+	for (var i=0; i< arrRulesToApply.length; i++) {
+		var ext = {coll: arrRulesToApply[i]};
+			let collectionCount = xdmp.eval("fn.count(cts.search(cts.collectionQuery(coll)))",  ext,
+				{
+					"database" : xdmp.schemaDatabase(xdmp.database(finalDB))
+				})
+			if ( collectionCount == 0) {
+				arrCollectionWithNoDocuments.push(arrRulesToApply[i] )
+			}
+	}
+	arrRulesToApply = arrRulesToApply.filter( function( el ) {
+		return ! arrCollectionWithNoDocuments.includes( el.toString() );
+	} );
+
+	xdmp.log("DGB rules to apply at end: " + arrRulesToApply)
 
 	// iterate over the uris and create "nodes" for the graph ui
 	// do this by opening the docs at each uri
 	// then insert some additional metadata about each "node"
+
 	uris.forEach(uri => {
 		let doc
-		if (!redactionRulesDoc) {
-			// try to use piiRules - this will be applied for all users
-			try {
-				xdmp.log("/redactionRules2Roles.json doesn't exist, trying to apply only piiRules")
-				doc = fn.head( rdt.redact(cts.doc(uri), ["piiRules"] ) ).root
-			} catch (e) {
-				xdmp.log("No pii rules to apply?")
-				doc = cts.doc(uri)
-			}
+
+		if (arrRulesToApply.length == 0) {
+			xdmp.log("No rules to apply?")
+			doc = cts.doc(uri)
 		} else {
 			try {
-				xdmp.log("trying to load doc with redaction rules " + arrRulesToApply.toString() )
 				doc = fn.head( rdt.redact(cts.doc(uri), arrRulesToApply ) ).root
-			} catch(e) {
-				xdmp.log("Failed to apply redaction rules. Do rules in collections '" + arrRulesToApply.toString() + "' exist in the schema db? Please read the documentation." )
-
-				if (arrRulesToApply.includes("piiRules")) {
-					try {
-						xdmp.log("Applying piiRules only")
-						doc = fn.head( rdt.redact(cts.doc(uri), ["piiRules"] ) ).root
-					} catch (e) {
-						xdmp.log("No pii rules to apply?")
-						doc = cts.doc(uri)
-					}
-				} else {
-					xdmp.log("No pii to apply, so just load doc")
-					doc = cts.doc(uri)
-				}
+			} catch (e) {
+				xdmp.log("Problem applying redaction rules")
+				doc = cts.doc(uri)
 			}
 		}
 
