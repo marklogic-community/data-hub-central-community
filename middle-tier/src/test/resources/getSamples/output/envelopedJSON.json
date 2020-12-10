@@ -1,0 +1,248 @@
+[
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "address",
+		"xpath": "address",
+		"children": [
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "addrCity",
+				"xpath": "address/addrCity",
+				"value": "Los Angeles"
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "addrState",
+				"xpath": "address/addrState",
+				"value": "CA"
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "addrStreet",
+				"xpath": "address/addrStreet",
+				"value": "3 Lerdahl Center"
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "addrZip",
+				"xpath": "address/addrZip",
+				"value": "90030"
+			}
+		]
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "department",
+		"xpath": "department",
+		"children": [
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "location",
+				"xpath": "department/location",
+				"children": [
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "addrCity",
+						"xpath": "department/location/addrCity",
+						"value": "Los Angeles"
+					},
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "addrState",
+						"xpath": "department/location/addrState",
+						"value": "CA"
+					},
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "addrStreet",
+						"xpath": "department/location/addrStreet",
+						"value": "3 Lerdahl Center"
+					},
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "addrZip",
+						"xpath": "department/location/addrZip",
+						"children": [
+							{
+								"ns": null,
+								"nsPrefix": null,
+								"name": "zip4",
+								"xpath": "department/location/addrZip/zip4",
+								"value": "90030"
+							},
+							{
+								"ns": null,
+								"nsPrefix": null,
+								"name": "zip5",
+								"xpath": "department/location/addrZip/zip5",
+								"value": ""
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "birthDate",
+		"xpath": "birthDate",
+		"value": "11/25/1963"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "email",
+		"xpath": "email",
+		"value": "bjohanssone@scribd.com"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "firstName",
+		"xpath": "firstName",
+		"value": "Bucky"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "gender",
+		"xpath": "gender",
+		"value": "Male"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "id",
+		"xpath": "id",
+		"value": "15"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "lastName",
+		"xpath": "lastName",
+		"value": "Johansson"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "lastUpdated",
+		"xpath": "lastUpdated",
+		"value": "2012-05-22T20:10:38Z"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "phone",
+		"xpath": "phone",
+		"value": "213-427-6117"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "ssn",
+		"xpath": "ssn",
+		"value": "628-20-9013"
+	},
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "policies",
+		"xpath": "policies",
+		"children": [
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "make",
+				"xpath": "policies/make",
+				"value": [
+					"Chevrolet",
+					"Ford"
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "model",
+				"xpath": "policies/model",
+				"value": [
+					"Corvette",
+					"Crown Victoria"
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "number",
+				"xpath": "policies/number",
+				"value": [
+					"11-321-8701",
+					"66-780-7195"
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "vin",
+				"xpath": "policies/vin",
+				"value": [
+					"JTDKN3DU2A0804150",
+					"4JGDF2EE6EA407740"
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "year",
+				"xpath": "policies/year",
+				"value": [
+					"1961",
+					"2005"
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "nested1",
+				"xpath": "policies/nested1",
+				"children": [
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "stuff1",
+						"xpath": "policies/nested1/stuff1",
+						"value": "hi"
+					}
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "nested2",
+				"xpath": "policies/nested2",
+				"children": [
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "stuff2",
+						"xpath": "policies/nested2/stuff2",
+						"value": "hi"
+					}
+				]
+			}
+		]
+	}
+]

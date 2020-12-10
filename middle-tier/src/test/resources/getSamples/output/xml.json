@@ -1,0 +1,113 @@
+[
+	{
+		"ns": null,
+		"nsPrefix": null,
+		"name": "test",
+		"xpath": "test",
+		"children": [
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "name",
+				"xpath": "test/name",
+				"value": "sue"
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "age",
+				"xpath": "test/age",
+				"value": "24"
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "addresses",
+				"xpath": "test/addresses",
+				"children": [
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "address",
+						"xpath": "test/addresses/address",
+						"children": [
+							{
+								"ns": null,
+								"nsPrefix": null,
+								"name": "city",
+								"xpath": "test/addresses/address/city",
+								"value": [
+									"Lexington",
+									"Lexington"
+								]
+							},
+							{
+								"ns": null,
+								"nsPrefix": null,
+								"name": "state",
+								"xpath": "test/addresses/address/state",
+								"value": [
+									"KY",
+									"KY"
+								]
+							},
+							{
+								"ns": null,
+								"nsPrefix": null,
+								"name": "zip",
+								"xpath": "test/addresses/address/zip",
+								"children": [
+									{
+										"ns": null,
+										"nsPrefix": null,
+										"name": "zip4",
+										"xpath": "test/addresses/address/zip/zip4",
+										"value": "1234"
+									},
+									{
+										"ns": null,
+										"nsPrefix": null,
+										"name": "zip5",
+										"xpath": "test/addresses/address/zip/zip5",
+										"value": "12345"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"ns": null,
+				"nsPrefix": null,
+				"name": "withAttr",
+				"xpath": "test/withAttr",
+				"value": "\n\t\tHi\n\t",
+				"children": [
+					{
+						"ns": null,
+						"nsPrefix": null,
+						"name": "@modifier",
+						"xpath": "test/withAttr/@modifier",
+						"value": "yes"
+					}
+				]
+			},
+			{
+				"ns": "http://fake-ns",
+				"nsPrefix": null,
+				"name": "withns",
+				"xpath": "test/*:withns",
+				"children": [
+					{
+						"ns": "http://fake-ns",
+						"nsPrefix": null,
+						"name": "childOfNs",
+						"xpath": "test/*:withns/*:childOfNs",
+						"value": "Chillin"
+					}
+				]
+			}
+		]
+	}
+]

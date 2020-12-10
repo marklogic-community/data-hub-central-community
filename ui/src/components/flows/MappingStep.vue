@@ -308,10 +308,12 @@ export default {
 			})
 		},
 		loadSampleDoc() {
-			flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
-				.then(doc => this.sampleDoc = doc)
-				.then(this.validate)
-				.catch((err) => console.error(err))
+			if (this.sampleDocUri) {
+				flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
+					.then(doc => this.sampleDoc = doc)
+					.then(this.validate)
+					.catch((err) => console.error(err))
+			}
 		},
 		async saveMapping() {
 			await flowsApi.saveMapping(this.mapping)

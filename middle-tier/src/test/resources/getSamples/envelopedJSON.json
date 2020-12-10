@@ -1,0 +1,57 @@
+{
+	"envelope": {
+		"headers": {},
+		"triples": [],
+		"instance": {
+			"address": {
+				"addrCity": "Los Angeles",
+				"addrState": "CA",
+				"addrStreet": "3 Lerdahl Center",
+				"addrZip": "90030"
+			},
+			"department": {
+				"location": {
+					"addrCity": "Los Angeles",
+					"addrState": "CA",
+					"addrStreet": "3 Lerdahl Center",
+					"addrZip": {
+						"zip4": "90030",
+						"zip5": ""
+					}
+				}
+			},
+			"birthDate": "11/25/1963",
+			"email": "bjohanssone@scribd.com",
+			"firstName": "Bucky",
+			"gender": "Male",
+			"id": 15,
+			"lastName": "Johansson",
+			"lastUpdated": "2012-05-22T20:10:38Z",
+			"phone": "213-427-6117",
+			"ssn": "628-20-9013",
+			"policies": [
+				{
+					"make": "Chevrolet",
+					"model": "Corvette",
+					"number": "11-321-8701",
+					"vin": "JTDKN3DU2A0804150",
+					"year": 1961,
+					"nested1": {
+						"stuff1": "hi"
+					}
+				},
+				{
+					"make": "Ford",
+					"model": "Crown Victoria",
+					"number": "66-780-7195",
+					"vin": "4JGDF2EE6EA407740",
+					"year": 2005,
+					"nested2": {
+						"stuff2": "hi"
+					}
+				}
+			]
+		},
+		"attachments": null
+	}
+}

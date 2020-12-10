@@ -3,7 +3,7 @@
 		<div class="array" v-if="prop.isArray">
 			<div class="prop-grid grid-row array-header">
 				<div><i class="fa fa-angle-right hidden"></i> {{prop.label}}</div>
-				<div>[]</div>
+				<div>[ ]</div>
 			</div>
 			<div v-if="!prop.isStructured">
 				<template v-for="(value, idx) in prop.value">
@@ -16,7 +16,7 @@
 			<div v-else>
 				<template v-for="(value, idx) in prop.value">
 					<div :key="`${idx}-array-expander`" @click="toggleExpanded(idx)" class="prop-grid grid-row clickable" :class="expanded[idx] ? 'expanded' : ''">
-						<div><i class="fa fa-angle-right" :class="expanded[idx] ? 'expanded': ''"></i> [{{idx}}]</div>
+						<div><i class="fa fa-angle-right" :class="expanded[idx] ? 'expanded': ''"></i> [ {{idx}} ]</div>
 						<div></div>
 					</div>
 					<div :key="`${idx}-array-value`" class="structured" :class="expanded[idx] ? 'expanded': ''">
@@ -189,12 +189,12 @@ i.fa-angle-right {
 }
 
 .array {
-	border: 1px solid #47ffde;
+	border: 1px solid #b0cb2c;
 	margin: 5px;
 	border-radius: 4px;
 	.array-header {
-		background-color: #47ffde;
-		border-bottom: 1px solid #47ffde;
+		background-color: #b0cb2c;
+		border-bottom: 1px solid #b0cb2c;
 
 	}
 }
