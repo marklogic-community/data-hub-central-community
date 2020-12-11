@@ -47,7 +47,8 @@
 			"id": "employee-belongsto-department",
 			"smooth": {
 				"roundness": 0.5
-			}
+			},
+			"type": "internal"
 		},
 		"department-hasemployee-employee": {
 			"from": "department",

@@ -1,0 +1,38 @@
+{
+	"info" : {
+		"title" : "Address",
+		"version" : "0.0.1",
+		"baseUri" : "http://marklogic.com/envision/"
+	},
+	"definitions": {
+		"Address": {
+			"required": [],
+			"pii": [],
+			"elementRangeIndex": [],
+			"rangeIndex": [],
+			"wordLexicon": [],
+			"properties": {
+				"line1": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"line2": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"city": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"state": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				"zip": {
+					"datatype": "string",
+					"collation": "http://marklogic.com/collation/codepoint"
+				}
+			}
+		}
+	}
+}

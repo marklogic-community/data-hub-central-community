@@ -44,11 +44,11 @@
 						<td>{{timeAgo(job.creationDate)}}</td>
 						<td>
 							<delete-data-confirm
-									tooltip="Delete Exported Data"
-									message="Do you really want to delete this exported data?"
-									:collection="job.id"
-									:deleteInProgress="deleteInProgress"
-									@deleted="removeData($event)"/>
+								tooltip="Delete Exported Data"
+								message="Do you really want to delete this exported data?"
+								:collection="job.id"
+								:deleteInProgress="deleteInProgress"
+								@deleted="removeData($event)"/>
 						</td>
 					</tr>
 				</tbody>

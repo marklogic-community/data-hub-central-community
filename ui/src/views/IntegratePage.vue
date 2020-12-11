@@ -554,7 +554,6 @@ export default {
 		},
 		removeFlow(flowName) {
 			this.$store.dispatch('flows/deleteFlow', flowName)
-			console.log('removed!', flowName)
 		},
 		async removeAllData() {
 			this.deleteInProgress = true
@@ -570,7 +569,7 @@ export default {
 			await axios.post("/api/system/deleteCollection", { database: 'final', collection: collection })
 			await this.getStepInfo()
 			this.deleteInProgress = false
-			this.finalData = this.finalData.filter(c => c.collection !== collection)
+			// this.finalData = this.finalData.filter(c => c.collection !== collection)
 		},
 		async removeJob(jobId) {
 			await jobsApi.deleteJob(jobId)

@@ -52,6 +52,7 @@ public class TestExplore extends AbstractMvcTest {
 			.andDo(
 				result -> {
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
+					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("useCases/searchConcepts/relatedConceptsOutput.json"), response);
 				})
 			.andExpect(status().isOk());

@@ -138,7 +138,6 @@ export default {
 			}
 		},
 		totalPages() {
-			console.log('totalPages', this.total, this.pageLength, Math.ceil(this.total / this.pageLength))
 			return Math.ceil(this.total / this.pageLength)
 		}
 	},

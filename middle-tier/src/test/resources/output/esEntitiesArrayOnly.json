@@ -37,9 +37,6 @@
 							"collation": "http://marklogic.com/collation/codepoint"
 						}
 					},
-					"address": {
-						"$ref": "#/definitions/Address"
-					},
 					"workAddresses" : {
 						"datatype" : "array",
 						"items" : {

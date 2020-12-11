@@ -13,8 +13,7 @@
 						data-cy="deleteDataConfirm.deleteButton"
 						right
 						icon
-						small
-						class="small-btn"
+						:small="small"
 						v-on="{ ...tooltip, ...menu }"
 					>
 						<v-icon>delete</v-icon>
@@ -43,7 +42,8 @@ export default {
 		tooltip: {type: String},
 		message: {type: String},
 		collection: {type: String},
-		disabled: {type: Boolean, default: false}
+		disabled: {type: Boolean, default: false},
+		small: {type: Boolean, default: false}
 	},
 	data() {
 		return {

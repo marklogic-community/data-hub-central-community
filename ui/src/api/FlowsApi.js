@@ -36,7 +36,7 @@ export default {
 			.then(response => response.data)
 	},
 	getSampleDoc(uri, namespaces) {
-		return axios.post('/api/flows/mappings/sampleDoc', { uri, namespaces })
+		return axios.post('/api/flows/mappings/sampleDoc', { uri, namespaces: namespaces || [] })
 			.then(response => response.data)
 	},
 	previewMapping({ mappingName, mappingVersion, format, uri }) {
