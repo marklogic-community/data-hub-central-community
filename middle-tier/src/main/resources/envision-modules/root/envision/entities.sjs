@@ -158,7 +158,7 @@ function getEntities(uris, opts) {
 		return xdmp.roleName(roleId)
 	})
 
-	let redactionRolesDocUri = config.isMultiTenant ? "redactionRules2Roles4" + xdmp.getCurrentUser() + ".json" : "/redactionRules2Roles.json"
+	let redactionRolesDocUri = config.isMultiTenant ? "/redactionRules2Roles4" + xdmp.getCurrentUser() + ".json" : "/redactionRules2Roles.json"
 	let piiRuleCollectionName = config.isMultiTenant ? "piiRule4" + xdmp.getCurrentUser() : "piiRule"
 	let redactionRuleCollectionPrefix = config.isMultiTenant ? "redactionRule4" + xdmp.getCurrentUser() : "redactionRule"
 
@@ -182,7 +182,7 @@ function getEntities(uris, opts) {
 	ext = {rulesDoc: redactionRolesDocUri };
 	let seqRedactionRules2Roles = xdmp.eval("cts.doc( rulesDoc )", ext,
 		{
-		"database" : xdmp.database("data-hub-FINAL")
+		"database" : xdmp.database(finalDB)
 		})
 
 	if (fn.count(seqRedactionRules2Roles) > 0 ){
