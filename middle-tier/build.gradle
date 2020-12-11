@@ -28,6 +28,12 @@ ext {
 
 bootJar {
 	baseName = springBootJarName
+	manifest {
+    attributes(
+			'Implementation-Title':   'Envision',
+			'Implementation-Version': project.version
+		)
+  }
 }
 
 repositories {
