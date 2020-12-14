@@ -8,22 +8,20 @@ const model = require('/envision/model.sjs').enhancedModel;
 const finalDB = require('/com.marklogic.hub/config.sjs').FINALDATABASE
 const stagingDB = require('/com.marklogic.hub/config.sjs').STAGINGDATABASE
 const config = require('/envision/config.sjs');
+
 const entityNames = Object.values(model.nodes).map(n => n.entityName)
 
 let entities = {};
 
 // if the entity has PII, create a redaction rule, if not, delete any PII rules
-function ruleDefinition(entityName, propertyName, isPII) {
+function ruleDefinition(entityName, propertyName, isPII, ruleUri, ruleCollectionName) {
 	return {
 		piiRule: function piiRule() {
 			declareUpdate()
 
-			const ruleName = entityName + "-" + propertyName
-
 			if (isPII){
-				if (! fn.exists(cts.doc("/rules/pii/" + ruleName + ".json")) ) {
-
-					xdmp.documentInsert("/rules/pii/" + xdmp.getCurrentUser() + "/" + ruleName + ".json",
+				if (! fn.exists(cts.doc(ruleUri)) ) {
+					xdmp.documentInsert(ruleUri,
 						{ "rule": {
 								"description": "Redact " + entityName ,
 								"path": "/envelope/instance/" + entityName + "/" + propertyName,
@@ -35,14 +33,14 @@ function ruleDefinition(entityName, propertyName, isPII) {
 							}
 						},
 						{
-							permissions : xdmp.defaultPermissions(),
-							collections : ["piiRules"]
+							permissions : [xdmp.defaultPermissions(), xdmp.permission("envision", "read"), xdmp.permission("envision", "update")],
+							collections : [ruleCollectionName]
 						}
 					)
 				}
 			} else {
-				if (fn.exists(cts.doc("/rules/pii/" + ruleName + ".json")) ) {
-					xdmp.documentDelete( "/rules/pii/" + ruleName + ".json")
+				if (fn.exists(cts.doc(ruleUri)) ) {
+					xdmp.documentDelete( ruleUri )
 				}
 			}
 		}
@@ -101,69 +99,6 @@ function buildDefinitions(node) {
 					}
 				};
 			}
-			// if the entity has PII, create a redaction rule, if not, delete any PII rules
-			function ruleDefinition(entityName, propertyName, isPII, ruleUri, ruleCollectionName) {
-				return {
-					piiRule: function piiRule() {
-						declareUpdate()
-
-						if (isPII){
-							if (! fn.exists(cts.doc(ruleUri)) ) {
-								xdmp.documentInsert(ruleUri,
-									{ "rule": {
-											"description": "Redact " + entityName ,
-											"path": "/envelope/instance/" + entityName + "/" + propertyName,
-											"method": { "function": "redact-regex" },
-											"options": {
-												"pattern" : "^[\u0001-\uE007F].*",
-												"replacement" :  "### PII Redacted ###"
-											}
-										}
-									},
-									{
-										permissions : [xdmp.defaultPermissions(), xdmp.permission("envision", "read"), xdmp.permission("envision", "update")],
-										collections : [ruleCollectionName]
-									}
-								)
-							}
-						} else {
-							if (fn.exists(cts.doc(ruleUri)) ) {
-								xdmp.documentDelete( ruleUri )
-							}
-						}
-					}
-				}
-			}
-			let ruleUri = ""
-			let ruleCollectionName = ""
-			if (config.isMultiTenant) {
-				ruleUri = "/rules/pii/" + xdmp.getCurrentUser() + "/" + node.entityName + "-" + p.name + ".json"
-				ruleCollectionName = "piiRule4" + xdmp.getCurrentUser()
-			} else {
-				ruleUri = "/rules/pii/"  + node.entityName + "-" + p.name + ".json"
-				ruleCollectionName = "piiRule"
-			}
-
-			const invokeRule = ruleDefinition (node.entityName, p.name, p.isPii, ruleUri, ruleCollectionName)
-			xdmp.invokeFunction(invokeRule.piiRule,
-				{ "database" : xdmp.schemaDatabase(xdmp.database(finalDB)) }
-			);
-			// note - thought about adding a role to staging as well. However, this uses a different way of reading
-			// docs and doesn't use entities.sjs where the redaction code is applied
-
-		});
-		let definition = {
-			"primaryKey": primaryKey,
-			"required": Object.keys(required),
-			"pii": Object.keys(pii),
-			"elementRangeIndex": Object.keys(elementRangeIndex),
-			"rangeIndex": Object.keys(rangeIndex),
-			"wordLexicon": Object.keys(wordLexicon),
-			"properties": properties
-		};
-		let baseUri = node.baseUri || "http://marklogic.com/envision/"
-		if (!baseUri.endsWith('/')) {
-			baseUri += '/'
 		}
 		else if (entityNames.indexOf(p.type) >= 0) {
 			properties[p.name] = {
@@ -181,11 +116,19 @@ function buildDefinitions(node) {
 				collation: p.collation || "http://marklogic.com/collation/codepoint"
 			};
 		}
-
-		const invokeRule = ruleDefinition (node.entityName, p.name, p.isPii)
-		xdmp.invokeFunction(invokeRule.piiRule,
-			{ "database" : xdmp.schemaDatabase(xdmp.database(finalDB)) }
-		);
+		let ruleUri = ""
+		let ruleCollectionName = ""
+		if (config.isMultiTenant) {
+			ruleUri = "/rules/pii/" + xdmp.getCurrentUser() + "/" + node.entityName + "-" + p.name + ".json"
+			ruleCollectionName = "piiRule4" + xdmp.getCurrentUser()
+		} else {
+			ruleUri = "/rules/pii/"  + node.entityName + "-" + p.name + ".json"
+			ruleCollectionName = "piiRule"
+		}
+		const invokeRule = ruleDefinition (node.entityName, p.name, p.isPii, ruleUri, ruleCollectionName)
+			xdmp.invokeFunction(invokeRule.piiRule,
+				{ "database" : xdmp.schemaDatabase(xdmp.database(finalDB)) }
+			);
 	});
 
 	definitions[node.entityName] = {
