@@ -491,12 +491,9 @@ function getEntitiesRelatedToConcept(concepts, opts) {
  // now add the edges from the concept
  for (let t of triples) {
 		let uri = t.from
-		console.log('uri', uri)
 		const cols = xdmp.documentGetCollections(uri)
-		console.log('cols', cols)
 		const collections = fn.head(cols)
 			.filter(c => archivedCollections.indexOf(c) !== -1)
-		console.log('collections', collections)
 		if (collections.length === 0) {
 			resp.edges[t.id] = {
 				from: t.from,
@@ -555,8 +552,6 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 			}
 		}
 	}
-
-	console.log('resp', resp)
 
 	return resp
 }

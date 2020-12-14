@@ -2,7 +2,21 @@ import SockJS from "sockjs-client"
 import Stomp from "webstomp-client"
 import store from '../store'
 
-export default {
+const isTesting = process.env.NODE_ENV === 'test'
+
+const WebSocket = isTesting ? {
+	install(Vue) {
+		Vue.prototype.$ws = this
+		store.$ws = this
+	},
+	subscribe() {},
+	connect() {
+		return new Promise((resolve) => {
+			resolve()
+		})
+	},
+	disconnect() {}
+} : {
 	socket: {},
 	subscribeQueue: [],
 	install(Vue) {
@@ -31,14 +45,12 @@ export default {
 			this.stompClient = Stomp.over(this.socket)
 			this.stompClient.connect(
 				{},
-				frame => {
+				() => {
 					this.connected = true
 					this._drainSubQ()
-					console.log('connected', frame)
 					resolve()
 				},
 				error => {
-					console.log(error)
 					this.connected = false
 					reject(error)
 				}
@@ -52,3 +64,5 @@ export default {
 		this.connected = false
 	}
 }
+
+export default WebSocket

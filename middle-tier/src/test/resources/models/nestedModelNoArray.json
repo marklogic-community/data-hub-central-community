@@ -55,7 +55,7 @@
 					"name": "skills",
 					"type": "string",
 					"isArray": true,
-					"isStructured": false,
+					"isStructured": true,
 					"isRequired": false,
 					"isPii": false,
 					"isElementRangeIndex": false,
@@ -66,30 +66,9 @@
 					"collation": "http://marklogic.com/collation/codepoint"
 				},
 				{
-					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8",
 					"name": "address",
 					"type": "Address",
-					"isArray": false,
-					"isStructured": true,
-					"isRequired": false,
-					"isPii": false,
-					"isElementRangeIndex": false,
-					"isRangeIndex": false,
-					"isWordLexicon": false,
-					"description": null
-				},
-				{
-					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8",
-					"name": "workAddresses",
-					"type": "Address",
-					"isArray": true,
-					"isStructured": true,
-					"isRequired": false,
-					"isPii": false,
-					"isElementRangeIndex": false,
-					"isRangeIndex": false,
-					"isWordLexicon": false,
-					"description": null
+					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8"
 				}
 			]
 		},

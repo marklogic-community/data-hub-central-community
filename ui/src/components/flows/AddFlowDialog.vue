@@ -154,7 +154,6 @@ export default {
 				options: this.options
 			}
 
-			// console.log('flow', flow)
 			this.saveFlow(flow)
 				.then(() => {
 					return this.getFlow()

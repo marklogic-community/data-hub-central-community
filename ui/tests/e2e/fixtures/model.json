@@ -238,6 +238,81 @@
 					"background": "#c9f5ed"
 				}
 			}
+		},
+		"address": {
+			"label": "Address",
+			"entityName": "Address",
+			"type": "entity",
+			"id": "address",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"properties": [
+				{
+					"name": "line1",
+					"type": "string",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "line2",
+					"type": "string",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "city",
+					"type": "string",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "state",
+					"type": "string",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "zip",
+					"type": "string",
+					"isArray": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				}
+			]
 		}
 	},
 	"edges": {

@@ -12,30 +12,11 @@
       "rangeIndex" : [ ],
       "wordLexicon" : [ ],
       "properties" : {
-        "partOf" : {
-          "$ref" : "#/definitions/MegaCorp"
-        }
+				"organizationId" : {
+					"datatype" : "string",
+					"collation" : "http://marklogic.com/collation/codepoint"
+				}
       }
-    },
-    "MegaCorp" : {
-      "required" : [ ],
-      "pii" : [ ],
-      "elementRangeIndex" : [ ],
-      "rangeIndex" : [ ],
-      "wordLexicon" : [ ],
-      "properties" : {
-        "existsOn" : {
-          "$ref" : "#/definitions/Planet"
-        }
-      }
-    },
-    "Planet" : {
-      "required" : [ ],
-      "pii" : [ ],
-      "elementRangeIndex" : [ ],
-      "rangeIndex" : [ ],
-      "wordLexicon" : [ ],
-      "properties" : { }
     }
   }
 }

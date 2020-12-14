@@ -215,6 +215,7 @@ export default {
 							const splits = ref.split('/')
 							const refName = splits[splits.length - 1]
 							newP.type = refName
+							mapping.targetEntityType = ref
 							const nextEnt = this.entities[refName]
 							if (nextEnt) {
 								if (!mapping.properties) {
@@ -235,7 +236,7 @@ export default {
 			if (this.propSearch) {
 				isVisible = isVisible && this.propsFilter(prop, this.propSearch)
 			}
-			return isVisible && (!prop.parentName || this.expandedProps[prop.parentName])
+			return isVisible && (!prop.parentName || this.expandedProps[prop.parentName] && this.isPropRowVisible(prop.parent))
 		},
 		propsFilter(item, search) {
 			const resp = item && (item.name.includes(search) ||
@@ -307,10 +308,12 @@ export default {
 			})
 		},
 		loadSampleDoc() {
-			flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
-				.then(doc => this.sampleDoc = doc)
-				.then(this.validate)
-				.catch((err) => console.error(err))
+			if (this.sampleDocUri) {
+				flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
+					.then(doc => this.sampleDoc = doc)
+					.then(this.validate)
+					.catch((err) => console.error(err))
+			}
 		},
 		async saveMapping() {
 			await flowsApi.saveMapping(this.mapping)
