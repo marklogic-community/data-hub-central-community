@@ -68,7 +68,6 @@ Object.keys(model.nodes).forEach(key => {
 
 						if (isPII){
 							if (! fn.exists(cts.doc(ruleUri)) ) {
-								xdmp.log("DGB creating pii rules document")
 								xdmp.documentInsert(ruleUri,
 									{ "rule": {
 											"description": "Redact " + entityName ,
@@ -88,7 +87,6 @@ Object.keys(model.nodes).forEach(key => {
 							}
 						} else {
 							if (fn.exists(cts.doc(ruleUri)) ) {
-								xdmp.log("DGB deleteing pii rules document")
 								xdmp.documentDelete( ruleUri )
 							}
 						}

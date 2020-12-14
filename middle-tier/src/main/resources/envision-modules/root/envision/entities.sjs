@@ -171,12 +171,9 @@ function getEntities(uris, opts) {
 			"database" : xdmp.schemaDatabase(xdmp.database(finalDB))
 			})
 
-	xdmp.log("DGB returned " + fn.count(seqRuleCollections ) + " possible rule collections")
-
 	for (var coll of seqRuleCollections ){
 		arrRulesToApply.push(coll)
 	}
-	xdmp.log("DGB rules to apply at start: " + arrRulesToApply)
 
 	//redactionRolesDocUri maps from rules to roles the rules should not apply to.
 	ext = {rulesDoc: redactionRolesDocUri };
@@ -186,7 +183,6 @@ function getEntities(uris, opts) {
 		})
 
 	if (fn.count(seqRedactionRules2Roles) > 0 ){
-		xdmp.log("DGB we have some redaction rules2Roles")
 		let redactionRules = fn.head(seqRedactionRules2Roles).toObject().rules
 		redactionRules.forEach((rule) => {
 			// each rule is like "redactionRuleCollection": "piiRules", "rolesThatDoNotUseRedaction": [ "pii-reader"]
@@ -196,8 +192,6 @@ function getEntities(uris, opts) {
 			}
 		});
 
-		xdmp.log("DGB rules to apply: " + arrRulesToApply)
-		xdmp.log("DGB rules NOT to apply: " + arrRulesNotToApply)
 		arrRulesToApply = arrRulesToApply.filter( function( el ) {
 			return ! arrRulesNotToApply.includes( el.toString() );
 		} );
@@ -218,23 +212,27 @@ function getEntities(uris, opts) {
 		return ! arrCollectionWithNoDocuments.includes( el.toString() );
 	} );
 
-	xdmp.log("DGB rules to apply at end: " + arrRulesToApply)
 
 	// iterate over the uris and create "nodes" for the graph ui
 	// do this by opening the docs at each uri
 	// then insert some additional metadata about each "node"
 
+	if (arrRulesToApply.length == 0) {
+		xdmp.log("No redaction rules to apply")
+	} else {
+		xdmp.log("Applying redaction rules " + arrRulesToApply.toString() )
+	}
+
 	uris.forEach(uri => {
 		let doc
 
 		if (arrRulesToApply.length == 0) {
-			xdmp.log("No rules to apply?")
 			doc = cts.doc(uri)
 		} else {
 			try {
 				doc = fn.head( rdt.redact(cts.doc(uri), arrRulesToApply ) ).root
 			} catch (e) {
-				xdmp.log("Problem applying redaction rules")
+				xdmp.log("Problem applying redaction rules: " + e.toString() )
 				doc = cts.doc(uri)
 			}
 		}
@@ -248,6 +246,7 @@ function getEntities(uris, opts) {
 		const entityId = entityName.toLowerCase()
 		const modelNode = model.nodes[entityId] || {};
 		const labelField = modelNode.labelField;
+
 
 		// grab the label or default to the uri
 		const label = (!!labelField) ? entity.xpath(`.//${labelField}/string()`) : uri
@@ -315,6 +314,7 @@ function getEntities(uris, opts) {
 			}
 		}
 	}
+
 	return resp
 }
 
@@ -525,12 +525,10 @@ function getEntitiesRelatedToConcept(concepts, opts) {
  // now add the edges from the concept
  for (let t of triples) {
 		let uri = t.from
-		console.log('uri', uri)
 		const cols = xdmp.documentGetCollections(uri)
-		console.log('cols', cols)
 		const collections = fn.head(cols)
 			.filter(c => archivedCollections.indexOf(c) !== -1)
-		console.log('collections', collections)
+
 		if (collections.length === 0) {
 			resp.edges[t.id] = {
 				from: t.from,
@@ -589,8 +587,6 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 			}
 		}
 	}
-
-	console.log('resp', resp)
 
 	return resp
 }
