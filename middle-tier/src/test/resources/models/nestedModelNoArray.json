@@ -1,0 +1,248 @@
+{
+	"name": "My Hub Model",
+	"nodes": {
+		"employee": {
+			"label": "Employee",
+			"entityName": "Employee",
+			"type": "entity",
+			"id": "employee",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"properties": [
+				{
+					"name": "departmentId",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "2a9552d6-e71c-45de-bd86-9fe71161aef7",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "employeeId",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "bdd1515b-10ae-4d25-8b8c-196d6222688c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "skills",
+					"type": "string",
+					"isArray": true,
+					"isStructured": true,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "address",
+					"type": "Address",
+					"_propId": "e665963d-5968-4653-a7f2-6a24e33b25d8"
+				}
+			]
+		},
+		"organization": {
+			"label": "Organization",
+			"entityName": "Organization",
+			"type": "entity",
+			"id": "organization",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"properties": [
+				{
+					"name": "organizationId",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				}
+			]
+		},
+		"department": {
+			"label": "Department",
+			"entityName": "Department",
+			"type": "entity",
+			"id": "department",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"properties": [
+				{
+					"name": "departmentId",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "bc1883bc-1234-42a9-b994-9bc36ff11f9e",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "employeeIds",
+					"type": "string",
+					"isArray": true,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "610ecb0a-9a0c-42ec-bab5-03a215014764",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "0ad7dc2a-ab42-4d35-866c-6bfa2a62efda",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				}
+			]
+		},
+		"address": {
+			"label": "Address",
+			"entityName": "Address",
+			"type": "entity",
+			"id": "address",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/",
+			"properties": [
+				{
+					"name": "line1",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "line2",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "city",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "state",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				},
+				{
+					"name": "zip",
+					"type": "string",
+					"isArray": false,
+					"isStructured": false,
+					"isRequired": false,
+					"isPii": false,
+					"isElementRangeIndex": false,
+					"isRangeIndex": false,
+					"isWordLexicon": false,
+					"_propId": "3dfe593d-f53a-46a8-b687-add3d4de7a4c",
+					"description": null,
+					"collation": "http://marklogic.com/collation/codepoint"
+				}
+			]
+		}
+	},
+	"edges": {
+		"employee-belongsTo-department": {
+			"id": "employee-belongsTo-department",
+			"label": "belongsTo",
+			"from": "employee",
+			"to": "department",
+			"cardinality": "1:1"
+		},
+		"department-belongsTo-organization": {
+			"id": "department-belongsTo-organization",
+			"label": "belongsTo",
+			"from": "department",
+			"to": "organization",
+			"cardinality": "1:1"
+		}
+	}
+}

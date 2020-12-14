@@ -171,10 +171,10 @@ export default {
 		},
 		getLinkItems(entity, otherEntity) {
 			if (entity.type === 'entity') {
-				return entity.properties
+				return entity.properties.filter(p => !p.isStructured)
 			}
 			else if (otherEntity) {
-				return otherEntity.properties
+				return otherEntity.properties.filter(p => !p.isStructured)
 			}
 			return []
 		},

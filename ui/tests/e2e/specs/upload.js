@@ -44,7 +44,7 @@ describe('Integrate Tab', () => {
 		cy.contains('DataSource4')
 	})
 
-	it('should upload a csv', () => {
+	it('should upload a csv with default collection', () => {
 		cy.visit('/upload')
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.fixture('test.csv', 'base64').then(fileContent => {
@@ -54,11 +54,54 @@ describe('Integrate Tab', () => {
 					{ subjectType: 'drag-n-drop' },
 				);
 
+			// cy.get('[data-cy="uploadCollection.collectionName"]').type('My Collection Is Rad')
+			cy.get('[data-cy="uploadCollectionDlg.cancelBtn"]').click()
+
+			cy.get('[data-cy="uploadfileInput"]').should('exist')
+        .attachFile(
+					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
+					{ subjectType: 'drag-n-drop' },
+				);
+
+			// cy.get('[data-cy="uploadCollection.collectionName"]').type('My Collection Is Rad')
+			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
+
 			cy.wait('@uploadFile')
 				.its('request.body')
 					.should(body => {
 						expect(body.get('collection')).to.eq('test.csv')
-						expect(body.get('file').name).to.eq('test.csv')
+						expect(body.get('files').name).to.eq('test.csv')
+					})
+		})
+	})
+
+	it('should upload a csv with changed collection', () => {
+		cy.visit('/upload')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.fixture('test.csv', 'base64').then(fileContent => {
+			cy.get('[data-cy="uploadfileInput"]').should('exist')
+				.attachFile(
+					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
+					{ subjectType: 'drag-n-drop' },
+				);
+
+			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('My Collection Is Rad')
+			cy.get('[data-cy="uploadCollectionDlg.cancelBtn"]').click()
+
+			cy.get('[data-cy="uploadfileInput"]').should('exist')
+				.attachFile(
+					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
+					{ subjectType: 'drag-n-drop' },
+				);
+
+			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('My Collection Is Rad')
+			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
+
+			cy.wait('@uploadFile')
+				.its('request.body')
+					.should(body => {
+						expect(body.get('collection')).to.eq('My Collection Is Rad')
+						expect(body.get('files').name).to.eq('test.csv')
 					})
 		})
 	})

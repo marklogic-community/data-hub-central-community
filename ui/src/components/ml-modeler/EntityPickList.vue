@@ -153,6 +153,7 @@
 							@change="updateNode(entity)"
 							:ref="'panel_' + entity.id"
 							:key="idx"
+							:data-cy="`panel-${entity.id}`"
 							v-for="(entity, idx) in sortedEntities"
 							v-show="entity.label.toLowerCase().match((searchLabel || '').toLowerCase())">
 							<v-expansion-panel-header>{{ entity.label }}</v-expansion-panel-header>

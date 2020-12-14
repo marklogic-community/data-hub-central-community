@@ -18,6 +18,7 @@ Vue.use(Vuex);
 
 const debug = true; //(process !== undefined) ? process.env.NODE_ENV !== "production" : true;
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
+const version = process.env.VUE_APP_ENVISION_VERSION
 
 const mastering = {
 	namespaced: true,
@@ -151,8 +152,9 @@ const auth = {
 		},
 		setProfile(state, { profile }) {
 			state.profile = profile || {};
-			this.$logRocket.identify(profile.email, {
+			this.$logRocket.identify(profile.email || profile.name, {
 				...profile,
+				release: version || 'development',
 				environment: process.env.NODE_ENV
 			})
 		}
@@ -646,7 +648,7 @@ export default new Vuex.Store({
 	strict: debug,
 	state: {
 		initialized: false,
-		isHosted: process.env.VUE_APP_IS_HOSTED === 'true'
+		isHosted: isHosted
 	},
 	mutations: {
 		isInitialized(state, { initialized }) {

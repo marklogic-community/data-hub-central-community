@@ -1,20 +1,19 @@
 'use strict';
 
 let entities = fn.collection('http://marklogic.com/entity-services/models').toArray().map(e => e.toObject())
-
 let edges = {}
 let nodes = {}
-entities.forEach(e => {
-	const entityName = e.info.title
-	const entity = e.definitions[entityName]
+
+function buildProperties(entityName, entity, definitions) {
 	const props = entity.properties
 
-	const properties = Object.keys(props).map(propName => {
+	return Object.keys(props).map(propName => {
 		const prop = props[propName]
 		const ref = prop['$ref'] || (prop.items && prop.items['$ref'])
-		if (ref) {
+		const isExternal = ref && !ref.startsWith('#/definitions')
+		if (ref && isExternal) {
 			const from = entityName.toLowerCase()
-			const to = ref.replace('#/definitions/', '').toLowerCase()
+			const to = ref.replace(/.*\/([^\/]+)/, '$1').toLowerCase()
 			const edgeName = `${from}-${propName}-${to}`
 			const edge = {
 				id: edgeName,
@@ -26,21 +25,47 @@ entities.forEach(e => {
 			edges[edgeName] = edge
 			return null;
 		}
-		return {
+		let type = null
+		let isStructured = false
+		if (ref && !isExternal) {
+			const otherName = ref.replace(/.*\/([^\/]+)/, '$1')
+			type = otherName;
+			isStructured = true;
+		}
+		else if (prop.datatype === 'array' && prop.items && prop.items.datatype) {
+			type = prop.items.datatype;
+		}
+		else {
+			type = prop.datatype;
+		}
+
+		let newProp = {
+			_propId: sem.uuidString(),
 			name: propName,
-			type: (prop.datatype === 'array' && prop.items && prop.items.datatype) ? prop.items.datatype : prop.datatype,
+			type: type
+		}
+
+		newProp = {
+			...newProp,
 			isArray: prop.datatype === 'array',
+			isStructured: isStructured,
 			isRequired: entity.required.indexOf(propName) >= 0,
 			isPii: entity.pii.indexOf(propName) >= 0,
 			isPrimaryKey: (entity.primaryKey && entity.primaryKey === propName),
 			isElementRangeIndex: entity.elementRangeIndex.indexOf(propName) >= 0,
 			isRangeIndex: entity.rangeIndex.indexOf(propName) >= 0,
 			isWordLexicon: entity.wordLexicon.indexOf(propName) >= 0,
-			_propId: sem.uuidString(),
 			description: prop.description || null,
 			collation: prop.collation || (prop.items && prop.items.collation)
 		}
+
+		return newProp
 	}).filter(p => p !== null)
+}
+entities.forEach(e => {
+	const entityName = e.info.title
+	const entity = e.definitions[entityName]
+	const properties = buildProperties(entityName, entity, e.definitions)
 
 	nodes[entityName.toLowerCase()] = {
 		label: entityName,

@@ -13,6 +13,7 @@ describe('Integrate Tab', () => {
 		cy.route('/api/models/current', 'fixture:model.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
 		cy.route('GET', '/api/flows', 'fixture:flowsEnvision.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
 		cy.route('GET', '/api/jobs?flowName=21232f297a57a5a743894a0e4a801fc3', 'fixture:jobs.json')
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json')

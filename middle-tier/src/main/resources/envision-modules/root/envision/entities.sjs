@@ -528,7 +528,6 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 		const cols = xdmp.documentGetCollections(uri)
 		const collections = fn.head(cols)
 			.filter(c => archivedCollections.indexOf(c) !== -1)
-
 		if (collections.length === 0) {
 			resp.edges[t.id] = {
 				from: t.from,

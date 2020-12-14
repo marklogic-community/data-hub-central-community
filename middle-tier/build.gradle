@@ -28,6 +28,12 @@ ext {
 
 bootJar {
 	baseName = springBootJarName
+	manifest {
+    attributes(
+			'Implementation-Title':   'Envision',
+			'Implementation-Version': project.version
+		)
+  }
 }
 
 repositories {
@@ -96,18 +102,21 @@ task installDependencies(type: NpmTask, group: taskGroup) {
 }
 
 task buildUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
+	environment = [ VUE_APP_ENVISION_VERSION: project.version ]
 	description = "Builds the UI files so that they can be copied to the Spring Boot application"
 	args = ["run", (project.ext.has("env") && project.ext.env == "cloud") ? "build:cloud" : "build"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 
 task runUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
+	environment = [ VUE_APP_ENVISION_VERSION: project.version ]
 	description = "Run the UI in debug mode"
 	args = ["run", (project.ext.has("env") && project.ext.env == "cloud") ? "serve:cloud" : "serve"]
 	execOverrides { it.workingDir = groveUiPath }
 }
 
 task testUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
+	environment = [ VUE_APP_ENVISION_VERSION: project.version ]
 	description = "Run the UI tests"
 	args = ["run", "test:e2e"]
 	execOverrides { it.workingDir = groveUiPath }

@@ -1,0 +1,24 @@
+<test>
+	<name>sue</name>
+	<age>24</age>
+	<addresses>
+		<address>
+			<city>Lexington</city>
+			<state>KY</state>
+		</address>
+		<address>
+			<city>Lexington</city>
+			<state>KY</state>
+			<zip>
+				<zip4>1234</zip4>
+				<zip5>12345</zip5>
+			</zip>
+		</address>
+	</addresses>
+	<withAttr modifier="yes">
+		Hi
+	</withAttr>
+	<withns xmlns="http://fake-ns">
+		<childOfNs>Chillin</childOfNs>
+	</withns>
+</test>
