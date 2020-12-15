@@ -22,7 +22,40 @@ describe('End to end test to create and update model', () => {
 		cy.route('POST', '/api/mastering/notifications', 'fixture:notificationsPage1.json').as('getNotifications')
 	})
 
-	//create new 'Test Model'
+	it('makes you create a new model', () => {
+		cy.visit('/')
+		cy.url().should('include', '/model')
+		cy.route('GET', '/api/models/', [])
+		cy.wait('@getNotifications')
+
+		cy.get('h2').contains('Please Create or Load a Model to begin').should('exist')
+		cy.get('[data-cy="modeler.entityFilter"]').should('not.exist')
+		cy.get('[data-cy="modeler.addEntity"]').should('be.disabled')
+		cy.get('[data-cy="modeler.addRelationship"]').should('be.disabled')
+		cy.get('[data-cy="cardMenu.renameModelButton"').should('be.disabled')
+		cy.get('[data-cy="cardMenu.saveImageButton"').should('be.disabled')
+		cy.get('[data-cy="cardMenu.deleteModelButton"').should('be.disabled')
+
+		cy.get('[data-cy="cardMenu.createModelButton"]').click({force: true})
+		cy.get('.v-menu__content.menuable__content__active').should('be.visible')
+		cy.wait(1000)
+		cy.get('[data-cy="createModelVue.createModelNameField"]').type('Test Model')
+		cy.get('[data-cy="createModelVue.createSubmitButton"]').click()
+		cy.get('[data-cy="createModelVue.currentModelLabel"]').should('have.text', 'Test Model')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body).to.deep.equal({"name":"Test Model","edges":{},"nodes":{}})
+			})
+
+		cy.get('[data-cy="modeler.entityFilter"]').should('exist')
+		cy.get('[data-cy="modeler.addEntity"]').should('not.be.disabled')
+		cy.get('[data-cy="modeler.addRelationship"]').should('not.be.disabled')
+		cy.get('[data-cy="cardMenu.renameModelButton"').should('not.be.disabled')
+		cy.get('[data-cy="cardMenu.saveImageButton"').should('not.be.disabled')
+		cy.get('[data-cy="cardMenu.deleteModelButton"').should('not.be.disabled')
+	})
+
 	it('can create a new model', () => {
 		cy.visit('/')
 		cy.url().should('include', '/model')

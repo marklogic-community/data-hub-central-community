@@ -18,10 +18,10 @@
 							ref="graph"
 						>
 							<div class="vis-manipulation">
-								<v-btn @click="addEntity"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
+								<v-btn data-cy="modeler.addEntity" @click="addEntity" :disabled="!model"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
 								<template v-if="!addEdgeMode">
 									<div class="vis-separator-line"></div>
-									<v-btn @click="addRelationship"><v-icon left small>fa fa-link</v-icon> Add Relationship</v-btn>
+									<v-btn data-cy="modeler.addRelationship" @click="addRelationship" :disabled="!model"><v-icon left small>fa fa-link</v-icon> Add Relationship</v-btn>
 								</template>
 								<template v-if="currentNodeId || currentEdgeId">
 									<div class="vis-separator-line"></div>
@@ -106,26 +106,6 @@ import { mapState } from 'vuex'
 
 export default {
 	data() {
-		var locales = {
-			en: {
-				edit: 'Edit',
-				del: 'Delete selected',
-				back: 'Back',
-				addNode: 'Add Entity',
-				addEdge: 'Add Relationship',
-				editNode: 'Edit Entity',
-				editEdge: 'Edit Relationship',
-				addDescription: 'Click in an empty space to place a new entity or concept.',
-				edgeDescription:
-					'Click on an entity and drag the relationship to another entity to connect them.',
-				editEdgeDescription:
-					'Click on the control points and drag them to a entity to connect to it.',
-				createEdgeError: 'Cannot link entities to a cluster.',
-				deleteClusterError: 'Clusters cannot be deleted.',
-				editClusterError: 'Clusters cannot be edited.'
-			}
-		}
-
 		return {
 			addEdgeMode: false,
 			confirmDeleteNode: false,
@@ -136,14 +116,24 @@ export default {
 			showFullEntityNames: true, // if set to false we show the first 2 chars of each entity name
 			currentNodeId: null,
 			currentEdgeId: null,
-			selectedNode: 0,
-			graphOptions: {
+			selectedNode: 0
+		}
+	},
+	components: {
+		Confirm,
+		VisjsGraph,
+		EntityPickList,
+		AddRelationshipDialog,
+		AddEntityDialog
+	},
+	computed: {
+		graphOptions() {
+			return {
 				interaction: {
-					navigationButtons: true,
+					navigationButtons: !!this.model,
 					zoomSpeed: 0.5
 				},
 				locale: 'en',
-				locales: locales,
 				autoResize: false,
 				nodes: {
 					shape: 'circle',
@@ -200,16 +190,7 @@ export default {
 					deleteEdge: this.graphDeleteEdge
 				}
 			}
-		}
-	},
-	components: {
-		Confirm,
-		VisjsGraph,
-		EntityPickList,
-		AddRelationshipDialog,
-		AddEntityDialog
-	},
-	computed: {
+		},
 		currentNode() {
 			return this.nodes.find(n => n.id === this.currentNodeId)
 		},
