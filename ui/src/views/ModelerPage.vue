@@ -1,7 +1,7 @@
 <template>
 	<v-container fluid class="modeler">
 		<v-layout column>
-			<v-flex md12>
+			<v-flex md12 class="fullHeight">
 				<v-layout row>
 					<v-flex class="graph-container" md8>
 						<visjs-graph
@@ -9,10 +9,46 @@
 							:edges="edges"
 							:options="graphOptions"
 							layout="standard"
-							:events="graphEvents"
+							@click="graphClick"
+							@oncontext="graphRightClick"
+							@dragStart="graphDragStart"
+							@dragEnd="saveGraphLayout"
+							@zoom="saveGraphLayout"
+							@afterDrawing="saveGraphLayout"
 							ref="graph"
-						></visjs-graph>
-						<v-btn data-cy="modelerPageVue.addNodeButton" class="hideUnlessTesting" v-on:click="graphAddNode({})">Add Node Test</v-btn>
+						>
+							<div class="vis-manipulation">
+								<v-btn @click="addEntity"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
+								<template v-if="!addEdgeMode">
+									<div class="vis-separator-line"></div>
+									<v-btn @click="addRelationship"><v-icon left small>fa fa-link</v-icon> Add Relationship</v-btn>
+								</template>
+								<template v-if="currentNodeId || currentEdgeId">
+									<div class="vis-separator-line"></div>
+									<v-menu
+										:close-on-content-click="false"
+										:nudge-width="300"
+										offset-x
+										v-model="confirmDeleteNode">
+										<template v-slot:activator="{ on, attrs }">
+											<v-btn data-cy="modeler.deleteSelected" v-bind="attrs" v-on="on"><v-icon left small>fa fa-times</v-icon> Delete Selected</v-btn>
+										</template>
+										<confirm
+											:message="`Do you really want to delete ${currentNode ? currentNode.label : ''}?`"
+											confirmText="Delete"
+											@confirm="deleteNode"
+											@cancel="confirmDeleteNode = false">
+										</confirm>
+									</v-menu>
+								</template>
+							</div>
+							<div class="vis-status" v-if="addEdgeMode">
+								Click on an entity and drag the relationship to another entity to connect them.
+								<v-spacer/>
+								<v-btn @click="cancelAddRelationship">Cancel</v-btn>
+							</div>
+						</visjs-graph>
+						<v-btn data-cy="modelerPageVue.addNodeButton" class="hideUnlessTesting" v-on:click="addEntity()">Add Node Test</v-btn>
 						<ul class="hideUnlessTesting">
 							<li v-for="node in nodes" :key="node.id" data-cy="nodeList" v-on:click="selectNode(node)">{{ node.id }}</li>
 						</ul>
@@ -24,7 +60,7 @@
 						<entity-pick-list
 							:nodes="nodes"
 							:entity="currentNode"
-							:currentEdge="currentEdge"
+							:currentEdge="currentEdgeId"
 							:edges="modelEdges"
 							@selectedNode="onSelectedNode"
 							@deleteModel="deleteModel"
@@ -51,7 +87,7 @@
 				<v-list-item
 					v-for="item in rightClickItems"
 					:key="item.label"
-					@click="runRightclickAction(item.action, $event)"
+					@click="runRightclickAction(item.action, item.value)"
 				>
 					<v-list-item-title>{{item.label}}</v-list-item-title>
 				</v-list-item>
@@ -61,16 +97,15 @@
 </template>
 
 <script>
-import VisjsGraph from 'grove-vue-visjs-graph'
-import 'vis/dist/vis.css'
-import 'ml-visjs-graph/less/ml-visjs-graph.js.less'
+import VisjsGraph from '@/components/graph/graph.vue'
 import EntityPickList from '@/components/ml-modeler/EntityPickList'
 import AddRelationshipDialog from '@/components/AddRelationshipDialog.vue'
 import AddEntityDialog from '@/components/AddEntityDialog.vue'
+import Confirm from '@/components/Confirm.vue'
 import { mapState } from 'vuex'
 
 export default {
-	data: function() {
+	data() {
 		var locales = {
 			en: {
 				edit: 'Edit',
@@ -92,30 +127,39 @@ export default {
 		}
 
 		return {
-			graphImage: null,
+			addEdgeMode: false,
+			confirmDeleteNode: false,
+			graphLayout: {},
 			rightClickMenu: null,
 			rightClickItems: [],
 			rightClickPos: { x: 0, y: 0 },
 			showFullEntityNames: true, // if set to false we show the first 2 chars of each entity name
 			currentNodeId: null,
-			currentEdge: null,
+			currentEdgeId: null,
 			selectedNode: 0,
 			graphOptions: {
-				height: '100%',
+				interaction: {
+					navigationButtons: true,
+					zoomSpeed: 0.5
+				},
 				locale: 'en',
 				locales: locales,
 				autoResize: false,
 				nodes: {
 					shape: 'circle',
+					size: 30,
+					borderWidth: 2,
+					font: {
+						size: 12,
+						color: '#44499c'
+					},
 					margin: 10,
 					color: {
 						border: '#44499c',
+						background: '#fff',
 						highlight: {
 							border: '#44499c'
 						}
-					},
-					font: {
-						color: '#44499c'
 					},
 					widthConstraint: {
 						maximum: 100
@@ -147,25 +191,19 @@ export default {
 				},
 
 				manipulation: {
-					enabled: true, // true = use the edit feature
-					initiallyActive: true,
+					enabled: false,
+					initiallyActive: false,
 					addNode: this.graphAddNode,
 					addEdge: this.graphAddEdge.bind(this),
 					editEdge: false,
 					deleteNode: this.graphDeleteNode,
 					deleteEdge: this.graphDeleteEdge
 				}
-			},
-			graphEvents: {
-				click: this.graphClick,
-				oncontext: this.graphRightClick,
-				dragStart: this.graphDragStart,
-				dragEnd: this.graphDragEnd,
-				afterDrawing: this.afterDraphDrawing
 			}
 		}
 	},
 	components: {
+		Confirm,
 		VisjsGraph,
 		EntityPickList,
 		AddRelationshipDialog,
@@ -175,12 +213,15 @@ export default {
 		currentNode() {
 			return this.nodes.find(n => n.id === this.currentNodeId)
 		},
+		currentEdge() {
+			return this.edges.find(n => n.id === this.currentEdgeId)
+		},
 		nodes() {
 			return this.model ? Object.values(this.model.nodes).map(node => {
 				const newNode = { ...node }
 				if (newNode.type === 'concept') {
 					newNode.shapeProperties = {
-						borderDashes: [4,3]
+						borderDashes: [4,5]
 					}
 					let color = newNode.color || {}
 					color.border = '#3cdbc0'
@@ -188,6 +229,13 @@ export default {
 					color.highlight.border = '#3cdbc0'
 					color.highlight.background = '#c9f5ed'
 					newNode.color = color
+				}
+				if (this.graphLayout) {
+					if (this.graphLayout.positions && this.graphLayout.positions[newNode.id]) {
+						const pos = this.graphLayout.positions[newNode.id]
+						newNode.x = pos.x
+						newNode.y = pos.y
+					}
 				}
 				return newNode
 			}) : []
@@ -242,13 +290,31 @@ export default {
 		}),
 	},
 	mounted: function() {
-		// work around a bug in visjs where it resizes a lot in firefox
-		this.$refs.graph.graph.network.network.canvas._cleanUp()
+		this.loadGraphLayout()
 	},
 	methods: {
-		// called bu Cypress to select a node, as couldn't find how to make it click the graph directly
+		addEntity() {
+			let nodeData = {
+				id: "89855843-0ae4-40b7-8a58-6d378f040354",
+				label: "new"
+			}
+			this.graphAddNode(nodeData)
+		},
+		addRelationship() {
+			this.addEdgeMode = true
+			this.$refs.graph.addEdgeMode()
+		},
+		cancelAddRelationship() {
+			this.addEdgeMode = false
+			this.$refs.graph.disableEditMode()
+		},
+		deleteNode() {
+			this.$refs.graph.deleteSelected()
+			this.confirmDeleteNode = false
+		},
+		// called by Cypress to select a node, as couldn't find how to make it click the graph directly
 		selectNode( selectedNode ) {
-			this.$refs.graph.graph.network.network.selectNodes([selectedNode.id])
+			this.$refs.graph.network.selectNodes([selectedNode.id])
 			const props = {
 				"pointer": null,
 				"event": null,
@@ -260,12 +326,12 @@ export default {
 					}
 				]
 			}
-			this.$refs.graph.graph.network.network.body.emitter.emit('select', props)
-			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
+			this.$refs.graph.network.body.emitter.emit('select', props)
+			this.$refs.graph.network.body.emitter.emit('click', props)
 		},
-		// called bu Cypress to select an edge, as couldn't find how to make it click the graph directly
+		// called by Cypress to select an edge, as couldn't find how to make it click the graph directly
 		selectEdge( edge ) {
-			this.$refs.graph.graph.network.network.selectEdges([edge.id])
+			this.$refs.graph.network.selectEdges([edge.id])
 			const props = {
 				"pointer": null,
 				"event": null,
@@ -279,8 +345,8 @@ export default {
 					}
 				]
 			}
-			this.$refs.graph.graph.network.network.body.emitter.emit('select', props)
-			this.$refs.graph.graph.network.network.body.emitter.emit('click', props)
+			this.$refs.graph.network.body.emitter.emit('select', props)
+			this.$refs.graph.network.body.emitter.emit('click', props)
 		},
 		updateEntity(entity) {
 			const idx = this.nodes.findIndex(n => n.id === entity.id)
@@ -292,24 +358,18 @@ export default {
 			this.doMLSave()
 		},
 		onSelectedNode(e) {
-			//an outside component selected a new node
 			this.currentNodeId = e.id
-			//use graph api to pan to new node and select
-			//the selection api on the graph is really buried...
-			this.$refs.graph.graph.network.network.selectionHandler.selectNodes([e.id])
+			this.$refs.graph.selectNodes([e.id])
 
-			//NOTE look at TOPG-94 _ need some logic here to determine if we should zoom and pan
-			//like if current node is off screen
-			var shouldZoomAndPan = false
-			if (shouldZoomAndPan) {
+			if (this.$refs.graph.isOffscreen(e.id)) {
 				//move to the selected node
-				let myOptions = {}
-				myOptions.scale = 1 //new view will be 1:1 scale
-				myOptions.position = {}
-				myOptions.position.x = e.x //position of selected node
-				myOptions.position.y = e.y //position of selected node
-				myOptions.animation = true //use the default animation
-				this.$refs.graph.graph.network.network.moveTo(myOptions)
+				this.$refs.graph.network.focus(e.id, {
+					position: {
+						x: e.x,
+						y: e.y,
+					},
+					animation: true
+				})
 			}
 		},
 		deleteEntity(entityId, save = true) {
@@ -394,6 +454,30 @@ export default {
 				.toLowerCase()
 				.replace(/ /g, '_')
 		},
+		loadGraphLayout() {
+			if (!this.model) {
+				return
+			}
+
+			const key = `layout-${this.model.name.replace(' ', '-')}`
+			const item = localStorage.getItem(key)
+			this.graphLayout = item ? JSON.parse(item) : {
+				position: { x: 0, y: 0 },
+				scale: 1.0
+			}
+			this.$refs.graph.moveTo(this.graphLayout)
+		},
+		saveGraphLayout() {
+			if (!this.model) {
+				return
+			}
+			const key = `layout-${this.model.name.replace(' ', '-')}`
+			localStorage.setItem(key, JSON.stringify({
+				position: this.$refs.graph.getViewPosition(),
+				scale: this.$refs.graph.getScale(),
+				positions: this.$refs.graph.getPositions()
+			}))
+		},
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({
 				...this.model,
@@ -405,15 +489,16 @@ export default {
 					output[edge.id] = edge
 					return output
 				}, {}),
-				img: await this.resizedataURL(this.graphImage, 40, 40)
+				img: await this.resizedataURL(this.$refs.graph.getGraphImage(), 40, 40)
 			}))
 			await this.$store.dispatch('model/save', model)
 		},
 		saveGraphImage() {
-			if (this.graphImage) {
+			const graphImage = this.$refs.graph.getGraphImage()
+			if (graphImage) {
 				let a = document.createElement('a')
 				a.setAttribute('download', `${this.model.name.replace(/ /g, '')}.png`)
-				a.href = this.graphImage
+				a.href = graphImage
 				a.innerHTML = 'testing'
 				a.style.display = 'none'
 				document.body.appendChild(a)
@@ -453,6 +538,11 @@ export default {
 						this.currentNodeId = node.id
 						this.doMLSave()
 						!!callback && callback(nodeData)
+
+						// select the entity after making it
+						setTimeout(() => {
+							this.$refs.graph.selectNodes([node.id])
+						}, 500)
 					}
 					else {
 						!!callback && callback(null)
@@ -475,6 +565,10 @@ export default {
 						})
 					}
 				})
+				.finally(() => {
+					this.addEdgeMode = false
+					this.$refs.graph.disableEditMode()
+				})
 			}
 		},
 		graphDeleteNode(nodeData, callback) { // eslint-disable-line no-unused-vars
@@ -493,13 +587,13 @@ export default {
 			if (nodeId) {
 				// not adding edges
 				this.currentNodeId = nodeId
-				this.currentEdge = null
+				this.currentEdgeId = null
 			} else if (edgeId) {
-				this.currentEdge = edgeId
+				this.currentEdgeId = edgeId
 				this.currentNodeId = null
 			} else {
 				this.currentNodeId = null
-				this.currentEdge = null
+				this.currentEdgeId = null
 			}
 		},
 		graphRightClick(e) {
@@ -510,17 +604,28 @@ export default {
 				canvas: e.pointer.canvas
 			}
 
-			let network = this.$refs.graph.graph.network.network
-			let node = network.getNodeAt(e.pointer.DOM)
-			if (!node) {
+			let nodeId = this.$refs.graph.getNodeAt(e.pointer.DOM)
+			if (nodeId) {
+				const node = this.nodes.find(n => n.id === nodeId)
+				if (node) {
+					this.currentNodeId = nodeId
+					this.$refs.graph.selectNodes([nodeId])
+					this.rightClickItems = [{
+						label: `Delete ${node.label}`,
+						action: 'deleteEntity',
+						value: nodeId
+					}]
+				}
+			}
+			else {
 				this.rightClickItems = [{
 					label: 'Add Entity',
 					action: 'addEntity'
 				}]
-				this.rightClickMenu = true
 			}
+			this.rightClickMenu = true
 		},
-		runRightclickAction(action) {
+		runRightclickAction(action, value) {
 			if (action === 'addEntity') {
 				let nodeData = {
 					id: "89855843-0ae4-40b7-8a58-6d378f040354",
@@ -530,12 +635,19 @@ export default {
 				}
 				this.graphAddNode(nodeData)
 			}
+			else if (action === 'deleteEntity') {
+				const selectedNodes = this.$refs.graph.getSelectedNodes()
+				if (selectedNodes[0] === value) {
+					this.confirmDeleteNode = true
+				}
+			}
 		},
 		graphDragStart(e) {
 			let nodeId = e.nodes[0];
 			if (nodeId) {
+				this.$refs.graph.selectNodes([nodeId])
 				this.currentNodeId = nodeId
-				this.currentEdge = null
+				this.currentEdgeId = null
 			}
 		},
 		graphDragEnd(e) {
@@ -546,11 +658,8 @@ export default {
 					nodeBeingDragged['x'] = e.pointer.canvas.x
 					nodeBeingDragged['y'] = e.pointer.canvas.y
 				}
-				this.doMLSave()
+				this.saveGraphLayout()
 			}
-		},
-		afterDraphDrawing(ctx) {
-			this.graphImage = ctx.canvas.toDataURL()
 		},
 		resizedataURL(datas, wantedWidth, wantedHeight) {
 			return new Promise(async (resolve) => {
@@ -568,6 +677,13 @@ export default {
 					}
 					img.src = datas
 			})
+		}
+	},
+	watch: {
+		model(val) {
+			if (val) {
+				this.loadGraphLayout()
+			}
 		}
 	}
 }
@@ -591,10 +707,6 @@ table {
 	margin-bottom: 20px;
 }
 
-.graph-container {
-	padding: 10px;
-}
-
 .hideUnlessTesting {
 	visibility: hidden;
 	position: absolute;
@@ -616,11 +728,43 @@ table {
 .modeler {
 	.layout.column,
 	.layout.row,
-	/deep/ .mlvisjs-graph,
-	.graph-container,
-	.graph-container div {
+	.graph {
 		height: 100%
+	}
+
+	.graph-container {
+		padding: 20px;
 	}
 }
 
+.fullHeight {
+	height: 100%;
+}
+
+.vis-manipulation {
+	border-bottom: 1px solid #999;
+	padding: 4px 10px;
+	display: flex !important;
+	align-items: center;
+	box-sizing: content-box;
+
+	.vis-separator-line {
+		display: inline-block;
+		width: 1px;
+		height: 21px;
+		background-color: #bdbdbd;
+		margin: 0 7px 0 15px;
+		height: 100%;
+		background-color: #999;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+}
+
+.vis-status {
+	padding: 10px;
+	color: white;
+	background-color: #607d8b;
+	display: flex;
+}
 </style>

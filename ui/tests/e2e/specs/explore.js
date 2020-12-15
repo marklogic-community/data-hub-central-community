@@ -164,7 +164,7 @@ describe('Explore', () => {
 		cy.get('[data-cy=entityTitle]').contains("Sashenka")
 		cy.contains('571 Grayhawk Court')
 		cy.get('[data-cy="entity.hideBtn"]').click()
-		cy.get('[data-cy="entity.entityTitle"]').should('not.be.visible')
+		cy.get('[data-cy="entity.entityTitle"]').should('not.exist')
 	})
 
 	it('Property panel cleared after search', () => {
@@ -186,7 +186,7 @@ describe('Explore', () => {
 		cy.get('[data-cy=searchInput]').type('{enter}')
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
 		cy.get('[data-cy=searchInput]').type('DoesNotExist{enter}')
-		cy.get('[data-cy=entityTitle]').should('not.contain', 'Sashenka', { timeout: 10000 })
+		cy.get('[data-cy=entityTitle]').should('not.exist')
 	})
 
 	describe('Sort Options', () => {

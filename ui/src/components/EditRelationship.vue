@@ -105,7 +105,7 @@ export default {
 	props: {
 		adding: {type: String},
 		relationship: {type: Object},
-		nodes: {type: Array},
+		nodes: {type: Array, default() { return [] } },
 		existingRelNames: {type: Array},
 		entityLocked: {type: Boolean},
 		visible: {type: Boolean}
@@ -226,6 +226,10 @@ export default {
 			this.$emit('cancel')
 		},
 		updateRelationship(newVal) {
+			if (!this.nodes || this.nodes.length === 0) {
+				return
+			}
+
 			const rel = JSON.parse(JSON.stringify(newVal))
 
 			if (!rel.to && this.nodes) {

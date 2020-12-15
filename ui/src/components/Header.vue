@@ -32,7 +32,7 @@
 
 <script>
 import UserMenu from '@/components/UserMenu.vue'
-const isTesting = process.env.NODE_ENV === 'test'
+const isTesting = process.env.VUE_APP_IS_TESTING === 'true'
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 const version = process.env.VUE_APP_ENVISION_VERSION
 

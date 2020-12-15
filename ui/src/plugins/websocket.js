@@ -2,7 +2,7 @@ import SockJS from "sockjs-client"
 import Stomp from "webstomp-client"
 import store from '../store'
 
-const isTesting = process.env.NODE_ENV === 'test'
+const isTesting = process.env.VUE_APP_IS_TESTING === 'true'
 
 const WebSocket = isTesting ? {
 	install(Vue) {

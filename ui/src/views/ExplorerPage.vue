@@ -71,7 +71,9 @@
 										:edges="edges"
 										:options="graphOptions"
 										layout="standard"
-										:events="graphEvents"
+										@click="onGraphClick"
+										@dragEnd="onGraphDrag"
+										@oncontext="graphRightClick"
 										ref="graph"
 									>
 									</visjs-graph>
@@ -144,17 +146,15 @@
 
 <script>
 
-import 'vis/dist/vis.css';
-import 'ml-visjs-graph/less/ml-visjs-graph.js.less';
 import { mapState } from 'vuex'
-import _ from 'lodash';
-import ColorScheme from 'color-scheme';
-import NestedMenu from '@/components/NestedMenu';
-import VisjsGraph from 'grove-vue-visjs-graph';
-import EntityDetails from '@/components/ml-explorer/EntityDetails';
-import Confirm from '@/components/Confirm.vue';
-import mlFacets from '@/components/ml-search/ml-facets.vue';
-import mlResults from '@/components/ml-search/ml-results.vue';
+import _ from 'lodash'
+import ColorScheme from 'color-scheme'
+import NestedMenu from '@/components/NestedMenu'
+import VisjsGraph from '@/components/graph/graph.vue'
+import EntityDetails from '@/components/ml-explorer/EntityDetails'
+import Confirm from '@/components/Confirm.vue'
+import mlFacets from '@/components/ml-search/ml-facets.vue'
+import mlResults from '@/components/ml-search/ml-results.vue'
 
 export default {
 	name: 'ExplorePage',
@@ -177,7 +177,7 @@ export default {
 				deleteClusterError: 'Clusters cannot be deleted.',
 				editClusterError: 'Clusters cannot be edited.'
 			}
-		};
+		}
 
 		return {
 			tabPrivate: 0,
@@ -218,7 +218,7 @@ export default {
 				layout: {
 					improvedLayout: true,
 				},
-				autoResize: false,
+				autoResize: true,
 				height: '100%',
 				locale: 'en',
 				locales: locales,
@@ -260,20 +260,33 @@ export default {
 				},
 				physics: {
 					enabled: true,
-					stabilization: { enabled: true }
+					solver: 'forceAtlas2Based',
+					forceAtlas2Based: {
+						gravitationalConstant: -200,
+						centralGravity: 0.01,
+						springLength: 100,
+						springConstant: 0.08,
+						damping: 0.4,
+						avoidOverlap: 0
+					},
+					maxVelocity: 150, // default 50
+					minVelocity: 6, // default 0.1
+					stabilization: {
+						enabled: true,
+						iterations: 1000,
+						updateInterval: 100,
+						onlyDynamicEdges: false,
+						fit: false
+					},
+					timestep: 0.5,
+					adaptiveTimestep: true
 				},
-
 				manipulation: {
 					enabled: false, // true = use the edit feature
 					initiallyActive: false,
 				}
-			},
-			graphEvents: {
-				click: this.onGraphClick,
-				dragEnd: this.onGraphDrag,
-				oncontext: this.graphRightClick
 			}
-		};
+		}
 	},
 	components: {
 		VisjsGraph,
@@ -352,10 +365,10 @@ export default {
 			}
 		},
 		pageStart() {
-			return parseInt( (this.page - 1) * this.pageLength + 1 );
+			return parseInt( (this.page - 1) * this.pageLength + 1 )
     },
 		pageEnd() {
-			return Math.min(this.pageStart + this.pageLength - 1, this.total);
+			return Math.min(this.pageStart + this.pageLength - 1, this.total)
     },
 		sort: {
 			get() {
@@ -467,7 +480,7 @@ export default {
 			return []
 		},
 		isLoggedIn() {
-			return this.$store.state.auth.authenticated;
+			return this.$store.state.auth.authenticated
 		},
 		edges() {
 			return Object.values(this.edgeMap || {})
@@ -475,7 +488,7 @@ export default {
 	},
 	watch: {
 		model(newValue, oldValue) {
-			let oldName = (oldValue && oldValue.name) || null;
+			let oldName = (oldValue && oldValue.name) || null
 			if (newValue && newValue.name !== oldName) {
 				this.handleModelChange()
 			}
@@ -519,7 +532,7 @@ export default {
 		this.$store.commit('explore/setPage', this.$route.query.page ? parseInt(this.$route.query.page) : 1)
 		this.qtext = this.$route.query.q
 		this.currentDatabase = this.$route.query.db || 'final'
-		this.handleModelChange();
+		this.handleModelChange()
 		this.$store.dispatch('model/getActiveIndexes')
 	},
 	methods: {
@@ -545,28 +558,28 @@ export default {
 		},
 		handleModelChange() {
 			if (!this.model) {
-				return;
+				return
 			}
-			let graph = JSON.parse(JSON.stringify(this.model));
+			let graph = JSON.parse(JSON.stringify(this.model))
 
 			Object.keys(graph.edges).forEach(key => {
-				let edge = graph.edges[key];
+				let edge = graph.edges[key]
 				// TODO: only adjust roundness (with +/- 0.1) if you encounter same from/to more than once
-				edge.smooth = { roundness: Math.random() - 0.5 };
-			});
+				edge.smooth = { roundness: Math.random() - 0.5 }
+			})
 
-			this.entities = graph.nodes;
-			const scheme = new ColorScheme();
+			this.entities = graph.nodes
+			const scheme = new ColorScheme()
 			scheme.from_hue(0)
 				.scheme('triade')
 				.distance(1)
 				.add_complement(false)
-				.variation('soft');
-			const availableColors = scheme.colors();
-			let colors = {};
-			let currentColor = 0;
+				.variation('soft')
+			const availableColors = scheme.colors()
+			let colors = {}
+			let currentColor = 0
 			for (let key in this.entities) {
-				let entity = this.entities[key];
+				let entity = this.entities[key]
 				const c = `#${availableColors[currentColor]}`
 				if (entity.type === 'entity') {
 					colors[entity.id] = {
@@ -575,17 +588,17 @@ export default {
 							background: c
 						},
 						border: c,
-					};
+					}
 				}
 				else {
 					colors[entity.id] = {
 						background: '#fff',
 						border: '#3cdbc0'
-					};
+					}
 				}
-				currentColor = (currentColor + 3) % availableColors.length;
+				currentColor = (currentColor + 3) % availableColors.length
 			}
-			this.colors = colors;
+			this.colors = colors
 			let selectedEntities = Object.values(this.entities).sort((a, b) => {
 				if (a.type === b.type) {
 					return (a.id < b.id ) ? -1 : 1
@@ -609,16 +622,16 @@ export default {
 		},
 		showMore(facet, facetName) {
       if (facet.displayingAll) {
-        return;
+        return
       }
       this.$store
         .dispatch('explore/showMore', facetName)
         .then(() => {
-          this.searchPending = false;
-        });
+          this.searchPending = false
+        })
     },
 		toggleFacet(facet, type, value) {
-      this.searchPending = true;
+      this.searchPending = true
       this.$store
         .dispatch('explore/toggleFacet', {
           facet,
@@ -626,11 +639,11 @@ export default {
           value
         })
         .then(() => {
-          this.searchPending = false;
-        });
+          this.searchPending = false
+        })
     },
     toggleNegatedFacet(facet, type, value) {
-      this.searchPending = true;
+      this.searchPending = true
       this.$store
         .dispatch('explore/toggleFacet', {
           facet,
@@ -639,8 +652,8 @@ export default {
           negated: true
         })
         .then(() => {
-          this.searchPending = false;
-        });
+          this.searchPending = false
+        })
     },
 		searchText() {
 			this.currentNode = null
@@ -669,7 +682,7 @@ export default {
 					this.searchPending = false
 				}).finally(() => {
 					this.searchPending = false
-				});
+				})
 		},
 		onGraphDrag(e) {
 			// only select if dragging. don't
@@ -677,7 +690,7 @@ export default {
 			this.onGraphClick(e, true)
 		},
 		onGraphClick(e, isDrag) {
-			let nodeId = e.nodes[0];
+			let nodeId = e.nodes[0]
 
 			if (nodeId) {
 				let node = this.nodeMap[nodeId]
@@ -767,13 +780,13 @@ export default {
 					break
 				case 'expandConcept':
 					this.expandConcept(item.rel)
-					break;
+					break
 				case 'unmerge':
 					this.confirmUnmergeMenu = true
-					break;
+					break
 				case 'mergeHistory':
 					this.mergeHistory(item.node.uri)
-					break;
+					break
 			}
 		},
 		expandRelationship({ uri, label }) {
@@ -797,7 +810,7 @@ export default {
 			this.confirmUnmergeMenu = false
 		}
 	}
-};
+}
 </script>
 
 <style lang="less" scoped>

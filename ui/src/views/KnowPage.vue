@@ -29,7 +29,9 @@
 							:edges="edges"
 							:options="graphOptions"
 							layout="standard"
-							:events="graphEvents"
+							@click="onGraphClick"
+							@dragStart="onGraphClick"
+							@oncontext="graphRightClick"
 							ref="graph"
 						></visjs-graph>
 					</v-flex>
@@ -120,9 +122,7 @@
 
 <script>
 
-import VisjsGraph from 'grove-vue-visjs-graph';
-import 'vis/dist/vis.css';
-import 'ml-visjs-graph/less/ml-visjs-graph.js.less';
+import VisjsGraph from '@/components/graph/graph.vue';
 import { mapState } from 'vuex'
 
 export default {
@@ -249,18 +249,31 @@ export default {
 				},
 				physics: {
 					enabled: true,
-					stabilization: { enabled: false }
+					solver: 'forceAtlas2Based',
+					forceAtlas2Based: {
+						gravitationalConstant: -200,
+						centralGravity: 0.01,
+						springLength: 100,
+						springConstant: 0.08,
+						damping: 0.4,
+						avoidOverlap: 0
+					},
+					maxVelocity: 150, // default 50
+					minVelocity: 6, // default 0.1
+					stabilization: {
+						enabled: true,
+						iterations: 1000,
+						updateInterval: 100,
+						onlyDynamicEdges: false,
+						fit: false
+					},
+					timestep: 0.5,
+					adaptiveTimestep: true
 				},
-
 				manipulation: {
 					enabled: false, // true = use the edit feature
 					initiallyActive: false,
 				}
-			},
-			graphEvents: {
-				click: this.onGraphClick,
-				dragStart: this.onGraphClick,
-				oncontext: this.graphRightClick
 			}
 		};
 	},
@@ -303,7 +316,7 @@ export default {
 	},
 	mounted: function() {
 		// work around a bug in visjs where it resizes a lot in firefox
-		this.$refs.graph.graph.network.network.canvas._cleanUp()
+		this.$refs.graph.network.canvas._cleanUp()
 		this.getTriples()
 	},
 	methods: {
@@ -394,7 +407,7 @@ export default {
 		graphRightClick(e) {
 			e.event.preventDefault()
 
-			let network = this.$refs.graph.graph.network.network
+			let network = this.$refs.graph.network
 			let nodeId = network.getNodeAt(e.pointer.DOM)
 			if (nodeId) {
 				let node = this.nodes.find(n => n.id === nodeId)

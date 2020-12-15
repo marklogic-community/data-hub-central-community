@@ -58,28 +58,6 @@ export default {
   display: none !important;
 }
 
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label {
-	color: #44499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label::before {
-	color: #44499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-close::before {
-	color: #44499c;
-}
-.mlvisjs-graph .vis-network {
-	border: 1px solid #44499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation {
-	border-bottom: 1px solid #444499c;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover {
-	color: #0511e6;
-}
-.mlvisjs-graph.fontawesome-style .vis-network .vis-manipulation .vis-button .vis-label:hover::before {
-	color: #0511e6;
-}
-
 #app,
 .v-application--wrap {
 	height: 100vh;
