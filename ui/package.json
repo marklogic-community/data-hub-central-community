@@ -100,7 +100,7 @@
     "npm": ">=6.9.0"
   },
   "resolutions": {
-    "cypress": "^5.2.0"
+    "cypress": "^6.1.0"
   },
   "engineStrict": true
 }
