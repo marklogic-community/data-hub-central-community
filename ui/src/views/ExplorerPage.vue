@@ -521,7 +521,7 @@ export default {
 				// need to refresh the graph if changing to tab 0
 				if (this.tab === 0) {
 					this.$nextTick(() => {
-						this.$refs.graph.graph.network.network.redraw()
+						this.$refs.graph.redraw()
 					})
 				}
 			}
@@ -714,8 +714,7 @@ export default {
 			e.event.preventDefault()
 			this.rightClickMenu = false
 
-			let network = this.$refs.graph.graph.network.network
-			let nodeId = network.getNodeAt(e.pointer.DOM)
+			let nodeId = this.$refs.graph.getNodeAt(e.pointer.DOM)
 			if (nodeId) {
 				let node = this.nodeMap[nodeId]
 				if (node) {

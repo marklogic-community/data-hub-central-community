@@ -295,7 +295,7 @@ export default {
 		},
 		// called by Cypress to select a node, as couldn't find how to make it click the graph directly
 		selectNode( selectedNode ) {
-			this.$refs.graph.network.selectNodes([selectedNode.id])
+			this.$refs.graph.selectNodes([selectedNode.id])
 			const props = {
 				"pointer": null,
 				"event": null,
@@ -312,7 +312,7 @@ export default {
 		},
 		// called by Cypress to select an edge, as couldn't find how to make it click the graph directly
 		selectEdge( edge ) {
-			this.$refs.graph.network.selectEdges([edge.id])
+			this.$refs.graph.selectEdges([edge.id])
 			const props = {
 				"pointer": null,
 				"event": null,
@@ -344,7 +344,7 @@ export default {
 
 			if (this.$refs.graph.isOffscreen(e.id)) {
 				//move to the selected node
-				this.$refs.graph.network.focus(e.id, {
+				this.$refs.graph.focus(e.id, {
 					position: {
 						x: e.x,
 						y: e.y,

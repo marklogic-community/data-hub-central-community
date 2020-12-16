@@ -102,7 +102,7 @@
 					v-for="item in rightClickItems"
 					:key="item.label">
 					<v-list-item-title v-if="!item.submenu" @click="contextClick(item)">{{item.label}}</v-list-item-title>
-					<v-menu v-if="item.submenu" offset-x right open-on-hover full-width>
+					<v-menu v-if="item.submenu" offset-x right open-on-hover>
 						<template v-slot:activator="{ on }">
 							<v-list-item-title v-on="on">{{item.label}} &gt;</v-list-item-title>
 						</template>
@@ -315,8 +315,6 @@ export default {
 		}
 	},
 	mounted: function() {
-		// work around a bug in visjs where it resizes a lot in firefox
-		this.$refs.graph.network.canvas._cleanUp()
 		this.getTriples()
 	},
 	methods: {
@@ -407,8 +405,7 @@ export default {
 		graphRightClick(e) {
 			e.event.preventDefault()
 
-			let network = this.$refs.graph.network
-			let nodeId = network.getNodeAt(e.pointer.DOM)
+			let nodeId = this.$refs.graph.getNodeAt(e.pointer.DOM)
 			if (nodeId) {
 				let node = this.nodes.find(n => n.id === nodeId)
 				if (node) {

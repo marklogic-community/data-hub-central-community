@@ -59,7 +59,7 @@ if (qtext && qtext !== '' && predicate == null) {
 let predFilter = ""
 if (predicate != null) {
 	predFilter = `
-	filter ?p = <${predicate}>
+	filter (?p = <${predicate}>)
 	`
 }
 
