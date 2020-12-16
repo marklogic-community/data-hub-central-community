@@ -46,6 +46,7 @@
 								<template v-slot:activator="{ on: tooltip }">
 									<v-btn
 										data-cy="cardMenu.renameModelButton"
+										:disabled="!model"
 										right
 										icon
 										small
@@ -94,6 +95,7 @@
 						<template v-slot:activator="{ on }">
 							<v-btn
 								data-cy="cardMenu.saveImageButton"
+								:disabled="!model"
 								right
 								icon
 								small
@@ -115,6 +117,7 @@
 								<template v-slot:activator="{ on: tooltip }">
 									<v-btn
 										data-cy="cardMenu.deleteModelButton"
+										:disabled="!model"
 										right
 										icon
 										small
@@ -134,8 +137,9 @@
 					</v-menu>
 				</v-card-title>
 				<v-card-text>
-					<div>
+					<div v-if="model">
 						<v-text-field
+							data-cy="modeler.entityFilter"
 							class="search-box"
 							clearable
 							dark
@@ -146,6 +150,7 @@
 							prepend-icon="search"
 							single-line></v-text-field>
 					</div>
+					<h2 class="text-center" v-else>Please Create or Load a Model to begin</h2>
 					<v-expansion-panels ref="expansionPanel" v-model="currentPanel" flat fill-height>
 						<v-expansion-panel
 							lazy

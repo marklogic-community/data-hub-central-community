@@ -16,7 +16,7 @@ import md5 from 'md5'
 
 Vue.use(Vuex);
 
-const debug = true; //(process !== undefined) ? process.env.NODE_ENV !== "production" : true;
+const debug = true
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 const version = process.env.VUE_APP_ENVISION_VERSION
 

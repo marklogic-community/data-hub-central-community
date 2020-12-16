@@ -32,12 +32,6 @@
 		</noscript>
 
     <div id="app"></div>
-
-    <!-- Load the webcomponents -->
-    <!-- TODO: would webpack html-imports-loader allow loading html imports without the require statement? -->
-    <!--link rel="import" href="<%= webpackConfig.output.publicPath %>components/view-binary.html"-->
-    <%= require('html-loader!../node_modules/file-dropzone-element/file-dropzone.html') %>
-
     <!-- built files will be auto injected -->
   </body>
 </html>

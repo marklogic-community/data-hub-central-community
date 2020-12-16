@@ -31,7 +31,7 @@ export default {
 		resolve: null,
 		reject: null,
 		relationship: {},
-		nodes: null
+		nodes: []
 	}),
 	components: {
 		EditRelationship

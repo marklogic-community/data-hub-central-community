@@ -19,7 +19,7 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 Cypress.on('window:before:load', win => {
-	cy.stub(win.console, 'error', msg => {
+	cy.stub(win.console, 'error').callsFake(msg => {
 		throw new Error(msg)
 	})
 })
