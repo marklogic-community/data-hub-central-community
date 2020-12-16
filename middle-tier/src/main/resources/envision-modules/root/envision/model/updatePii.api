@@ -1,0 +1,18 @@
+{
+		"functionName": "updatePii",
+		"params": [
+			{
+				"datatype": "jsonDocument",
+				"name": "oldModel",
+				"$javaClass": "com.fasterxml.jackson.databind.JsonNode"
+			},
+			{
+				"datatype": "jsonDocument",
+				"name": "newModel",
+				"$javaClass": "com.fasterxml.jackson.databind.JsonNode"
+			}
+		],
+		"return": {
+      "datatype": "boolean"
+    }
+}

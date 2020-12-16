@@ -3,7 +3,6 @@ const DataHubSingleton = require("/data-hub/5/datahub-singleton.sjs");
 const datahub = DataHubSingleton.instance();
 
 function transform(context, params, content) {
-	console.log('context', JSON.stringify(context), 'params', JSON.stringify(params), 'content', JSON.stringify(content))
   const flowName = 'default-ingestion';
   let flow = datahub.flow.getFlow(flowName);
   if (!flow) {

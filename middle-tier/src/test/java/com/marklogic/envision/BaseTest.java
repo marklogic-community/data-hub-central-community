@@ -256,6 +256,13 @@ public class BaseTest {
 		return it.next().getString();
 	}
 
+	protected JsonNode getProtectedPaths(DatabaseClient client) throws IOException {
+		EvalResultIterator it = client.newServerEval().xquery("xdmp:invoke-function(function() {\n" +
+			"  json:to-array(/*:protected-path/*:path-expression/fn:string())\n" +
+			"}, map:entry(\"database\", xdmp:security-database()))").eval();
+		return objectMapper.readTree(it.next().getString());
+	}
+
 	protected void installFinalDoc(String resource, String uri, String... collections) {
 		installDoc(getFinalClient(), resource, uri, collections);
 	}

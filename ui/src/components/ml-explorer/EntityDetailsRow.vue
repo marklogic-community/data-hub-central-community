@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="array" v-if="prop.isArray">
+		<div class="array" v-if="prop.isArray && isArray(prop.value)">
 			<div class="prop-grid grid-row array-header">
 				<div><i class="fa fa-angle-right hidden"></i> {{prop.label}}</div>
 				<div>[ ]</div>
@@ -22,7 +22,7 @@
 					<div :key="`${idx}-array-value`" class="structured" :class="expanded[idx] ? 'expanded': ''">
 						<entity-properties
 							:properties="getProperties(prop.type)"
-							:entity="value[prop.type]"
+							:entity="value[prop.type] || {}"
 							:isNested="true"
 							@showBinary="showBinary"
 							/>
@@ -38,7 +38,7 @@
 			<div class="structured expanded" :class="expanded[0] ? 'expanded': ''" v-if="expanded[0]">
 				<entity-properties
 					:properties="getProperties(prop.type)"
-					:entity="prop.value ? prop.value[prop.type] : {}"
+					:entity="(prop.value ? prop.value[prop.type] : {}) || {}"
 					:isNested="true"
 					@showBinary="showBinary"
 					/>
@@ -107,6 +107,9 @@ export default {
 		},
 		getProperties(entityName) {
 			return ((this.model.nodes[entityName.toLowerCase()] || {}).properties || [])
+		},
+		isArray(value) {
+			return _.isArray(value)
 		},
 		asArray(prop) {
 			if (prop instanceof Array) {

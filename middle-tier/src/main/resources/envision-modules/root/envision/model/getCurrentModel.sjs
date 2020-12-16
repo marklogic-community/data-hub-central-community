@@ -1,2 +1,2 @@
-const model = require('/envision/model.sjs').model;
+const model = require('/envision/model.sjs').model();
 model;

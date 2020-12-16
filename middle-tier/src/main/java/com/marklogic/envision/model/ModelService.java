@@ -12,6 +12,7 @@ import com.marklogic.envision.dataServices.EntityModeller;
 import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.hub.EntityManager;
+import com.marklogic.hub.HubConfig;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.impl.EntityManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.*;
 
 @Service
@@ -73,16 +75,26 @@ public class ModelService {
 		return new File(userModelDir, fileName);
 	}
 
-    public void toDataHub(HubClient hubClient) {
-        JsonNode node = EntityModeller.on(hubClient.getFinalClient()).toDatahub();
+    public void toDataHub(HubClient hubClient, JsonNode oldModel, JsonNode newModel, JsonNode existingEntities) {
+        JsonNode newEntities = EntityModeller.on(hubClient.getFinalClient()).toDatahub();
+
         List<String> fieldNames = new ArrayList<>();
-        node.fieldNames().forEachRemaining(entityName -> {
+        newEntities.fieldNames().forEachRemaining(entityName -> {
 			fieldNames.add(entityName);
             String entityFileName = entityName + ".entity.json";
-            HubEntity hubEntity = HubEntity.fromJson(entityFileName, node.get(entityName));
+            HubEntity hubEntity = HubEntity.fromJson(entityFileName, newEntities.get(entityName));
 
             try {
-				getEntityManager(hubClient).saveEntity(hubEntity, false);
+            	EntityManager em = getEntityManager(hubClient);
+            	em.saveEntity(hubEntity, false);
+				Path protectedPaths = hubClient.getHubConfig().getUserSecurityDir().resolve("protected-paths");
+				File[] files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+				if (files != null) {
+					for (File f : files) {
+						f.delete();
+					}
+				}
+            	em.savePii();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -90,6 +102,8 @@ public class ModelService {
 
         EntityModeller.on(hubClient.getFinalClient()).removeAllEntities(hubClient.isMultiTenant() ?  hubClient.getUsername() : null);
 		deleteExtraEntities(hubClient, fieldNames);
+		EntityModeller.on(hubClient.getFinalClient()).updateRedaction(oldModel, newModel);
+		EntityModeller.on(hubClient .getFinalClient()).updatePii(existingEntities, newEntities);
 		deployService.deployEntities(hubClient);
     }
 
@@ -154,13 +168,15 @@ public class ModelService {
 	}
 
 	private void saveModel(HubClient client, JsonNode model) throws IOException {
+		JsonNode oldModel = getModel(client.getFinalClient());
+		JsonNode existingEntities = EntityModeller.on(client.getFinalClient()).toDatahub();
 		DocumentMetadataHandle meta = new DocumentMetadataHandle();
 		meta.getCollections().addAll("http://marklogic.com/envision/model");
 		JacksonHandle content = new JacksonHandle(model);
 		client.getFinalClient().newJSONDocumentManager().write("/envision/" + client.getUsername() + "/currentModel.json", meta, content);
 		saveModelFile(client.isMultiTenant(), client.getUsername(), model);
 
-		toDataHub(client);
+		toDataHub(client, oldModel, model, existingEntities);
 		createModelTDEs(client.getFinalClient());
 	}
 

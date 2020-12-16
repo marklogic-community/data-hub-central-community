@@ -53,7 +53,12 @@ public class InstallService {
 
 	private void createAmps(ManageClient manageClient, String modulesDbName) {
 		try {
-			String[] files = { "get-search-config.json", "resetSystem.json", "createTdes.json" };
+			String[] files = {
+				"get-search-config.json",
+				"resetSystem.json",
+				"createTdes.json",
+				"updatePii.json"
+			};
 			for (String file: files) {
 				String amp = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("envision-config/amps/" + file)));
 				AmpManager ampManager = new AmpManager(manageClient);
@@ -95,8 +100,4 @@ public class InstallService {
 			e.printStackTrace();
 		}
 	}
-
-
-
-
 }

@@ -1,0 +1,6 @@
+{
+	"local-name" : "updatePii",
+	"document-uri" : "/envision/pii-lib.sjs",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "security" ]
+}

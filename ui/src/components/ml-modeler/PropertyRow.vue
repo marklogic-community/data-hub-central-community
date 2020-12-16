@@ -49,7 +49,7 @@
 				<span v-if="prop.isPii" title="PII">pii</span>
 				<span v-if="prop.isPrimaryKey" title="Primary Key">key</span>
 				<span v-if="prop.isRequired" title="Required">req</span>
-				<span v-if="prop.isElementRangeIndex || prop.isWordLexicon || prop.isRangeIndex" title="Advanced options">...</span>
+				<span v-if="prop.isElementRangeIndex || prop.isWordLexicon || prop.isRangeIndex || prop.isRedacted" title="Advanced options">...</span>
 			</div>
 			<div data-cy="entityPickList.entityPropertyName">{{prop.name}}</div>
 			<div data-cy="entityPickList.entityPropertyType">{{prop.type}}{{prop.isArray ? '[]' : ''}}</div>

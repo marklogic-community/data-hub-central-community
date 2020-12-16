@@ -1,6 +1,6 @@
 const jobDB = require('/com.marklogic.hub/config.sjs').JOBDATABASE
 const matcher = require("/com.marklogic.smart-mastering/matcher.xqy");
-const model = require('/envision/model.sjs').model;
+const model = require('/envision/model.sjs').model();
 
 function getLabels() {
 	const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {

@@ -53,6 +53,11 @@
 									v-model="isPii"
 									label="PII"
 								></v-checkbox>
+								<v-checkbox
+									data-cy="prop.isRedacted"
+									v-model="isRedacted"
+									label="Redacted"
+								></v-checkbox>
 							</v-flex>
 							<v-flex md6>
 
@@ -175,7 +180,8 @@ export default {
 		isPrimaryKey: false,
 		isElementRangeIndex: false,
 		isRangeIndex: false,
-		isWordLexicon: false
+		isWordLexicon: false,
+		isRedacted: false
 	}),
 	methods: {
 		removeOldPK(){
@@ -212,6 +218,7 @@ export default {
 				this.isElementRangeIndex = this.prop.isElementRangeIndex
 				this.isRangeIndex = this.prop.isRangeIndex
 				this.isWordLexicon = this.prop.isWordLexicon
+				this.isRedacted = this.prop.isRedacted
 
 				if (this.prop.isArray) {
 					this.type = 'array'
@@ -231,6 +238,7 @@ export default {
 				this.isElementRangeIndex = false
 				this.isRangeIndex = false
 				this.isWordLexicon = false
+				this.isRedacted = false
 			}
 
 		},
@@ -267,7 +275,8 @@ export default {
 				isPrimaryKey: this.isPrimaryKey,
 				isElementRangeIndex: this.isElementRangeIndex,
 				isRangeIndex: this.isRangeIndex,
-				isWordLexicon: this.isWordLexicon
+				isWordLexicon: this.isWordLexicon,
+				isRedacted: this.isRedacted
 			})
 		},
 		cancel() {

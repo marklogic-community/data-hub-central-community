@@ -23,19 +23,19 @@ For redaction to work the "envision" role must also have the "redaction-user" ro
 ./gradlew mlDeployRoles 
 ```
 
-When you define a model, using the contect tab, the user can select the 'Advanced' property options and mark a property as containing PII. In Envision this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'piiRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called piiRule4<currentUserName>. 
+When you define a model, using the contect tab, the user can select the 'Advanced' property options and mark a property as containing PII. In Envision this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'redactionRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called redactionRule4<currentUserName>. 
 
 After doing this, all users will see the message "### PII Redacted ###" when they view a document that uses the property.
 
 Note that redaction applies to the final database only, data in the staging database is not currently shown in redacted form. 
 
-To control which users should see the real value, we use a config document in the FINAL database. This document has the uri /redactionRules2Roles.json or redactionRules2Roles4<currentUserName>.json for multi tenant. For example, the code below, which you can run using Query Console, says that the any rules in the piiRule collection should not be applied if the current user has the 'pii-reader' role :
+To control which users should see the real value, we use a config document in the FINAL database. This document has the uri /redactionRules2Roles.json or redactionRules2Roles4<currentUserName>.json for multi tenant. For example, the code below, which you can run using Query Console, says that the any rules in the redactionRule collection should not be applied if the current user has the 'pii-reader' role :
 ```
 declareUpdate()
 
 xdmp.documentInsert("/redactionRules2Roles.json",
 	{rules:
-		[{ redactionRuleCollection: "piiRule",
+		[{ redactionRuleCollection: "redactionRule",
 				rolesThatDoNotUseRedaction: ["pii-reader"]
 			}
 		]
@@ -112,7 +112,7 @@ declareUpdate()
 
 xdmp.documentInsert("/redactionRules2Roles.json",
   {rules:
-     [{ redactionRuleCollection: "piiRule",
+     [{ redactionRuleCollection: "redactionRule",
         rolesThatDoNotUseRedaction: ["pii-reader"]
       },
 
