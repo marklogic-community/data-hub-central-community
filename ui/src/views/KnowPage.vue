@@ -98,23 +98,25 @@
 			:position-y="rightClickPos.y"
 		>
 			<v-list>
-				<v-list-item
-					v-for="item in rightClickItems"
-					:key="item.label">
-					<v-list-item-title v-if="!item.submenu" @click="contextClick(item)">{{item.label}}</v-list-item-title>
-					<v-menu v-if="item.submenu" offset-x right open-on-hover>
-						<template v-slot:activator="{ on }">
-							<v-list-item-title v-on="on">{{item.label}} &gt;</v-list-item-title>
-						</template>
-						<v-list class="submenu">
-							<v-list-item
-								v-for="subitem in item.submenu"
-								:key="subitem.label">
-								<v-list-item-title @click="contextClick(subitem)">{{subitem.label}}</v-list-item-title>
-							</v-list-item>
-						</v-list>
-					</v-menu>
-				</v-list-item>
+				<v-list-item-group>
+					<v-list-item
+						v-for="item in rightClickItems"
+						:key="item.label">
+						<v-list-item-title v-if="!item.submenu" @click="contextClick(item)">{{item.label}}</v-list-item-title>
+						<v-menu v-if="item.submenu" offset-x right open-on-hover :close-delay="500">
+							<template v-slot:activator="{ on }">
+								<v-list-item-title v-on="on">{{item.label}} &gt;</v-list-item-title>
+							</template>
+							<v-list class="submenu">
+								<v-list-item
+									v-for="subitem in item.submenu"
+									:key="subitem.label">
+									<v-list-item-title @click="contextClick(subitem)">{{subitem.label}}</v-list-item-title>
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</v-list-item>
+				</v-list-item-group>
 			</v-list>
 		</v-menu>
 	</v-container>
