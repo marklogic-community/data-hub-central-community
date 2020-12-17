@@ -48,7 +48,7 @@ public class Search extends BaseTest {
 	);
 
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() throws IOException, InterruptedException {
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 
@@ -72,6 +72,9 @@ public class Search extends BaseTest {
 		installDoc(hubClient.getFinalClient(), "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered");
 		installDoc(hubClient.getFinalClient(), "entities/department3.json", "/departments/department3.json", "Department");
 		installDoc(hubClient.getFinalClient(), "entities/department4.json", "/departments/department4.json", "Department");
+
+		// give ML time to index
+		Thread.sleep(2000);
 	}
 
 	private String getFilterString(String filterString, int pageLength, DatabaseClient client) throws IOException {
