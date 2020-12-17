@@ -24,11 +24,16 @@ workflows:
     jobs:
       - middleTier
       - cypress/install:
-        working_directory: ~/project/ui
+        cache-key: >-
+            cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
+            }}
       - cypress/run:
           requires:
             - cypress/install
-          working_directory: ~/project/ui
+          cache-key: >-
+            cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
+            }}
+          working_directory: ui
           executor: cypress/browsers-chrome69
           record: true        # record results on Cypress Dashboard
           parallel: true      # split all specs across machines
