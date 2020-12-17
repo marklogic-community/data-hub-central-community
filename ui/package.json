@@ -13,9 +13,11 @@
     "lint:fix": "vue-cli-service lint --fix",
     "start": "npm run serve",
     "cypress:run": "cypress open",
-    "cypress:run:headless": "cypress run --headless --browser chrome --record --key b5568640-4658-4ed0-8fb3-b78bea0953eb",
+    "cypress:run:headless": "cypress run --headless --browser chrome",
+    "cypress:run:headless:ci": "cypress run --headless --browser chrome --record --key b5568640-4658-4ed0-8fb3-b78bea0953eb",
     "test:e2e": "start-server-and-test serve:e2e http-get://localhost:9999 cypress:run",
     "test:e2e:headless": "start-server-and-test serve:e2e http-get://localhost:9999 cypress:run:headless",
+    "test:e2e:headless:ci": "start-server-and-test serve:e2e http-get://localhost:9999 cypress:run:headless:ci",
     "test:e2e:prod": "vue-cli-service test:e2e --url http://localhost:9003",
     "test:e2e:prod:headless": "vue-cli-service test:e2e --headless --url http://localhost:9003",
     "test:unit": "vue-cli-service test:unit"

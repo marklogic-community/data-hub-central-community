@@ -25,4 +25,4 @@ jobs:
       install:
         - npm install
       script:
-        - npm run test:e2e:headless
+        - npm run test:e2e:headless:ci
