@@ -18,17 +18,22 @@ jobs:
             - v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
             - v1-deps-{{ .Branch }}
             - v1-deps
-      - run: |
-          cd ui
-          npm ci
+      - run:
+          name: Install Node Dependencies
+          command: |
+            cd ui
+            npm ci
       - save_cache:
           key: v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
           # cache NPM modules and the folder with the Cypress binary
           paths:
             - ~/.npm
             - ~/.cache
-      - run: |
-          npm run test:e2e:headless
+      - run:
+          name: Run Cypress tests
+          command: |
+            cd ui
+            npm run test:e2e:headless
   middleTier:
     machine: true
     steps:
