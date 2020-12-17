@@ -3,8 +3,6 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@1
 
 jobs:
   ui:
@@ -20,9 +18,9 @@ jobs:
             - v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
             - v1-deps-{{ .Branch }}
             - v1-deps
-      - run:
-          name: Install Dependencies
-          command: npm ci
+      - run: |
+          cd ui
+          npm ci
       - save_cache:
           key: v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
           # cache NPM modules and the folder with the Cypress binary
@@ -30,52 +28,31 @@ jobs:
             - ~/.npm
             - ~/.cache
       - run: |
-          cd ui
           npm run test:e2e:headless
-  marklogic:
+  middleTier:
     machine: true
     steps:
       - checkout
       # start proprietary DB using private Docker image
-      - run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
-          docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
-          ./.travis/setup-marklogic.sh
-      - run: ./.travis/run-tests.sh
-  middleTier:
-    docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-    environment:
-      # Customize the JVM maximum heap limit
-      JVM_OPTS: -Xmx3200m
-      TERM: dumb
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "middle-tier/build.gradle" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run: gradle dependencies
-
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: v1-dependencies-{{ checksum "middle-tier/build.gradle" }}
-
-      # run tests!
-      - run: gradle test
+      - run:
+          name: Install OpenJDK 11
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-11-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
+            java -version
+      - run:
+          name: Install MarkLogic Docker
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
+            docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
+            ./.travis/setup-marklogic.sh
+      - run:
+          name: Run tests
+          command: ./.travis/run-tests.sh
 workflows:
   build_and_test:
     jobs:
-      - marklogic
-      - middleTier:
-          requires:
-            - marklogic
+      - middleTier
       - ui
