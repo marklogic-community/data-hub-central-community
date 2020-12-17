@@ -24,9 +24,9 @@ workflows:
     jobs:
       - middleTier
       - cypress/install:
-        cache-key: >-
-            cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
-            }}
+          cache-key: >-
+              cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
+              }}
       - cypress/run:
           requires:
             - cypress/install
