@@ -4,7 +4,7 @@
 #
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@1.25.0
+  cypress: cypress-io/cypress@1
 
 jobs:
   marklogic:
@@ -59,13 +59,16 @@ workflows:
               }}
           working_directory: ui
       - cypress/run:
+          post-install:
+            - run: apt-get update
+            - run: apt-get install -y libgbm-dev
           requires:
             - cypress/install
           cache-key: >-
             cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
             }}
           working_directory: ui
-          executor: cypress/base:latest
+          executor: cypress/browsers-chrome69
           record: true        # record results on Cypress Dashboard
           parallel: true      # split all specs across machines
           parallelism: 4      # use 4 CircleCI machines to finish quickly
