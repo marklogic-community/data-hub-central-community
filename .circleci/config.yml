@@ -25,10 +25,10 @@ jobs:
     steps:
       - checkout
       - node/install-packages:
-        app-dir: ~/project/ui
-      - run:
-        working_directory: ~/project/ui
-        command: npm run test:e2e:headless:ci
+          app-dir: ~/project/ui
+      - run: |
+          cd ~/project/ui
+          npm run test:e2e:headless:ci
 
 workflows:
   build_and_test:
