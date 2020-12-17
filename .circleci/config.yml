@@ -23,10 +23,12 @@ workflows:
   build_and_test:
     jobs:
       - middleTier
-      - cypress/install
+      - cypress/install:
+        working_directory: ~/project/ui
       - cypress/run:
           requires:
             - cypress/install
+          working_directory: ~/project/ui
           executor: cypress/browsers-chrome69
           record: true        # record results on Cypress Dashboard
           parallel: true      # split all specs across machines
