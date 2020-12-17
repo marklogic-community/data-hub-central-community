@@ -8,7 +8,7 @@ Vue.use(Router);
 
 let entryUrl = null
 
-const isTesting = process.env.NODE_ENV === 'test'
+const isTesting = process.env.VUE_APP_IS_TESTING === 'true'
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 
 const checkLogin = (to, from, next) => {

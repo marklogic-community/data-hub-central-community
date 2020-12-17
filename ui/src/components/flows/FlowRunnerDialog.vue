@@ -84,6 +84,7 @@ export default {
 			},
 			set(val) {
 				this.isOpen = val
+				this.checkedSteps = {}
 			}
 		},
 		checkedIndexes() {
@@ -113,6 +114,7 @@ export default {
 		},
 		close() {
 			this.open = false
+			this.checkedSteps = {}
 			this.$emit('closed')
 		}
 	}

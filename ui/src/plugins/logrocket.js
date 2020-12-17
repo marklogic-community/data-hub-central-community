@@ -1,8 +1,9 @@
 import store from '../store'
 
+const isTesting = process.env.VUE_APP_IS_TESTING === 'true'
 const isHosted = process.env.VUE_APP_IS_HOSTED === 'true'
 const logRocketID = process.env.VUE_APP_LOGROCKET_ID
-const LogRocket = logRocketID ? require('logrocket') : {
+const LogRocket = (logRocketID && !isTesting) ? require('logrocket') : {
 	identify: function() {},
 	init: function() {}
 }
