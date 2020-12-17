@@ -24,7 +24,7 @@ jobs:
     executor: node/default
     steps:
       - checkout
-			- run: cd ui
+      - run: cd ui
       - node/install-packages
       - run: npm run test:e2e:headless:ci
 
