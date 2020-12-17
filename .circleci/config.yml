@@ -21,10 +21,10 @@ jobs:
           ./.travis/setup-marklogic.sh
           ./.travis/run-tests.sh
   ui:
-    working_directory: ~/envision/ui
     executor: node/default
     steps:
       - checkout
+			- run: cd ui
       - node/install-packages
       - run: npm run test:e2e:headless:ci
 
