@@ -27,6 +27,7 @@ workflows:
           cache-key: >-
               cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
               }}
+          working_directory: ui
       - cypress/run:
           requires:
             - cypress/install
