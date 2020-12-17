@@ -12,6 +12,7 @@ echo "plugins {
 	id 'com.marklogic.ml-data-hub' version '5.2.5'
 }" > build.gradle
 
+echo "Initializing Hub..."
 gradle hubInit
 
 echo "mlUsername=admin
@@ -31,7 +32,11 @@ echo "{
 \"database-name\" : \"%%mlFinalDbName%%\"
 }
 "  > src/main/entity-config/databases/final-database.json
+
+echo "gradle mlDeploy -i"
 gradle mlDeploy -i
+
+echo "gradle mlLoadModules -i"
 gradle mlLoadModules -i
 
 cd $project_dir
