@@ -7,8 +7,8 @@ jobs:
         - docker
       before_install:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker pull store/marklogicdb/marklogic-server:10.0-4-dev-centos
-        - docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
+        - docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
+        - docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
         - ./.travis/setup-marklogic.sh
       sudo: true
       script:

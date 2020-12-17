@@ -1,0 +1,66 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2.1
+
+jobs:
+  ui:
+    docker:
+      - image: cypress/base:10
+    environment:
+      ## this enables colors in the output
+      TERM: xterm
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
+            - v1-deps-{{ .Branch }}
+            - v1-deps
+      - run:
+          name: Install Node Dependencies
+          command: |
+            cd ui
+            npm ci
+      - save_cache:
+          key: v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
+          # cache NPM modules and the folder with the Cypress binary
+          paths:
+            - ~/.npm
+            - ~/.cache
+      - run:
+          name: Run Cypress tests
+          command: |
+            cd ui
+            npm run test:e2e:headless
+  middleTier:
+    machine: true
+    environment:
+      ## this enables colors in the output
+      TERM: xterm
+    steps:
+      - checkout
+      # start proprietary DB using private Docker image
+      - run:
+          name: Install OpenJDK 11
+          command: |
+            sudo apt-get update && sudo apt-get install openjdk-11-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
+            java -version
+      - run:
+          name: Install MarkLogic Docker
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
+            docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
+            ./.travis/setup-marklogic.sh
+      - run:
+          name: Run tests
+          command: ./.circleci/run-tests.sh
+workflows:
+  build_and_test:
+    jobs:
+      - middleTier
+      - ui
