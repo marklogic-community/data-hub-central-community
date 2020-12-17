@@ -7,6 +7,31 @@ orbs:
   cypress: cypress-io/cypress@1
 
 jobs:
+  ui:
+    docker:
+      - image: cypress/base:10
+    environment:
+      ## this enables colors in the output
+      TERM: xterm
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
+            - v1-deps-{{ .Branch }}
+            - v1-deps
+      - run:
+          name: Install Dependencies
+          command: npm ci
+      - save_cache:
+          key: v1-deps-{{ .Branch }}-{{ checksum "ui/package.json" }}
+          # cache NPM modules and the folder with the Cypress binary
+          paths:
+            - ~/.npm
+            - ~/.cache
+      - run: |
+          cd ui
+          npm run test:e2e:headless
   marklogic:
     machine: true
     steps:
@@ -33,7 +58,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-{{ checksum "middle-tier/build.gradle" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
@@ -42,7 +67,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+          key: v1-dependencies-{{ checksum "middle-tier/build.gradle" }}
 
       # run tests!
       - run: gradle test
@@ -53,25 +78,4 @@ workflows:
       - middleTier:
           requires:
             - marklogic
-      - cypress/install:
-          cache-key: >-
-              cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
-              }}
-          working_directory: ui
-      - cypress/run:
-          post-install:
-            - run: apt-get update
-            - run: apt-get install -y libgbm-dev
-          requires:
-            - cypress/install
-          cache-key: >-
-            cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
-            }}
-          working_directory: ui
-          executor: cypress/browsers-chrome69
-          record: true        # record results on Cypress Dashboard
-          parallel: true      # split all specs across machines
-          parallelism: 4      # use 4 CircleCI machines to finish quickly
-          group: 'UI Tests'  # name this group "all tests" on the dashboard
-          start: 'npm run serve:e2e'  # start server before running tests
-          wait-on: 'http://localhost:9999'
+      - ui
