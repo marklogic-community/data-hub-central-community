@@ -4,10 +4,10 @@
 #
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@1
+  cypress: cypress-io/cypress@1.25.0
 
 jobs:
-  middleTier:
+  marklogic:
     machine: true
     steps:
       - checkout
@@ -18,11 +18,41 @@ jobs:
           docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
           ./.travis/setup-marklogic.sh
       - run: ./.travis/run-tests.sh
+  middleTier:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
 
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: gradle dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      # run tests!
+      - run: gradle test
 workflows:
   build_and_test:
     jobs:
-      - middleTier
+      - marklogic
+      - middleTier:
+          requires:
+            - marklogic
       - cypress/install:
           cache-key: >-
               cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
@@ -35,7 +65,7 @@ workflows:
             cache-{{ arch }}-{{ .Branch }}-{{ checksum "ui/package.json"
             }}
           working_directory: ui
-          executor: cypress/browsers-chrome69
+          executor: cypress/base:latest
           record: true        # record results on Cypress Dashboard
           parallel: true      # split all specs across machines
           parallelism: 4      # use 4 CircleCI machines to finish quickly
