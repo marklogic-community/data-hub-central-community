@@ -3,42 +3,31 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2.1
-
 orbs:
   cypress: cypress-io/cypress@1
-
 workflows:
   build_and_test:
     jobs:
       - middleTier:
-        machine: true
-        steps:
-          # Docker is preinstalled, along with docker-compose
-          - checkout
-          # start proprietary DB using private Docker image
-          - run: |
-              echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-              docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
-              docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
-              ./.travis/setup-marklogic.sh
-          - run: ./.travis/run-tests.sh
+          machine: true
+          steps:
+            # Docker is preinstalled, along with docker-compose
+            - checkout
+            # start proprietary DB using private Docker image
+            - run: |
+                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
+                docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
+                ./.travis/setup-marklogic.sh
+            - run: ./.travis/run-tests.sh
       - cypress/install
       - cypress/run:
-        requires:
-          - cypress/install
-        executor: cypress/browsers-chrome69
-        record: true        # record results on Cypress Dashboard
-        parallel: true      # split all specs across machines
-        parallelism: 4      # use 4 CircleCI machines to finish quickly
-        group: 'UI Tests'  # name this group "all tests" on the dashboard
-        start: 'npm run serve:e2e'  # start server before running tests
-        wait-on: 'http://localhost:9999'
-      ui:
-        executor: node/default
-        steps:
-          - checkout
-          - node/install-packages:
-              app-dir: ~/project/ui
-          - run: |
-              cd ~/project/ui
-              npm run test:e2e:headless:ci
+          requires:
+            - cypress/install
+          executor: cypress/browsers-chrome69
+          record: true        # record results on Cypress Dashboard
+          parallel: true      # split all specs across machines
+          parallelism: 4      # use 4 CircleCI machines to finish quickly
+          group: 'UI Tests'  # name this group "all tests" on the dashboard
+          start: 'npm run serve:e2e'  # start server before running tests
+          wait-on: 'http://localhost:9999'
