@@ -50,7 +50,7 @@ jobs:
             ./.travis/setup-marklogic.sh
       - run:
           name: Run tests
-          command: ./.travis/run-tests.sh
+          command: ./.circleci/run-tests.sh
 workflows:
   build_and_test:
     jobs:
