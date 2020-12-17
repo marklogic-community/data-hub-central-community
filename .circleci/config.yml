@@ -36,6 +36,9 @@ jobs:
             npm run test:e2e:headless
   middleTier:
     machine: true
+    environment:
+      ## this enables colors in the output
+      TERM: xterm
     steps:
       - checkout
       # start proprietary DB using private Docker image
