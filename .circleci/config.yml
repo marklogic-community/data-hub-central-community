@@ -10,11 +10,11 @@ orbs:
 jobs:
   middleTier:
     machine: true
-    working_directory: ~/repo
+		working_directory: ~/repo
     steps:
       # Docker is preinstalled, along with docker-compose
       - checkout
-
+				path: ~/repo
       # start proprietary DB using private Docker image
       - run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
@@ -23,10 +23,13 @@ jobs:
           ./.travis/setup-marklogic.sh
           ./.travis/run-tests.sh
   ui:
+    working_directory: ~/repo/ui
     executor: node/default
     steps:
       - checkout
+				path: ~/repo
       - node/install-packages
+			-
       - run: npm run test:e2e:headless:ci
 
 workflows:
