@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@3.0.0
+  cypress: cypress-io/cypress@1
 
 jobs:
   middleTier:
@@ -19,7 +19,19 @@ jobs:
           docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
           docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
           ./.travis/setup-marklogic.sh
-          ./.travis/run-tests.sh
+      - run: ./.travis/run-tests.sh
+  cypress/install:
+    build: 'npm run build'  # run a custom app build step
+  cypress/run:
+    requires:
+      - cypress/install
+    executor: cypress/browsers-chrome69
+    record: true        # record results on Cypress Dashboard
+    parallel: true      # split all specs across machines
+    parallelism: 4      # use 4 CircleCI machines to finish quickly
+    group: 'UI Tests'  # name this group "all tests" on the dashboard
+    start: 'npm run serve:e2e'  # start server before running tests
+    wait-on: 'http://localhost:9999'
   ui:
     executor: node/default
     steps:
