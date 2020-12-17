@@ -5,20 +5,24 @@
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@1
+
+jobs:
+  middleTier:
+    machine: true
+    steps:
+      - checkout
+      # start proprietary DB using private Docker image
+      - run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
+          docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
+          ./.travis/setup-marklogic.sh
+      - run: ./.travis/run-tests.sh
+
 workflows:
   build_and_test:
     jobs:
-      - middleTier:
-          machine: true
-          steps:
-            - checkout
-            # start proprietary DB using private Docker image
-            - run: |
-                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                docker pull store/marklogicdb/marklogic-server:10.0-5.1-dev-centos
-                docker run -d --privileged -p 0.0.0.0:7997-8002:7997-8002 -p 0.0.0.0:8010-8015:8010-8015 store/marklogicdb/marklogic-server:10.0-4-dev-centos
-                ./.travis/setup-marklogic.sh
-            - run: ./.travis/run-tests.sh
+      - middleTier
       - cypress/install
       - cypress/run:
           requires:
