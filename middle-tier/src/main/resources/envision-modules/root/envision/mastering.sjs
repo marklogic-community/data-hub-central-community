@@ -162,7 +162,7 @@ function getBlocks(uris) {
 exports.getNotificationFlowInfo = getNotificationFlowInfo;
 exports.getNotification = getNotification;
 exports.updateStatus = updateStatus;
-exports.unblock = unblock;
+exports.unblock = module.amp(unblock);
 exports.blockMatches = blockMatches;
 exports.getBlocks = getBlocks;
 exports.isBlocked = isBlocked;

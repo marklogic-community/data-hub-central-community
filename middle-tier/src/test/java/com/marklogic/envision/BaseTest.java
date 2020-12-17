@@ -256,6 +256,27 @@ public class BaseTest {
 		return it.next().getString();
 	}
 
+	protected void deleteProtectedPaths(DatabaseClient client) {
+		client.newServerEval().xquery("import module namespace sec = \"http://marklogic.com/xdmp/security\" at \"/MarkLogic/security.xqy\";\n" +
+			"      \n" +
+			"xdmp:invoke-function(function() {\n" +
+			"for $path in /*:protected-path\n" +
+			"return\n" +
+			"  sec:unprotect-path($path/sec:path-expression, ())\n" +
+			"}, map:entry(\"database\", xdmp:security-database())),\n" +
+			"xdmp:invoke-function(function() {\n" +
+			"for $path in /*:protected-path\n" +
+			"return\n" +
+			"  sec:remove-path($path/sec:path-expression, ())\n" +
+			"}, map:entry(\"database\", xdmp:security-database())),\n" +
+			"xdmp:invoke-function(function() {\n" +
+			"for $path in /*:protected-path\n" +
+			"return\n" +
+			"  $path\n" +
+			"}, map:entry(\"database\", xdmp:security-database()))").eval();
+
+	}
+
 	protected JsonNode getProtectedPaths(DatabaseClient client) throws IOException {
 		EvalResultIterator it = client.newServerEval().xquery("xdmp:invoke-function(function() {\n" +
 			"  json:to-array(/*:protected-path/*:path-expression/fn:string())\n" +

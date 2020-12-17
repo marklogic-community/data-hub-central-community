@@ -7,6 +7,7 @@ import com.marklogic.envision.model.ModelService;
 import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.hub.HubConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,8 @@ public class ModelTests extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+		deleteProtectedPaths(getAdminHubClient().getFinalClient());
+
 		removeUser(ACCOUNT_NAME);
 
 		envisionConfig.setMultiTenant(false);
@@ -48,6 +51,11 @@ public class ModelTests extends BaseTest {
 
 		registerAccount();
 		sessionManager.setHubClient(ACCOUNT_NAME, getAdminHubClient());
+	}
+
+	@AfterEach
+	void teardown() {
+		deleteProtectedPaths(getAdminHubClient().getFinalClient());
 	}
 
 	@Test

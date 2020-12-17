@@ -60,6 +60,7 @@ public class MasteringTest extends BaseTest {
 	public void unmerge() throws Exception {
 		HubClient hubClient = getNonAdminHubClient();
 		JsonNode found = Mastering.on(hubClient.getFinalClient()).unmerge("/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json");
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/unmerge.json"), found);
 	}
 

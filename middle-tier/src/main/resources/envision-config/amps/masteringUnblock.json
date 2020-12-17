@@ -1,0 +1,6 @@
+{
+	"local-name" : "unblock",
+	"document-uri" : "/envision/mastering.sjs",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "security" ]
+}
