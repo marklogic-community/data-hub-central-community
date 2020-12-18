@@ -46,6 +46,10 @@ public class UploadService extends LoggingObject {
 		uploadFiles(client, files, collectionName);
 	}
 
+	protected String cleanSpaces(String input) {
+		return input.replaceAll("\\s+", "_");
+	}
+
 	public void uploadFiles(HubClient client, UploadFile[] files, String collectionName) {
 		String username = client.getHubConfig().getMlUsername();
 		uploadFiles(client, collectionName, writeBatcher -> {
@@ -65,7 +69,7 @@ public class UploadService extends LoggingObject {
 					filesWritten.getAndAdd(uploadZip(writeBatcher, is, prefix));
 				}
 				else {
-					writeBatcher.add(prefix, new InputStreamHandle(is));
+					writeBatcher.add(cleanSpaces(prefix), new InputStreamHandle(is));
 				}
 			});
 
@@ -91,7 +95,7 @@ public class UploadService extends LoggingObject {
 							filesWritten.getAndAdd(uploadZip(writeBatcher, fileInputStream, newPrefix));
 						} else {
 							String uri = String.format("%s/%s", prefix, fileName);
-							writeBatcher.add(uri, new InputStreamHandle(fileInputStream));
+							writeBatcher.add(cleanSpaces(uri), new InputStreamHandle(fileInputStream));
 							filesWritten.getAndAdd(1);
 						}
 					}
@@ -189,7 +193,7 @@ public class UploadService extends LoggingObject {
 			Stream<JacksonHandle> contentStream = splitter.split(bis);
 			contentStream.forEach(jacksonHandle -> {
 				String uri = String.format("%s/%s.json", prefix, UUID.randomUUID());
-				writeBatcher.add(uri, jacksonHandle);
+				writeBatcher.add(cleanSpaces(uri), jacksonHandle);
 				filesWritten.addAndGet(1);
 			});
 		}

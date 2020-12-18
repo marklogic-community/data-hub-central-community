@@ -119,7 +119,7 @@
 					"name": "name",
 					"type": "string",
 					"isArray": false,
-					"isRedacted": true
+					"isRedacted": false
 				},
 				{
 					"_propId": "3da018d0-6466-41af-bd1c-b19c00077044",

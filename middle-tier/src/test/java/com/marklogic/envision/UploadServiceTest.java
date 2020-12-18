@@ -66,6 +66,16 @@ public class UploadServiceTest extends BaseTest {
 	}
 
 	@Test
+	void uploadCsvWithSpaces() throws Exception {
+		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.csv"));
+		UploadFile uploadFile = new UploadFile("my file with   spaces.csv", getResourceStream("data/my-wacky-file.csv"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "my-wacky-file.csv");
+		assertEquals(4, getDocCount(getStagingClient(), "my-wacky-file.csv"));
+		assertEquals(4, getDocCountFromUriPattern(getStagingClient(), "/ingest/bob.smith@marklogic.com/my-wacky-file.csv/my_file_with_spaces.csv/*"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(getStagingClient(), "my-wacky-file.csv", "sue"));
+	}
+
+	@Test
 	void uploadPsv() throws Exception {
 		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.psv"));
 		UploadFile uploadFile = new UploadFile("my-wacky-file.psv", getResourceStream("data/pipe-sep.psv"));

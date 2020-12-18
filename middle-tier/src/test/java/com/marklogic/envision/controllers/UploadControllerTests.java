@@ -38,5 +38,13 @@ public class UploadControllerTests extends AbstractMvcTest {
 			.andExpect(status().isOk());
 
 		verify(uploadService, times(1)).asyncUploadFiles(any(), any(), anyString());
+
+		reset(uploadService);
+
+		mockMvc.perform(buildUpload(UPLOAD_URL, new MockMultipartFile("file", "my file with spaces.csv", "text/csv", getResourceStream("data/my-wacky-file.csv")))
+			.param("collection", "MyCollection"))
+			.andExpect(status().isOk());
+
+		verify(uploadService, times(1)).asyncUploadFiles(any(), any(), anyString());
 	}
 }

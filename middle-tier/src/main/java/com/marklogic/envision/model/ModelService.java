@@ -75,7 +75,7 @@ public class ModelService {
 		return new File(userModelDir, fileName);
 	}
 
-    public void toDataHub(HubClient hubClient, JsonNode oldModel, JsonNode newModel, JsonNode existingEntities) {
+    public void toDataHub(HubClient hubClient, JsonNode existingEntities) {
         JsonNode newEntities = EntityModeller.on(hubClient.getFinalClient()).toDatahub();
 
         List<String> fieldNames = new ArrayList<>();
@@ -102,7 +102,7 @@ public class ModelService {
 
         EntityModeller.on(hubClient.getFinalClient()).removeAllEntities(hubClient.isMultiTenant() ?  hubClient.getUsername() : null);
 		deleteExtraEntities(hubClient, fieldNames);
-		EntityModeller.on(hubClient.getFinalClient()).updateRedaction(oldModel, newModel);
+		EntityModeller.on(hubClient.getFinalClient()).updateRedaction();
 		EntityModeller.on(hubClient .getFinalClient()).updatePii(existingEntities, newEntities);
 		deployService.deployEntities(hubClient);
     }
@@ -168,7 +168,6 @@ public class ModelService {
 	}
 
 	private void saveModel(HubClient client, JsonNode model) throws IOException {
-		JsonNode oldModel = getModel(client.getFinalClient());
 		JsonNode existingEntities = EntityModeller.on(client.getFinalClient()).toDatahub();
 		DocumentMetadataHandle meta = new DocumentMetadataHandle();
 		meta.getCollections().addAll("http://marklogic.com/envision/model");
@@ -176,7 +175,7 @@ public class ModelService {
 		client.getFinalClient().newJSONDocumentManager().write("/envision/" + client.getUsername() + "/currentModel.json", meta, content);
 		saveModelFile(client.isMultiTenant(), client.getUsername(), model);
 
-		toDataHub(client, oldModel, model, existingEntities);
+		toDataHub(client, existingEntities);
 		createModelTDEs(client.getFinalClient());
 	}
 

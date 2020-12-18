@@ -32,14 +32,13 @@ public interface EntityModeller {
             }
 
             @Override
-            public Boolean updateRedaction(com.fasterxml.jackson.databind.JsonNode oldModel, com.fasterxml.jackson.databind.JsonNode newModel) {
+            public Boolean updateRedaction() {
               return BaseProxy.BooleanType.toBoolean(
                 baseProxy
-                .request("updateRedaction.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_NODES)
+                .request("updateRedaction.sjs", BaseProxy.ParameterValuesKind.NONE)
                 .withSession()
                 .withParams(
-                    BaseProxy.documentParam("oldModel", true, BaseProxy.JsonDocumentType.fromJsonNode(oldModel)),
-                    BaseProxy.documentParam("newModel", false, BaseProxy.JsonDocumentType.fromJsonNode(newModel)))
+                    )
                 .withMethod("POST")
                 .responseSingle(false, null)
                 );
@@ -166,11 +165,10 @@ public interface EntityModeller {
   /**
    * Invokes the updateRedaction operation on the database server
    *
-   * @param oldModel	provides input
-   * @param newModel	provides input
+   * 
    * @return	as output
    */
-    Boolean updateRedaction(com.fasterxml.jackson.databind.JsonNode oldModel, com.fasterxml.jackson.databind.JsonNode newModel);
+    Boolean updateRedaction();
 
   /**
    * Invokes the needsImport operation on the database server

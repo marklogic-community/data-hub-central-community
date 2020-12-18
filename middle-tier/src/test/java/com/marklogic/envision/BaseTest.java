@@ -511,6 +511,21 @@ public class BaseTest {
 		return count;
 	}
 
+	protected int getDocCountFromUriPattern(DatabaseClient client, String uriPattern) {
+		int count = 0;
+		String pattern = "";
+		if (uriPattern != null) {
+			pattern = "'" + uriPattern + "'";
+		}
+		EvalResultIterator resultItr = client.newServerEval().xquery("fn:count(cts:uri-match(" + pattern + "))").eval();
+		if (resultItr == null || !resultItr.hasNext()) {
+			return count;
+		}
+		EvalResult res = resultItr.next();
+		count = Math.toIntExact((long) res.getNumber());
+		return count;
+	}
+
 	protected void jsonAssertEquals(JsonNode expected, JsonNode actual) throws Exception {
 		jsonAssertEquals(objectMapper.writeValueAsString(expected), objectMapper.writeValueAsString(actual));
 	}

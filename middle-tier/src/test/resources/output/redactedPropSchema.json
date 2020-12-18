@@ -5,7 +5,7 @@
 		"method": { "function": "redact-regex" },
 		"options": {
 			"pattern": "^[\u0001-\uE007F].*",
-			"replacement":  "### PII Redacted ###"
+			"replacement":  "### Redacted ###"
 		}
 	}
 }

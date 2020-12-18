@@ -10,6 +10,6 @@ var stepNumber; // the index of the step within the flow being processed; the fi
 var step; // the step definition object
 
 content = content.map(c => {
-	c.uri = `/data/${xdmp.getCurrentUser()}/${step.options.sourceCollection}/${step.options.targetEntity}/${sem.uuidString()}.json`
+	c.uri = `/data/${xdmp.getCurrentUser()}/${step.options.sourceCollection}/${step.options.targetEntity}/${sem.uuidString()}.json`.replace(/\s+/g, '_')
 	return c;
 });

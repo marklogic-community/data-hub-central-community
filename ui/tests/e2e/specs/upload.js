@@ -54,7 +54,6 @@ describe('Integrate Tab', () => {
 					{ subjectType: 'drag-n-drop' },
 				);
 
-			// cy.get('[data-cy="uploadCollection.collectionName"]').type('My Collection Is Rad')
 			cy.get('[data-cy="uploadCollectionDlg.cancelBtn"]').click()
 
 			cy.get('[data-cy="uploadfileInput"]').should('exist')
@@ -63,8 +62,9 @@ describe('Integrate Tab', () => {
 					{ subjectType: 'drag-n-drop' },
 				);
 
-			// cy.get('[data-cy="uploadCollection.collectionName"]').type('My Collection Is Rad')
+			cy.get('.v-messages__message').should('not.exist')
 			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
+			cy.get('.v-messages__message').should('not.exist')
 
 			cy.wait('@uploadFile')
 				.its('request.body')
@@ -97,12 +97,22 @@ describe('Integrate Tab', () => {
 			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('My Collection Is Rad')
 			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
 
+			cy.get('.v-messages__message').should('contain', 'Collection cannot contain spaces. Only letters, numbers, and underscore')
+
+			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('MyCollectionIsRad')
+			cy.get('.v-messages__message').should('not.exist')
+
+			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
+			cy.get('.v-messages__message').should('not.exist')
+
 			cy.wait('@uploadFile')
 				.its('request.body')
 					.should(body => {
-						expect(body.get('collection')).to.eq('My Collection Is Rad')
+						expect(body.get('collection')).to.eq('MyCollectionIsRad')
 						expect(body.get('files').name).to.eq('test.csv')
 					})
+
+
 		})
 	})
 })
