@@ -16,20 +16,22 @@ Element Level Security hides parts of a document. Redaction can conceal, mask, p
 While defining a model the user can identify properties that contain PII. A security configuration can then be deployed that restricts access to these properties to users that have the 'pii-reader' role. This approach uses Element Level Security - please refer to https://docs.marklogic.com/datahub/5.2/security/pii/pii-data-mgmt.html
 
 ## Redaction in Envision
-For Envision we decided to implement PII using redaction rather than Element Level Security. We also support other ways of defining rules that determine when to redact parts of a document.
+In Envision you can set redaction rules for a property by selecting "Redacted" in the advance tab for a property setting. Envision supports ways of defining rules that determine how to redact parts of a document based on selecting this setting.
+
+You can also set the PII for a property on an entity to implement Element Level Security for that property.
 
 For redaction to work the "envision" role must also have the "redaction-user" role. To achive this, run 
 ```
 ./gradlew mlDeployRoles 
 ```
 
-When you define a model, using the contect tab, the user can select the 'Advanced' property options and mark a property as containing PII. In Envision this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'redactionRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called redactionRule4<currentUserName>. 
+When you define a model, using the Connect tab, the user can select the 'Advanced' property options and mark a property as containing Redacted. In Envision this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'redactionRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called redactionRule4<currentUserName>. 
 
 After doing this, all users will see the message "### PII Redacted ###" when they view a document that uses the property.
 
 Note that redaction applies to the final database only, data in the staging database is not currently shown in redacted form. 
 
-To control which users should see the real value, we use a config document in the FINAL database. This document has the uri /redactionRules2Roles.json or redactionRules2Roles4<currentUserName>.json for multi tenant. For example, the code below, which you can run using Query Console, says that the any rules in the redactionRule collection should not be applied if the current user has the 'pii-reader' role :
+To control which users should see the real value, we use a config document in the FINAL database. This document has the uri /redactionRules2Roles.json ( or redactionRules2Roles4<currentUserName>.json for multi tenant.) For example, the code below, which you can run using Query Console, says that the any rules in the redactionRule collection should not be applied if the current user has the 'pii-reader' role :
 ```
 declareUpdate()
 
