@@ -32,6 +32,20 @@ public interface EntityModeller {
             }
 
             @Override
+            public Boolean updateRedaction() {
+              return BaseProxy.BooleanType.toBoolean(
+                baseProxy
+                .request("updateRedaction.sjs", BaseProxy.ParameterValuesKind.NONE)
+                .withSession()
+                .withParams(
+                    )
+                .withMethod("POST")
+                .responseSingle(false, null)
+                );
+            }
+
+
+            @Override
             public Boolean needsImport(com.fasterxml.jackson.databind.node.ArrayNode models) {
               return BaseProxy.BooleanType.toBoolean(
                 baseProxy
@@ -88,6 +102,21 @@ public interface EntityModeller {
 
 
             @Override
+            public Boolean updatePii(com.fasterxml.jackson.databind.JsonNode oldModel, com.fasterxml.jackson.databind.JsonNode newModel) {
+              return BaseProxy.BooleanType.toBoolean(
+                baseProxy
+                .request("updatePii.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_NODES)
+                .withSession()
+                .withParams(
+                    BaseProxy.documentParam("oldModel", false, BaseProxy.JsonDocumentType.fromJsonNode(oldModel)),
+                    BaseProxy.documentParam("newModel", false, BaseProxy.JsonDocumentType.fromJsonNode(newModel)))
+                .withMethod("POST")
+                .responseSingle(false, null)
+                );
+            }
+
+
+            @Override
             public com.fasterxml.jackson.databind.JsonNode fromDatahub() {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
@@ -134,6 +163,14 @@ public interface EntityModeller {
     }
 
   /**
+   * Invokes the updateRedaction operation on the database server
+   *
+   * 
+   * @return	as output
+   */
+    Boolean updateRedaction();
+
+  /**
    * Invokes the needsImport operation on the database server
    *
    * @param models	provides input
@@ -164,6 +201,15 @@ public interface EntityModeller {
    * @return	as output
    */
     Boolean removeAllEntities(String user);
+
+  /**
+   * Invokes the updatePii operation on the database server
+   *
+   * @param oldModel	provides input
+   * @param newModel	provides input
+   * @return	as output
+   */
+    Boolean updatePii(com.fasterxml.jackson.databind.JsonNode oldModel, com.fasterxml.jackson.databind.JsonNode newModel);
 
   /**
    * Invokes the fromDatahub operation on the database server

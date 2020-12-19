@@ -192,7 +192,16 @@
 									data-cy="jobStatus"
 									v-for="job in jobs"
 									:key="job.jobId">
-									<v-list-item v-if="job.jobStatus === 'finished'">
+									<v-list-item v-if="job.timeEnded === 'N/A'">
+										<v-list-item-icon>
+											<v-icon>fa fa-clock-o</v-icon>
+										</v-list-item-icon>
+
+										<v-list-item-content>
+											<v-list-item-title>Running ({{Object.keys(job.stepResponses).length}} Steps)</v-list-item-title>
+										</v-list-item-content>
+									</v-list-item>
+									<v-list-item v-else-if="job.jobStatus === 'finished'">
 										<v-list-item-icon>
 											<v-icon>fa fa-check</v-icon>
 										</v-list-item-icon>

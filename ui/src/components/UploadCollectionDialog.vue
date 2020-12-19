@@ -35,6 +35,10 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 
+function noSpaces(value) {
+	return value.match(/^[^\s]+$/) !== null
+}
+
 export default {
 	props: {
 		showDialog: { type: Boolean }
@@ -48,16 +52,18 @@ export default {
 		}
 	},
 	validations: {
-		collection: { required },
+		collection: { required, noSpaces },
   },
 	methods: {
 		inputErrors(field, fieldName) {
 			const errors = []
 			if (!this.$v[field].$dirty) return errors
 			this.$v[field].$invalid && this.$v[field].$params.hasOwnProperty('required') && !this.$v[field].required && errors.push(`${fieldName} is required.`)
+			this.$v[field].$invalid && this.$v[field].$params.hasOwnProperty('noSpaces') && !this.$v[field].noSpaces && errors.push(`${fieldName} cannot contain spaces. Only letters, numbers, and underscore.`)
 			return errors
 		},
 		open(collection) {
+			this.$v.$reset()
 			this.collection = collection || null
 			this.dialog = true
 			return new Promise((resolve, reject) => {

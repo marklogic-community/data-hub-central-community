@@ -20,7 +20,7 @@ public class TestExplore extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
+	void setup() throws IOException, InterruptedException {
 		logout();
 
 		removeUser(ACCOUNT_NAME);
@@ -30,6 +30,9 @@ public class TestExplore extends AbstractMvcTest {
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+
+		// give ML time to index
+		Thread.sleep(2000);
 	}
 
 	@Test

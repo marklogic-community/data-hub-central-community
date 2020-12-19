@@ -6,6 +6,8 @@ import com.marklogic.envision.dataServices.EntityModeller;
 import com.marklogic.envision.model.ModelService;
 import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
+import com.marklogic.hub.HubConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +20,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.File;
 import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -33,13 +39,23 @@ public class ModelTests extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+		deleteProtectedPaths(getAdminHubClient().getFinalClient());
+
 		removeUser(ACCOUNT_NAME);
 
+		envisionConfig.setMultiTenant(false);
+
 		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 		installEnvisionModules();
 
 		registerAccount();
 		sessionManager.setHubClient(ACCOUNT_NAME, getAdminHubClient());
+	}
+
+	@AfterEach
+	void teardown() {
+		deleteProtectedPaths(getAdminHubClient().getFinalClient());
 	}
 
 	@Test
@@ -111,5 +127,201 @@ public class ModelTests extends BaseTest {
 		JsonNode result = EntityModeller.on(client).fromDatahub();
 		System.out.println(objectMapper.writeValueAsString(result));
 		jsonAssertEquals(getResource("output/esModel.json"), result, resultCompare);
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubNoRedaction() throws Exception {
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noRedaction.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubNoRedactionMultiTenant() throws Exception {
+		envisionConfig.setMultiTenant(true);
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
+		installEnvisionModules();
+
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule4bob.smith@marklogic.com"));
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noRedaction.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule4bob.smith@marklogic.com"));
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubWithRedactionMultiTenant() throws Exception {
+		envisionConfig.setMultiTenant(true);
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
+		installEnvisionModules();
+
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withRedaction.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+
+
+		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/rules/pii/bob.smith@marklogic.com/Employee-redactedProp.json");
+		jsonAssertEquals(getResource("output/redactedPropSchema.json"), actual);
+
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+		assertEquals(1, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule4bob.smith@marklogic.com"));
+
+		// now turn it off
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noRedaction.json"));
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule4bob.smith@marklogic.com"));
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubWithRedaction() throws Exception {
+		envisionConfig.setMultiTenant(true);
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withRedaction.json"));
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+
+
+		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/rules/pii/Employee-redactedProp.json");
+		jsonAssertEquals(getResource("output/redactedPropSchema.json"), actual);
+
+		assertEquals(1, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+
+		// now turn it off
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noRedaction.json"));
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+
+		// turn it back on
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withRedaction.json"));
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withRedaction.json"), result);
+
+		// now remove the property
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/redactionRemove.json"));
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/redactionRemoved.json"), result);
+		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
+
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubNoPii() throws Exception {
+		Path protectedPaths = getNonAdminHubClient().getHubConfig().getUserSecurityDir().resolve("protected-paths");
+		File[] files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertTrue(files == null || files.length == 0);
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noPii.json"));
+		files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertTrue(files == null || files.length == 0);
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/noPii.json"), result);
+	}
+
+	@Test
+	@WithMockUser(username = ACCOUNT_NAME)
+	public void toDatahubWithPii() throws Exception {
+		DatabaseClient client = getNonAdminHubClient().getFinalClient();
+		Path modelsDir = projectPath.resolve("models");
+		modelsDir.toFile().mkdirs();
+		modelService.setModelsDir(modelsDir.toFile());
+
+		Path protectedPaths = getNonAdminHubClient().getHubConfig().getUserSecurityDir().resolve("protected-paths");
+		File[] files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertTrue(files == null || files.length == 0);
+
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withPii.json"));
+
+		files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertEquals(1, files.length);
+
+		JsonNode paths = getProtectedPaths(getAdminHubClient().getFinalClient());
+		jsonAssertEquals("[\"/envelope//instance//Employee/piiProp\"]", paths);
+
+		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withPii.json"), result);
+
+		// turn off pii
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noPii.json"));
+		files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertTrue(files == null || files.length == 0);
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/noPii.json"), result);
+
+		paths = getProtectedPaths(getAdminHubClient().getFinalClient());
+		jsonAssertEquals("[]", paths);
+
+		// turn it back on
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withPii.json"));
+
+		files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertEquals(1, files.length);
+
+		paths = getProtectedPaths(getAdminHubClient().getFinalClient());
+		jsonAssertEquals("[\"/envelope//instance//Employee/piiProp\"]", paths);
+
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/withPii.json"), result);
+
+		// delete pii property
+		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/piiRemoved.json"));
+		files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+		assertTrue(files == null || files.length == 0);
+		result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
+		jsonAssertEquals(getResource("output/piiRemoved.json"), result);
+
+		paths = getProtectedPaths(getAdminHubClient().getFinalClient());
+		jsonAssertEquals("[]", paths);
+
+
 	}
 }

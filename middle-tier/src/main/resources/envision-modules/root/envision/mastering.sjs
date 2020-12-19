@@ -1,6 +1,6 @@
 const jobDB = require('/com.marklogic.hub/config.sjs').JOBDATABASE
 const matcher = require("/com.marklogic.smart-mastering/matcher.xqy");
-const model = require('/envision/model.sjs').model;
+const model = require('/envision/model.sjs').model();
 
 function getLabels() {
 	const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {
@@ -162,7 +162,7 @@ function getBlocks(uris) {
 exports.getNotificationFlowInfo = getNotificationFlowInfo;
 exports.getNotification = getNotification;
 exports.updateStatus = updateStatus;
-exports.unblock = unblock;
+exports.unblock = module.amp(unblock);
 exports.blockMatches = blockMatches;
 exports.getBlocks = getBlocks;
 exports.isBlocked = isBlocked;

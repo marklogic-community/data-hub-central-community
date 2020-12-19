@@ -256,6 +256,34 @@ public class BaseTest {
 		return it.next().getString();
 	}
 
+	protected void deleteProtectedPaths(DatabaseClient client) {
+		client.newServerEval().xquery("import module namespace sec = \"http://marklogic.com/xdmp/security\" at \"/MarkLogic/security.xqy\";\n" +
+			"      \n" +
+			"xdmp:invoke-function(function() {\n" +
+			"for $path in /*:protected-path\n" +
+			"return\n" +
+			"  sec:unprotect-path($path/sec:path-expression, ())\n" +
+			"}, map:entry(\"database\", xdmp:security-database())),\n" +
+			"xdmp:invoke-function(function() {\n" +
+			"for $path in /*:protected-path\n" +
+			"return\n" +
+			"  sec:remove-path($path/sec:path-expression, ())\n" +
+			"}, map:entry(\"database\", xdmp:security-database())),\n" +
+			"xdmp:invoke-function(function() {\n" +
+			"for $path in /*:protected-path\n" +
+			"return\n" +
+			"  $path\n" +
+			"}, map:entry(\"database\", xdmp:security-database()))").eval();
+
+	}
+
+	protected JsonNode getProtectedPaths(DatabaseClient client) throws IOException {
+		EvalResultIterator it = client.newServerEval().xquery("xdmp:invoke-function(function() {\n" +
+			"  json:to-array(/*:protected-path/*:path-expression/fn:string())\n" +
+			"}, map:entry(\"database\", xdmp:security-database()))").eval();
+		return objectMapper.readTree(it.next().getString());
+	}
+
 	protected void installFinalDoc(String resource, String uri, String... collections) {
 		installDoc(getFinalClient(), resource, uri, collections);
 	}
@@ -475,6 +503,21 @@ public class BaseTest {
 			collectionName = "'" + collection + "'";
 		}
 		EvalResultIterator resultItr = client.newServerEval().xquery("xdmp:estimate(fn:collection(" + collectionName + "))").eval();
+		if (resultItr == null || !resultItr.hasNext()) {
+			return count;
+		}
+		EvalResult res = resultItr.next();
+		count = Math.toIntExact((long) res.getNumber());
+		return count;
+	}
+
+	protected int getDocCountFromUriPattern(DatabaseClient client, String uriPattern) {
+		int count = 0;
+		String pattern = "";
+		if (uriPattern != null) {
+			pattern = "'" + uriPattern + "'";
+		}
+		EvalResultIterator resultItr = client.newServerEval().xquery("fn:count(cts:uri-match(" + pattern + "))").eval();
 		if (resultItr == null || !resultItr.hasNext()) {
 			return count;
 		}

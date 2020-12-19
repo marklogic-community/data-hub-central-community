@@ -48,7 +48,7 @@ public class Search extends BaseTest {
 	);
 
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() throws IOException, InterruptedException {
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 
@@ -72,6 +72,9 @@ public class Search extends BaseTest {
 		installDoc(hubClient.getFinalClient(), "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered");
 		installDoc(hubClient.getFinalClient(), "entities/department3.json", "/departments/department3.json", "Department");
 		installDoc(hubClient.getFinalClient(), "entities/department4.json", "/departments/department4.json", "Department");
+
+		// give ML time to index
+		Thread.sleep(2000);
 	}
 
 	private String getFilterString(String filterString, int pageLength, DatabaseClient client) throws IOException {
@@ -103,6 +106,7 @@ public class Search extends BaseTest {
 		int pageLength = 30;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_all.json"), found, resultCompare);
 	}
 
@@ -114,6 +118,7 @@ public class Search extends BaseTest {
 		int pageLength = 30;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_all.json"), found, resultCompare);
 	}
 
@@ -125,6 +130,7 @@ public class Search extends BaseTest {
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Employee\"]}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), found, resultCompare);
 	}
 
@@ -136,6 +142,7 @@ public class Search extends BaseTest {
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Department\"]}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), found, resultCompare);
 	}
 
@@ -147,6 +154,7 @@ public class Search extends BaseTest {
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(null, 1, pageLength, "default", filterString);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_some.json"), found, resultCompare);
 	}
 
@@ -159,6 +167,7 @@ public class Search extends BaseTest {
 			int pageLength = 1;
 			String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"\"}]}", pageLength, client);
 			JsonNode found = EntitySearcher.on(client).findEntities(null, page, pageLength, "default", filterString);
+			System.out.println(objectMapper.writeValueAsString(found));
 			jsonAssertEquals(getResource("output/pagination" + page + ".json"), found, resultCompare);
 		}
 	}
@@ -172,6 +181,7 @@ public class Search extends BaseTest {
 		int pageLength = 5;
 		String filterString = getFilterString("{\"and\":[{\"type\":\"queryText\",\"value\":\"" + qtext + "\"}]}", pageLength, client);
 		JsonNode found = EntitySearcher.on(client).findEntities(qtext, 1, pageLength, "default", filterString);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/hrskill3.json"), found, resultCompare);
 	}
 
@@ -181,9 +191,11 @@ public class Search extends BaseTest {
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		JsonNode found = EntitySearcher.on(client).relatedEntities("/CoastalEmployees/55003.json", "belongsTo", 1, 10);
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/related-belongs-to.json"), found, resultCompare);
 
 		JsonNode found2 = EntitySearcher.on(client).relatedEntities("/CoastalEmployees/55003.json", "has",1, 10);
+		System.out.println(objectMapper.writeValueAsString(found2));
 		jsonAssertEquals(getResource("output/related-has.json"), found2, resultCompare);
 	}
 }

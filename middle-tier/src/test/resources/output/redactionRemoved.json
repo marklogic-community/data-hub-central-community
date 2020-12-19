@@ -1,0 +1,29 @@
+{
+	"employee": {
+		"info": {
+			"title": "Employee",
+			"version": "0.0.1",
+			"baseUri": "http://marklogic.com/envision/"
+		},
+		"definitions": {
+			"Employee": {
+				"primaryKey": null,
+				"required": [],
+				"pii": [],
+				"elementRangeIndex": [],
+				"rangeIndex": [],
+				"wordLexicon": [],
+				"properties": {
+					"implicitNonRedactedProp": {
+						"datatype": "string",
+						"collation": "http://marklogic.com/collation/codepoint"
+					},
+					"explicitNonRedactedProp": {
+						"datatype": "string",
+						"collation": "http://marklogic.com/collation/codepoint"
+					}
+				}
+			}
+		}
+	}
+}

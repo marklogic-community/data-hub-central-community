@@ -1,5 +1,5 @@
 const tde = require('/MarkLogic/tde.xqy');
-const model = require('/envision/model.sjs').model;
+const model = require('/envision/model.sjs').model();
 const config = require('/envision/config.sjs');
 
 function createTdes() {

@@ -3,7 +3,7 @@ const indexes = require('/envision/options.xqy');
 const search = require('/MarkLogic/appservices/search/search');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
-const model = require('/envision/model.sjs').enhancedModel;
+const model = require('/envision/model.sjs').enhancedModel();
 const rdt = require('/MarkLogic/redaction');
 const finalDB = require('/com.marklogic.hub/config.sjs').FINALDATABASE
 const config = require('/envision/config.sjs');
@@ -159,10 +159,10 @@ function getEntities(uris, opts) {
 	})
 
 	let redactionRolesDocUri = config.isMultiTenant ? "/redactionRules2Roles4" + xdmp.getCurrentUser() + ".json" : "/redactionRules2Roles.json"
-	let piiRuleCollectionName = config.isMultiTenant ? "piiRule4" + xdmp.getCurrentUser() : "piiRule"
+	let redactionRuleCollectionName = config.isMultiTenant ? "redactionRule4" + xdmp.getCurrentUser() : "redactionRule"
 	let redactionRuleCollectionPrefix = config.isMultiTenant ? "redactionRule4" + xdmp.getCurrentUser() : "redactionRule"
 
-	let arrRulesToApply = [ piiRuleCollectionName ]
+	let arrRulesToApply = [ redactionRuleCollectionName ]
 	let arrRulesNotToApply = []
 	// get all rules that could apply
 	var ext = {colls: redactionRuleCollectionPrefix + "*"};
@@ -185,7 +185,7 @@ function getEntities(uris, opts) {
 	if (fn.count(seqRedactionRules2Roles) > 0 ){
 		let redactionRules = fn.head(seqRedactionRules2Roles).toObject().rules
 		redactionRules.forEach((rule) => {
-			// each rule is like "redactionRuleCollection": "piiRules", "rolesThatDoNotUseRedaction": [ "pii-reader"]
+			// each rule is like "redactionRuleCollection": "redactionRules", "rolesThatDoNotUseRedaction": [ "pii-reader"]
 
 			if( rule.rolesThatDoNotUseRedaction.some(r=> arrUserRoleNames.includes(r)) ) {
 				arrRulesNotToApply.push(rule.redactionRuleCollection)

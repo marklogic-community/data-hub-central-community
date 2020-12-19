@@ -27,7 +27,7 @@ public class MasteringTest extends BaseTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setUp() throws IOException {
+	void setUp() throws IOException, InterruptedException {
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 
@@ -53,6 +53,9 @@ public class MasteringTest extends BaseTest {
 
 		installDoc(hubClient.getFinalClient(), "mastering/notification.xml", "/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml", "sm-Employee-notification", "Employee", "MasterEmployees");
 		installDoc(hubClient.getFinalClient(), "mastering/notification-audit.xml", "/provenance/3122fb9289441afe347e3c38d30dfcf38ac45052df9543e61e48994c2e6a6dd6.xml", "http://marklogic.com/provenance-services/record");
+
+		// give ML time to index
+		Thread.sleep(2000);
 	}
 
 	@Test
@@ -60,6 +63,7 @@ public class MasteringTest extends BaseTest {
 	public void unmerge() throws Exception {
 		HubClient hubClient = getNonAdminHubClient();
 		JsonNode found = Mastering.on(hubClient.getFinalClient()).unmerge("/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json");
+		System.out.println(objectMapper.writeValueAsString(found));
 		jsonAssertEquals(getResource("output/unmerge.json"), found);
 	}
 

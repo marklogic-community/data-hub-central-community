@@ -1,0 +1,7 @@
+{
+		"functionName": "updateRedaction",
+		"params": [],
+		"return": {
+      "datatype": "boolean"
+    }
+}

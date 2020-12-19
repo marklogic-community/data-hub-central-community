@@ -18,6 +18,7 @@ import com.marklogic.hub.StepDefinitionManager;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
+import com.marklogic.hub.flow.RunFlowResponse;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.mapping.Mapping;
@@ -27,6 +28,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -213,6 +215,11 @@ public class FlowsService {
 		}
 	}
 
+	@Async
+	public void runStepsAsync(HubClient hubClient, String flowName, JsonNode steps) {
+		runSteps(hubClient, flowName, steps);
+	}
+
 	public void runSteps(HubClient hubClient, String flowName, JsonNode steps) {
 		try {
 			ObjectReader reader = mapper.readerFor(new TypeReference<String[]>() {});
@@ -226,6 +233,7 @@ public class FlowsService {
 				this.template.convertAndSend("/topic/status", msg);
 			});
 			flowRunner.runFlow(inputs);
+			flowRunner.awaitCompletion();
 		}
 		catch(Exception e) {
 			throw new RuntimeException("invalid steps");

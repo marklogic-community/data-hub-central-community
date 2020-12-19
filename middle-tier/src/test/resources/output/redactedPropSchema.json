@@ -1,0 +1,11 @@
+{
+	"rule": {
+		"description": "Redact Employee",
+		"path": "/envelope/instance/Employee/redactedProp",
+		"method": { "function": "redact-regex" },
+		"options": {
+			"pattern": "^[\u0001-\uE007F].*",
+			"replacement":  "### Redacted ###"
+		}
+	}
+}

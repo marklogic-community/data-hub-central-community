@@ -138,7 +138,7 @@ public class FlowsController extends AbstractController {
 	public ResponseEntity<?> runSteps(@RequestBody JsonNode body) {
 		String flowName = body.get("flowName").asText();
 		JsonNode steps = body.get("steps");
-		flowsService.runSteps(getHubClient(), flowName, steps);
+		flowsService.runStepsAsync(getHubClient(), flowName, steps);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

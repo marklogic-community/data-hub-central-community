@@ -1,0 +1,299 @@
+{
+	"page": 1,
+	"total": 1,
+	"pageLength": 10,
+	"nodes": {
+		"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json": {
+			"id": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"uri": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"entityName": "Employee",
+			"label": "### Redacted ###",
+			"entity": {
+				"name": "### Redacted ###",
+				"departmentId": "4",
+				"employeeId": "55004",
+				"skills": [
+					"hrSkill1",
+					"hrSkill2",
+					"hrSkill3"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 3
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/data/bob.smith@marklogic.com/departments/department4.json": {
+			"id": "/data/bob.smith@marklogic.com/departments/department4.json",
+			"uri": "/data/bob.smith@marklogic.com/departments/department4.json",
+			"entityName": "Department",
+			"label": "Human Resources",
+			"entity": {
+				"name": "Human Resources",
+				"departmentId": "4",
+				"employeeIds": [
+					"55004",
+					"55005"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 2
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 2
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"skill#hrSkill1": {
+			"id": "skill#hrSkill1",
+			"label": "hrSkill1",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				}
+			}
+		},
+		"skill#hrSkill2": {
+			"id": "skill#hrSkill2",
+			"label": "hrSkill2",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				}
+			}
+		},
+		"skill#hrSkill3": {
+			"id": "skill#hrSkill3",
+			"label": "hrSkill3",
+			"entityName": "Skill",
+			"isConcept": true,
+			"edgeCounts": {
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 1
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 1
+				}
+			}
+		}
+	},
+	"edges": {
+		"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/data/bob.smith@marklogic.com/departments/department4.json": {
+			"from": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"to": "/data/bob.smith@marklogic.com/departments/department4.json",
+			"id": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/data/bob.smith@marklogic.com/departments/department4.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1": {
+			"from": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill1",
+			"id": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill1",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2": {
+			"from": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill2",
+			"id": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill2",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3": {
+			"from": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"to": "skill#hrSkill3",
+			"id": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json-http://www.w3.org/2000/01/rdf-schema#has-skill#hrSkill3",
+			"label": "has",
+			"fromType": "employee",
+			"toType": "skill"
+		},
+		"/data/bob.smith@marklogic.com/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json": {
+			"from": "/data/bob.smith@marklogic.com/departments/department4.json",
+			"to": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"id": "/data/bob.smith@marklogic.com/departments/department4.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee"
+		},
+		"skill#hrSkill1-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill1",
+			"to": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill1-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#hrSkill2-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill2",
+			"to": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill2-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		},
+		"skill#hrSkill3-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json": {
+			"from": "skill#hrSkill3",
+			"to": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"id": "skill#hrSkill3-http://www.w3.org/2000/01/rdf-schema#isSkillFor-/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"label": "isSkillFor",
+			"fromType": "skill",
+			"toType": "employee"
+		}
+	},
+	"results": [
+		{
+			"index": 1,
+			"uri": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"path": "fn:doc(\"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json\")",
+			"score": 53248,
+			"confidence": 0.5334884,
+			"fitness": 0.679406,
+			"matches": [
+				{
+					"path": "fn:doc(\"/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json\")/envelope/instance/Employee/text(\"name\")",
+					"match-text": [
+						{
+							"highlight": "Roberta"
+						},
+						" ",
+						{
+							"highlight": "Jones"
+						}
+					]
+				}
+			],
+			"id": "/data/bob.smith@marklogic.com/MountainTopEmployees/employee4.json",
+			"entityName": "Employee",
+			"label": "### Redacted ###",
+			"entity": {
+				"name": "### Redacted ###",
+				"departmentId": "4",
+				"employeeId": "55004",
+				"skills": [
+					"hrSkill1",
+					"hrSkill2",
+					"hrSkill3"
+				]
+			},
+			"edgeCounts": {
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"employee-has-skill": {
+					"from": "employee",
+					"to": "skill",
+					"label": "has",
+					"count": 3
+				},
+				"skill-isskillfor-employee": {
+					"from": "skill",
+					"to": "employee",
+					"label": "isSkillFor",
+					"count": 3
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	],
+	"facets": {
+		"Collections": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "Employee",
+					"count": 1,
+					"value": "Employee"
+				},
+				{
+					"name": "MapEmployees",
+					"count": 1,
+					"value": "MapEmployees"
+				},
+				{
+					"name": "MasterEmployees",
+					"count": 1,
+					"value": "MasterEmployees"
+				},
+				{
+					"name": "http://marklogic.com/envision/user/bob.smith@marklogic.com",
+					"count": 1,
+					"value": "http://marklogic.com/envision/user/bob.smith@marklogic.com"
+				}
+			]
+		}
+	}
+}
