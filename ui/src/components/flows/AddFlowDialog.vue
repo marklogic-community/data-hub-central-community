@@ -156,7 +156,7 @@ export default {
 
 			this.saveFlow(flow)
 				.then(() => {
-					return this.getFlow()
+					return this.getFlow(flow.name)
 				})
 				.then(() => {
 					this.open = false

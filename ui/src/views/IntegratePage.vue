@@ -27,39 +27,45 @@
 							</v-tooltip>
 						</v-flex>
 					</v-layout>
-					<v-simple-table dense>
+					<v-simple-table dense v-if="flowsArray.length > 0">
 						<tbody>
 							<tr v-for="flow in flowsArray" :key="flow.name" data-cy="integrate.flowRow">
 								<td :class="(flowName === flow.name) ? 'selected-flow': ''" @click="changeFlow(flow.name)">{{flow.name}}</td>
 							</tr>
 						</tbody>
 					</v-simple-table>
+					<h3 class="text-center" v-else>Create a Flow to get started</h3>
 				</div>
 			</v-flex>
 			<v-flex :class="['mainPane', showFlowsPane ? 'md9' : 'md12']">
 				<v-layout row class="fullHeight">
 					<v-flex :class="['stepsPane', (this.showManageDataPane || this.showRunHistoryPane) ? 'md8': 'md12']">
-						<v-layout row justify-center v-if="!isHosted">
-							<h3 class="flow-name">{{flowName}}</h3>
-							<delete-data-confirm
-								:tooltip="`Delete ${flowName}`"
-								:message="`Do you really want to delete the ${flowName} flow?`"
-								:collection="flowName"
-								:deleteInProgress="deleteInProgress"
-								@deleted="removeFlow($event)"/>
+						<template v-if="flowsArray.length > 0">
+							<v-layout row justify-center v-if="!isHosted">
+								<h3 class="flow-name">{{flowName}}</h3>
+								<delete-data-confirm
+									:tooltip="`Delete ${flowName}`"
+									:message="`Do you really want to delete the ${flowName} flow?`"
+									:collection="flowName"
+									:deleteInProgress="deleteInProgress"
+									@deleted="removeFlow($event)"/>
 
-						</v-layout>
-						<v-layout row v-if="!hasSteps" class="no-steps">
-							<v-flex md8 :class="nextStepClass">
-								<i class="fa" :class="(nextStepClass === '') ? 'fa-level-down':'fa-level-up'" /> {{nextStep}}
-							</v-flex>
-						</v-layout>
-						<v-layout row justify-center no-gutters>
-							<div row class="button-wrapper">
-								<v-btn data-cy="integrate.addStepBtn" :disabled="!hasData" @click="addStep">Add Step</v-btn>
-								<v-spacer></v-spacer>
-								<v-btn data-cy="integrate.runStepBtn" :disabled="!hasSteps" @click="showFlowRunner = true">Run Steps</v-btn>
-							</div>
+							</v-layout>
+							<v-layout row v-if="!hasSteps" class="no-steps">
+								<v-flex md8 :class="nextStepClass">
+									<i class="fa" :class="(nextStepClass === '') ? 'fa-level-down':'fa-level-up'" /> {{nextStep}}
+								</v-flex>
+							</v-layout>
+							<v-layout row justify-center no-gutters>
+								<div row class="button-wrapper">
+									<v-btn data-cy="integrate.addStepBtn" :disabled="!hasData" @click="addStep">Add Step</v-btn>
+									<v-spacer></v-spacer>
+									<v-btn data-cy="integrate.runStepBtn" :disabled="!hasSteps" @click="showFlowRunner = true">Run Steps</v-btn>
+								</div>
+							</v-layout>
+						</template>
+						<v-layout row justify-center no-gutters v-else>
+							Once you create a flow you can manage it here.
 						</v-layout>
 						<span v-if="!isHosted" class="manageFlowToggle">
 							<v-tooltip bottom>
