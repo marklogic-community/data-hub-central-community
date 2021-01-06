@@ -218,6 +218,10 @@ export default {
 				layout: {
 					improvedLayout: true,
 				},
+				interaction: {
+					navigationButtons: true,
+					zoomSpeed: 0.5
+				},
 				autoResize: true,
 				height: '100%',
 				locale: 'en',
