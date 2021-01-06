@@ -527,17 +527,28 @@ public class BaseTest {
 	}
 
 	protected void jsonAssertEquals(JsonNode expected, JsonNode actual) throws Exception {
-		jsonAssertEquals(objectMapper.writeValueAsString(expected), objectMapper.writeValueAsString(actual));
+		jsonAssertEquals(expected, actual,true);
+	}
+
+	protected void jsonAssertEquals(JsonNode expected, JsonNode actual, Boolean strict) throws Exception {
+		jsonAssertEquals(objectMapper.writeValueAsString(expected), objectMapper.writeValueAsString(actual), strict);
 	}
 
 	protected void jsonAssertEquals(JsonNode expected, String actual) throws Exception {
-		jsonAssertEquals(objectMapper.writeValueAsString(expected), actual);
+		jsonAssertEquals(expected, actual,true);
+	}
+
+	protected void jsonAssertEquals(JsonNode expected, String actual, Boolean strict) throws Exception {
+		jsonAssertEquals(objectMapper.writeValueAsString(expected), actual, strict);
 	}
 
 	protected void jsonAssertEquals(String expected, JsonNode actual) throws Exception {
-		jsonAssertEquals(expected, objectMapper.writeValueAsString(actual));
+		jsonAssertEquals(expected, actual,true);
 	}
 
+	protected void jsonAssertEquals(String expected, JsonNode actual, Boolean strict) throws Exception {
+		jsonAssertEquals(expected, objectMapper.writeValueAsString(actual), strict);
+	}
 
 	protected void jsonAssertEquals(String expected, JsonNode actual, JSONComparator comparator) throws Exception {
 		jsonAssertEquals(expected, objectMapper.writeValueAsString(actual), comparator);
@@ -549,6 +560,10 @@ public class BaseTest {
 
 	protected void jsonAssertEquals(String expected, String actual) throws Exception {
 		JSONAssert.assertEquals(expected, actual, true);
+	}
+
+	protected void jsonAssertEquals(String expected, String actual, Boolean strict) throws Exception {
+		JSONAssert.assertEquals(expected, actual, strict);
 	}
 
 	protected ObjectNode readJsonObject(String json) {

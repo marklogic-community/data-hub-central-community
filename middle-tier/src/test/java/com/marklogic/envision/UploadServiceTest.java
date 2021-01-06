@@ -8,8 +8,6 @@ import com.marklogic.hub.deploy.commands.LoadHubArtifactsCommand;
 import com.marklogic.hub.deploy.commands.LoadHubModulesCommand;
 import com.marklogic.hub.impl.HubConfigImpl;
 import org.assertj.core.util.Arrays;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,13 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.xml.sax.SAXException;
+import org.xmlunit.builder.Input;
+import org.xmlunit.input.WhitespaceStrippedSource;
 
 import java.io.IOException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 
 public class UploadServiceTest extends BaseTest {
 
@@ -53,7 +55,6 @@ public class UploadServiceTest extends BaseTest {
 		deployer.getCommands().add(loadHubModulesCommand);
 		deployer.getCommands().add(loadHubArtifactsCommand);
 		deployer.deploy(hubConfig.getAppConfig());
-		XMLUnit.setIgnoreWhitespace(true);
 	}
 
 	@Test
@@ -90,7 +91,7 @@ public class UploadServiceTest extends BaseTest {
 		UploadFile uploadFile = new UploadFile("jsonUpload.json", getResourceStream("data/jsonUpload.json"));
 		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "My JSON Collection");
 		assertEquals(1, getDocCount(getStagingClient(), "My JSON Collection"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/My JSON Collection/jsonUpload.json"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/My_JSON_Collection/jsonUpload.json"));
 	}
 
 	@Test
@@ -99,7 +100,7 @@ public class UploadServiceTest extends BaseTest {
 		UploadFile uploadFile = new UploadFile("xmlUpload.xml", getResourceStream("data/xmlUpload.xml"));
 		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "My Xml Collection");
 		assertEquals(1, getDocCount(getStagingClient(), "My Xml Collection"));
-		XMLAssert.assertXMLEqual(getResource("output/xmlUpload.xml"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/My Xml Collection/xmlUpload.xml"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/My_Xml_Collection/xmlUpload.xml")).build())));
 	}
 
 	@Test
@@ -108,7 +109,7 @@ public class UploadServiceTest extends BaseTest {
 		UploadFile uploadFile = new UploadFile("LoanApplicationFraud.png", getResourceStream("data/LoanApplicationFraud.png"));
 		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "My Binary");
 		assertEquals(1, getDocCount(getStagingClient(), "My Binary"));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/My Binary/LoanApplicationFraud.png"));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/My_Binary/LoanApplicationFraud.png"));
 	}
 
 	@Test
@@ -119,7 +120,7 @@ public class UploadServiceTest extends BaseTest {
 		assertEquals(11, getDocCount(getStagingClient(), "zipUpload.zip"));
 		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
 		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
-		XMLAssert.assertXMLEqual(getResource("output/xmlUpload.xml"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/xmlUpload.xml"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/xmlUpload.xml")).build())));
 	}
 
 	@Test
@@ -135,12 +136,12 @@ public class UploadServiceTest extends BaseTest {
 		);
 		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, "Multiple Upload");
 		assertEquals(22, getDocCount(getStagingClient(), "Multiple Upload"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple Upload/jsonUpload.json"));
-		XMLAssert.assertXMLEqual(getResource("output/xmlUpload.xml"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple Upload/xmlUpload.xml"));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple Upload/LoanApplicationFraud.png"));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple Upload/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple Upload/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
-		XMLAssert.assertXMLEqual(getResource("output/xmlUpload.xml"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple Upload/zipUpload.zip/my-dir-name/xmlUpload.xml"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/jsonUpload.json"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/xmlUpload.xml")).build())));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/LoanApplicationFraud.png"));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/xmlUpload.xml")).build())));
 	}
 
 	@Test

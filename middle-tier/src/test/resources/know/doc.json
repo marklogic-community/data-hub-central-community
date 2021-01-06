@@ -1,0 +1,62 @@
+{
+	"envelope": {
+		"headers": {
+			"sources": [{ "name": "Things" }],
+			"createdOn": "2020-12-17T04:05:22.232976Z",
+			"createdBy": "admin"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Assessment",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.envision.com/"
+			},
+			"Thing": {
+				"name": "ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c"
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [{ "name": "Things" }],
+					"createdOn": "2020-12-17T04:05:22.232976Z",
+					"createdBy": "admin"
+				},
+				"triples": [],
+				"instance": {
+					"envelope": {
+						"headers": {
+							"harmonisedDate": "2020-07-17T12:33:07.906128Z",
+							"editor": "admin"
+						},
+						"triples": [
+							{
+								"triple": {
+									"subject": "/doc.json",
+									"predicate": "http://unittest.com/shouldBeThere",
+									"object": "anywhere"
+								}
+							},
+							{
+								"triple": {
+									"subject": "/doc.json",
+									"predicate": "http://unittest.com/isCool",
+									"object": "ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c"
+								}
+							}
+						],
+						"instance": {
+							"Thing": {
+								"name": "ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c"
+							},
+							"info": { "title": "Thing", "version": "0.0.1" }
+						},
+						"attachments": {}
+					}
+				},
+				"attachments": null
+			}
+		}
+	}
+}

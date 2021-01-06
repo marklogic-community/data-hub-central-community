@@ -14,14 +14,6 @@ function createRedactionRule(entityName, propertyName, isRedacted) {
 		return null;
 	}
 
-	let ruleUri = ''
-	if (config.isMultiTenant) {
-		ruleUri = `/rules/pii/${currentUser}/${entityName}-${propertyName}.json`
-	}
-	else {
-		ruleUri = `/rules/pii/${entityName}-${propertyName}.json`
-	}
-
 	return {
 		rule: {
 			description: "Redact " + entityName ,
@@ -41,10 +33,10 @@ function getRuleUri(rule) {
 	const propertyName = parts[4]
 	let ruleUri = ''
 	if (config.isMultiTenant) {
-		ruleUri = `/rules/pii/${currentUser}/${entityName}-${propertyName}.json`
+		ruleUri = `/rules/redaction/${currentUser}/${entityName}-${propertyName}.json`
 	}
 	else {
-		ruleUri = `/rules/pii/${entityName}-${propertyName}.json`
+		ruleUri = `/rules/redaction/${entityName}-${propertyName}.json`
 	}
 	return ruleUri
 }

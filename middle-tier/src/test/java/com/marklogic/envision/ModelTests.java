@@ -67,7 +67,12 @@ public class ModelTests extends BaseTest {
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModel.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
+		System.out.println(objectMapper.writeValueAsString(result));
 		jsonAssertEquals(getResource("output/esEntities.json"), result);
+
+		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/bob.smith@marklogic.com/employee-relationships-tde.json");
+		System.out.println(actual);
+		jsonAssertEquals(getResource("output/models/employeeRelationships.json"), actual);
 	}
 
 	@Test
@@ -187,7 +192,7 @@ public class ModelTests extends BaseTest {
 		jsonAssertEquals(getResource("output/withRedaction.json"), result);
 
 
-		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/rules/pii/bob.smith@marklogic.com/Employee-redactedProp.json");
+		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/rules/redaction/bob.smith@marklogic.com/Employee-redactedProp.json");
 		jsonAssertEquals(getResource("output/redactedPropSchema.json"), actual);
 
 		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
@@ -218,7 +223,7 @@ public class ModelTests extends BaseTest {
 		jsonAssertEquals(getResource("output/withRedaction.json"), result);
 
 
-		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/rules/pii/Employee-redactedProp.json");
+		String actual = getDocumentString(getNonAdminHubClient().getFinalSchemasClient(), "/rules/redaction/Employee-redactedProp.json");
 		jsonAssertEquals(getResource("output/redactedPropSchema.json"), actual);
 
 		assertEquals(1, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
@@ -321,7 +326,5 @@ public class ModelTests extends BaseTest {
 
 		paths = getProtectedPaths(getAdminHubClient().getFinalClient());
 		jsonAssertEquals("[]", paths);
-
-
 	}
 }

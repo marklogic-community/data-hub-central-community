@@ -479,6 +479,11 @@
           "count": 3,
           "value": "Department"
         },
+				{
+					"name": "http://marklogic.com/envision/user/bob.smith@marklogic.com",
+					"count": 3,
+					"value": "http://marklogic.com/envision/user/bob.smith@marklogic.com"
+				},
         {
           "name": "MasterDepartment",
           "count": 1,

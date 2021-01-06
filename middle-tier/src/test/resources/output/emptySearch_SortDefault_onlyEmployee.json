@@ -818,31 +818,31 @@
     "Collections": {
       "type": "collection",
       "facetValues": [
-        {
-          "name": "Employee",
-          "count": 4,
-          "value": "Employee"
-        },
-        {
-          "name": "MapEmployees",
-          "count": 4,
-          "value": "MapEmployees"
-        },
-        {
-          "name": "MasterEmployees",
-          "count": 4,
-          "value": "MasterEmployees"
-        },
-        {
-          "name": "MapCoastalEmployees",
-          "count": 1,
-          "value": "MapCoastalEmployees"
-        },
-        {
-          "name": "sm-Employee-mastered",
-          "count": 1,
-          "value": "sm-Employee-mastered"
-        }
+				{
+					"name": "Employee",
+					"count": 4,
+					"value": "Employee"
+				},
+				{
+					"name": "MapEmployees",
+					"count": 4,
+					"value": "MapEmployees"
+				},
+				{
+					"name": "MasterEmployees",
+					"count": 4,
+					"value": "MasterEmployees"
+				},
+				{
+					"name": "http://marklogic.com/envision/user/bob.smith@marklogic.com",
+					"count": 4,
+					"value": "http://marklogic.com/envision/user/bob.smith@marklogic.com"
+				},
+				{
+					"name": "MapCoastalEmployees",
+					"count": 1,
+					"value": "MapCoastalEmployees"
+				}
       ]
     }
   }

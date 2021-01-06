@@ -283,6 +283,11 @@
 					"name": "MasterEmployees",
 					"count": 1,
 					"value": "MasterEmployees"
+				},
+				{
+					"name": "http://marklogic.com/envision/user/bob.smith@marklogic.com",
+					"count": 1,
+					"value": "http://marklogic.com/envision/user/bob.smith@marklogic.com"
 				}
 			]
 		}

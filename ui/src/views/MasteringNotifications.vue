@@ -78,6 +78,7 @@
 							v-if="totalPages > 1"
 							v-model="currentPage"
 							:length="totalPages"
+							:total-visible="7"
 							circle
 							/>
 					</v-card-text>

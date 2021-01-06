@@ -118,8 +118,7 @@
 					"_propId": "b904d6b4-5aa4-4498-8952-5a13a26c37d0",
 					"name": "name",
 					"type": "string",
-					"isArray": false,
-					"isRedacted": true
+					"isArray": false
 				},
 				{
 					"_propId": "3da018d0-6466-41af-bd1c-b19c00077044",

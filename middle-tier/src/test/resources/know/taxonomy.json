@@ -1,0 +1,58 @@
+
+{
+	"envelope": {
+		"headers": {
+			"sources": [{ "name": "Stuff" }],
+			"createdOn": "2020-12-17T03:57:40.340937Z",
+			"createdBy": "admin"
+		},
+		"triples": [],
+		"instance": {
+			"info": {
+				"title": "Species",
+				"version": "0.0.1",
+				"baseUri": "http://marklogic.envision.com/"
+			},
+			"Species": {
+				"displayName": "Verticillium dahliae Klebahn, 1982",
+				"name": "Verticillium dahliae",
+				"id": "f27d7d86-1b2f-4352-bd9c-73820ea0755c"
+			}
+		},
+		"attachments": {
+			"envelope": {
+				"headers": {
+					"sources": [{ "name": "Species" }],
+					"createdOn": "2020-12-17T03:57:40.340937Z",
+					"createdBy": "admin"
+				},
+				"triples": [],
+				"instance": {
+					"envelope": {
+						"headers": {
+							"harmonizeDate": "2019-04-11T01:23:15.5361Z",
+							"harmonizeMethod": "Data Hub Framework - TAXAAS Harmonize Flow",
+							"harmonizedBy": "admin"
+						},
+						"triples": [
+							{
+								"triple": {
+									"subject": "/Taxonomy/ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c.json",
+									"predicate": "http://agriculture.gov.au/Taxonomy/hasCommonName",
+									"object": "Wilt"
+								}
+							}
+						],
+						"instance": {
+							"Taxonomy": {
+								"hi": "there"
+							},
+							"info": { "title": "Taxonomy", "version": "0.0.1" }
+						}
+					}
+				},
+				"attachments": null
+			}
+		}
+	}
+}

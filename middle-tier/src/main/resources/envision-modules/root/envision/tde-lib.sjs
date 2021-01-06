@@ -2,6 +2,24 @@ const tde = require('/MarkLogic/tde.xqy');
 const model = require('/envision/model.sjs').model();
 const config = require('/envision/config.sjs');
 
+// creates parent path refs for getting back to the
+// entity's id
+function createDots(path) {
+	if (!path) {
+		return ''
+	}
+	let dotCount = path.split('/').length - 1
+	let dots = []
+	for (let i = 0; i < dotCount; i++) {
+		dots.push('..')
+	}
+	dots = dots.join('/')
+	if (dots.length > 0) {
+		dots += '/'
+	}
+	return dots
+}
+
 function createTdes() {
 	if (!model) {
 		fn.error('MISSING MODEL');
@@ -22,36 +40,43 @@ function createTdes() {
 		let subTempKey = null
 		let concept = null
 		let conceptType = null
+		let keyFrom = edge.keyFrom || fromNode.idField
+		let keyTo = edge.keyTo || toNode.idField
+		console.log('edge', JSON.stringify(edge))
 		if (hasConcept) {
 			if (fromNode.type === 'entity') {
+				let dots = createDots(keyTo)
 				node = fromNode
-				subj = `sem:iri(fn:replace(fn:concat("${from}#", fn:string-join((../../${edge.keyFrom},../${edge.keyFrom})[1], ';;')), " ", ""))`
+				subj = `sem:iri(fn:replace(fn:concat("${from}#", fn:string-join((../../${dots}${keyFrom},../${dots}${keyFrom})[1], ';;')), " ", ""))`
 				obj = `sem:iri(fn:concat("${toNode.baseUri || ''}${to}#", xs:string(.)))` // don't replace spaces here because this is displayed
-				subTempKey = `./${edge.keyTo}`
+				subTempKey = `./${keyTo}`
 				concept = obj
 				conceptType = toNode.entityName
 			}
 			else {
+				let dots = createDots(keyFrom)
 				node = toNode
 				subj = `sem:iri(fn:concat("${fromNode.baseUri || ''}${from}#", xs:string(.)))`// don't replace spaces here because this is displayed
-				obj = `sem:iri(fn:replace(fn:concat("${to}#", fn:string-join((../../${edge.keyTo},../${edge.keyTo})[1], ';;')), " ", ""))`
-				subTempKey = `./${edge.keyFrom}`
+				obj = `sem:iri(fn:replace(fn:concat("${to}#", fn:string-join((../../${dots}${keyTo},../${dots}${keyTo})[1], ';;')), " ", ""))`
+				subTempKey = `./${keyFrom}`
 				concept = subj
 				conceptType = fromNode.entityName
 			}
 		}
 		else {
-			if (fromNode.idField === edge.keyFrom) {
+			if (!edge.keyFrom || fromNode.idField === keyFrom) {
+				let dots = createDots(keyTo)
 				node = toNode
 				subj = `sem:iri(fn:replace(fn:concat("${from}#", xs:string(.)), " ", ""))`
-				obj = `sem:iri(fn:replace(fn:concat("${to}#", fn:string-join((../../${toNode.idField},../${toNode.idField})[1], ';;')), " ", ""))`
-				subTempKey = `./${edge.keyTo}`
+				obj = `sem:iri(fn:replace(fn:concat("${to}#", fn:string-join((../../${dots}${toNode.idField},../${dots}${toNode.idField})[1], ';;')), " ", ""))`
+				subTempKey = `./${keyTo}`
 			}
-			else if (toNode.idField === edge.keyTo) {
+			else if (!edge.keyTo || toNode.idField === keyTo) {
+				let dots = createDots(keyFrom)
 				node = fromNode
-				subj = `sem:iri(fn:replace(fn:concat("${from}#", fn:string-join((../../${fromNode.idField},../${fromNode.idField})[1], ';;')), " ", ""))`
+				subj = `sem:iri(fn:replace(fn:concat("${from}#", fn:string-join((../../${dots}${fromNode.idField},../${dots}${fromNode.idField})[1], ';;')), " ", ""))`
 				obj = `sem:iri(fn:replace(fn:concat("${to}#", xs:string(.)), " ", ""))`
-				subTempKey = `./${edge.keyFrom}`
+				subTempKey = `./${keyFrom}`
 			}
 		}
 
@@ -98,6 +123,8 @@ function createTdes() {
 			const user = xdmp.getCurrentUser()
 			let collections = [entity.entityName]
 
+			// for a multi-tenant environment, limit the rule to only the current
+			// user's collection. This keeps the rule from seeing other users' data
 			if (config.isMultiTenant) {
 				collections.push(`http://marklogic.com/envision/user/${user}`)
 				collections = [{ collectionsAnd: collections}]
