@@ -138,9 +138,6 @@ export default {
 		},
 	},
 	methods: {
-		...mapActions({
-			getFlow: 'flows/getFlow'
-		}),
 		toggleBody() {
 			this.showBody = !this.showBody
 		},

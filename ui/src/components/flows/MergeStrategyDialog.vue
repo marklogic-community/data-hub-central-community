@@ -156,9 +156,6 @@ export default {
 	mounted() {
 	},
 	methods: {
-		...mapActions({
-			getFlow: 'flows/getFlow'
-		}),
 		addSourceWeight() {
 			this.sourceWeights.push({
 				name: null,

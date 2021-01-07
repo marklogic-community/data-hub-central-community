@@ -83,9 +83,6 @@ export default {
 	mounted() {
 	},
 	methods: {
-		...mapActions({
-			getFlow: 'flows/getFlow'
-		}),
 		updateValues() {
 			this.$v.$reset()
 			const option = this.option

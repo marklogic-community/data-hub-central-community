@@ -190,9 +190,6 @@ export default {
 		this.matchType = this.matchTypes[0].value
 	},
 	methods: {
-		...mapActions({
-			getFlow: 'flows/getFlow'
-		}),
 		updateValues() {
 			this.$v.$reset()
 			const option = this.option
