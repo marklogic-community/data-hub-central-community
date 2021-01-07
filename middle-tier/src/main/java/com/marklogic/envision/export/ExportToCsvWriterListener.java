@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.datamovement.*;
 import com.marklogic.client.document.DocumentPage;
 import com.marklogic.client.document.DocumentRecord;
+import com.marklogic.client.document.ServerTransform;
 import com.marklogic.client.io.DOMHandle;
 import com.marklogic.client.io.Format;
 import com.marklogic.client.io.JacksonHandle;
@@ -29,6 +30,7 @@ public class ExportToCsvWriterListener extends ExportListener {
 
 	public ExportToCsvWriterListener(Writer writer) {
 		this.writer = writer;
+		this.withTransform(new ServerTransform("redactDoc"));
 		logger.debug("new ExportToWriterListener - this should print once/job; " +
 			"if you see this once/batch, fix your job configuration");
 	}

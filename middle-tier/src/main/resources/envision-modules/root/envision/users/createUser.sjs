@@ -13,7 +13,7 @@ xdmp.invokeFunction(function() {
 		const roleId = sec.createRole(
 			roleName,
 			'a role for ' + user.email,
-			['envision'],
+			['envision'].concat(user.roles || []),
 			xdmp.defaultPermissions(),
 			xdmp.defaultCollections()
 		);

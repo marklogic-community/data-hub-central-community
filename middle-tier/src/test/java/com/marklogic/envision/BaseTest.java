@@ -151,8 +151,8 @@ public class BaseTest {
 
 	protected void registerAccount(String email, String password) throws IOException {
 		UserPojo user = new UserPojo();
-		user.email = ACCOUNT_NAME;
-		user.password = ACCOUNT_PASSWORD;
+		user.email = email;
+		user.password = password;
 		user.name = "Bob Smith";
 		user = userService.createUser(user);
 		userService.validateToken(user.token);

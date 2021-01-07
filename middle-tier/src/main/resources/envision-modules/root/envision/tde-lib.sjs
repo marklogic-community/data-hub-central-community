@@ -42,7 +42,6 @@ function createTdes() {
 		let conceptType = null
 		let keyFrom = edge.keyFrom || fromNode.idField
 		let keyTo = edge.keyTo || toNode.idField
-		console.log('edge', JSON.stringify(edge))
 		if (hasConcept) {
 			if (fromNode.type === 'entity') {
 				let dots = createDots(keyTo)

@@ -6,6 +6,7 @@ import com.marklogic.envision.dataServices.Triples;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.hub.HubConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,12 @@ public class TestBrowseTriples extends BaseTest {
 		DatabaseClient finalClient = hubClient.getFinalClient();
 		installDoc(finalClient, "know/taxonomy.json", "/taxonomy.json", "taxonomy", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
 		installDoc(finalClient, "know/doc.json", "/doc.json", "doc", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+	}
+
+	@AfterEach
+	void teardown() {
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 	}
 
 	@Test

@@ -24,18 +24,23 @@ declare function transform(
   ) as document-node()
 {
 	map:put($context, "output-types", "text/plain"),
-	if (fn:exists($content/element())) then
-		document {
-			xdmp:quote(
-				$content,
-				<options xmlns="xdmp:quote">
-					<indent>yes</indent>
-					<indent-untyped>yes</indent-untyped>
-					<omit-xml-declaration>yes</omit-xml-declaration>
-				</options>
-			)
-		}
-	else
-		$content
+	let $redacted := xdmp:javascript-eval("
+		const rdt = require('/envision/redaction-lib.sjs');
+		rdt.redact(content);
+	", ("content", $content))
+	return
+		if (fn:exists($redacted/element())) then
+			document {
+				xdmp:quote(
+					$redacted,
+					<options xmlns="xdmp:quote">
+						<indent>yes</indent>
+						<indent-untyped>yes</indent-untyped>
+						<omit-xml-declaration>yes</omit-xml-declaration>
+					</options>
+				)
+			}
+		else
+			$redacted
 };
 

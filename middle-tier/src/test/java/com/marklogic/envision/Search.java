@@ -12,6 +12,7 @@ import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.grove.boot.search.SearchService;
 import com.marklogic.hub.HubConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -76,6 +77,12 @@ public class Search extends BaseTest {
 		installDoc(finalClient, "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
 		installDoc(finalClient, "entities/department3.json", "/departments/department3.json", "Department", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
 		installDoc(finalClient, "entities/department4.json", "/departments/department4.json", "Department", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+	}
+
+	@AfterEach
+	void teardown() {
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 	}
 
 	private String getFilterString(String filterString, int pageLength, DatabaseClient client) throws IOException {

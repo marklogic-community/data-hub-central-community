@@ -1,18 +1,24 @@
 package com.marklogic.envision.controllers;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.marklogic.client.datamovement.JacksonCSVSplitter;
+import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.envision.export.ExportService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
+import com.marklogic.hub.HubConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -40,24 +46,29 @@ public class ExportControllerTests extends AbstractMvcTest {
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
+
+		envisionConfig.setMultiTenant(true);
 		installEnvisionModules();
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
 
 		HubClient hc = getNonAdminHubClient();
+
+		modelService.saveModel(hc, getResourceStream("entities/redactedName.json"));
 		for (int i = 0; i < 100; i++) {
-			installDoc(hc.getFinalClient(), "entities/employee1.json", "/col1/doc-" + i + ".json", "col1");
+			installDoc(hc.getFinalClient(), "entities/exportMe.json", "/col1/doc-" + i + ".json", "col1", "Employee");
 		}
 
 		for (int i = 100; i < 300; i++) {
-			installDoc(hc.getFinalClient(), "entities/employee1.json", "/col2/doc-" + i + ".json", "col2");
+			installDoc(hc.getFinalClient(), "entities/exportMe.json", "/col2/doc-" + i + ".json", "col2", "Employee");
 		}
 	}
 
 	@AfterEach
 	void teardown() {
-//		clearStagingFinalAndJobDatabases();
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 	}
 
 	@Test
@@ -149,12 +160,28 @@ public class ExportControllerTests extends AbstractMvcTest {
 					ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(result.getResponse().getContentAsByteArray()));
 					ZipEntry zipEntry = zipInputStream.getNextEntry();
 					assertEquals("col1.csv", zipEntry.getName());
+					InputStream fileInputStream = readZipFileContents(zipInputStream);
+					JacksonCSVSplitter splitter = new JacksonCSVSplitter();
+					Stream<JacksonHandle> contentStream = splitter.split(fileInputStream);
+					JacksonHandle handle = (JacksonHandle) contentStream.toArray()[0];
+					jsonAssertEquals("{\"name\":\"### Redacted ###\",\"departmentId\":\"2\",\"employeeId\":\"55002\",\"skills\":\"\"}", handle.get());
+
 					zipEntry = zipInputStream.getNextEntry();
 					assertEquals("col2.csv", zipEntry.getName());
 					zipEntry = zipInputStream.getNextEntry();
 					assertNull(zipEntry);
 				})
 			.andExpect(status().isOk());
+	}
+
+	private InputStream readZipFileContents(InputStream is) throws IOException {
+		final byte[] contents = new byte[1024];
+		int bytesRead;
+		ByteArrayOutputStream streamBuilder = new ByteArrayOutputStream();
+		while ((bytesRead = is.read(contents)) >= 0) {
+			streamBuilder.write(contents, 0, bytesRead);
+		}
+		return new ByteArrayInputStream(streamBuilder.toByteArray());
 	}
 
 	@Test

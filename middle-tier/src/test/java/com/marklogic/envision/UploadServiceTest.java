@@ -4,10 +4,12 @@ import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.envision.upload.UploadFile;
 import com.marklogic.envision.upload.UploadService;
+import com.marklogic.hub.HubConfig;
 import com.marklogic.hub.deploy.commands.LoadHubArtifactsCommand;
 import com.marklogic.hub.deploy.commands.LoadHubModulesCommand;
 import com.marklogic.hub.impl.HubConfigImpl;
 import org.assertj.core.util.Arrays;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -55,6 +57,12 @@ public class UploadServiceTest extends BaseTest {
 		deployer.getCommands().add(loadHubModulesCommand);
 		deployer.getCommands().add(loadHubArtifactsCommand);
 		deployer.deploy(hubConfig.getAppConfig());
+	}
+
+	@AfterEach
+	void teardown() {
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 	}
 
 	@Test
