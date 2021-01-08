@@ -33,9 +33,6 @@ echo "{
 }
 "  > src/main/entity-config/databases/final-database.json
 
-echo "Install gradle wrapper"
-gradle wrapper --gradle-version 6.5.1
-
 echo "gradle mlDeploy -i"
 gradle mlDeploy -i
 

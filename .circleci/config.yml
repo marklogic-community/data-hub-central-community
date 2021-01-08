@@ -50,6 +50,15 @@ jobs:
             sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
             java -version
       - run:
+          name: Install gradle 6.5.1
+          command: |
+            wget https://services.gradle.org/distributions/gradle-6.5.1-bin.zip -O /tmp/gradle-bin.zip
+            sudo mkdir /opt/gradle
+            sudo unzip -d /opt/gradle /tmp/gradle-bin.zip
+            rm -f /tmp/gradle-bin.zip
+            sudo sh -c 'for bin in /opt/gradle/gradle-6.5.1/bin/*; do update-alternatives --install /usr/bin/$(basename $bin) $(basename $bin) $bin 100; done'
+            sudo sh -c 'for bin in /opt/gradle/gradle-6.5.1/bin/*; do update-alternatives --set $(basename $bin) $bin; done'
+      - run:
           name: Install MarkLogic Docker
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
