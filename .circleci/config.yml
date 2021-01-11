@@ -69,8 +69,6 @@ workflows:
               ignore:
                 - gh-pages
       - deploy:
-          requires:
-            - run_tests
           filters:
               branches:
                 only:
