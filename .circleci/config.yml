@@ -71,5 +71,12 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      - middleTier
-      - ui
+      - middleTier:
+          filters:
+            branches:
+              ignore: docs
+      - ui:
+          filters:
+            branches:
+              ignore: docs
+
