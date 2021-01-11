@@ -26,6 +26,18 @@ The jar is configured so that you can drop it into a DHF project directory and r
 
 `java -jar envision.jar`
 
+#### Non-standard ports or different User
+On first run Envision will install its modules into your DHF modules database. This happens before Envision tries to read your hub configuration. If you are using non-standard ports you'll need to make a few changes to an application.properties file. Simply create application.properties next to envision.jar.
+
+```properties
+# Change these as needed
+marklogic.username=admin
+marklogic.password=admin
+marklogic.port=8011
+marklogic.managePort=8002
+marklogic.adminPort=8001
+```
+
 _Note: Models will be saved in a directory called ./conceptConnectorModels, which can be found sibling to the envision.jar file by default. You can move your existing models here or see below for how to specify a different models directory._
 
 If you need to point it at another folder where the DHF is installed, run like so:
