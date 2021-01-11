@@ -14,4 +14,4 @@ Please go read the [Contributing doc](./CONTRIBUTING.md).
 Then go read the [Developing doc](./DEVELOPING.md) for info on building and running the project.
 
 
-[jar]:https://github.com/marklogic-community/envision/releases/download/v2.0.2/envision-2.0.2.jar 
+[jar]:https://github.com/marklogic-community/envision/releases/download/v2.0.3/envision-2.0.3.jar 
