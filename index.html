@@ -200,6 +200,17 @@
 
 <p><code class="highlighter-rouge">java -jar envision.jar</code></p>
 
+<h4 id="non-standard-ports-or-different-user">Non-standard ports or different User</h4>
+<p>On first run Envision will install its modules into your DHF modules database. This happens before Envision tries to read your hub configuration. If you are using non-standard ports you’ll need to make a few changes to an application.properties file. Simply create application.properties next to envision.jar.</p>
+
+<div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Change these as needed
+</span><span class="py">marklogic.username</span><span class="p">=</span><span class="s">admin</span>
+<span class="py">marklogic.password</span><span class="p">=</span><span class="s">admin</span>
+<span class="py">marklogic.port</span><span class="p">=</span><span class="s">8011</span>
+<span class="py">marklogic.managePort</span><span class="p">=</span><span class="s">8002</span>
+<span class="py">marklogic.adminPort</span><span class="p">=</span><span class="s">8001</span>
+</code></pre></div></div>
+
 <p><em>Note: Models will be saved in a directory called ./conceptConnectorModels, which can be found sibling to the envision.jar file by default. You can move your existing models here or see below for how to specify a different models directory.</em></p>
 
 <p>If you need to point it at another folder where the DHF is installed, run like so:</p>
@@ -225,7 +236,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <p>
-                    Copyright © 2020 MarkLogic Corporation. All Rights Reserved. MARKLOGIC® is a registered trademark of MarkLogic Corporation.
+                    Copyright © 2021 MarkLogic Corporation. All Rights Reserved. MARKLOGIC® is a registered trademark of MarkLogic Corporation.
                     </p>
                 </div>
             </div>
