@@ -4,9 +4,7 @@ const search = require('/MarkLogic/appservices/search/search');
 const sut = require('/MarkLogic/rest-api/lib/search-util.xqy');
 const json = require('/MarkLogic/json/json.xqy');
 const model = require('/envision/model.sjs').enhancedModel();
-const rdt = require('/MarkLogic/redaction');
-const finalDB = require('/com.marklogic.hub/config.sjs').FINALDATABASE
-const config = require('/envision/config.sjs');
+const rdt = require('/envision/redaction-lib.sjs');
 
 const extensions = xdmp.mimetypes()
 	.filter(m => m.format === 'binary' && !!m.extensions)
@@ -151,91 +149,8 @@ function getEntities(uris, opts) {
 	uris = Object.keys(uriMap)
 	const edgeCounts = getEdgeCounts(uris)
 
-	// see if we have any redaction rules to apply
-	let thisUserId = xdmp.getCurrentUserid()
-	let seqUserRoles = xdmp.useridRoles(thisUserId)
-	let arrUserRoleNames = seqUserRoles.toArray().map(roleId => {
-		return xdmp.roleName(roleId)
-	})
-
-	let redactionRolesDocUri = config.isMultiTenant ? "/redactionRules2Roles4" + xdmp.getCurrentUser() + ".json" : "/redactionRules2Roles.json"
-	let redactionRuleCollectionName = config.isMultiTenant ? "redactionRule4" + xdmp.getCurrentUser() : "redactionRule"
-	let redactionRuleCollectionPrefix = config.isMultiTenant ? "redactionRule4" + xdmp.getCurrentUser() : "redactionRule"
-
-	let arrRulesToApply = [ redactionRuleCollectionName ]
-	let arrRulesNotToApply = []
-	// get all rules that could apply
-	var ext = {colls: redactionRuleCollectionPrefix + "*"};
-	let seqRuleCollections = xdmp.eval("cts.collectionMatch(colls)",  ext,
-			{
-			"database" : xdmp.schemaDatabase(xdmp.database(finalDB))
-			})
-
-	for (var coll of seqRuleCollections ){
-		arrRulesToApply.push(coll)
-	}
-
-	//redactionRolesDocUri maps from rules to roles the rules should not apply to.
-	ext = {rulesDoc: redactionRolesDocUri };
-	let seqRedactionRules2Roles = xdmp.eval("cts.doc( rulesDoc )", ext,
-		{
-		"database" : xdmp.database(finalDB)
-		})
-
-	if (fn.count(seqRedactionRules2Roles) > 0 ){
-		let redactionRules = fn.head(seqRedactionRules2Roles).toObject().rules
-		redactionRules.forEach((rule) => {
-			// each rule is like "redactionRuleCollection": "redactionRules", "rolesThatDoNotUseRedaction": [ "pii-reader"]
-
-			if( rule.rolesThatDoNotUseRedaction.some(r=> arrUserRoleNames.includes(r)) ) {
-				arrRulesNotToApply.push(rule.redactionRuleCollection)
-			}
-		});
-
-		arrRulesToApply = arrRulesToApply.filter( function( el ) {
-			return ! arrRulesNotToApply.includes( el.toString() );
-		} );
-	}
-	// rdt functions don't like if if there are no rules in a collection, which could be an edge case
-	let arrCollectionWithNoDocuments = []
-	for (var i=0; i< arrRulesToApply.length; i++) {
-		var ext = {coll: arrRulesToApply[i]};
-			let collectionCount = xdmp.eval("fn.count(cts.search(cts.collectionQuery(coll)))",  ext,
-				{
-					"database" : xdmp.schemaDatabase(xdmp.database(finalDB))
-				})
-			if ( collectionCount == 0) {
-				arrCollectionWithNoDocuments.push(arrRulesToApply[i] )
-			}
-	}
-	arrRulesToApply = arrRulesToApply.filter( function( el ) {
-		return ! arrCollectionWithNoDocuments.includes( el.toString() );
-	} );
-
-
-	// iterate over the uris and create "nodes" for the graph ui
-	// do this by opening the docs at each uri
-	// then insert some additional metadata about each "node"
-
-	if (arrRulesToApply.length == 0) {
-		xdmp.log("No redaction rules to apply")
-	} else {
-		xdmp.log("Applying redaction rules " + arrRulesToApply.toString() )
-	}
-
 	uris.forEach(uri => {
-		let doc
-
-		if (arrRulesToApply.length == 0) {
-			doc = cts.doc(uri)
-		} else {
-			try {
-				doc = fn.head( rdt.redact(cts.doc(uri), arrRulesToApply ) ).root
-			} catch (e) {
-				xdmp.log("Problem applying redaction rules: " + e.toString() )
-				doc = cts.doc(uri)
-			}
-		}
+		const doc = rdt.redact(cts.doc(uri))
 
 		// the actual entity
 		let entity = fn.head(doc.xpath('*:envelope/*:instance/node()[local-name-from-QName(node-name(.)) = ../*:info/*:title]'))
@@ -295,21 +210,23 @@ function getEntities(uris, opts) {
 			// determine which "side" (from or to) has the concept
 			if (fn.head(t.fromUri)) {
 				// to side has concept
+				const existingEdgeCounts = (resp.nodes[t.to] || {}).edgeCounts || {}
 				resp.nodes[t.to] = {
 					id: t.to,
 					label: t.to.toString().replace(/(.+)#(.+)/, '$2'),
 					entityName: model.getName(t.toType) || t.toType, // if the type doesn't exist, use the raw value
 					isConcept: true,
-					edgeCounts: edgeCounts[t.to] || {}
+					edgeCounts: Object.assign(existingEdgeCounts, edgeCounts[t.to] || {})
 				}
 			}	else {
+				const existingEdgeCounts = (resp.nodes[t.from] || {}).edgeCounts || {}
 				// from side has concept
 				resp.nodes[t.from] = {
 					id: t.from,
 					label: t.from.toString().replace(/(.+)#(.+)/, '$2'),
 					entityName: model.getName(t.fromType),
 					isConcept: true,
-					edgeCounts: edgeCounts[t.from] || {}
+					edgeCounts: Object.assign(existingEdgeCounts, edgeCounts[t.from] || {})
 				}
 			}
 		}
@@ -520,10 +437,10 @@ function getEntitiesRelatedToConcept(concepts, opts) {
 		uris.push(t.to)
 	}
 
- const edgeCounts = getEdgeCounts(uris)
+	const edgeCounts = getEdgeCounts(uris)
 
- // now add the edges from the concept
- for (let t of triples) {
+	// now add the edges from the concept
+	for (let t of triples) {
 		let uri = t.from
 		const cols = xdmp.documentGetCollections(uri)
 		const collections = fn.head(cols)

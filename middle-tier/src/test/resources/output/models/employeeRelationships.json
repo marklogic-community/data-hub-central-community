@@ -1,0 +1,75 @@
+{
+	"template": {
+		"context": "//*:instance/*:Employee",
+		"collections": [
+			"Employee"
+		],
+		"templates": [
+			{
+				"context": "./employeeId",
+				"triples": [
+					{
+						"subject": {
+							"val": "xdmp:node-uri(.)"
+						},
+						"predicate": {
+							"val": "sem:iri(\"http://www.w3.org/2000/01/rdf-schema#hasLabel\")"
+						},
+						"object": {
+							"val": "sem:iri(fn:concat(\"Employee#\", xs:string(.)))"
+						}
+					},
+					{
+						"subject": {
+							"val": "xdmp:node-uri(.)"
+						},
+						"predicate": {
+							"val": "sem:iri(\"http://www.w3.org/2000/01/rdf-schema#hasId\")"
+						},
+						"object": {
+							"val": "sem:iri(fn:replace(fn:concat(\"employee#\", xs:string(.)), \" \", \"\"))"
+						}
+					},
+					{
+						"subject": {
+							"val": "sem:iri(fn:replace(fn:concat(\"employee#\", xs:string(.)), \" \", \"\"))"
+						},
+						"predicate": {
+							"val": "sem:iri(\"http://www.w3.org/2000/01/rdf-schema#hasEntityType\")"
+						},
+						"object": {
+							"val": "\"Employee\""
+						}
+					}
+				]
+			},
+			{
+        "context": "./address/Address/city",
+        "triples": [
+          {
+            "subject": {
+              "val": "sem:iri(fn:replace(fn:concat(\"employee#\", fn:string-join((../../../../employeeId,../../../employeeId)[1], ';;')), \" \", \"\"))"
+            },
+            "predicate": {
+              "val": "sem:iri(\"http://www.w3.org/2000/01/rdf-schema#livesIn\")"
+            },
+            "object": {
+              "val": "sem:iri(fn:replace(fn:concat(\"department#\", xs:string(.)), \" \", \"\"))"
+            }
+          },
+          {
+            "subject": {
+              "val": "sem:iri(fn:replace(fn:concat(\"department#\", xs:string(.)), \" \", \"\"))"
+            },
+            "predicate": {
+              "val": "sem:iri(\"http://www.w3.org/2000/01/rdf-schema#houses\")"
+            },
+            "object": {
+              "val": "sem:iri(fn:replace(fn:concat(\"employee#\", fn:string-join((../../../../employeeId,../../../employeeId)[1], ';;')), \" \", \"\"))"
+            }
+          }
+        ]
+      }
+		]
+	}
+}

@@ -1,0 +1,272 @@
+{
+	"page": 1,
+	"total": 2,
+	"pageLength": 10,
+	"nodes": {
+		"/departments/department3.json": {
+			"id": "/departments/department3.json",
+			"uri": "/departments/department3.json",
+			"entityName": "Department",
+			"label": "Engineering",
+			"entity": {
+				"name": "Engineering",
+				"departmentId": "3",
+				"employeeIds": [
+					"55003"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"/CoastalEmployees/55002.json": {
+			"id": "/CoastalEmployees/55002.json",
+			"uri": "/CoastalEmployees/55002.json",
+			"entityName": "Employee",
+			"label": "Zola Manchett",
+			"entity": {
+				"name": "Zola Manchett",
+				"departmentId": "3",
+				"employeeId": "55002",
+				"skills": [
+          "general ledger",
+          "not visible in search"
+        ],
+        "address": {
+          "Address": {
+            "city": "St. Louis",
+						"departmentId": "3"
+          }
+        }
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"city-iscityfor-employee": {
+					"from": "city",
+					"to": "employee",
+					"label": "isCityFor",
+					"count": 1
+				},
+				"employee-livesin-city": {
+					"from": "employee",
+					"to": "city",
+					"label": "livesIn",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		"city#St. Louis": {
+			"id": "city#St. Louis",
+			"label": "St. Louis",
+			"entityName": "City",
+			"isConcept": true,
+			"edgeCounts": {
+				"city-iscityfor-employee": {
+					"from": "city",
+					"to": "employee",
+					"label": "isCityFor",
+					"count": 1
+				},
+				"employee-livesin-city": {
+					"from": "employee",
+					"to": "city",
+					"label": "livesIn",
+					"count": 1
+				}
+			}
+		}
+	},
+	"edges": {
+		"/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json": {
+			"from": "/CoastalEmployees/55002.json",
+			"to": "/departments/department3.json",
+			"id": "/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#belongsTo-/departments/department3.json",
+			"label": "belongsTo",
+			"fromType": "employee",
+			"toType": "department"
+		},
+		"/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55002.json": {
+			"from": "/departments/department3.json",
+			"to": "/CoastalEmployees/55002.json",
+			"id": "/departments/department3.json-http://www.w3.org/2000/01/rdf-schema#hasEmployee-/CoastalEmployees/55002.json",
+			"label": "hasEmployee",
+			"fromType": "department",
+			"toType": "employee"
+		},
+		"city#St. Louis-http://www.w3.org/2000/01/rdf-schema#isCityFor-/CoastalEmployees/55002.json": {
+			"from": "city#St. Louis",
+			"to": "/CoastalEmployees/55002.json",
+			"id": "city#St. Louis-http://www.w3.org/2000/01/rdf-schema#isCityFor-/CoastalEmployees/55002.json",
+			"label": "isCityFor",
+			"fromType": "city",
+			"toType": "employee"
+		},
+		"/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#livesIn-city#St. Louis": {
+			"from": "/CoastalEmployees/55002.json",
+			"to": "city#St. Louis",
+			"id": "/CoastalEmployees/55002.json-http://www.w3.org/2000/01/rdf-schema#livesIn-city#St. Louis",
+			"label": "livesIn",
+			"fromType": "employee",
+			"toType": "city"
+		}
+	},
+	"results": [
+		{
+			"index": 1,
+			"uri": "/departments/department3.json",
+			"path": "fn:doc(\"/departments/department3.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/departments/department3.json\")/object-node()",
+					"match-text": [
+						"Departments 2020-03-11T15:13:51.895486Z maverick Department 0.0.1 http://marklogic.com/envision/ Engineering 3 55003 Departments 2020-03-11T15:13:51.895486Z maverick Engineering 55003"
+					]
+				}
+			],
+			"id": "/departments/department3.json",
+			"entityName": "Department",
+			"label": "Engineering",
+			"entity": {
+				"name": "Engineering",
+				"departmentId": "3",
+				"employeeIds": [
+					"55003"
+				]
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		},
+		{
+			"index": 2,
+			"uri": "/CoastalEmployees/55002.json",
+			"path": "fn:doc(\"/CoastalEmployees/55002.json\")",
+			"score": 0,
+			"confidence": 0,
+			"fitness": 0,
+			"matches": [
+				{
+					"path": "fn:doc(\"/CoastalEmployees/55002.json\")/object-node()",
+					"match-text": [
+						"EmployeesMastering 2020-03-11T15:13:51.895486Z maverick Employee 0.0.1 http://marklogic.com/envision/ Zola Manchett 3 55002 general ledger not visible in search St. Louis 3 EmployeesMastering..."
+					]
+				}
+			],
+			"id": "/CoastalEmployees/55002.json",
+			"entityName": "Employee",
+			"label": "Zola Manchett",
+			"entity": {
+				"name": "Zola Manchett",
+				"departmentId": "3",
+				"employeeId": "55002",
+				"skills": [
+          "general ledger",
+          "not visible in search"
+        ],
+        "address": {
+          "Address": {
+            "city": "St. Louis",
+						"departmentId": "3"
+          }
+        }
+			},
+			"edgeCounts": {
+				"employee-belongsto-department": {
+					"from": "employee",
+					"to": "department",
+					"label": "belongsTo",
+					"count": 1
+				},
+				"department-hasemployee-employee": {
+					"from": "department",
+					"to": "employee",
+					"label": "hasEmployee",
+					"count": 1
+				},
+				"city-iscityfor-employee": {
+					"from": "city",
+					"to": "employee",
+					"label": "isCityFor",
+					"count": 1
+				},
+				"employee-livesin-city": {
+					"from": "employee",
+					"to": "city",
+					"label": "livesIn",
+					"count": 1
+				}
+			},
+			"prov": [],
+			"isConcept": false
+		}
+	],
+	"facets": {
+		"Collections": {
+			"type": "collection",
+			"facetValues": [
+				{
+					"name": "Department",
+					"count": 1,
+					"value": "Department"
+				},
+				{
+					"name": "Employee",
+					"count": 1,
+					"value": "Employee"
+				},
+				{
+					"name": "MapCoastalEmployees",
+					"count": 1,
+					"value": "MapCoastalEmployees"
+				},
+				{
+					"name": "MasterEmployees",
+					"count": 1,
+					"value": "MasterEmployees"
+				}
+			]
+		}
+	}
+}

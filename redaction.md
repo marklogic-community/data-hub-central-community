@@ -27,7 +27,7 @@ For redaction to work the "envision" role must also have the "redaction-user" ro
 
 When you define a model, using the Connect tab, the user can select the 'Advanced' property options and mark a property as containing Redacted. In Envision this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'redactionRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called redactionRule4<currentUserName>. 
 
-After doing this, all users will see the message "### PII Redacted ###" when they view a document that uses the property.
+After doing this, all users will see the message "### Redacted ###" when they view a document that uses the property.
 
 Note that redaction applies to the final database only, data in the staging database is not currently shown in redacted form. 
 

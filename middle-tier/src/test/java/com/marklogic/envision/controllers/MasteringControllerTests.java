@@ -3,15 +3,18 @@ package com.marklogic.envision.controllers;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.xmlunit.builder.Input;
+import org.xmlunit.input.WhitespaceStrippedSource;
 
 import java.io.IOException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 
 public class MasteringControllerTests extends AbstractMvcTest {
 	private static final String GET_DOC_URL = "/api/mastering/doc";
@@ -86,7 +89,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 			.andDo(
 				result -> {
 					assertEquals("application/xml", result.getResponse().getHeader("Content-Type"));
-					XMLAssert.assertXMLEqual(getResource("data/testFile.xml"), result.getResponse().getContentAsString());
+					assertThat(new WhitespaceStrippedSource(Input.from(getResource("data/testFile.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(result.getResponse().getContentAsString()).build())));
 				})
 			.andExpect(status().isOk());
 

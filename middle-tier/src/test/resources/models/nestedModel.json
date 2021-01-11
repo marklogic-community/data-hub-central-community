@@ -8,6 +8,7 @@
 			"id": "employee",
 			"version": "0.0.1",
 			"baseUri": "http://marklogic.com/envision/",
+			"idField": "employeeId",
 			"properties": [
 				{
 					"name": "departmentId",
@@ -86,6 +87,7 @@
 			"id": "organization",
 			"version": "0.0.1",
 			"baseUri": "http://marklogic.com/envision/",
+			"idField": "organizationId",
 			"properties": [
 				{
 					"name": "organizationId",
@@ -110,6 +112,7 @@
 			"id": "department",
 			"version": "0.0.1",
 			"baseUri": "http://marklogic.com/envision/",
+			"idField": "departmentId",
 			"properties": [
 				{
 					"name": "departmentId",
@@ -244,11 +247,29 @@
 			"to": "department",
 			"cardinality": "1:1"
 		},
+		"employee-livesIn-department": {
+			"id": "employee-livesIn-department",
+			"label": "livesIn",
+			"from": "employee",
+			"to": "department",
+			"cardinality": "1:1",
+			"keyFrom": "address/Address/city",
+			"keyTo": "departmentId"
+		},
 		"department-belongsTo-organization": {
 			"id": "department-belongsTo-organization",
 			"label": "belongsTo",
 			"from": "department",
 			"to": "organization",
+			"cardinality": "1:1"
+		},
+		"department-houses-employee": {
+			"id": "department-houses-employee",
+			"label": "houses",
+			"from": "department",
+			"to": "employee",
+			"keyFrom": "departmentId",
+			"keyTo": "address/Address/city",
 			"cardinality": "1:1"
 		}
 	}

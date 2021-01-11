@@ -44,6 +44,7 @@ if (qtext && qtext !== '') {
 	  )
 	`
 }
+
 let count = sem.sparql(`
 PREFIX cts: <http://marklogic.com/cts#>
 SELECT distinct (COUNT(?s) AS ?count) where {
@@ -71,10 +72,6 @@ let iris = sem.sparql(subjectQuery)
   .toArray()
   .map(t => t.s)
 
-let bindings = {
-	x: iris
-}
-
 let limit = ''
 if (linksPerSubject > 0) {
 	limit = `LIMIT ${linksPerSubject}`
@@ -85,59 +82,56 @@ sem.sparql(`
 	SELECT distinct ?s ?o ?p
 		where {
 		?s ?p ?o .
-		?x ?p ?o .
 		filter(?s = ?x)
 		${textFilter}
 	}
 	${limit}
-`, bindings)
+`, { x: iris })
   .toArray()
   .forEach(t => {
-	const fromId = xdmp.md5(t.s)
+		const fromId = xdmp.md5(t.s)
 
-	if (!nodes[fromId]) {
-		nodes[fromId] = {
-			id: fromId,
-			label: createLabel(t.s),
-			title: createTitle(t.s),
-			orig: t.s,
-			isIRI: sem.isIRI(t.s)
+		if (!nodes[fromId]) {
+			nodes[fromId] = {
+				id: fromId,
+				label: createLabel(t.s),
+				title: createTitle(t.s),
+				orig: t.s,
+				isIRI: sem.isIRI(t.s)
+			}
+
+			const allPredicatesQuery = `
+			PREFIX cts: <http://marklogic.com/cts#>
+			SELECT distinct ?p
+			where {
+				?s ?p ?o
+			}
+			`
+			nodes[fromId].predicates = sem.sparql(allPredicatesQuery, { s: t.s })
+				.toArray()
+				.map(t => t.p)
 		}
 
-		const allPredicatesQuery = `
-		PREFIX cts: <http://marklogic.com/cts#>
-		SELECT distinct ?p
-		where {
-			?s ?p ?o .
-			?x ?p ?o .
-			filter(?s = ?x)
+		const toId = sem.isIRI(t.o) ? xdmp.md5(t.o) : xdmp.md5(`${t.s}-${t.p}-${t.o}`)
+		nodes[toId] = {
+			id: toId,
+			label: createLabel(t.o),
+			title: createTitle(t.o),
+			orig: t.o,
+			isIRI: sem.isIRI(t.o)
 		}
-		`
-		nodes[fromId].predicates = sem.sparql(allPredicatesQuery, bindings)
-			.toArray().map(t => t.p)
-	}
 
-	const toId = sem.isIRI(t.o) ? xdmp.md5(t.o) : xdmp.md5(`${t.s}-${t.p}-${t.o}`)
-    nodes[toId] = {
-		id: toId,
-		label: createLabel(t.o),
-		title: createTitle(t.o),
-		orig: t.o,
-		isIRI: sem.isIRI(t.o)
-	}
-
-	const edgeId = xdmp.md5(`${t.s}-${t.p}-${t.o}`)
-    edges[edgeId] ={
-		id: edgeId,
-		label: createLabel(t.p),
-		title: createTitle(t.p),
-		from: fromId,
-		to: toId,
-		orig: t.p,
-		isIRI: sem.isIRI(t.p)
-	}
+		const edgeId = xdmp.md5(`${t.s}-${t.p}-${t.o}`)
+		edges[edgeId] = {
+			id: edgeId,
+			label: createLabel(t.p),
+			title: createTitle(t.p),
+			from: fromId,
+			to: toId,
+			orig: t.p,
+			isIRI: sem.isIRI(t.p)
+		}
   })
-
 
 let resp = {
 	page: page,

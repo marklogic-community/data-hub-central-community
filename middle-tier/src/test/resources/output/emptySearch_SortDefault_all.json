@@ -949,6 +949,11 @@
     "Collections": {
       "type": "collection",
       "facetValues": [
+				{
+					"name": "http://marklogic.com/envision/user/bob.smith@marklogic.com",
+					"count": 7,
+					"value": "http://marklogic.com/envision/user/bob.smith@marklogic.com"
+				},
         {
           "name": "Employee",
           "count": 4,
@@ -968,11 +973,6 @@
           "name": "Department",
           "count": 3,
           "value": "Department"
-        },
-        {
-          "name": "MapCoastalEmployees",
-          "count": 1,
-          "value": "MapCoastalEmployees"
         }
       ]
     }

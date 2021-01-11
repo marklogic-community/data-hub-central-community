@@ -1,0 +1,8 @@
+{
+	"rules": [
+		{
+			"redactionRuleCollection": "redactionRule",
+			"rolesThatDoNotUseRedaction": ["pii-reader"]
+		}
+	]
+}

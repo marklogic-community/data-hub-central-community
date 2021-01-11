@@ -48,6 +48,9 @@
 					},
 					"belongsTo": {
 						"$ref": "http://marklogic.com/envision/Department-0.0.1/Department"
+					},
+					"livesIn": {
+						"$ref": "http://marklogic.com/envision/Department-0.0.1/Department"
 					}
 				}
 			},
@@ -123,6 +126,9 @@
 					},
 					"belongsTo": {
 						"$ref": "http://marklogic.com/envision/Organization-0.0.1/Organization"
+					},
+					"houses": {
+						"$ref": "http://marklogic.com/envision/Employee-0.0.1/Employee"
 					}
 				}
 			}

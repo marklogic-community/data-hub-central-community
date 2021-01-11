@@ -31,7 +31,7 @@
 				<v-card-text v-if="hasConcept">
 					<v-select
 						v-if="fromEntity && fromEntity.type === 'entity'"
-						:items="fromEntity.properties"
+						:items="getLinkItems(fromEntity, null)"
 						label="Property"
 						item-text="name"
 						item-value="value"
@@ -40,7 +40,7 @@
 					></v-select>
 					<v-select
 						v-if="targetEntity && targetEntity.type === 'entity'"
-						:items="targetEntity.properties"
+						:items="getLinkItems(targetEntity, null)"
 						label="Property"
 						item-text="name"
 						item-value="value"
@@ -169,14 +169,25 @@ export default {
 			}
 			return `${entity.label} value`
 		},
-		getLinkItems(entity, otherEntity) {
-			if (entity.type === 'entity') {
-				return entity.properties.filter(p => !p.isStructured)
-			}
-			else if (otherEntity) {
-				return otherEntity.properties.filter(p => !p.isStructured)
-			}
-			return []
+		getLinkItems(entity, otherEntity, parent) {
+			let items = []
+			let props = (entity.type === 'entity') ? entity.properties : otherEntity.properties
+
+			props.forEach(p => {
+				let value = (parent) ? `${parent}/${p.name}` : p.name
+				if (p.isStructured) {
+					value = (parent) ? `${parent}/${p.name}/${p.type}` : `${p.name}/${p.type}`
+					const other = this.getEntity(p.type.toLowerCase())
+					items = items.concat(this.getLinkItems(other, null, value))
+				}
+				else {
+					items.push({
+						name: value,
+						value: value
+					})
+				}
+			})
+			return items
 		},
 		getEntity(id) {
 			return id && this.nodes && this.nodes.find(n => n.id === id)
@@ -251,10 +262,10 @@ export default {
 		updateToFrom() {
 			if (this.hasConcept) {
 				if (this.fromEntity.type === 'entity') {
-					this.newRelationship.keyFrom = this.fromEntity.idField
+					this.newRelationship.keyFrom = null
 				}
 				else if (this.targetEntity && this.targetEntity.type === 'entity') {
-					this.newRelationship.keyTo = this.targetEntity.idField
+					this.newRelationship.keyTo = null
 				}
 			}
 		}

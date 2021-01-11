@@ -11,9 +11,11 @@ import com.marklogic.envision.model.ModelService;
 import com.marklogic.envision.session.SessionManager;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.grove.boot.search.SearchService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.marklogic.hub.HubConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.comparator.CustomComparator;
@@ -47,34 +49,40 @@ public class Search extends BaseTest {
 		new Customization("results[*].score", (o1, o2) -> true)
 	);
 
-	@BeforeEach
-	void setUp() throws IOException, InterruptedException {
+	private void localSetUp(boolean isMultiTenant) throws IOException {
+		envisionConfig.setMultiTenant(isMultiTenant);
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 
 		installEnvisionModules();
 
 		registerAccount();
 
 		HubClient hubClient = getNonAdminHubClient();
+		DatabaseClient finalClient = hubClient.getFinalClient();
+
 		modelService.setModelsDir(hubClient.getHubConfig().getHubProjectDir().resolve("conceptConnectorModels").toFile());
 		modelService.saveModel(hubClient, getResourceStream("models/model.json"));
-		installDoc(hubClient.getFinalClient(), "entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee");
-		installDoc(hubClient.getFinalClient(), "entities/employee1.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "sm-Employee-archived", "Employee");
-		installDoc(hubClient.getFinalClient(), "entities/employee2.json", "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json", "MasterEmployees", "MapEmployees", "sm-Employee-archived", "Employee");
-		installDoc(hubClient.getFinalClient(), "entities/employee-mastering-merged.json", "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json", "MasterEmployees", "MapCoastalEmployees", "MapEmployees", "sm-Employee-merged", "sm-Employee-mastered", "Employee");
-		installDoc(hubClient.getFinalClient(), "entities/employee3.json", "/CoastalEmployees/55003.json", "MasterEmployees", "MapEmployees", "Employee");
-		installDoc(hubClient.getFinalClient(), "entities/employee4.json", "/MountainTopEmployees/employee4.json", "MasterEmployees", "MapEmployees", "Employee");
-		installDoc(hubClient.getFinalClient(), "entities/employee5.json", "/MountainTopEmployees/employee5.json", "MasterEmployees", "MapEmployees", "Employee");
+		installDoc(finalClient, "entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/employee1.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "sm-Employee-archived", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/employee2.json", "/MountainTopEmployees/2d26f742-29b9-47f6-84d1-5f017ddf76d3.json", "MasterEmployees", "MapEmployees", "sm-Employee-archived", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/employee-mastering-merged.json", "/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json", "MasterEmployees", "MapCoastalEmployees", "MapEmployees", "sm-Employee-merged", "sm-Employee-mastered", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/employee3.json", "/CoastalEmployees/55003.json", "MasterEmployees", "MapEmployees", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/employee4.json", "/MountainTopEmployees/employee4.json", "MasterEmployees", "MapEmployees", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/employee5.json", "/MountainTopEmployees/employee5.json", "MasterEmployees", "MapEmployees", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
 
-		installDoc(hubClient.getFinalClient(), "entities/department2.json", "/departments/department2.json", "Department", "sm-Department-archived");
-		installDoc(hubClient.getFinalClient(), "entities/department2_2.json", "/departments/department2_2.json", "Department", "sm-Department-archived");
-		installDoc(hubClient.getFinalClient(), "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered");
-		installDoc(hubClient.getFinalClient(), "entities/department3.json", "/departments/department3.json", "Department");
-		installDoc(hubClient.getFinalClient(), "entities/department4.json", "/departments/department4.json", "Department");
+		installDoc(finalClient, "entities/department2.json", "/departments/department2.json", "Department", "sm-Department-archived", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/department2_2.json", "/departments/department2_2.json", "Department", "sm-Department-archived", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/department_mastered.json", "/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e8.json", "MasterDepartment", "Department", "sm-Department-merged", "sm-Department-mastered", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/department3.json", "/departments/department3.json", "Department", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+		installDoc(finalClient, "entities/department4.json", "/departments/department4.json", "Department", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
+	}
 
-		// give ML time to index
-		Thread.sleep(2000);
+	@AfterEach
+	void teardown() {
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 	}
 
 	private String getFilterString(String filterString, int pageLength, DatabaseClient client) throws IOException {
@@ -87,9 +95,11 @@ public class Search extends BaseTest {
 
 	// not collection
 	//{"and":[{"type":"queryText","value":""},{"type":"selection","constraint":"Collections","constraintType":"collection","mode":"and","value":[{"not":"MasterEmployees"}]}]}
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void noresults() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void noResults(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		int pageLength = 5;
@@ -98,9 +108,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/noresults.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void emptySearch_SortDefault_all() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void emptySearch_SortDefault_all(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		int pageLength = 30;
@@ -110,9 +122,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_all.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void emptySearch_SortDefault_noCollections() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void emptySearch_SortDefault_noCollections(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		int pageLength = 30;
@@ -122,9 +136,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_all.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void emptySearch_SortDefault_onlyEmployee() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void emptySearch_SortDefault_onlyEmployee(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		int pageLength = 5;
@@ -134,9 +150,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_onlyEmployee.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void emptySearch_SortDefault_onlyDepartment() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void emptySearch_SortDefault_onlyDepartment(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		int pageLength = 5;
@@ -146,9 +164,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_onlyDepartment.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void emptySearch_SortDefault_some() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void emptySearch_SortDefault_some(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		int pageLength = 5;
@@ -158,9 +178,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/emptySearch_SortDefault_some.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void pagination() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void pagination(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		for (int page = 1; page <= 8; page++) {
 			HubClient hubClient = getNonAdminHubClient();
 			DatabaseClient client = hubClient.getFinalClient();
@@ -172,9 +194,11 @@ public class Search extends BaseTest {
 		}
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void search_hrskill3() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void search_hrskill3(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		String qtext = "hrSkill3";
@@ -185,9 +209,11 @@ public class Search extends BaseTest {
 		jsonAssertEquals(getResource("output/hrskill3.json"), found, resultCompare);
 	}
 
-	@Test
 	@WithMockUser(username = ACCOUNT_NAME)
-	public void getRelated() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void getRelated(boolean isMultiTenant) throws Exception {
+		localSetUp(isMultiTenant);
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient client = hubClient.getFinalClient();
 		JsonNode found = EntitySearcher.on(client).relatedEntities("/CoastalEmployees/55003.json", "belongsTo", 1, 10);

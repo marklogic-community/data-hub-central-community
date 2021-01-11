@@ -1,17 +1,16 @@
 package com.marklogic.envision.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.marklogic.envision.dataServices.EntitySearcher;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
+import com.marklogic.hub.HubConfig;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 
 import java.io.IOException;
 
@@ -41,10 +40,17 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 		installEnvisionModules();
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+	}
+
+	@AfterEach
+	void teardown() {
+		clearStagingFinalAndJobDatabases();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 	}
 
 	@Test
@@ -150,6 +156,38 @@ public class ExploreControllerTests extends AbstractMvcTest {
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults2.json"), response, resultCompare);
+				})
+			.andExpect(status().isOk());
+	}
+
+	@Test
+	void getEntitiesWithNestedConceptsAndRelsTest() throws Exception {
+		postJson(GET_ENTITIES_URL, "{}")
+			.andExpect(status().isUnauthorized());
+
+		login();
+
+		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
+			.andDo(
+				result -> {
+					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
+					assertEquals(0, response.get("results").size());
+				})
+			.andExpect(status().isOk());
+
+		HubClient hubClient = getNonAdminHubClient();
+		modelService.saveModel(hubClient, getResourceStream("models/explore/modelWithNestedConcepts.json"));
+		installDoc(hubClient.getFinalClient(), "entities/employeeWithNestedAddress.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "Employee");
+		installDoc(hubClient.getFinalClient(), "entities/department3.json", "/departments/department3.json", "Department");
+
+		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
+			.andDo(
+				result -> {
+					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
+					System.out.println(objectMapper.writeValueAsString(response));
+					jsonAssertEquals(getResource("output/explore/nestedConcepts.json"), response, resultCompare);
 				})
 			.andExpect(status().isOk());
 	}
