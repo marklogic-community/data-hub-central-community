@@ -6,9 +6,6 @@ version: 2.1
 
 jobs:
   ui:
-    filters:
-      branches:
-        ignore: docs
     docker:
       - image: cypress/base:10
     environment:
@@ -38,9 +35,6 @@ jobs:
             cd ui
             npm run test:e2e:headless
   middleTier:
-    filters:
-      branches:
-        ignore: docs
     machine: true
     environment:
       ## this enables colors in the output
@@ -77,5 +71,12 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      - middleTier
-      - ui
+      - middleTier:
+          filters:
+            branches:
+              ignore: docs
+      - ui:
+          filters:
+            branches:
+              ignore: docs
+
