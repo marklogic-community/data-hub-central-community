@@ -29,9 +29,9 @@ jobs:
             - "b8:fc:78:d6:5d:5a:68:08:01:57:9c:db:d7:49:c3:d0"
 
       # Grab the the built markdown from the last step
-      - run:
-          name: Copy over built site files
-          command: rm -rf _build && cp -r /tmp/workspace/_build ./
+      # - run:
+      #     name: Copy over built site files
+      #     command: rm -rf _build && cp -r /tmp/workspace/_build ./
 
       # Build the site so we have local files
       - build_site:
