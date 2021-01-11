@@ -1,0 +1,106 @@
+version: 2.1
+jobs:
+  # Build the site to store artifacts
+  site:
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      # Build the site's HTML w/ the base_url for CircleCI artifacts
+      - build_site:
+          build_args: ""
+
+      # Tell Circle to store the documentation output in a folder that we can access later
+      - store_artifacts:
+          path: _site/
+          destination: html
+
+  deploy:
+    docker:
+      - image: circleci/ruby:2.6
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/workspace
+
+      # Add deployment key fingerprint for CircleCI to use for a push
+      - add_ssh_keys:
+          fingerprints:
+            - "b8:fc:78:d6:5d:5a:68:08:01:57:9c:db:d7:49:c3:d0"
+
+      # Grab the the built markdown from the last step
+      - run:
+          name: Copy over built site files
+          command: rm -rf _build && cp -r /tmp/workspace/_build ./
+
+      # Build the site so we have local files
+      - build_site:
+          build_args: ""
+
+      # Copying over built website to the live site
+      - run:
+          name: Copy built site to a folder to store
+          command: cp -r ./_site ../_site
+      - run:
+          name: Change to gh-pages branch and replace w/ new site
+          command: |
+            git checkout gh-pages
+            rm -rf ./*
+            cp -r ../_site/* ./
+
+      - run:
+          name: Commit results and push to gh-pages
+          command: |
+            git config --global user.email "circleci@marklogic.com"
+            git config --global user.name "Circle CI"
+            git add ./* && git commit -m "docs updated"
+            git push -f origin gh-pages:gh-pages
+
+# Tell CircleCI to use this workflow when it builds the site
+workflows:
+  version: 2
+  default:
+    jobs:
+      - site:
+          filters:
+            branches:
+              only:
+                - docs
+              ignore:
+                - gh-pages
+      - deploy:
+          requires:
+            - run_tests
+          filters:
+              branches:
+                only:
+                  - docs
+                ignore:
+                  - gh-pages
+
+commands:
+  build_site:
+    description: "Build the site with Jekyll"
+    parameters:
+      build_args:
+        type: string
+        default: ""
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - envision-docs-{{ checksum "Gemfile.lock" }}
+            - envision-docs-
+
+      - run: gem install bundler
+      - run: bundle install
+
+      # Store bundle cache
+      - save_cache:
+          key: envision-docs-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Build the website
+          command: bundle exec jekyll build << parameters.build_args >>

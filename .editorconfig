@@ -14,3 +14,9 @@ trim_trailing_whitespace = false
 
 [*.mdown]
 trim_trailing_whitespace = false
+
+[*.yaml]
+indent_style = space
+
+[*.yml]
+indent_style = space
