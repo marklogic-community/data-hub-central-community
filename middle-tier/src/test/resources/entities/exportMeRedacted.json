@@ -18,7 +18,7 @@
 			},
 			"Employee": {
 				"name": "### Redacted ###",
-				"departmentId": "2",
+				"departmentId": "2, has a comma",
 				"employeeId": "55002",
 				"skills": [
 					"general ledger",
