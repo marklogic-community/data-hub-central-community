@@ -33,9 +33,51 @@
 					"name": "skills",
 					"type": "string",
 					"isArray": true
+				},
+				{
+					"_propId": "b905d6b4-5ad4-4498-8952-3213a26c37d0",
+					"name": "empty",
+					"type": "string",
+					"isArray": false
 				}
 			],
 			"idField": "employeeId",
+			"labelField": "name"
+		},
+		"department": {
+			"id": "department",
+			"label": "Department",
+			"x": 183.305019305019,
+			"y": -25.3166023166023,
+			"entityName": "Department",
+			"type": "entity",
+			"properties": [
+				{
+					"_propId": "9643395e-cca7-44a7-a3fe-326d00d0ef23",
+					"name": "empty",
+					"type": "string",
+					"isArray": false
+				},
+				{
+					"_propId": "9b6e57d2-5888-4117-a742-a34d6138038a",
+					"name": "departmentId",
+					"type": "string",
+					"isArray": false
+				},
+				{
+					"_propId": "d7bcf2ab-ae04-49ae-b63e-5364b85249f2",
+					"name": "employeeIds",
+					"type": "string",
+					"isArray": true
+				},
+				{
+					"_propId": "9643395b-cca7-44d7-a3fe-326d00d0ef23",
+					"name": "name",
+					"type": "string",
+					"isArray": false
+				}
+			],
+			"idField": "departmentId",
 			"labelField": "name"
 		}
 	}

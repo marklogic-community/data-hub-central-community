@@ -13,6 +13,7 @@ import com.marklogic.client.pojo.PojoQueryDefinition;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.hub.HubClient;
+import com.marklogic.envision.model.ModelService;
 import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.grove.boot.error.NotFoundException;
 import org.apache.commons.io.FileUtils;
@@ -35,10 +36,12 @@ public class ExportService {
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	final private SimpMessagingTemplate template;
+	final private ModelService modelService;
 
 	@Autowired
-	public ExportService(SimpMessagingTemplate template) {
+	public ExportService(SimpMessagingTemplate template, ModelService modelService) {
 		this.template = template;
+		this.modelService = modelService;
 	}
 
 	@Async
@@ -53,8 +56,7 @@ public class ExportService {
 		for (int i = 0; i < entityNames.size(); i++) {
 			String entityName = entityNames.get(i);
 			try {
-				ExportToCsvFileJob exportJob = new ExportToCsvFileJob();
-				exportJob.setWhereCollections(entityName);
+				ExportToCsvFileJob exportJob = new ExportToCsvFileJob(modelService.getModel(client), entityName);
 				exportJob.run(client);
 
 				File exportFile = exportJob.getExportFile();

@@ -1,0 +1,17 @@
+<envelope xmlns="http://marklogic.com/entity-services">
+	<headers/>
+	<triples/>
+	<instance>
+		<info>
+			<title>Department</title>
+			<version>0.0.1</version>
+			<baseUri>http://marklogic.com/envision/</baseUri>
+		</info>
+		<Department xmlns="">
+			<name>Marketing, has a comma</name>
+			<departmentId>2</departmentId>
+			<employeeIds>55002</employeeIds>
+		</Department>
+	</instance>
+	<attachments/>
+</envelope>
