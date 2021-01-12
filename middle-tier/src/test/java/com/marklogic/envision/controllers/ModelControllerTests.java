@@ -148,15 +148,9 @@ public class ModelControllerTests extends AbstractMvcTest {
 				result -> {
 					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
 					assertEquals(3, models.size());
-					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
-
-					// get around sorting issues by getting the proper indexes for comparison
-					// prevents failing tests in CI
-					List<String> names = StreamSupport.stream(models.spliterator(), false).map(jsonNode -> jsonNode.get("name").asText()).collect(Collectors.toList());
-					int idx = names.indexOf("My Hub Model");
-					assertEquals("My Hub Model", models.get(idx).get("name").asText());
-					idx = names.indexOf("Test Model");
-					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(idx)), true);
+					List<JsonNode> nodes = StreamSupport.stream(models.spliterator(), false).sorted((o1, o2) -> o1.get("name").asText().compareToIgnoreCase(o2.get("name").asText())).collect(Collectors.toList());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(nodes.get(1)), true);
+					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(nodes.get(2)), true);
 				})
 			.andExpect(status().isOk());
 	}
@@ -173,6 +167,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 			.andDo(
 				result -> {
 					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
+					assertEquals(1, models.size());
 					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
 				})
 			.andExpect(status().isOk());
@@ -184,8 +179,9 @@ public class ModelControllerTests extends AbstractMvcTest {
 				result -> {
 					ArrayNode models = readJsonArray(result.getResponse().getContentAsString());
 					assertEquals(2, models.size());
-					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(models.get(0)), true);
-					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(models.get(1)), true);
+					List<JsonNode> nodes = StreamSupport.stream(models.spliterator(), false).sorted((o1, o2) -> o1.get("name").asText().compareToIgnoreCase(o2.get("name").asText())).collect(Collectors.toList());
+					JSONAssert.assertEquals("{\"name\":\"My Model\",\"edges\":{},\"nodes\":{}}", objectMapper.writeValueAsString(nodes.get(0)), true);
+					JSONAssert.assertEquals(getResource("models/model.json"), objectMapper.writeValueAsString(nodes.get(1)), true);
 				})
 			.andExpect(status().isOk());
 
