@@ -48,7 +48,7 @@ public class SystemControllerTests extends AbstractMvcTest {
 	void deleteCollection() throws Exception {
 		registerAccount();
 
-		postJson(DELETE_COLLECTIONS_URL, "{\"database\":\"staging\",\"collection\":\"user-data\"}")
+		postJson(DELETE_COLLECTIONS_URL, "{\"database\":\"staging\",\"collections\":[\"user-data\"]}")
 			.andExpect(status().isUnauthorized());
 
 		HubClient hubClient = getNonAdminHubClient();
@@ -57,9 +57,31 @@ public class SystemControllerTests extends AbstractMvcTest {
 
 		login();
 
-		postJson(DELETE_COLLECTIONS_URL, "{\"database\":\"staging\",\"collection\":\"user-data\"}")
+		postJson(DELETE_COLLECTIONS_URL, "{\"database\":\"staging\",\"collections\":[\"user-data\"]}")
 			.andExpect(status().isOk());
 
 		assertEquals(0, getDocCount(hubClient.getStagingClient(), "user-data"));
+	}
+
+	@Test
+	void deleteCollections() throws Exception {
+		registerAccount();
+
+		postJson(DELETE_COLLECTIONS_URL, "{\"database\":\"staging\",\"collections\":[\"user-data\"]}")
+			.andExpect(status().isUnauthorized());
+
+		HubClient hubClient = getNonAdminHubClient();
+		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME + "/doc1.json", "user-data");
+		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME + "/doc2.json", "user-data2");
+		assertEquals(1, getDocCount(hubClient.getStagingClient(), "user-data"));
+		assertEquals(1, getDocCount(hubClient.getStagingClient(), "user-data2"));
+
+		login();
+
+		postJson(DELETE_COLLECTIONS_URL, "{\"database\":\"staging\",\"collections\":[\"user-data\",\"user-data2\"]}")
+			.andExpect(status().isOk());
+
+		assertEquals(0, getDocCount(hubClient.getStagingClient(), "user-data"));
+		assertEquals(0, getDocCount(hubClient.getStagingClient(), "user-data2"));
 	}
 }

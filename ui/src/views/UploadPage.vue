@@ -34,10 +34,18 @@
 						<tr>
 							<th>Data Source</th>
 							<th>Count</th>
-							<th></th>
+							<th data-cy="manageSources.deleteAll">
+								<delete-data-confirm
+								tooltip="Delete All Data Sources"
+								message="Do you really want to delete all Data Sources?"
+								:disabled="(stagingData.length <= 0)"
+								:collection="''"
+								:deleteInProgress="deleteInProgress"
+								@deleted="removeAllData($event)"/>
+							</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody data-cy="manageSources.table">
 						<tr v-for="data of tableData" :key="data.collection">
 							<td>{{data.collection}}</td>
 							<td>{{data.count}}</td>
@@ -82,6 +90,9 @@ export default {
 		},
 		tableData() {
 			return (this.stagingData.length > 0) ? this.stagingData : this.sampleData
+		},
+		allCollections() {
+			return (this.stagingData.length > 0) ? this.stagingData.map(d => d.collection) : []
 		}
 	},
 	data() {
@@ -109,10 +120,10 @@ export default {
 	methods: {
 		uploadFiles(files) {
 			const collection = files.length === 1 ? files[0].name : null
-			this.$refs.uploadCollectionDlg.open(collection).then(collection => {
+			this.$refs.uploadCollectionDlg.open(collection).then(({collection, database}) => {
 				if (collection) {
 					this.percentComplete = 0
-					uploadApi.upload(collection, files, (progressEvent) => {
+					uploadApi.upload({collection, database}, files, (progressEvent) => {
 						this.percentComplete = Math.round((progressEvent.loaded * 100) / progressEvent.total)
 						if (this.percentComplete >= 100) {
 							this.percentComplete = null
@@ -132,9 +143,15 @@ export default {
 				this.stagingData = info.collections.staging
 			})
 		},
+		async removeAllData() {
+			this.deleteInProgress = true
+			await axios.post("/api/system/deleteCollection", { database: 'staging', collections: this.allCollections })
+			this.deleteInProgress = false
+			this.stagingData = []
+		},
 		async removeData(collection) {
 			this.deleteInProgress = true
-			await axios.post("/api/system/deleteCollection", { database: 'staging', collection: collection })
+			await axios.post("/api/system/deleteCollection", { database: 'staging', collections: [collection] })
 			this.deleteInProgress = false
 			this.stagingData = this.stagingData.filter(c => c.collection !== collection)
 		}

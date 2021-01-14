@@ -1,6 +1,7 @@
 package com.marklogic.envision;
 
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
+import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.envision.upload.UploadFile;
 import com.marklogic.envision.upload.UploadService;
@@ -9,14 +10,13 @@ import com.marklogic.hub.deploy.commands.LoadHubArtifactsCommand;
 import com.marklogic.hub.deploy.commands.LoadHubModulesCommand;
 import com.marklogic.hub.impl.HubConfigImpl;
 import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.xml.sax.SAXException;
 import org.xmlunit.builder.Input;
 import org.xmlunit.input.WhitespaceStrippedSource;
 
@@ -47,9 +47,7 @@ public class UploadServiceTest extends BaseTest {
 	void setup() throws IOException {
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
-
-		registerAccount();
+		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
 
 		HubConfigImpl hubConfig = getHubConfig();
 		SimpleAppDeployer deployer = new SimpleAppDeployer(hubConfig.getManageClient(), hubConfig.getAdminManager());
@@ -57,83 +55,110 @@ public class UploadServiceTest extends BaseTest {
 		deployer.getCommands().add(loadHubModulesCommand);
 		deployer.getCommands().add(loadHubArtifactsCommand);
 		deployer.deploy(hubConfig.getAppConfig());
+
+		installEnvisionModules();
+
+		registerAccount();
 	}
 
-	@AfterEach
-	void teardown() {
-		clearStagingFinalAndJobDatabases();
-		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
+//	@AfterEach
+//	void teardown() {
+//		clearStagingFinalAndJobDatabases();
+//		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
+//	}
+
+	private DatabaseClient getDbClient(String database) {
+		if (database.equals("staging")) {
+			return getStagingClient();
+		}
+		return getFinalClient();
 	}
 
-	@Test
-	void uploadCsv() throws Exception {
-		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.csv"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadCsv(String database) throws Exception {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "my-wacky-file.csv"));
 		UploadFile uploadFile = new UploadFile("my-wacky-file.csv", getResourceStream("data/my-wacky-file.csv"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "my-wacky-file.csv");
-		assertEquals(4, getDocCount(getStagingClient(), "my-wacky-file.csv"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(getStagingClient(), "my-wacky-file.csv", "sue"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "my-wacky-file.csv");
+		assertEquals(4, getDocCount(client, "my-wacky-file.csv"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(client, "my-wacky-file.csv", "sue"));
 	}
 
-	@Test
-	void uploadCsvWithSpaces() throws Exception {
-		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.csv"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadCsvWithSpaces(String database) throws Exception {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "my-wacky-file.csv"));
 		UploadFile uploadFile = new UploadFile("my file with   spaces.csv", getResourceStream("data/my-wacky-file.csv"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "my-wacky-file.csv");
-		assertEquals(4, getDocCount(getStagingClient(), "my-wacky-file.csv"));
-		assertEquals(4, getDocCountFromUriPattern(getStagingClient(), "/ingest/bob.smith@marklogic.com/my-wacky-file.csv/my_file_with_spaces.csv/*"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(getStagingClient(), "my-wacky-file.csv", "sue"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "my-wacky-file.csv");
+		assertEquals(4, getDocCount(client, "my-wacky-file.csv"));
+		assertEquals(4, getDocCountFromUriPattern(client, "/ingest/bob.smith@marklogic.com/my-wacky-file.csv/my_file_with_spaces.csv/*"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(client, "my-wacky-file.csv", "sue"));
 	}
 
-	@Test
-	void uploadPsv() throws Exception {
-		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.psv"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadPsv(String database) throws Exception {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "my-wacky-file.psv"));
 		UploadFile uploadFile = new UploadFile("my-wacky-file.psv", getResourceStream("data/pipe-sep.psv"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "my-wacky-file.psv");
-		assertEquals(4, getDocCount(getStagingClient(), "my-wacky-file.psv"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(getStagingClient(), "my-wacky-file.psv", "sue"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "my-wacky-file.psv");
+		assertEquals(4, getDocCount(client, "my-wacky-file.psv"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getCollectionDoc(client, "my-wacky-file.psv", "sue"));
 	}
 
-	@Test
-	void uploadJson() throws Exception {
-		assertEquals(0, getDocCount(getStagingClient(), "My JSON Collection"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadJson(String database) throws Exception {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "My JSON Collection"));
 		UploadFile uploadFile = new UploadFile("jsonUpload.json", getResourceStream("data/jsonUpload.json"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "My JSON Collection");
-		assertEquals(1, getDocCount(getStagingClient(), "My JSON Collection"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/My_JSON_Collection/jsonUpload.json"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "My JSON Collection");
+		assertEquals(1, getDocCount(client, "My JSON Collection"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(client, "/ingest/bob.smith@marklogic.com/My_JSON_Collection/jsonUpload.json"));
 	}
 
-	@Test
-	void uploadXml() throws IOException, SAXException {
-		assertEquals(0, getDocCount(getStagingClient(), "My Xml Collection>"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadXml(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "My Xml Collection>"));
 		UploadFile uploadFile = new UploadFile("xmlUpload.xml", getResourceStream("data/xmlUpload.xml"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "My Xml Collection");
-		assertEquals(1, getDocCount(getStagingClient(), "My Xml Collection"));
-		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/My_Xml_Collection/xmlUpload.xml")).build())));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "My Xml Collection");
+		assertEquals(1, getDocCount(client, "My Xml Collection"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(client, "/ingest/bob.smith@marklogic.com/My_Xml_Collection/xmlUpload.xml")).build())));
 	}
 
-	@Test
-	void uploadBinary() {
-		assertEquals(0, getDocCount(getStagingClient(), "My Binary"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadBinary(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "My Binary"));
 		UploadFile uploadFile = new UploadFile("LoanApplicationFraud.png", getResourceStream("data/LoanApplicationFraud.png"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "My Binary");
-		assertEquals(1, getDocCount(getStagingClient(), "My Binary"));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/My_Binary/LoanApplicationFraud.png"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "My Binary");
+		assertEquals(1, getDocCount(client, "My Binary"));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(client, "/ingest/bob.smith@marklogic.com/My_Binary/LoanApplicationFraud.png"));
 	}
 
-	@Test
-	void uploadZip() throws Exception {
-		assertEquals(0, getDocCount(getStagingClient(), "zipUpload.zip"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadZip(String database) throws Exception {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "zipUpload.zip"));
 		UploadFile uploadFile = new UploadFile("zipUpload.zip", getResourceStream("data/zipUpload.zip"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "zipUpload.zip");
-		assertEquals(11, getDocCount(getStagingClient(), "zipUpload.zip"));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
-		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/xmlUpload.xml")).build())));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "zipUpload.zip");
+		assertEquals(11, getDocCount(client, "zipUpload.zip"));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(client, "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(client, "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(client, "/ingest/bob.smith@marklogic.com/zipUpload.zip/my-dir-name/xmlUpload.xml")).build())));
 	}
 
-	@Test
-	void uploadMultiples() throws Exception {
-		assertEquals(0, getDocCount(getStagingClient(), "Multiple Upload"));
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadMultiples(String database) throws Exception {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
 			new UploadFile("my-wacky-file.csv", getResourceStream("data/my-wacky-file.csv")),
 			new UploadFile("my-wacky-file.psv", getResourceStream("data/pipe-sep.psv")),
@@ -142,23 +167,114 @@ public class UploadServiceTest extends BaseTest {
 			new UploadFile("LoanApplicationFraud.png", getResourceStream("data/LoanApplicationFraud.png")),
 			new UploadFile("zipUpload.zip", getResourceStream("data/zipUpload.zip"))
 		);
-		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, "Multiple Upload");
-		assertEquals(22, getDocCount(getStagingClient(), "Multiple Upload"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/jsonUpload.json"));
-		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/xmlUpload.xml")).build())));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/LoanApplicationFraud.png"));
-		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
-		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
-		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(getStagingClient(), "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/xmlUpload.xml")).build())));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Multiple Upload");
+		assertEquals(22, getDocCount(client, "Multiple Upload"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(client, "/ingest/bob.smith@marklogic.com/Multiple_Upload/jsonUpload.json"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(client, "/ingest/bob.smith@marklogic.com/Multiple_Upload/xmlUpload.xml")).build())));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(client, "/ingest/bob.smith@marklogic.com/Multiple_Upload/LoanApplicationFraud.png"));
+		assertArrayEquals(getResourceBytes("data/LoanApplicationFraud.png"), getDocumentBytes(client, "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/LoanApplicationFraud.png"));
+		jsonAssertEquals(getResource("output/jsonUpload.json"), getDocumentString(client, "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/stuff.zip/stuff/jsonUpload.json"));
+		assertThat(new WhitespaceStrippedSource(Input.from(getResource("output/xmlUpload.xml")).build()), isIdenticalTo(new WhitespaceStrippedSource(Input.from(getDocumentString(client, "/ingest/bob.smith@marklogic.com/Multiple_Upload/zipUpload.zip/my-dir-name/xmlUpload.xml")).build())));
 	}
 
-	@Test
-	void failedUpload() {
+//	void uploadSemanticsJson() throws Exception {
+//		assertEquals(0, getDocCount(client, "Multiple Upload"));
+//		UploadFile[] uploadFiles = Arrays.array(
+//			new UploadFile("test.json", getResourceStream("data/semantics/test.json"))
+//		);
+//		assertEquals(0, getTriplesCount(client));
+//		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, "Semantics Upload");
+//		assertEquals(13257, getTriplesCount(client));
+//	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadSemanticsN3(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
+		UploadFile[] uploadFiles = Arrays.array(
+//			new UploadFile("test.json", getResourceStream("data/semantics/test.json"))
+			new UploadFile("test.n3", getResourceStream("data/semantics/test.n3"))
+		);
+		assertEquals(0, getTriplesCount(client));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Semantics Upload");
+		assertEquals(13257, getTriplesCount(client));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadSemanticsNQ(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
+		UploadFile[] uploadFiles = Arrays.array(
+			new UploadFile("test.nq", getResourceStream("data/semantics/test.nq"))
+		);
+		assertEquals(0, getTriplesCount(client));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Semantics Upload");
+		assertEquals(2001, getTriplesCount(client));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadSemanticsNt(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
+		UploadFile[] uploadFiles = Arrays.array(
+			new UploadFile("test.nt", getResourceStream("data/semantics/test.nt"))
+		);
+		assertEquals(0, getTriplesCount(client));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Semantics Upload");
+		assertEquals(3, getTriplesCount(client));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadSemanticsRdf(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
+		UploadFile[] uploadFiles = Arrays.array(
+			new UploadFile("test.rdf", getResourceStream("data/semantics/test.rdf"))
+		);
+		assertEquals(0, getTriplesCount(client));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Semantics Upload");
+		assertEquals(454, getTriplesCount(client));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadSemanticsTrig(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
+		UploadFile[] uploadFiles = Arrays.array(
+			new UploadFile("test.trig", getResourceStream("data/semantics/test.trig"))
+		);
+		assertEquals(0, getTriplesCount(client));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Semantics Upload");
+		assertEquals(16, getTriplesCount(client));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void uploadSemanticsTtl(String database) {
+		DatabaseClient client = getDbClient(database);
+		assertEquals(0, getDocCount(client, "Multiple Upload"));
+		UploadFile[] uploadFiles = Arrays.array(
+			new UploadFile("test.ttl", getResourceStream("data/semantics/test.ttl"))
+		);
+		assertEquals(0, getTriplesCount(client));
+		uploadService.uploadFiles(getNonAdminHubClient(), uploadFiles, database, "Semantics Upload");
+		assertEquals(795, getTriplesCount(client));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = {"staging", "final"})
+	void failedUpload(String database) {
+		DatabaseClient client = getDbClient(database);
 		clearStagingFinalAndJobDatabases();
-		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.csv"));
+		assertEquals(0, getDocCount(client, "my-wacky-file.csv"));
 		UploadFile uploadFile = new UploadFile("my-wacky-file.csv", getResourceStream("data/my-wacky-file.csv"));
-		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), "my-wacky-file.csv");
-		assertEquals(0, getDocCount(getStagingClient(), "my-wacky-file.csv"));
+		uploadService.uploadFiles(getNonAdminHubClient(), Arrays.array(uploadFile), database, "my-wacky-file.csv");
+		assertEquals(0, getDocCount(client, "my-wacky-file.csv"));
 		ArgumentCaptor<StatusMessage> argumentCaptor = ArgumentCaptor.forClass(StatusMessage.class);
 		verify(template, atLeast(1)).convertAndSend(anyString(), argumentCaptor.capture());
 

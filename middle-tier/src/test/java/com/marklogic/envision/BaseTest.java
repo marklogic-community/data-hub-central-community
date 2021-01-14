@@ -526,6 +526,17 @@ public class BaseTest {
 		return count;
 	}
 
+	protected int getTriplesCount(DatabaseClient client) {
+		int count = 0;
+		EvalResultIterator resultItr = client.newServerEval().xquery("fn:count(cts:triples())").eval();
+		if (resultItr == null || !resultItr.hasNext()) {
+			return count;
+		}
+		EvalResult res = resultItr.next();
+		count = Math.toIntExact((long) res.getNumber());
+		return count;
+	}
+
 	protected void jsonAssertEquals(JsonNode expected, JsonNode actual) throws Exception {
 		jsonAssertEquals(expected, actual,true);
 	}
