@@ -355,9 +355,17 @@ export default {
 		},
 		deleteEntity(entityId, save = true) {
 			const idx = this.nodes.findIndex(e => e.id === entityId)
+			const entityName = this.nodes[idx].entityName
 			if (idx >= 0) {
 				this.nodes.splice(idx, 1)
 			}
+
+			// for nested entities, remove any properties that point
+			// to the deleted entity type
+			this.nodes.forEach(node => {
+				node.properties = node.properties.filter(p => p.type !== entityName)
+			})
+
 			if (save) {
 				this.doMLSave()
 			}

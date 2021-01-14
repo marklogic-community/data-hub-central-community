@@ -16,6 +16,12 @@
 						"_propId": "a5ab6f7f-2e5f-4f61-917c-5b507d1794a0"
 					},
 					{
+						"name": "homeAddress",
+						"type": "Address",
+						"isStructured": true,
+						"_propId": "a5ab6f7f-2e5f-4f61-917c-5b507d1794a1"
+					},
+					{
 						"name": "age",
 						"type": "Integer",
 						"_propId": "0ba86da4-36d9-4c8c-b100-013da3a02837"

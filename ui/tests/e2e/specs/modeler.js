@@ -206,32 +206,107 @@ describe('End to end test to create and update model', () => {
 	})
 
 	it('can delete an entity', () => {
-		cy.route('GET', '/api/models/', [ { "name": "Test Model", "edges": {}, "nodes": { "poet": { "id": "poet", "x": -156.3861003861004, "y": -130.42857142857144, "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] }, "philos": { "id": "philosopher", "x": -156.3861003861004, "y": -230.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] } } } ])
+		cy.route('GET', '/api/models/', 'fixture:models.json')
 		cy.visit('/')
 		cy.url().should('include', '/model')
-		cy.wait('@saveModel')
-			.its('request.body')
-			.should(body => {
-				expect(body.nodes.poet).to.deep.equal({ "id": "poet", "x": -156.3861003861004, "y": -130.42857142857144, "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] })
-			})
+
 		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
-		cy.get('[data-cy=nodeList]').should('contain', 'poet')
-		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
-		cy.get('[data-cy=nodeList]').contains("poet").click()
+
+		// delete category
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'category')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').should('contain', 'product')
+		cy.get('[data-cy=nodeList]').contains("category").click()
 
 		cy.get('[data-cy="modeler.deleteSelected"]').click()
 		cy.get('.menuable__content__active button').contains('Cancel').click()
-		cy.get('[data-cy=nodeList]').should('contain', 'poet')
-		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'category')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').should('contain', 'product')
 
 		cy.get('[data-cy="modeler.deleteSelected"]').click()
 		cy.get('.menuable__content__active button').contains('Delete').click()
-		cy.get('[data-cy=nodeList]').should('not.contain', 'poet')
-		cy.get('[data-cy=nodeList]').should('contain', 'philosopher')
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('not.contain', 'category')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').should('contain', 'product')
 		cy.wait('@saveModel')
 			.its('request.body')
 			.should(body => {
-				expect(body.nodes.poet).to.be.undefined
+				console.log(JSON.stringify(body.edges))
+				expect(body.edges['product-hascategory-category']).to.be.undefined
+				expect(body.nodes.category).to.be.undefined
+			})
+
+		// delete product
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').should('contain', 'product')
+		cy.get('[data-cy=nodeList]').contains("product").click()
+
+		cy.get('[data-cy="modeler.deleteSelected"]').click()
+		cy.get('.menuable__content__active button').contains('Cancel').click()
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').should('contain', 'product')
+
+		cy.get('[data-cy="modeler.deleteSelected"]').click()
+		cy.get('.menuable__content__active button').contains('Delete').click()
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').should('not.contain', 'product')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				console.log(JSON.stringify(body.edges))
+				expect(body.edges['order-has-product']).to.be.undefined
+				expect(body.nodes.product).to.be.undefined
+				const address = body.nodes.customer.properties.find(p => p.name === 'homeAddress')
+				expect(address).to.exist
+				expect(body.nodes.address).to.exist
+			})
+
+		// delete address
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.get('[data-cy=nodeList]').contains("address").click()
+
+		cy.get('[data-cy="modeler.deleteSelected"]').click()
+		cy.get('.menuable__content__active button').contains('Cancel').click()
+		cy.get('[data-cy=nodeList]').should('contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+
+		cy.get('[data-cy="modeler.deleteSelected"]').click()
+		cy.get('.menuable__content__active button').contains('Delete').click()
+		cy.get('[data-cy=nodeList]').should('not.contain', 'address')
+		cy.get('[data-cy=nodeList]').should('contain', 'city')
+		cy.get('[data-cy=nodeList]').should('contain', 'customer')
+		cy.get('[data-cy=nodeList]').should('contain', 'order')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				console.log(JSON.stringify(body.nodes.customer))
+				const address = body.nodes.customer.properties.find(p => p.name === 'homeAddress')
+				expect(address).to.be.undefined
+				expect(body.nodes.address).to.be.undefined
 			})
 	})
 
