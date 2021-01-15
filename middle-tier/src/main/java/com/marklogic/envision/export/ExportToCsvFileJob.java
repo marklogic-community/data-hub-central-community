@@ -1,5 +1,6 @@
 package com.marklogic.envision.export;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.ext.datamovement.QueryBatcherJobTicket;
 import com.marklogic.client.ext.datamovement.job.AbstractQueryBatcherJob;
@@ -12,16 +13,19 @@ public class ExportToCsvFileJob extends AbstractQueryBatcherJob {
 	private File exportFile;
 	private FileWriter fileWriter;
 	private ExportToCsvWriterListener exportToWriterListener;
+	private String entityName;
 
-	public ExportToCsvFileJob() {
+	public ExportToCsvFileJob(JsonNode model, String entityName) {
 		super();
 
+		this.entityName = entityName;
+		this.setWhereCollections(entityName);
 		this.setConsistentSnapshot(false);
 
 		try {
 			exportFile = File.createTempFile("export", "");
 			this.fileWriter = new FileWriter(exportFile);
-			this.exportToWriterListener = new ExportToCsvWriterListener(fileWriter);
+			this.exportToWriterListener = new ExportToCsvWriterListener(fileWriter, model);
 			this.addUrisReadyListener(exportToWriterListener);
 		} catch (IOException ie) {
 			throw new RuntimeException("Unable to open FileWriter on file: " + exportFile + "; cause: " + ie.getMessage(), ie);
@@ -30,6 +34,7 @@ public class ExportToCsvFileJob extends AbstractQueryBatcherJob {
 
 	@Override
 	public QueryBatcherJobTicket run(DatabaseClient databaseClient) {
+		exportToWriterListener.setEntityName(entityName);
 		QueryBatcherJobTicket ticket = super.run(databaseClient);
 
 		if (ticket.getQueryBatcher().isStopped()) {

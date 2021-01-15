@@ -1,12 +1,11 @@
 package com.marklogic.envision.controllers;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.marklogic.client.datamovement.JacksonCSVSplitter;
-import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.envision.export.ExportService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import com.marklogic.hub.HubConfig;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -57,11 +55,11 @@ public class ExportControllerTests extends AbstractMvcTest {
 
 		modelService.saveModel(hc, getResourceStream("entities/redactedName.json"));
 		for (int i = 0; i < 100; i++) {
-			installDoc(hc.getFinalClient(), "entities/exportMe.json", "/col1/doc-" + i + ".json", "col1", "Employee");
+			installDoc(hc.getFinalClient(), "entities/exportMe.json", "/col1/doc-" + i + ".json", "Employee");
 		}
 
 		for (int i = 100; i < 300; i++) {
-			installDoc(hc.getFinalClient(), "entities/exportMe.json", "/col2/doc-" + i + ".json", "col2", "Employee");
+			installDoc(hc.getFinalClient(), "entities/exportMe2.xml", "/col2/doc-" + i + ".xml", "Department");
 		}
 	}
 
@@ -75,8 +73,8 @@ public class ExportControllerTests extends AbstractMvcTest {
 	void serviceExport() throws IOException {
 		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 		List<String> entityNames = new ArrayList<>();
-		entityNames.add("col1");
-		entityNames.add("col2");
+		entityNames.add("Employee");
+		entityNames.add("Department");
 		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 		assertEquals(1, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 	}
@@ -101,8 +99,8 @@ public class ExportControllerTests extends AbstractMvcTest {
 
 		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 		List<String> entityNames = new ArrayList<>();
-		entityNames.add("col1");
-		entityNames.add("col2");
+		entityNames.add("Employee");
+		entityNames.add("Department");
 		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 
@@ -140,8 +138,8 @@ public class ExportControllerTests extends AbstractMvcTest {
 	void getFile() throws Exception {
 		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 		List<String> entityNames = new ArrayList<>();
-		entityNames.add("col1");
-		entityNames.add("col2");
+		entityNames.add("Employee");
+		entityNames.add("Department");
 		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 		assertEquals(2, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
@@ -159,15 +157,19 @@ public class ExportControllerTests extends AbstractMvcTest {
 					assertEquals("application/zip", result.getResponse().getHeader("Content-Type"));
 					ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(result.getResponse().getContentAsByteArray()));
 					ZipEntry zipEntry = zipInputStream.getNextEntry();
-					assertEquals("col1.csv", zipEntry.getName());
+					assertEquals("Employee.csv", zipEntry.getName());
 					InputStream fileInputStream = readZipFileContents(zipInputStream);
-					JacksonCSVSplitter splitter = new JacksonCSVSplitter();
-					Stream<JacksonHandle> contentStream = splitter.split(fileInputStream);
-					JacksonHandle handle = (JacksonHandle) contentStream.toArray()[0];
-					jsonAssertEquals("{\"name\":\"### Redacted ###\",\"departmentId\":\"2\",\"employeeId\":\"55002\",\"skills\":\"\"}", handle.get());
+					List<String> lines = IOUtils.readLines(fileInputStream);
+					assertEquals("name,departmentId,employeeId,skills,skills2,json,empty", lines.get(0));
+					assertEquals("### Redacted ###,\"2, has a comma\",\"55002 'hi'\",\"[\"\"general ledger\"\",\"\"not visible in search\"\"]\",\"[\"\"SPARQL\"\", \"\"XQuery\"\", \"\"Java\"\", \"\"RDF\"\"]\",\"{\"\"key\"\":\"\"value\"\"}\",", lines.get(1));
 
 					zipEntry = zipInputStream.getNextEntry();
-					assertEquals("col2.csv", zipEntry.getName());
+					assertEquals("Department.csv", zipEntry.getName());
+					fileInputStream = readZipFileContents(zipInputStream);
+					lines = IOUtils.readLines(fileInputStream);
+					assertEquals("empty,departmentId,employeeIds,name", lines.get(0));
+					assertEquals(",2,55002,\"Marketing, has a comma\"", lines.get(1));
+
 					zipEntry = zipInputStream.getNextEntry();
 					assertNull(zipEntry);
 				})
@@ -188,8 +190,8 @@ public class ExportControllerTests extends AbstractMvcTest {
 	void deleteFile() throws Exception {
 		assertEquals(0, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));
 		List<String> entityNames = new ArrayList<>();
-		entityNames.add("col1");
-		entityNames.add("col2");
+		entityNames.add("Employee");
+		entityNames.add("Department");
 		exportService.runExports(getNonAdminHubClient().getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 		exportService.runExports(getHubClient(ACCOUNT_NAME2, ACCOUNT_PASSWORD).getFinalClient(), getNonAdminHubClient().getUsername(), entityNames);
 		assertEquals(2, getDocCount(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION));

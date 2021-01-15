@@ -18,9 +18,11 @@
 			},
 			"Employee": {
 				"name": "Zola Manchett",
-				"departmentId": "2",
-				"employeeId": "55002",
-				"skills": ["general ledger", "not visible in search"]
+				"departmentId": "2, has a comma",
+				"employeeId": "55002 'hi'",
+				"skills": ["general ledger", "not visible in search"],
+				"skills2": "[\"SPARQL\", \"XQuery\", \"Java\", \"RDF\"]",
+				"json": "{\"key\":\"value\"}"
 			}
 		},
 		"attachments": {
