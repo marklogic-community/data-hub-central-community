@@ -35,6 +35,12 @@
 					"isArray": true
 				},
 				{
+					"_propId": "b904d6b4-5aa4-4498-8952-3213a26c37a3",
+					"name": "skills2",
+					"type": "string",
+					"isArray": true
+				},
+				{
 					"_propId": "b905d6b4-5ad4-4498-8952-3213a26c37d0",
 					"name": "empty",
 					"type": "string",

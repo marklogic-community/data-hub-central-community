@@ -1,6 +1,8 @@
 package com.marklogic.envision.export;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.datamovement.*;
@@ -29,6 +31,7 @@ public class ExportToCsvWriterListener extends ExportListener {
 	private String entityName;
 	private JsonNode model;
 	private AtomicBoolean isFirstRow = new AtomicBoolean(true);
+	private ObjectMapper objectMapper = new ObjectMapper();
 
 	public ExportToCsvWriterListener(Writer writer, JsonNode model) {
 		this.writer = writer;
@@ -147,8 +150,19 @@ public class ExportToCsvWriterListener extends ExportListener {
 			for (int i = 0; i < headers.length; i++) {
 				JsonNode childNode = entity.get(headers[i]);
 				if (childNode != null) {
-					String value = childNode.asText();
-					if (value.contains(",")) {
+					String value = null;
+					if (childNode.isArray()) {
+						try {
+							value = objectMapper.writeValueAsString(childNode);
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
+					}
+					else {
+						value = childNode.asText();
+					}
+					if (value.contains(",") || value.contains("\"") || value.contains("'")) {
+						value = value.replaceAll("\"", "\"\"");
 						value = "\"" + value + "\"";
 					}
 					values.add(value);
