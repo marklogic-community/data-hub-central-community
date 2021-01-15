@@ -8,6 +8,7 @@ import com.marklogic.appdeployer.AppConfig;
 import com.marklogic.appdeployer.command.Command;
 import com.marklogic.appdeployer.impl.SimpleAppDeployer;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.DatabaseClientFactory;
 import com.marklogic.client.document.DocumentPage;
 import com.marklogic.client.eval.EvalResult;
 import com.marklogic.client.eval.EvalResultIterator;
@@ -15,7 +16,6 @@ import com.marklogic.client.eval.ServerEvaluationCall;
 import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
 import com.marklogic.client.io.*;
-import com.marklogic.client.io.marker.AbstractReadHandle;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.auth.UserPojo;
@@ -178,6 +178,17 @@ public class BaseTest {
 		return getClient(DatabaseKind.STAGING);
 	}
 
+	protected DatabaseClient getStagingModulesClient() {
+		HubConfigImpl hubConfig = getHubConfig();
+		if (hubConfig != null) {
+			AppConfig appConfig = hubConfig.getAppConfig();
+			if (appConfig != null) {
+				return DatabaseClientFactory.newClient(appConfig.getHost(), hubConfig.getPort(DatabaseKind.STAGING), HubConfig.DEFAULT_MODULES_DB_NAME, new DatabaseClientFactory.DigestAuthContext(hubConfig.getMlUsername(), hubConfig.getMlPassword()), DatabaseClient.ConnectionType.GATEWAY);
+			}
+		}
+		return null;
+	}
+
 	protected DatabaseClient getJobClient() {
 		return getClient(DatabaseKind.JOB);
 	}
@@ -229,6 +240,20 @@ public class BaseTest {
 	protected String getDocumentString(DatabaseClient client, String uri) {
 		DocumentPage page = client.newDocumentManager().read(uri);
 		return page.next().getContent(new StringHandle()).get();
+	}
+
+	protected String getModulesFile(String uri) {
+		try {
+			String contents =  getStagingModulesClient().newDocumentManager().read(uri).next().getContent(new StringHandle()).get();
+			return contents.replaceFirst("(\\(:|//)\\s+cache\\sbuster:.+\\n", "");
+		}
+		catch (IllegalStateException e){
+			return null;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	protected String getResource(String resourceName) {

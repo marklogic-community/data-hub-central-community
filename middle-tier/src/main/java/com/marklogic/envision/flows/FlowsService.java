@@ -18,11 +18,12 @@ import com.marklogic.hub.StepDefinitionManager;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
-import com.marklogic.hub.flow.RunFlowResponse;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.mapping.Mapping;
+import com.marklogic.hub.scaffold.Scaffolding;
 import com.marklogic.hub.step.StepDefinition;
+import com.marklogic.hub.step.impl.CustomStepDefinitionImpl;
 import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,6 +49,7 @@ public class FlowsService {
 	final private MappingManager mappingManager;
 	final private DeployService deployService;
 	final private SimpMessagingTemplate template;
+	final private Scaffolding scaffolding;
 
 	@Autowired
 	FlowsService(
@@ -54,14 +57,15 @@ public class FlowsService {
 		StepDefinitionManager stepDefinitionManager,
 		MappingManager mappingManager,
 		DeployService deployService,
-		SimpMessagingTemplate template
+		SimpMessagingTemplate template,
+		Scaffolding scaffolding
 	) {
-
 		this.flowManager = flowManager;
 		this.stepDefinitionManager = stepDefinitionManager;
 		this.mappingManager = mappingManager;
 		this.deployService = deployService;
 		this.template = template;
+		this.scaffolding = scaffolding;
 	}
 
 	EntityManager getEntityManager(HubClient hubClient) {
@@ -180,6 +184,21 @@ public class FlowsService {
 				deployService.loadMapping(hubClient, mapping);
 			}
 		}
+		else if (stepType.equals("CUSTOM")) {
+			try {
+				ObjectMapper om = new ObjectMapper();
+				JsonNode node = om.readTree(String.format("{\"name\":\"%s\",\"type\":\"custom\" }",stepName));
+				CustomStepDefinitionImpl stepDefinition = (CustomStepDefinitionImpl) stepDefinitionManager.createStepDefinitionFromJSON(node);
+				stepDefinition.setModulePath(String.format("/custom-modules/custom/%s/main.sjs", stepName));
+				stepDefinitionManager.saveStepDefinition(stepDefinition);
+				deployService.loadStepDefinition(hubClient, stepDefinition);
+				scaffolding.createCustomModule(stepName,stepType);
+		        deployService.loadHubModules(hubClient);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		deployService.loadFlow(hubClient, flow);
 	}
 
@@ -188,8 +207,9 @@ public class FlowsService {
 		String stepKey = getStepKeyByName(flow, stepName);
 		if (stepKey != null) {
 			Step step = flow.getStep(stepKey);
-
 			String mappingName = step.getMappingName();
+			StepDefinition.StepDefinitionType stepType = step.getStepDefinitionType();
+
 			if (mappingName != null) {
 				int mappingVersion = getMappingVersion(step);
 
@@ -199,6 +219,21 @@ public class FlowsService {
 				// delete from MarkLogic
 				deployService.deleteMapping(hubClient, mappingName, mappingVersion);
 			}
+
+		    if (stepType.equals(StepDefinition.StepDefinitionType.CUSTOM)){
+				CustomStepDefinitionImpl sdm = (CustomStepDefinitionImpl)stepDefinitionManager.getStepDefinition(stepName,stepType);
+
+		    	stepDefinitionManager.deleteStepDefinition(sdm);
+                deployService.deleteStepDefinition(hubClient,stepName);
+                deployService.deleteCustomModule(hubClient, sdm.getModulePath());
+
+				Path customModuleDir = hubClient.getHubConfig().getHubProject().getCustomModuleDir(stepName, stepType.toString().toLowerCase());
+				File moduleFile = customModuleDir.resolve("main.sjs").toFile();
+				if (moduleFile.exists()) {
+					moduleFile.delete();
+				}
+			}
+
 			Map<String, Step> steps = flow.getSteps();
 			steps.remove(stepKey);
 
