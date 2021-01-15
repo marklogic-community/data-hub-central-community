@@ -21,6 +21,23 @@
 						v-model="collection"
 						data-cy="uploadCollection.collectionName"
 					></v-text-field>
+					<v-expansion-panels v-model="advancedState">
+						<v-expansion-panel data-cy="uploadCollection.advancedBtn">
+							<v-expansion-panel-header>Advanced</v-expansion-panel-header>
+							<v-expansion-panel-content>
+								<v-select
+									:items="databases"
+									item-text="label"
+									item-value="value"
+									label="Database"
+									v-model="currentDatabase"
+									:menu-props="{ 'content-class': 'databaseArray'}"
+									data-cy="uploadCollection.database"
+									required
+								></v-select>
+							</v-expansion-panel-content>
+						</v-expansion-panel>
+					</v-expansion-panels>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
@@ -45,10 +62,22 @@ export default {
 	},
 	data() {
 		return {
+			advancedState: null,
 			collection: null,
 			dialog: false,
 			resolve: null,
-			reject: null
+			reject: null,
+			databases: [
+				{
+					label: 'Staging',
+					value: 'staging'
+				},
+				{
+					label: 'Final',
+					value: 'final'
+				}
+			],
+			currentDatabase: 'staging'
 		}
 	},
 	validations: {
@@ -63,6 +92,7 @@ export default {
 			return errors
 		},
 		open(collection) {
+			this.advancedState = null
 			this.$v.$reset()
 			this.collection = collection || null
 			this.dialog = true
@@ -77,7 +107,7 @@ export default {
 				return
 			}
 
-			this.resolve(this.collection)
+			this.resolve({collection: this.collection, database: this.currentDatabase})
 			this.dialog = false
 		},
 		cancel() {

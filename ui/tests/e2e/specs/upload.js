@@ -27,12 +27,13 @@ describe('Integrate Tab', () => {
 		cy.route('POST', '/api/flows/steps/delete', {}).as('deleteStep')
 		cy.route('PUT', '/api/flows/21232f297a57a5a743894a0e4a801fc3', {}).as('saveFlow')
 		cy.route('POST', '/api/upload', {}).as('uploadFile')
+		cy.route('POST', '/api/system/deleteCollection', {}).as('deleteCollection')
 	})
 
 	it('should show sample data', () => {
 		cy.visit('/upload')
-		cy.contains('MyDataSource.csv')
-		cy.contains('MyOtherDataSource.csv')
+		cy.contains('MyDataSource.csv').should('exist')
+		cy.contains('MyOtherDataSource.csv').should('exist')
 	})
 
 	it('should show real data', () => {
@@ -70,6 +71,7 @@ describe('Integrate Tab', () => {
 				.its('request.body')
 					.should(body => {
 						expect(body.get('collection')).to.eq('test.csv')
+						expect(body.get('database')).to.eq('staging')
 						expect(body.get('files').name).to.eq('test.csv')
 					})
 		})
@@ -109,10 +111,102 @@ describe('Integrate Tab', () => {
 				.its('request.body')
 					.should(body => {
 						expect(body.get('collection')).to.eq('MyCollectionIsRad')
+						expect(body.get('database')).to.eq('staging')
 						expect(body.get('files').name).to.eq('test.csv')
 					})
-
-
 		})
+	})
+
+	it('should upload a csv with changed database', () => {
+		cy.visit('/upload')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.fixture('test.csv', 'base64').then(fileContent => {
+			cy.get('[data-cy="uploadfileInput"]').should('exist')
+				.attachFile(
+					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
+					{ subjectType: 'drag-n-drop' },
+				);
+
+			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('My Collection Is Rad')
+			cy.get('[data-cy="uploadCollectionDlg.cancelBtn"]').click()
+
+			cy.get('[data-cy="uploadfileInput"]').should('exist')
+				.attachFile(
+					{ fileContent, fileName: 'test.csv', mimeType: 'text/csv' },
+					{ subjectType: 'drag-n-drop' },
+				);
+
+			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('My Collection Is Rad')
+			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
+
+			cy.get('.v-messages__message').should('contain', 'Collection cannot contain spaces. Only letters, numbers, and underscore')
+
+			cy.get('[data-cy="uploadCollection.collectionName"]').clear().type('MyCollectionIsRad')
+			cy.get('.v-messages__message').should('not.exist')
+
+			cy.get('[data-cy="uploadCollection.advancedBtn"]').click()
+
+			cy.get('[data-cy="uploadCollection.database"]').parentsUntil('.v-select__slot').click()
+			cy.get('.databaseArray .v-list-item').contains('Final').parentsUntil('.v-list-item').click()
+
+			cy.get('[data-cy="uploadCollectionDlg.saveBtn"]').click()
+			cy.get('.v-messages__message').should('not.exist')
+
+			cy.wait('@uploadFile')
+				.its('request.body')
+					.should(body => {
+						expect(body.get('collection')).to.eq('MyCollectionIsRad')
+						expect(body.get('database')).to.eq('final')
+						expect(body.get('files').name).to.eq('test.csv')
+					})
+		})
+	})
+
+	it('delete a data source', () => {
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.visit('/upload')
+
+		cy.get('[data-cy="manageSources.table"] tr').should('have.length', 4)
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 4)
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
+		cy.get('button').contains('Cancel').click()
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfoPostDelete.json')
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
+		cy.get('button').contains('Delete').click()
+		cy.wait('@deleteCollection')
+			.its('request.body')
+				.should(body => {
+					expect(body).to.deep.equal({"collections": ["DataSource1"], "database": "staging"})
+				})
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 3)
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+	})
+
+	it('delete all data sources', () => {
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.visit('/upload')
+
+		cy.contains('MyDataSource.csv').should('not.exist')
+		cy.contains('MyOtherDataSource.csv').should('not.exist')
+		cy.get('[data-cy="manageSources.table"] tr').should('have.length', 4)
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 4)
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+
+		cy.get('[data-cy="manageSources.deleteAll"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
+		cy.get('button').contains('Cancel').click()
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfoPostDelete.json')
+		cy.get('[data-cy="manageSources.deleteAll"] [data-cy="deleteDataConfirm.deleteButton"]').first().click()
+		cy.get('button').contains('Delete').click()
+		cy.wait('@deleteCollection')
+			.its('request.body')
+				.should(body => {
+					expect(body).to.deep.equal({"collections": ["DataSource1","DataSource2","DataSource3","DataSource4"], "database": "staging"})
+				})
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 2)
+		cy.get('[data-cy="manageSources.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 2)
+		cy.contains('MyDataSource.csv').should('exist')
+		cy.contains('MyOtherDataSource.csv').should('exist')
 	})
 })

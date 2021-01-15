@@ -25,6 +25,6 @@ public class SystemController extends AbstractController {
 		else {
 			databaseClient = getHubClient().getStagingClient();
 		}
-		SystemUtils.on(databaseClient).deleteDatasource(body.collection);
+		SystemUtils.on(databaseClient).deleteDatasource(body.collections);
 	}
 }

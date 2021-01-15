@@ -153,7 +153,7 @@
 												<tr>
 													<th>Entity Name</th>
 													<th>Count</th>
-													<th>
+													<th data-cy="manageData.deleteAll">
 														<delete-data-confirm
 															:tooltip="`Delete All Entity Documents`"
 															:message="`Do you really want to delete all Entity documents?`"
@@ -572,19 +572,15 @@ export default {
 		},
 		async removeAllData() {
 			this.deleteInProgress = true
-			for (let i = 0; i < this.entityNames.length; i++) {
-				const collection = this.entityNames[i]
-				await axios.post("/api/system/deleteCollection", { database: 'final', collection: collection })
-			}
+			await axios.post("/api/system/deleteCollection", { database: 'final', collections: this.entityNames })
 			this.deleteInProgress = false
 			this.finalData = []
 		},
 		async removeData(collection) {
 			this.deleteInProgress = true
-			await axios.post("/api/system/deleteCollection", { database: 'final', collection: collection })
+			await axios.post("/api/system/deleteCollection", { database: 'final', collections: [collection] })
 			await this.getStepInfo()
 			this.deleteInProgress = false
-			// this.finalData = this.finalData.filter(c => c.collection !== collection)
 		},
 		async removeJob(jobId) {
 			await jobsApi.deleteJob(jobId)

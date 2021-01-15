@@ -1,19 +1,30 @@
 package com.marklogic.envision.upload;
 
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.marklogic.client.DatabaseClient;
 import com.marklogic.client.datamovement.DataMovementManager;
 import com.marklogic.client.datamovement.JacksonCSVSplitter;
 import com.marklogic.client.datamovement.WriteBatcher;
 import com.marklogic.client.document.ServerTransform;
 import com.marklogic.client.ext.helper.LoggingObject;
-import com.marklogic.client.io.DocumentMetadataHandle;
-import com.marklogic.client.io.InputStreamHandle;
-import com.marklogic.client.io.JacksonHandle;
+import com.marklogic.client.io.*;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.pojo.StatusMessage;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BOMInputStream;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.lang.PipedQuadsStream;
+import org.apache.jena.riot.lang.PipedRDFIterator;
+import org.apache.jena.riot.lang.PipedRDFStream;
+import org.apache.jena.riot.lang.PipedTriplesStream;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.sparql.core.Quad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +33,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -33,48 +46,251 @@ import java.util.zip.ZipInputStream;
 @Service
 public class UploadService extends LoggingObject {
 
+	final static private int MAXTRIPLESPERDOCUMENT = 100;
+	protected Random random;
+	protected long randomValue;
+	protected long milliSecs;
+	protected static Pattern[] patterns = new Pattern[] {
+		Pattern.compile("&"), Pattern.compile("<"), Pattern.compile(">") };
+
+
 	final private SimpMessagingTemplate template;
 	private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 	@Autowired
 	UploadService(SimpMessagingTemplate template) {
 		this.template = template;
+		random = new Random();
+		randomValue = random.nextLong();
+		Calendar cal = Calendar.getInstance();
+		milliSecs = cal.getTimeInMillis();
 	}
 
 	@Async
-	public void asyncUploadFiles(HubClient client, UploadFile[] files, String collectionName) {
-		uploadFiles(client, files, collectionName);
+	public void asyncUploadFiles(HubClient client, UploadFile[] files, String database, String collectionName) {
+		uploadFiles(client, files, database, collectionName);
 	}
 
 	protected String cleanSpaces(String input) {
 		return input.replaceAll("\\s+", "_");
 	}
 
-	public void uploadFiles(HubClient client, UploadFile[] files, String collectionName) {
+	private boolean isTriple(String fileName) {
+		return (fileName.toLowerCase().endsWith("rdf") || fileName.toLowerCase().endsWith("ttl") || fileName.toLowerCase().endsWith("n3") || fileName.toLowerCase().endsWith("nt") || fileName.toLowerCase().endsWith("nq") || fileName.toLowerCase().endsWith("trig"));
+	}
+
+	public void uploadFiles(HubClient client, UploadFile[] files, String database, String collectionName) {
 		String username = client.getHubConfig().getMlUsername();
-		uploadFiles(client, collectionName, writeBatcher -> {
-			AtomicInteger filesWritten = new AtomicInteger(0);
-			filesWritten.addAndGet(1);
-			Arrays.stream(files).forEach(file -> {
-				String fileName = file.getFileName();
-				InputStream is = file.getInputStream();
-				String prefix = String.format("/ingest/%s/%s/%s", username, collectionName, fileName);
-				if (collectionName.equals(fileName)) {
-					prefix = String.format("/ingest/%s/%s", username, collectionName);
-				}
-				if (fileName.toLowerCase().endsWith("csv") || fileName.toLowerCase().endsWith("psv")) {
-					filesWritten.getAndAdd(uploadCsvFile(writeBatcher, is, prefix));
-				}
-				else if (fileName.toLowerCase().endsWith("zip")) {
-					filesWritten.getAndAdd(uploadZip(writeBatcher, is, prefix));
+
+		UploadFile[] triples = Arrays.stream(files).filter(file -> isTriple(file.getFileName())).toArray(UploadFile[]::new);
+		UploadFile[] nonTriples = Arrays.stream(files).filter(file -> !isTriple(file.getFileName())).toArray(UploadFile[]::new);
+
+		// load the triples in their own batch w/o running envelope
+		if (triples.length > 0) {
+			uploadFiles(client, database, collectionName, false, writeBatcher -> {
+				AtomicInteger filesWritten = new AtomicInteger(0);
+				filesWritten.addAndGet(1);
+				Arrays.stream(triples).forEach(file -> {
+					String fileName = file.getFileName();
+					InputStream is = file.getInputStream();
+					String prefix = String.format("/ingest/%s/%s/%s", username, collectionName, fileName);
+					if (collectionName.equals(fileName)) {
+						prefix = String.format("/ingest/%s/%s", username, collectionName);
+					}
+					filesWritten.getAndAdd(uploadTriples(writeBatcher, fileName, is, prefix));
+				});
+
+				return filesWritten.get();
+			});
+		}
+
+		if (nonTriples.length > 0) {
+			uploadFiles(client, database, collectionName, true, writeBatcher -> {
+				AtomicInteger filesWritten = new AtomicInteger(0);
+				filesWritten.addAndGet(1);
+				Arrays.stream(nonTriples).forEach(file -> {
+					String fileName = file.getFileName();
+					InputStream is = file.getInputStream();
+					String prefix = String.format("/ingest/%s/%s/%s", username, collectionName, fileName);
+					if (collectionName.equals(fileName)) {
+						prefix = String.format("/ingest/%s/%s", username, collectionName);
+					}
+					if (fileName.toLowerCase().endsWith("csv") || fileName.toLowerCase().endsWith("psv")) {
+						filesWritten.getAndAdd(uploadCsvFile(writeBatcher, is, prefix));
+					} else if (fileName.toLowerCase().endsWith("zip")) {
+						filesWritten.getAndAdd(uploadZip(writeBatcher, is, prefix));
+					} else {
+						InputStreamHandle handle = new InputStreamHandle(is);
+						if (fileName.toLowerCase().endsWith("xml")) {
+							handle.withFormat(Format.XML);
+						} else if (fileName.toLowerCase().endsWith("json")) {
+							handle.withFormat(Format.JSON);
+						}
+						writeBatcher.add(cleanSpaces(prefix), handle);
+					}
+
+				});
+
+				return filesWritten.get();
+			});
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public int uploadTriples(WriteBatcher writeBatcher, String fileName, InputStream stream, String prefix) {
+		AtomicInteger filesWritten = new AtomicInteger(0);
+
+		Lang lang;
+		if (fileName.toLowerCase().endsWith("rdf")) {
+			lang = RDFLanguages.RDFXML;
+		}
+		else if (fileName.toLowerCase().endsWith("ttl")) {
+			lang = RDFLanguages.TURTLE;
+		}
+		else if (fileName.toLowerCase().endsWith("n3")) {
+			lang = RDFLanguages.N3;
+		}
+		else if (fileName.toLowerCase().endsWith("nt")) {
+			lang = RDFLanguages.NTRIPLES;
+		}
+		else if (fileName.toLowerCase().endsWith("nq")) {
+			lang = RDFLanguages.NQUADS;
+		}
+		else if (fileName.toLowerCase().endsWith("trig")) {
+			lang = RDFLanguages.TRIG;
+		}
+		else {
+			lang = RDFLanguages.RDFXML;
+		}
+
+		PipedRDFIterator rdfIter;
+		PipedRDFStream rdfInputStream;
+		if (lang == Lang.NQUADS || lang == Lang.TRIG) {
+			rdfIter = new PipedRDFIterator<Quad>();
+			rdfInputStream = new PipedQuadsStream(rdfIter);
+		} else {
+			rdfIter = new PipedRDFIterator<Triple>();
+			rdfInputStream = new PipedTriplesStream(rdfIter);
+		}
+
+		Parser parser = new Parser(stream, lang, rdfInputStream);
+
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		executor.submit(parser);
+
+		while (rdfIter.hasNext()) {
+			StringBuilder buffer = new StringBuilder();
+			buffer.append("<sem:triples xmlns:sem='http://marklogic.com/semantics'>");
+			int max = MAXTRIPLESPERDOCUMENT;
+			while (max > 0 && rdfIter.hasNext()) {
+				Object next = rdfIter.next();
+				Triple triple;
+				if (next instanceof Quad) {
+					triple = ((Quad) next).asTriple();
 				}
 				else {
-					writeBatcher.add(cleanSpaces(prefix), new InputStreamHandle(is));
+					triple = (Triple)next;
 				}
-			});
+				buffer.append("<sem:triple>");
+				buffer.append(subject(triple.getSubject()));
+				buffer.append(predicate(triple.getPredicate()));
+				buffer.append(object(triple.getObject()));
+				buffer.append("</sem:triple>");
+				max--;
+			}
+			buffer.append("</sem:triples>\n");
 
-			return filesWritten.get();
-		});
+			String uri = String.format("%s/%s.xml", prefix, UUID.randomUUID());
+			writeBatcher.add(cleanSpaces(uri), new StringHandle(buffer.toString()));
+			filesWritten.getAndAdd(1);
+		}
+
+		executor.shutdown();
+		return filesWritten.get();
+	}
+
+	private long rotl(long x, long y) {
+		return (x<<y)^(x>>(64-y));
+	}
+
+	private long fuse(long a, long b)  {
+		return rotl(a,8)^b;
+	}
+
+	private long scramble(long x) {
+		return x^rotl(x,20)^rotl(x,40);
+	}
+
+	private long hash64(long value, String str) {
+		char[] arr = str.toCharArray();
+		for (int i = 0; i < str.length(); i++) {
+			long HASH64_STEP = 15485863L;
+			value = (value + Character.getNumericValue(arr[i])) * HASH64_STEP;
+		}
+		return value;
+	}
+
+	protected String resource(Node rsrc) {
+		if (rsrc.isBlank()) {
+			return "http://marklogic.com/semantics/blank/" + Long.toHexString(
+				hash64(fuse(scramble(milliSecs),randomValue), rsrc.getBlankNodeLabel()));
+		} else {
+			return escapeXml(rsrc.toString());
+		}
+	}
+
+	protected String resource(Node rsrc, String tag) {
+		String uri = resource(rsrc);
+		return "<sem:" + tag + ">" + uri + "</sem:" + tag + ">";
+	}
+
+	protected String subject(Node subj) {
+		return resource(subj, "subject");
+	}
+
+	protected String predicate(Node subj) {
+		return resource(subj, "predicate");
+	}
+
+	protected String object(Node node) {
+		if (node.isLiteral()) {
+			String text = node.getLiteralLexicalForm();
+			String type = node.getLiteralDatatypeURI();
+			String lang = node.getLiteralLanguage();
+
+			if (lang == null || "".equals(lang)) {
+				lang = "";
+			} else {
+				lang = " xml:lang='" + escapeXml(lang) + "'";
+			}
+
+			if ("".equals(lang)) {
+				if (type == null) {
+					type = "http://www.w3.org/2001/XMLSchema#string";
+				}
+				type = " datatype='" + escapeXml(type) + "'";
+			} else {
+				type = "";
+			}
+
+			return "<sem:object" + type + lang + ">" + escapeXml(text) + "</sem:object>";
+		} else if (node.isBlank()) {
+			return "<sem:object>http://marklogic.com/semantics/blank/" + Long.toHexString(
+				hash64(fuse(scramble(milliSecs),randomValue), node.getBlankNodeLabel()))
+				+"</sem:object>";
+		} else {
+			return "<sem:object>" + escapeXml(node.toString()) + "</sem:object>";
+		}
+	}
+
+	protected static String escapeXml(String _in) {
+		if (null == _in){
+			return "";
+		}
+		return patterns[2].matcher(
+			patterns[1].matcher(
+				patterns[0].matcher(_in).replaceAll("&amp;"))
+				.replaceAll("&lt;")).replaceAll("&gt;");
 	}
 
 	public int uploadZip(WriteBatcher writeBatcher, InputStream stream, String prefix) {
@@ -94,8 +310,14 @@ public class UploadService extends LoggingObject {
 						} else if (fileName.toLowerCase().endsWith("zip")) {
 							filesWritten.getAndAdd(uploadZip(writeBatcher, fileInputStream, newPrefix));
 						} else {
+							InputStreamHandle handle = new InputStreamHandle(fileInputStream);
+							if (fileName.toLowerCase().endsWith("xml")) {
+								handle.withFormat(Format.XML);
+							} else if (fileName.toLowerCase().endsWith("json")) {
+								handle.withFormat(Format.JSON);
+							}
 							String uri = String.format("%s/%s", prefix, fileName);
-							writeBatcher.add(cleanSpaces(uri), new InputStreamHandle(fileInputStream));
+							writeBatcher.add(cleanSpaces(uri), handle);
 							filesWritten.getAndAdd(1);
 						}
 					}
@@ -118,10 +340,18 @@ public class UploadService extends LoggingObject {
 		return new ByteArrayInputStream(streamBuilder.toByteArray());
 	}
 
-	public void uploadFiles(HubClient client, String collectionName, Function<WriteBatcher, Integer> fileIterator) {
-		DataMovementManager dataMovementManager = client.getStagingClient().newDataMovementManager();
-		ServerTransform serverTransform = new ServerTransform("wrapEnvelope");
+	private void uploadFiles(HubClient client, String database, String collectionName, boolean envelope, Function<WriteBatcher, Integer> fileIterator) {
+		DatabaseClient databaseClient;
+		if (database.equals("staging")) {
+			databaseClient = client.getStagingClient();
+		}
+		else {
+			databaseClient = client.getFinalClient();
+		}
+		DataMovementManager dataMovementManager = databaseClient.newDataMovementManager();
+
 		String jobId = UUID.randomUUID().toString();
+		ServerTransform serverTransform = new ServerTransform("wrapEnvelope");
 		serverTransform.addParameter("job-id", jobId);
 		String step = "1";
 		serverTransform.addParameter("step", step);
@@ -144,8 +374,11 @@ public class UploadService extends LoggingObject {
 			.withDefaultMetadata(metadataHandle)
 			.withBatchSize(batchSize)
 			.withThreadCount(threadCount)
-			.withJobId(jobId)
-			.withTransform(serverTransform);
+			.withJobId(jobId);
+
+		if (envelope) {
+			writeBatcher.withTransform(serverTransform);
+		}
 
 		StatusMessage msg = StatusMessage.newStatus(collectionName);
 
@@ -267,5 +500,27 @@ public class UploadService extends LoggingObject {
 			e.printStackTrace();
 		}
 		return CsvSchema.emptySchema().withColumnSeparator(delimiter.charAt(0));
+	}
+
+	protected static class Parser implements Runnable
+	{
+		final PipedRDFStream rdfStream;
+		final RDFParserBuilder builder;
+
+		public Parser(InputStream stream, Lang lang, PipedRDFStream rdfStream)
+		{
+			this.rdfStream = rdfStream;
+			builder = RDFParser.create()
+				.source(stream)
+				.lang(lang);
+		}
+
+		public void setLang( Lang lang ) { builder.lang(lang); }
+
+		public void setErrorHandler( ErrorHandler handler ) { builder.errorHandler(handler); }
+
+		@Override
+		public void run() { builder.build().parse(rdfStream); }
+
 	}
 }

@@ -64,6 +64,10 @@ dependencies {
 
 	compile('org.apache.commons:commons-email:1.5')
 
+	compile('org.apache.jena:jena-arq:3.17.0')
+	compile('org.apache.jena:jena-core:3.17.0')
+	compile('commons-codec:commons-codec:1.15')
+
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
 	testCompile group: 'org.springframework', name: 'spring-test'

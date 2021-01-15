@@ -22,9 +22,9 @@ public class UploadController extends AbstractController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> uploadFile(@RequestParam("collection") String collection, @RequestParam("files") MultipartFile[] files) {
+	public ResponseEntity<?> uploadFile(@RequestParam("database") String database, @RequestParam("collection") String collection, @RequestParam("files") MultipartFile[] files) {
 		UploadFile[] uploadFiles = Arrays.asList(files).stream().map(file -> new UploadFile(file)).toArray(UploadFile[]::new);
-		uploadService.asyncUploadFiles(getHubClient(), uploadFiles, collection);
+		uploadService.asyncUploadFiles(getHubClient(), uploadFiles, database, collection);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

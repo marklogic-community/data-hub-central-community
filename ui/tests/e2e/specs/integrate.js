@@ -85,7 +85,7 @@ describe('Integrate Tab', () => {
 		cy.wait('@deleteCollection')
 			.its('request.body')
 				.should(body => {
-					expect(body).to.deep.equal({"collection": "Customer", "database": "final"})
+					expect(body).to.deep.equal({"collections": ["Customer"], "database": "final"})
 				})
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
 
@@ -94,6 +94,35 @@ describe('Integrate Tab', () => {
 
 		cy.get('[data-cy="manageData.toggle"]').click()
 		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 7)
+	})
+
+	it('delete all data', () => {
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.route('GET', '/api/entities', 'fixture:entities.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.visit('/integrate')
+		cy.get('[data-cy="manageData.table"] tr').should('have.length', 8)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]').should('have.length', 8)
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 6)
+
+		cy.get('[data-cy="manageData.deleteAll"] [data-cy="deleteDataConfirm.deleteButton"]').click()
+		cy.get('button').contains('Cancel').click()
+		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfoPostDelete.json')
+		cy.get('[data-cy="manageData.deleteAll"] [data-cy="deleteDataConfirm.deleteButton"]').click()
+		cy.get('button').contains('Delete').click()
+		cy.wait('@deleteCollection')
+			.its('request.body')
+				.should(body => {
+					expect(body).to.deep.equal({"collections": ["Customer", "Department", "Employee", "JobOpening", "JobReview", "Order", "Product", "Resume"], "database": "final"})
+				})
+
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 8)
+
+		cy.get('[data-cy="manageData.toggle"]').click()
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 0)
+
+		cy.get('[data-cy="manageData.toggle"]').click()
+		cy.get('[data-cy="manageData.table"] [data-cy="deleteDataConfirm.deleteButton"]:disabled').should('have.length', 8)
 	})
 
 	it('properly shows run history data', () => {

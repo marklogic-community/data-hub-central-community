@@ -1,6 +1,8 @@
 declareUpdate();
 
-var collection;
-xdmp.collectionDelete(collection);
+var collections;
+collections = collections.toObject();
+
+collections.forEach(collection => xdmp.collectionDelete(collection));
 
 true;
