@@ -627,6 +627,93 @@ describe('End to end test to create and update model', () => {
 			})
 	})
 
+	it('can rename a property', () => {
+		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"QuestionnaireAnswers":{"id":"questionnaireanswers","x":-156.3861003861004,"y":-130.42857142857144,"label":"QuestionnaireAnswers","entityName":"QuestionnaireAnswers","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string"},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+
+		cy.wait('@saveModel')
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("questionnaireanswers").click()
+
+		cy.get('[data-cy="panel-questionnaireanswers"] [data-cy="entityPickList.entityPropertyName"]').last().should('have.text', 'address')
+		cy.get('[data-cy="panel-questionnaireanswers"] [data-cy="entityPickList.entityPropertyType"]').last().should('have.text', 'string')
+
+		cy.get('[data-cy="panel-questionnaireanswers"] [data-cy="entityPickList.editPropertyBtn"]').last().click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').should('be.visible')
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').clear().type('newName')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
+		cy.get('[data-cy="entityPickList.entityPropertyName"]').last().should('have.text', 'newName')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').last().should('have.text', 'string')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body.nodes.questionnaireanswers.properties).to.deep.equal([
+					{
+						"_propId": "abc123",
+						"name": "id",
+						"type": "string"
+					},
+					{
+						"_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7",
+						"name": "newName",
+						"type": "string",
+						"isStructured": false,
+						"isArray": false
+					}
+				])
+			})
+	})
+
+	it('can add a property after a nested property', () => {
+		cy.route('GET', '/api/models/', [ { "name": "Test Model", "edges": {}, "nodes": { "poet": { "id": "poet", "x": -156.3861003861004, "y": -130.42857142857144, "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] }, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] } } } ])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body.nodes.poet.properties).to.deep.equal([])
+			})
+
+		cy.get('.hideUnlessTesting').invoke('css', 'visibility', 'visible')
+		cy.get('[data-cy=nodeList]').contains("poet").click()
+
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('arrayProp')
+		cy.get('.v-dialog--active [data-cy="editProperty.dataType"]').click()
+		cy.get('.v-list-item__title:visible').contains('array').parentsUntil('.v-list-item').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.arrayDataType"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.arrayDataType"]').type('{backspace}')
+		cy.get('.v-dialog--active [data-cy="editProperty.arrayDataType"]').type('phi')
+		cy.get('.v-list-item__title:visible').contains('Philosopher').parentsUntil('.v-list-item').click()
+
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
+		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'arrayProp')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'Philosopher[]')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body.nodes.poet.properties[0].name).to.equal('arrayProp')
+				expect(body.nodes.poet.properties[0].type).to.equal('Philosopher')
+				expect(body.nodes.poet.properties[0].isArray).to.equal(true)
+				expect(body.nodes.poet.properties[0].isStructured).to.equal(true)
+			})
+
+		cy.get('[data-cy="panel-poet"] [data-cy="entityPickList.addPropertyBtn"]').click()
+		cy.get('.v-dialog--active [data-cy="editProperty.propName"]').type('firstName')
+		cy.get('.v-dialog--active [data-cy="editProperty.createBtn"]').click()
+		cy.get('[data-cy="entityPickList.entityPropertyName"]').should('have.text', 'arrayPropfirstName')
+		cy.get('[data-cy="entityPickList.entityPropertyType"]').should('have.text', 'Philosopher[]string')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body.nodes.poet.properties[1].name).to.equal('firstName')
+				expect(body.nodes.poet.properties[1].type).to.equal('string')
+				expect(body.nodes.poet.properties[1].isArray).to.equal(false)
+				expect(body.nodes.poet.properties[1].isStructured).to.equal(false)
+			})
+	})
+
 	it('can not edit a property to an existing one', () => {
 		cy.route('GET', '/api/models/', [{"name":"Test Model","edges":{},"nodes":{"poet":{"id":"poet","x":-156.3861003861004,"y":-130.42857142857144,"label":"Poet","entityName":"Poet","type":"entity","properties":[{"_propId": "abc123", "name": "id", "type": "string"},{ "_propId": "9c6144b2-4d75-4e6c-bd7e-7319b48039c7", "name": "address", "type": "string" }]}}}])
 		cy.visit('/')

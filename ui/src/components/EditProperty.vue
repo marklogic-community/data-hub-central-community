@@ -103,7 +103,7 @@
 
 <script>
 import uuidv4 from 'uuid/v4';
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
 	props: {
@@ -200,6 +200,7 @@ export default {
 			this.type = 'string'
 			this.error = false
 			this.errorMsg = null
+			this.arrayType = 'string'
 			this.updateValues()
 		},
 		updateValues() {
