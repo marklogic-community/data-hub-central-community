@@ -1,0 +1,31 @@
+{
+	"flowName": "21232f297a57a5a743894a0e4a801fc3",
+	"step": {
+		"name": "MyCustomStep",
+		"description": "",
+		"options": {
+			"additionalCollections": [],
+			"targetEntity": "Customer",
+			"sourceDatabase": "data-hub-STAGING",
+			"targetDatabase": "data-hub-FINAL",
+			"collections": [
+				"Customer"
+			],
+			"sourceCollection": "DataSource1",
+			"sourceQuery": "cts.collectionQuery([\"DataSource1\"])",
+			"permissions": "data-hub-operator,read,data-hub-operator,update",
+			"outputFormat": "json"
+		},
+		"customHook": {
+			"module": "/envision/customHooks/uriRemapper.sjs",
+			"parameters": {},
+			"user": "",
+			"runBefore": false
+		},
+		"retryLimit": 0,
+		"batchSize": 100,
+		"threadCount": 4,
+		"stepDefinitionName": "MyCustomStep",
+		"stepDefinitionType": "CUSTOM"
+	}
+}

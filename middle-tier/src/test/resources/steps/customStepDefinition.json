@@ -1,0 +1,22 @@
+{
+	"lang": "zxx",
+	"name": "DenormalizeEmployees",
+	"description": "",
+	"type": "CUSTOM",
+	"version": 1,
+	"options": {
+		"collections": [
+			"DenormalizeEmployees"
+		],
+		"sourceDatabase": "data-hub-STAGING",
+		"permissions": "data-hub-operator,read,data-hub-operator,update",
+		"outputFormat": "json",
+		"targetDatabase": "data-hub-FINAL"
+	},
+	"customHook": {},
+	"modulePath": "/custom-modules/custom/DenormalizeEmployees/main.sjs",
+	"retryLimit": 0,
+	"batchSize": 100,
+	"threadCount": 4,
+	"language": "zxx"
+}

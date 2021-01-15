@@ -132,4 +132,34 @@ describe('Integrate Tab', () => {
 		cy.get('[data-cy="manageData.toggleFlows"]').click()
 		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 1)
 	})
+
+	it.only('add a custom step', () => {
+    cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
+		cy.route('GET', '/api/entities', 'fixture:entities.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
+		cy.visit('/integrate')
+		cy.get('div#MyCustomStep').should('not.exist')
+		cy.contains('Customer => MyCustomStep').should('not.exist')
+		cy.get('[data-cy="integrate.addStepBtn"]').click();
+		cy.get('[data-cy="addStepDialog.stepNameField"]').clear().type('MyCustomStep')
+		cy.get('[data-cy="addStepDialog.stepTypeField"]').parentsUntil('.v-select__slot').click()
+		cy.get('.stepTypeArray .v-list-item').contains('Custom').parentsUntil('.v-list-item').click()
+		cy.get('[data-cy="addStepDialog.entityTypeField"]').parentsUntil('.v-select__slot').click()
+		cy.get('.entityTypeArray .v-list-item').contains('Customer').parentsUntil('.v-list-item').click()
+		cy.get('[data-cy="addStepDialog.dataSourceField"]').parentsUntil('.v-select__slot').click()
+		cy.get('.dataSourceArray .v-list-item').contains('DataSource1').parentsUntil('.v-list-item').click()
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flowWithCustomStep.json')
+		cy.route('GET', '/api/flows/customSteps/MyCustomStep', 'fixture:customStep.json')
+		cy.get('[data-cy="addStepDialog.saveBtn"]').click();
+
+		cy.wait('@updateStep')
+			.its('request.body')
+			.should(body => {
+				console.log(JSON.stringify(body))
+				expect(body).to.deep.equal({"flowName":"21232f297a57a5a743894a0e4a801fc3","step":{"name":"MyCustomStep","description":"","options":{"additionalCollections":[],"targetEntity":"Customer","sourceDatabase":"data-hub-STAGING","targetDatabase":"data-hub-FINAL","collections":["Customer"],"sourceCollection":"DataSource1","sourceQuery":"cts.collectionQuery([\"DataSource1\"])","permissions":"data-hub-operator,read,data-hub-operator,update","outputFormat":"json"},"customHook":{"module":"/envision/customHooks/uriRemapper.sjs","parameters":{},"user":"","runBefore":false},"retryLimit":0,"batchSize":100,"threadCount":4,"stepDefinitionName":"MyCustomStep","stepDefinitionType":"CUSTOM"}})
+			})
+		cy.contains('Customer => MyCustomStep').should('exist')
+		cy.get('div#MyCustomStep').should('exist')
+
+	})
 })

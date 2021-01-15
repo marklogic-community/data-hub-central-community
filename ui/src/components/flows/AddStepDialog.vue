@@ -28,6 +28,7 @@
 						v-model="stepType"
 						:disabled="isEditing"
 						data-cy="addStepDialog.stepTypeField"
+						:menu-props="{ 'content-class': 'stepTypeArray'}"
 						required
 						:error-messages="inputErrors('stepType', 'Step Type')"
 						@input="$v.stepType.$touch()"
@@ -39,6 +40,7 @@
 						v-model="entityName"
 						:disabled="isEditing"
 						data-cy="addStepDialog.entityTypeField"
+						:menu-props="{ 'content-class': 'entityTypeArray'}"
 						required
 						:error-messages="inputErrors('stepType', 'Step Type')"
 						@input="$v.entityName.$touch()"
@@ -49,6 +51,7 @@
 						label="Data Source"
 						v-model="sourceCollection"
 						data-cy="addStepDialog.dataSourceField"
+						:menu-props="{ 'content-class': 'dataSourceArray'}"
 						required
 						:error-messages="inputErrors('sourceCollection', 'Data Source')"
 						@change="$v.sourceCollection.$touch()"
@@ -157,6 +160,10 @@ export default {
 				{
 					name: 'Merging',
 					value: 'MERGING'
+				},
+				{
+					name: 'Custom',
+					value: 'CUSTOM'
 				}
 				// {
 				// 	name: 'Pipes',
@@ -326,6 +333,13 @@ export default {
 					}
 				})
 				step.stepDefinitionName = 'default-merging'
+			}
+			else if (this.stepType === 'CUSTOM') {
+
+				// default to use our custom uri remapper hook. it will
+				// allow 2 steps to run against the same input doc
+				step.customHook.module = '/envision/customHooks/uriRemapper.sjs'
+				step.stepDefinitionName = this.stepName
 			}
 			flowsApi.createStep(this.flowName, step)
 				.then(() => {
