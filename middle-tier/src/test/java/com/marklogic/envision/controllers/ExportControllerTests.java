@@ -160,8 +160,8 @@ public class ExportControllerTests extends AbstractMvcTest {
 					assertEquals("Employee.csv", zipEntry.getName());
 					InputStream fileInputStream = readZipFileContents(zipInputStream);
 					List<String> lines = IOUtils.readLines(fileInputStream);
-					assertEquals("name,departmentId,employeeId,skills,skills2,empty", lines.get(0));
-					assertEquals("### Redacted ###,\"2, has a comma\",\"55002 'hi'\",\"[\"\"general ledger\"\",\"\"not visible in search\"\"]\",\"[\"\"SPARQL\"\", \"\"XQuery\"\", \"\"Java\"\", \"\"RDF\"\"]\",", lines.get(1));
+					assertEquals("name,departmentId,employeeId,skills,skills2,json,empty", lines.get(0));
+					assertEquals("### Redacted ###,\"2, has a comma\",\"55002 'hi'\",\"[\"\"general ledger\"\",\"\"not visible in search\"\"]\",\"[\"\"SPARQL\"\", \"\"XQuery\"\", \"\"Java\"\", \"\"RDF\"\"]\",\"{\"\"key\"\":\"\"value\"\"}\",", lines.get(1));
 
 					zipEntry = zipInputStream.getNextEntry();
 					assertEquals("Department.csv", zipEntry.getName());

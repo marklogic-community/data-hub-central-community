@@ -24,7 +24,8 @@
 					"general ledger",
 					"not visible in search"
 				],
-				"skills2": "[\"SPARQL\", \"XQuery\", \"Java\", \"RDF\"]"
+				"skills2": "[\"SPARQL\", \"XQuery\", \"Java\", \"RDF\"]",
+				"json": "{\"key\":\"value\"}"
 			}
 		},
 		"attachments": {
