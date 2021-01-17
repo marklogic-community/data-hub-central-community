@@ -32,7 +32,7 @@
 		<div class="structured" :class="expanded ? 'expanded': ''">
 			<div>
 				<property-row
-					v-for="p in entities[prop.type.toLowerCase()].properties"
+					v-for="p in getEntityProps(prop)"
 					:key="p.name"
 					:entity="entity"
 					:prop="p"
@@ -100,6 +100,9 @@ export default {
 		}
 	},
 	methods: {
+		getEntityProps(prop) {
+			return (this.entities[prop.type.toLowerCase()] || {}).properties || []
+		},
 		expandProperty() {
 			if (this.prop.isStructured) {
 				this.expanded = !this.expanded
