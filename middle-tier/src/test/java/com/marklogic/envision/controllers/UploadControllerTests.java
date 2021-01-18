@@ -27,14 +27,16 @@ public class UploadControllerTests extends AbstractMvcTest {
 	@Test
 	void upload() throws Exception {
 		mockMvc.perform(buildUpload(UPLOAD_URL, new MockMultipartFile("file", "my-wacky-file.csv", "text/csv", getResourceStream("data/my-wacky-file.csv")))
-			.param("collection", "my-wacky-file.csv"))
+			.param("collection", "my-wacky-file.csv")
+			.param("database", "staging"))
 			.andExpect(status().isUnauthorized());
 
 		registerAccount();
 		login();
 
 		mockMvc.perform(buildUpload(UPLOAD_URL, new MockMultipartFile("file", "my-wacky-file.csv", "text/csv", getResourceStream("data/my-wacky-file.csv")))
-			.param("collection", "my-wacky-file.csv"))
+			.param("collection", "my-wacky-file.csv")
+			.param("database", "staging"))
 			.andExpect(status().isOk());
 
 		verify(uploadService, times(1)).asyncUploadFiles(any(), any(), anyString(), anyString());
@@ -42,7 +44,8 @@ public class UploadControllerTests extends AbstractMvcTest {
 		reset(uploadService);
 
 		mockMvc.perform(buildUpload(UPLOAD_URL, new MockMultipartFile("file", "my file with spaces.csv", "text/csv", getResourceStream("data/my-wacky-file.csv")))
-			.param("collection", "MyCollection"))
+			.param("collection", "MyCollection")
+			.param("database", "staging"))
 			.andExpect(status().isOk());
 
 		verify(uploadService, times(1)).asyncUploadFiles(any(), any(), anyString(), anyString());
