@@ -89,7 +89,6 @@ public class UploadService extends LoggingObject {
 		if (triples.length > 0) {
 			uploadFiles(client, database, collectionName, false, writeBatcher -> {
 				AtomicInteger filesWritten = new AtomicInteger(0);
-				filesWritten.addAndGet(1);
 				Arrays.stream(triples).forEach(file -> {
 					String fileName = file.getFileName();
 					InputStream is = file.getInputStream();
@@ -107,7 +106,6 @@ public class UploadService extends LoggingObject {
 		if (nonTriples.length > 0) {
 			uploadFiles(client, database, collectionName, true, writeBatcher -> {
 				AtomicInteger filesWritten = new AtomicInteger(0);
-				filesWritten.addAndGet(1);
 				Arrays.stream(nonTriples).forEach(file -> {
 					String fileName = file.getFileName();
 					InputStream is = file.getInputStream();
@@ -127,6 +125,7 @@ public class UploadService extends LoggingObject {
 							handle.withFormat(Format.JSON);
 						}
 						writeBatcher.add(cleanSpaces(prefix), handle);
+						filesWritten.addAndGet(1);
 					}
 
 				});
