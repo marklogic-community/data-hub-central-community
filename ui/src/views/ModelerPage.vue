@@ -97,7 +97,8 @@
 </template>
 
 <script>
-import VisjsGraph from '@/components/graph/graph.vue'
+//import VisjsGraph from '@/components/graph/graph.vue'
+import VisjsGraph from '@/components/graph/minimap.vue'
 import EntityPickList from '@/components/ml-modeler/EntityPickList'
 import AddRelationshipDialog from '@/components/AddRelationshipDialog.vue'
 import AddEntityDialog from '@/components/AddEntityDialog.vue'
@@ -466,7 +467,12 @@ export default {
 				scale: this.$refs.graph.getScale(),
 				positions: this.$refs.graph.getPositions()
 			}))
+//minimap support
+this.upDateMinimap()
 		},
+upDateMinimap(){
+	this.$refs.graph.upDateMinimap()
+},
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({
 				...this.model,
