@@ -1,0 +1,198 @@
+{
+	"name": "testData",
+	"properties": {
+		"rootItem": {
+			"xpath": "/node('rootItem')",
+			"type": "object",
+			"valueTypes": {
+				"string": 2
+			}
+		},
+		"rootDate": {
+			"xpath": "/node('rootDate')",
+			"type": "object",
+			"valueTypes": {
+				"date": 2
+			}
+		},
+		"nestedObject": {
+			"xpath": "/node('nestedObject')",
+			"type": "object"
+		},
+		"nestedObject/secondNestedObject": {
+			"xpath": "/node('nestedObject')/node('secondNestedObject')",
+			"type": "object"
+		},
+		"nestedObject/secondNestedObject/zipCode": {
+			"xpath": "/node('nestedObject')/node('secondNestedObject')/node('zipCode')",
+			"type": "object",
+			"valueTypes": {
+				"zipCode": 2
+			}
+		},
+		"nestedObject/secondNestedObject/same": {
+			"xpath": "/node('nestedObject')/node('secondNestedObject')/node('same')",
+			"type": "object",
+			"valueTypes": {
+				"string": 2
+			}
+		},
+		"nestedObject/intValue": {
+			"xpath": "/node('nestedObject')/node('intValue')",
+			"type": "object",
+			"valueTypes": {
+				"number": 2
+			}
+		},
+		"presentInOnlyOne": {
+			"xpath": "/node('presentInOnlyOne')",
+			"type": "object",
+			"valueTypes": {
+				"string": 2
+			}
+		},
+		"arrayOfObjects": {
+			"xpath": "/node('arrayOfObjects')",
+			"type": "object"
+		},
+		"arrayOfObjects/name": {
+			"xpath": "/node('arrayOfObjects')/node('name')",
+			"type": "object",
+			"valueTypes": {
+				"string": 2
+			}
+		},
+		"nullArray": {
+			"xpath": "/node('nullArray')",
+			"valueTypes": {
+				"null": 2
+			}
+		},
+		"nullValue": {
+			"xpath": "/node('nullValue')",
+			"type": "object",
+			"valueTypes": {
+				"null": 2
+			}
+		},
+		"nullObject": {
+			"xpath": "/node('nullObject')",
+			"type": "object",
+			"valueTypes": {
+				"object": 2
+			}
+		},
+		"mixedTypes": {
+			"xpath": "/node('mixedTypes')",
+			"type": "object",
+			"valueTypes": {
+				"string": 2
+			}
+		}
+	},
+	"total": 2,
+	"docTypes": {
+		"json": 2
+	},
+	"profileProperties": {
+		"rootItem": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"rootDate": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"nestedObject": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"nestedObject/secondNestedObject": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"nestedObject/secondNestedObject/zipCode": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"nestedObject/secondNestedObject/same": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"nestedObject/intValue": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"presentInOnlyOne": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"arrayOfObjects": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		},
+		"arrayOfObjects/name": {
+			"documentPresentCount": 0,
+			"documentMissingCount": 2,
+			"nullCount": 0,
+			"nonNullCount": 0,
+			"emptyCount": 0
+		},
+		"nullArray": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 2
+		},
+		"nullValue": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 2,
+			"nonNullCount": 0,
+			"emptyCount": 0
+		},
+		"nullObject": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 2
+		},
+		"mixedTypes": {
+			"documentPresentCount": 2,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 2,
+			"emptyCount": 0
+		}
+	},
+	"created": "2021-01-21T19:11:08.599359Z"
+}

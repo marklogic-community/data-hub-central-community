@@ -44,6 +44,7 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 		});
 		if (caughtException == null) {
 			modulesLoader.loadModules("classpath*:/envision-modules", new DefaultModulesFinder(), modulesClient);
+			modulesLoader.loadModules("classpath*:/data-quality-modules/ml-modules", new DefaultModulesFinder(), modulesClient);
 
 			// for multi-tenant installs we need to replace some DHF triggers for entities. this allows us to support
 			// per-user entities

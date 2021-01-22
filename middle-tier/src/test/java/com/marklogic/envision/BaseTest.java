@@ -276,6 +276,9 @@ public class BaseTest {
 		if (query != null) {
 			rest = ", '" + query + "')[1]";
 		}
+		else {
+			rest = ", cts:true-query())[1]";
+		}
 		String xquery = "cts:search(fn:collection('" + collection + "')" + rest;
 		EvalResultIterator it = client.newServerEval().xquery(xquery).eval();
 		return it.next().getString();

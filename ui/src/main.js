@@ -3,6 +3,7 @@ import vuetify from './plugins/vuetify'
 import VueHttp from './vue-http'
 import Vuelidate from 'vuelidate'
 import Moment from 'vue-moment'
+import HighchartsVue from 'highcharts-vue'
 
 import App from './App.vue'
 import router from './router'
@@ -21,6 +22,7 @@ Vue.use(Vuelidate)
 Vue.use(Moment)
 Vue.use(websocket)
 Vue.use(logrocket)
+Vue.use(HighchartsVue)
 
 Vue.config.productionTip = false
 

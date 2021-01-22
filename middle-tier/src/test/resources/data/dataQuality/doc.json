@@ -1,0 +1,24 @@
+{
+	"rootItem": "This is a root Item",
+	"rootDate": "01-01-2003",
+	"nestedObject": {
+		"secondNestedObject": {
+			"zipCode": "02932-3393",
+			"same": "same"
+		},
+		"intValue": 123
+	},
+	"presentInOnlyOne": "test",
+	"arrayOfObjects": [
+		{
+			"name": "arrayObj1"
+		},
+		{
+			"name": "arrayObj2"
+		}
+	],
+	"nullArray": [],
+	"nullValue": null,
+	"nullObject": {},
+	"mixedTypes": "string"
+}

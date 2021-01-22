@@ -70,6 +70,33 @@ const routes = [
 		}
 	},
 	{
+		path: '/profiles',  //url path
+		name: 'root.profiles', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+			import(/* webpackChunkName: "modeler" */ './views/DataProfilerPage.vue'),
+		meta: {
+			label: 'Data Profiler',
+			navArea: 'header',
+			requiresLogin: true,
+			// tutorialLink: 'https://www.youtube.com/watch?v=4QauKnTPbcU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=2',
+			// tutorialName: 'Profile Tutorial',
+			checkLogin
+		}
+	},
+	{
+		path: '/profiles/profile',  //url path
+		name: 'root.profiles.profile', //use to navigate to page
+		// lazy-loading of page
+		component: () =>
+		import(/* webpackChunkName: "mergedcompare" */ './views/DataProfilerDetailsPage.vue'),
+		meta: {
+			label: 'Data Profile Details',
+			requiresLogin: true,
+			checkLogin
+		}
+	},
+	{
 		path: '/model',  //url path
 		name: 'root.modeler', //use to navigate to page
 		// lazy-loading of page

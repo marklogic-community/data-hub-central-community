@@ -3,6 +3,7 @@ build/
 .tmp/
 .gradle/
 src/main/resources/static/
+src/main/resources/data-quality-modules/
 out/
 bin/
 installer.log

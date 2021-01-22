@@ -1,0 +1,198 @@
+{
+	"name": "testData",
+	"properties": {
+		"rootItem": {
+			"xpath": "/node('rootItem')",
+			"type": "object",
+			"valueTypes": {
+				"string": 1001
+			}
+		},
+		"rootDate": {
+			"xpath": "/node('rootDate')",
+			"type": "object",
+			"valueTypes": {
+				"date": 1001
+			}
+		},
+		"nestedObject": {
+			"xpath": "/node('nestedObject')",
+			"type": "object"
+		},
+		"nestedObject/secondNestedObject": {
+			"xpath": "/node('nestedObject')/node('secondNestedObject')",
+			"type": "object"
+		},
+		"nestedObject/secondNestedObject/zipCode": {
+			"xpath": "/node('nestedObject')/node('secondNestedObject')/node('zipCode')",
+			"type": "object",
+			"valueTypes": {
+				"zipCode": 1001
+			}
+		},
+		"nestedObject/secondNestedObject/same": {
+			"xpath": "/node('nestedObject')/node('secondNestedObject')/node('same')",
+			"type": "object",
+			"valueTypes": {
+				"string": 1001
+			}
+		},
+		"nestedObject/intValue": {
+			"xpath": "/node('nestedObject')/node('intValue')",
+			"type": "object",
+			"valueTypes": {
+				"number": 1001
+			}
+		},
+		"presentInOnlyOne": {
+			"xpath": "/node('presentInOnlyOne')",
+			"type": "object",
+			"valueTypes": {
+				"string": 1001
+			}
+		},
+		"arrayOfObjects": {
+			"xpath": "/node('arrayOfObjects')",
+			"type": "object"
+		},
+		"arrayOfObjects/name": {
+			"xpath": "/node('arrayOfObjects')/node('name')",
+			"type": "object",
+			"valueTypes": {
+				"string": 1001
+			}
+		},
+		"nullArray": {
+			"xpath": "/node('nullArray')",
+			"valueTypes": {
+				"null": 1001
+			}
+		},
+		"nullValue": {
+			"xpath": "/node('nullValue')",
+			"type": "object",
+			"valueTypes": {
+				"null": 1001
+			}
+		},
+		"nullObject": {
+			"xpath": "/node('nullObject')",
+			"type": "object",
+			"valueTypes": {
+				"object": 1001
+			}
+		},
+		"mixedTypes": {
+			"xpath": "/node('mixedTypes')",
+			"type": "object",
+			"valueTypes": {
+				"string": 1001
+			}
+		}
+	},
+	"total": 1001,
+	"docTypes": {
+		"json": 1001
+	},
+	"profileProperties": {
+		"rootItem": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"rootDate": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"nestedObject": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"nestedObject/secondNestedObject": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"nestedObject/secondNestedObject/zipCode": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"nestedObject/secondNestedObject/same": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"nestedObject/intValue": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"presentInOnlyOne": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"arrayOfObjects": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		},
+		"arrayOfObjects/name": {
+			"documentPresentCount": 0,
+			"documentMissingCount": 1001,
+			"nullCount": 0,
+			"nonNullCount": 0,
+			"emptyCount": 0
+		},
+		"nullArray": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 1001
+		},
+		"nullValue": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 1001,
+			"nonNullCount": 0,
+			"emptyCount": 0
+		},
+		"nullObject": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 1001
+		},
+		"mixedTypes": {
+			"documentPresentCount": 1001,
+			"documentMissingCount": 0,
+			"nullCount": 0,
+			"nonNullCount": 1001,
+			"emptyCount": 0
+		}
+	},
+	"created": "2021-01-21T19:11:08.599359Z"
+}

@@ -1,6 +1,8 @@
 buildscript {
 	repositories {
+		mavenLocal()
 		mavenCentral()
+		maven {url 'http://developer.marklogic.com/maven2/'}
 		maven { url "https://plugins.gradle.org/m2/" }
 	}
 	dependencies {
@@ -22,6 +24,10 @@ apply plugin: 'idea'
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
+configurations {
+	dataQuality
+}
+
 ext {
 	taskGroup = "Envision UI"
 }
@@ -37,8 +43,10 @@ bootJar {
 }
 
 repositories {
+	mavenLocal()
 	jcenter()
 	mavenCentral()
+	maven {url 'http://developer.marklogic.com/maven2/'}
 }
 
 ext.springVersion = '5.1.5.RELEASE'
@@ -46,6 +54,10 @@ ext.junitPlatformVersion = '1.7.0'
 ext.junitJupiterVersion  = '5.7.0'
 
 dependencies {
+
+	dataQuality "com.marklogic:data-quality-modules:1.0.0"
+
+	compile("com.marklogic:data-quality-client:1.0.0")
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 
@@ -100,6 +112,34 @@ processResources {
 		expand(project: project)
 	}
 }
+
+import org.gradle.api.internal.project.DefaultAntBuilder
+import org.gradle.api.internal.project.ant.AntLoggingAdapter
+
+task installDataQuality {
+	doFirst {
+		def config = project.configurations.dataQuality
+		if (config.files) {
+			def bundleDir = new File(project.getProjectDir(), "src/main/resources")
+			bundleDir.mkdirs()
+
+			// Constructing a DefaultAntBuilder seems to avoid Xerces-related classpath issues
+			// The DefaultAntBuilder constructor changed between Gradle 2.13 and 2.14, and we want
+			// to support both, so we try the 2.14 approach first and then 2.13
+			def ant = null
+			try {
+				ant = new DefaultAntBuilder(getProject(), new AntLoggingAdapter())
+			} catch (Exception ex) {
+				ant = new DefaultAntBuilder(getProject())
+			}
+
+			for (f in config.files) {
+				ant.unzip(src: f, dest: bundleDir, overwrite: "true")
+			}
+		}
+	}
+}
+processResources.dependsOn installDataQuality
 
 task installDependencies(type: NpmTask, group: taskGroup) {
 	description = "Install UI dependencies before building the UI files"
