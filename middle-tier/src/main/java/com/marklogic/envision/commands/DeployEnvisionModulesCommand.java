@@ -35,6 +35,7 @@ public class DeployEnvisionModulesCommand extends AbstractCommand {
 		prepareAssetFileLoader(assetFileLoader, context);
 
 		DefaultModulesLoader modulesLoader = new DefaultModulesLoader(assetFileLoader);
+		modulesLoader.setModulesManager(null);
 		modulesLoader.addFailureListener((throwable, client) -> {
 			// ensure we throw the first exception
 			if (caughtException == null) {

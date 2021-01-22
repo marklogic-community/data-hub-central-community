@@ -191,9 +191,7 @@ public class UploadServiceTest extends BaseTest {
 	@ValueSource(strings = {"staging", "final"})
 	void uploadSemanticsN3(String database) {
 		DatabaseClient client = getDbClient(database);
-		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
-//			new UploadFile("test.json", getResourceStream("data/semantics/test.json"))
 			new UploadFile("test.n3", getResourceStream("data/semantics/test.n3"))
 		);
 		assertEquals(0, getTriplesCount(client));
@@ -205,7 +203,6 @@ public class UploadServiceTest extends BaseTest {
 	@ValueSource(strings = {"staging", "final"})
 	void uploadSemanticsNQ(String database) {
 		DatabaseClient client = getDbClient(database);
-		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
 			new UploadFile("test.nq", getResourceStream("data/semantics/test.nq"))
 		);
@@ -218,7 +215,6 @@ public class UploadServiceTest extends BaseTest {
 	@ValueSource(strings = {"staging", "final"})
 	void uploadSemanticsNt(String database) {
 		DatabaseClient client = getDbClient(database);
-		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
 			new UploadFile("test.nt", getResourceStream("data/semantics/test.nt"))
 		);
@@ -231,7 +227,6 @@ public class UploadServiceTest extends BaseTest {
 	@ValueSource(strings = {"staging", "final"})
 	void uploadSemanticsRdf(String database) {
 		DatabaseClient client = getDbClient(database);
-		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
 			new UploadFile("test.rdf", getResourceStream("data/semantics/test.rdf"))
 		);
@@ -244,7 +239,6 @@ public class UploadServiceTest extends BaseTest {
 	@ValueSource(strings = {"staging", "final"})
 	void uploadSemanticsTrig(String database) {
 		DatabaseClient client = getDbClient(database);
-		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
 			new UploadFile("test.trig", getResourceStream("data/semantics/test.trig"))
 		);
@@ -257,7 +251,6 @@ public class UploadServiceTest extends BaseTest {
 	@ValueSource(strings = {"staging", "final"})
 	void uploadSemanticsTtl(String database) {
 		DatabaseClient client = getDbClient(database);
-		assertEquals(0, getDocCount(client, "Multiple Upload"));
 		UploadFile[] uploadFiles = Arrays.array(
 			new UploadFile("test.ttl", getResourceStream("data/semantics/test.ttl"))
 		);

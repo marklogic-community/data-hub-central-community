@@ -327,15 +327,18 @@ public class BaseTest {
 	public void clearDatabases(String... databases) {
 		ServerEvaluationCall eval = getStagingClient().newServerEval();
 		String installer =
+			"declare option xdmp:mapping \"false\";\n" +
 			"declare variable $databases external;\n" +
-				"for $database in fn:tokenize($databases, \",\")\n" +
-				"return\n" +
-				"  xdmp:eval('\n" +
-				"    cts:uris() ! xdmp:document-delete(.)\n" +
-				"  ',\n" +
-				"  (),\n" +
-				"  map:entry(\"database\", xdmp:database($database))\n" +
-				"  )";
+			"for $database in fn:tokenize($databases, \",\")\n" +
+			"return\n" +
+			"  try {\n" +
+			"    xdmp:eval('\n" +
+			"      cts:uris() ! xdmp:document-delete(.)\n" +
+			"    ',\n" +
+			"    (),\n" +
+			"    map:entry(\"database\", xdmp:database($database))\n" +
+			"    )\n" +
+			"  } catch($ex) {()}";;
 		eval.addVariable("databases", String.join(",", databases));
 		EvalResultIterator result = eval.xquery(installer).eval();
 		if (result.hasNext()) {
