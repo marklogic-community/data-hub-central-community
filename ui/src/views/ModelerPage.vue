@@ -98,7 +98,7 @@
 
 <script>
 //import VisjsGraph from '@/components/graph/graph.vue'
-import VisjsGraph from '@/components/graph/minimap.vue'
+import VisjsGraph from '@/components/graph/graph-minimap.vue'
 import EntityPickList from '@/components/ml-modeler/EntityPickList'
 import AddRelationshipDialog from '@/components/AddRelationshipDialog.vue'
 import AddEntityDialog from '@/components/AddEntityDialog.vue'

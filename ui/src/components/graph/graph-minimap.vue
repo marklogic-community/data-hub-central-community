@@ -1,11 +1,11 @@
 <template>
-	<div class="graph _lr-hide" >
+	<div class="graph _lr-hide">
 		<slot></slot>
 		<div ref="visualization" class="fullHeight"></div>
-		<div id="minimapWrapper" style="position: absolute; margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
-    	<img id="minimapImage" class="minimapImage" />
-    	<div id="minimapRadar" class="minimapRadar"></div>
-		</div>
+		<div id="minimapWrapper" style="position: absolute; bottom:0; margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
+					<img id="minimapImage" class="minimapImage" />
+					<div id="minimapRadar" class="minimapRadar"></div>
+			</div>
 	</div>
 </template>
 
@@ -314,8 +314,8 @@ drawMinimapWrapper(){
 },
 // Draw minimap Image
 drawMinimapImage(){
-  const originalCanvas = document.getElementsByTagName('canvas')[0]
-  const minimapImage = document.getElementById('minimapImage')
+	const originalCanvas = document.getElementsByTagName('canvas')[0]
+	const minimapImage = document.getElementById('minimapImage')
 
   const {
     clientWidth,
@@ -330,7 +330,8 @@ drawMinimapImage(){
 
   if (tempContext) {
     tempContext.drawImage(originalCanvas, 0, 0, width, height)
-    minimapImage.src = tempCanvas.toDataURL()
+minimapImage.src = tempCanvas.toDataURL()
+//	minimapImage.src = this.getGraphImage();
     minimapImage.width = width
     minimapImage.height = height
   }
@@ -564,6 +565,7 @@ network.on('zoom', () => {
 }
 
 .minimapRadar {
+	opacity: .2;
   position: absolute;
   background-color: rgba(16, 84, 154, 0.26);
 }
@@ -573,7 +575,7 @@ network.on('zoom', () => {
 }
 
 .minimapWrapperIdle {
-  opacity: 0.2;
+	opacity: 1; /*	opacity: 0.2; */
   transition: opacity 0.5s;
 }
 
