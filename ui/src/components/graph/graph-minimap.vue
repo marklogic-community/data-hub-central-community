@@ -2,10 +2,10 @@
 	<div class="graph _lr-hide">
 		<slot></slot>
 		<div ref="visualization" class="fullHeight"></div>
-		<div id="minimapWrapper" style="position: absolute; bottom:0; margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
+		<!-- <div id="minimapWrapper" style="position: absolute; bottom:0; margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
 					<img id="minimapImage" class="minimapImage" />
 					<div id="minimapRadar" class="minimapRadar"></div>
-			</div>
+			</div> -->
 	</div>
 </template>
 

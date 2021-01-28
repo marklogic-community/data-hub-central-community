@@ -11,12 +11,13 @@
 							layout="standard"
 							@click="graphClick"
 							@oncontext="graphRightClick"
-							@dragStart="graphDragStart"
-							@dragEnd="saveGraphLayout"
+							@dragStart="handleDragStart"
+							@dragEnd="handleDragEnd"
 							@zoom="saveGraphLayout"
-							@afterDrawing="saveGraphLayout"
+							@afterDrawing="handleAfterDrawing"
 							ref="graph"
 						>
+							<minimap style="position: absolute; bottom:0; left:0;" ref="minimap"></minimap>
 							<div class="vis-manipulation">
 								<v-btn data-cy="modeler.addEntity" @click="addEntity" :disabled="!model"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
 								<template v-if="!addEdgeMode">
@@ -98,12 +99,13 @@
 
 <script>
 //import VisjsGraph from '@/components/graph/graph.vue'
-import VisjsGraph from '@/components/graph/graph-minimap.vue'
+import VisjsGraph from '@/components/graph/graph.vue'
 import EntityPickList from '@/components/ml-modeler/EntityPickList'
 import AddRelationshipDialog from '@/components/AddRelationshipDialog.vue'
 import AddEntityDialog from '@/components/AddEntityDialog.vue'
 import Confirm from '@/components/Confirm.vue'
 import { mapState } from 'vuex'
+import Minimap from '../components/graph/minimap.vue'
 
 export default {
 	data() {
@@ -125,7 +127,8 @@ export default {
 		VisjsGraph,
 		EntityPickList,
 		AddRelationshipDialog,
-		AddEntityDialog
+		AddEntityDialog,
+		Minimap
 	},
 	computed: {
 		graphOptions() {
@@ -467,11 +470,29 @@ export default {
 				scale: this.$refs.graph.getScale(),
 				positions: this.$refs.graph.getPositions()
 			}))
-//minimap support
-this.upDateMinimap()
+		},
+		handleAfterDrawing()
+		{
+			this.saveGraphLayout()
+			this.$refs.minimap.upDateMinimap()
+		},
+		handleZoom()
+		{
+			this.saveGraphLayout()
+			this.$refs.minimap.zoomMinimap()
+		},
+		handleDragEnd(e)
+		{
+			this.graphDragEnd(e)
+			this.$refs.minimap.dragEndMinimap()
+		},
+		handleDragStart(e)
+		{
+			this.graphDragStart(e)
+			this.$refs.minimap.dragEndMinimap()
 		},
 upDateMinimap(){
-	this.$refs.graph.upDateMinimap()
+	this.$refs.minimap.upDateMinimap()
 },
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({
