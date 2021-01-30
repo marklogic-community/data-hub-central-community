@@ -17,7 +17,11 @@
 							@afterDrawing="handleAfterDrawing"
 							ref="graph"
 						>
-							<minimap style="position: absolute; bottom:0; left:0;" ref="minimap"></minimap>
+							<minimap
+								:nodes="nodes"
+								:edges="edges"
+								style="position: absolute; bottom:0; left:0;" ref="minimap">
+							</minimap>
 							<div class="vis-manipulation">
 								<v-btn data-cy="modeler.addEntity" @click="addEntity" :disabled="!model"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
 								<template v-if="!addEdgeMode">

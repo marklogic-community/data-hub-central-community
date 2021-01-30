@@ -1,7 +1,14 @@
 <template>
-		<div id="minimapWrapper" style="position: absolute; bottom:0; margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
-				<img id="minimapImage" class="minimapImage" />
+		<div ref="minimapwrapper" id="minimapWrapper" style="margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
+				<visjs-graph
+							:nodes="nodes"
+							:edges="edges"
+							:options="graphOptions"
+							layout="standard"
+							ref="minimapgraph"
+						>
 				<div id="minimapRadar" class="minimapRadar"></div>
+				</visjs-graph>
 		</div>
 </template>
 
@@ -14,12 +21,21 @@ const arrayDiff = (arr1, arr2) =>
 export default {
 	name: 'minimap',
 	props: {
+		network: {},
+		edges: {
+			type: [Array, DataSet, DataView],
+			default: () => []
+		},
+		nodes: {
+			type: [Array, DataSet, DataView],
+			default: () => []
+		},
 		events: {
 			type: Array,
 			default: () => [
-				'click',
+				//'click',
 				// 'doubleClick',
-				'oncontext',
+				//'oncontext',
 				// 'hold',
 				// 'release',
 				// 'select',
@@ -27,14 +43,14 @@ export default {
 				// 'selectEdge',
 				// 'deselectNode',
 				// 'deselectEdge',
-				'dragStart',
+				//'dragStart',
 				// 'dragging',
-				'dragEnd',
+				//'dragEnd',
 				// 'hoverNode',
 				// 'blurNode',
 				// 'hoverEdge',
 				// 'blurEdge',
-				'zoom',
+				//'zoom',
 				// 'showPopup',
 				// 'hidePopup',
 				// 'startStabilizing',
@@ -44,7 +60,7 @@ export default {
 				// 'resize',
 				// 'initRedraw',
 				// 'beforeDrawing',
-				'afterDrawing',
+				//'afterDrawing',
 				// 'animationFinished',
 				// 'configChange'
 			]
@@ -55,11 +71,16 @@ export default {
 		}
 	},
 	data: () => ({
+		visData: {
+			nodes: [],
+			edges: []
+		},
 		ratio: 5
 	}),
 	methods: {
 		//****************************support for minimap
 getNetwork(){ return this.$parent.network },
+setNetworkFromParent( ){this.network = this.getNetwork() },
 drawMinimapWrapper(){
   const {
     clientWidth,
@@ -73,6 +94,8 @@ drawMinimapWrapper(){
   minimapWrapper.style.height = `${height}px`;
 },
 // Draw minimap Image
+//we want to draw the network fully zoomed out in the mimimap
+//then radar represents the user's zoomed in port
 drawMinimapImage(){
 	const originalCanvas = document.getElementsByTagName('canvas')[0]
 	const minimapImage = document.getElementById('minimapImage')
@@ -91,7 +114,28 @@ drawMinimapImage(){
   if (tempContext) {
     tempContext.drawImage(originalCanvas, 0, 0, width, height)
 		minimapImage.src = tempCanvas.toDataURL()
-//	minimapImage.src = this.getGraphImage();
+    minimapImage.width = width
+    minimapImage.height = height
+  }
+},
+drawMinimapImage2(){
+	const originalCanvas = document.getElementsByTagName('canvas')[0]
+	const minimapImage = document.getElementById('minimapImage')
+
+  const {
+    clientWidth,
+    clientHeight
+  } = this.getNetwork().body.container
+
+  const tempCanvas = document.createElement('canvas')
+  const tempContext = tempCanvas.getContext('2d')
+
+  const width = Math.round((tempCanvas.width = clientWidth / this.ratio))
+  const height = Math.round((tempCanvas.height = clientHeight / this.ratio))
+
+  if (tempContext) {
+    tempContext.drawImage(originalCanvas, 0, 0, width, height)
+		minimapImage.src = tempCanvas.toDataURL()
     minimapImage.width = width
     minimapImage.height = height
   }
@@ -113,7 +157,7 @@ drawRadar(){
   minimapRadar.style.width = `${clientWidth / this.ratio}px`
   minimapRadar.style.height = `${clientHeight / this.ratio}px`
 },
-upDateMinimap(){
+upDateMinimap1(){
   const {
     clientWidth,
     clientHeight
@@ -139,6 +183,14 @@ upDateMinimap(){
   } else {
     this.drawRadar();
   }
+},
+upDateMinimap(){
+	this.initMinimapGraph()
+  	this.drawMinimapWrapper();
+		//this.drawMinimapImage();
+		this.copyDataFromParent();
+		this.minimap.fit();
+    this.drawRadar();
 },
 zoomMinimap()
 {
@@ -180,12 +232,64 @@ network.on('zoom', () => {
 })
 */
 //************************End minimap support
+initMinimapGraph()
+{
+//	this.copyDataFromParent()
+		this.visData.nodes = this.mountVisData('nodes')
+		this.visData.edges = this.mountVisData('edges')
+		this.minimap = new Network(
+			this.$refs.minimapwrapper,
+			this.visData,
+			this.options
+		)
 
+},
+copyDataFromParent()
+	{
+		const parentnetwork = this.getNetwork()
+		this.setData(parentnetwork.body.nodes, parentnetwork.body.edges)
 	},
+	setData(n, e) {
+		this.visData.nodes = Array.isArray(n) ? new DataSet(n) : n
+		this.visData.edges = Array.isArray(e) ? new DataSet(e) : e
+	//	this.minimap.setData(this.visData)
+	},
+	mountVisData(propName) {
+			let data = this[propName]
+			// If data is DataSet or DataView we return early without attaching our own events
+			if (!(this[propName] instanceof DataSet || this[propName] instanceof DataView)) {
+				data = new DataSet(this[propName])
+				// Rethrow all events
+				data.on('*', (event, properties, senderId) =>
+					this.$emit(`${propName}-${event}`, { event, properties, senderId })
+				)
+				// We attach deep watcher on the prop to propagate changes in the DataSet
+				const callback = value => {
+					if (Array.isArray(value)) {
+						const newIds = new DataSet(value).getIds()
+						const diff = arrayDiff(this.visData[propName].getIds(), newIds)
+						this.visData[propName].update(value)
+						this.visData[propName].remove(diff)
+					}
+				}
+
+				this.$watch(propName, callback, {
+					deep: true
+				})
+			}
+
+			// Emitting DataSets back
+			this.$emit(`${propName}-mounted`, data)
+
+			return data
+		}
+},
 	created() {
 
 	},
+
 	mounted() {
+//		this.initMinimapGraph()
 	},
 	beforeDestroy() {
 	}

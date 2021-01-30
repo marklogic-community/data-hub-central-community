@@ -68,11 +68,6 @@ export default {
 			edges: []
 		}
 	}),
-	provide() {
-    return {
-      network: this.network
-    }
-  },
 	watch: {
 		options: {
 			deep: true,
