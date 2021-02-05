@@ -76,7 +76,7 @@ const routes = [
 		component: () =>
 			import(/* webpackChunkName: "modeler" */ './views/DataProfilerPage.vue'),
 		meta: {
-			label: 'Data Profiler',
+			label: 'Profile',
 			navArea: 'header',
 			requiresLogin: true,
 			// tutorialLink: 'https://www.youtube.com/watch?v=4QauKnTPbcU&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=2',

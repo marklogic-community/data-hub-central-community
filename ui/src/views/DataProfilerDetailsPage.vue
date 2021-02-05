@@ -29,7 +29,7 @@
 												</v-flex>
 												<v-flex md6>
 													<div class="info-label">Documents</div>
-													<div class="info-value">200</div>
+													<div class="info-value">{{report.total}}</div>
 												</v-flex>
 											</v-layout>
 										</v-card-text>
