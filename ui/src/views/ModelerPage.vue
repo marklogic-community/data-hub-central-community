@@ -1,5 +1,8 @@
 <template>
-	<v-container fluid class="modeler">
+	<v-container fluid class="modeler"
+		@saveGraphLayoutSnap="this.saveGraphLayoutSnap"
+		@loadGraphLayoutSnap="this.loadGraphLayoutSnap"
+		>
 		<v-layout column>
 			<v-flex md12 class="fullHeight">
 				<v-layout row>
@@ -475,28 +478,60 @@ export default {
 				positions: this.$refs.graph.getPositions()
 			}))
 		},
+		loadGraphLayoutSnap() {
+			if (!this.model) {
+				return
+			}
+			const key = `snap-layout-${this.model.name.replace(' ', '-')}`
+			const item = localStorage.getItem(key)
+			this.graphLayout = item ? JSON.parse(item) : {
+				position: { x: 0, y: 0 },
+				scale: 1.0
+			}
+			this.$refs.graph.moveTo(this.graphLayout)
+		},
+		saveGraphLayoutSnap() {
+			if (!this.model) {
+				return
+			}
+			const key = `snap-layout-${this.model.name.replace(' ', '-')}`
+			localStorage.setItem(key, JSON.stringify({
+				position: this.$refs.graph.getViewPosition(),
+				scale: this.$refs.graph.getScale(),
+				positions: this.$refs.graph.getPositions()
+			}))
+		},
 		handleAfterDrawing()
 		{
 			this.saveGraphLayout()
-			this.$refs.minimap.upDateMinimap()
+	//		this.upDateMinimap()
 		},
 		handleZoom()
 		{
 			this.saveGraphLayout()
-			this.$refs.minimap.zoomMinimap()
+//			this.$refs.minimap.zoomMinimap()
 		},
 		handleDragEnd(e)
 		{
+			let fitOptions = this.graphOptions;
+			fitOptions.physics.enabled = true;
 			this.graphDragEnd(e)
-			this.$refs.minimap.dragEndMinimap()
+			this.saveGraphLayoutSnap()
+			this.$refs.graph.setOptions(fitOptions)
+			this.$refs.graph.fit(this.nodes);
+			fitOptions.physics.enabled = false;
+			this.$refs.graph.setOptions(this.graphOptions)
+			this.upDateMinimap()
+			this.loadGraphLayoutSnap()
 		},
 		handleDragStart(e)
 		{
 			this.graphDragStart(e)
-			this.$refs.minimap.dragEndMinimap()
+//			this.$refs.minimap.dragEndMinimap()
 		},
 upDateMinimap(){
-	this.$refs.minimap.upDateMinimap()
+//	this.$refs.minimap.upDateMinimap()
+	this.$refs.minimap.upDateMinimap1()
 },
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({

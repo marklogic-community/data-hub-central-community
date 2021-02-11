@@ -1,6 +1,19 @@
 <template>
 			<v-row>
 				<v-col>
+				<div ref="minimapwrapper" id="minimapWrapper" style="margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
+					<visjs-graph
+							:nodes="nodes"
+							:edges="edges"
+							:options="graphOptions"
+							layout="standard"
+							ref="minimapgraph"
+						>
+					</visjs-graph>
+				</div>
+				</v-col>
+				<v-col>
+				<v-btn v-on:click="upDateMinimap1">Test Minimap</v-btn>
 				<div ref="minimapwrapper2" id="minimapWrapper2" style="margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
 				<img id="minimapImage" class="minimapImage" />
 				<div id="minimapRadar" class="minimapRadar"></div>
@@ -10,13 +23,24 @@
 </template>
 
 <script>
+import VisjsGraph from '@/components/graph/graph.vue'
+import { DataSet, DataView } from 'vis-data'
+import { Network } from 'vis-network'
 const arrayDiff = (arr1, arr2) =>
 	arr1.filter(x => arr2.indexOf(x) === -1)
 
 export default {
 	name: 'minimap',
-	emits: ['saveGraphLayoutSnap', 'loadGraphLayoutSnap'],
 	props: {
+		network: {},
+		edges: {
+			type: [Array, DataSet, DataView],
+			default: () => []
+		},
+		nodes: {
+			type: [Array, DataSet, DataView],
+			default: () => []
+		},
 		events: {
 			type: Array,
 			default: () => [
@@ -58,6 +82,10 @@ export default {
 		}
 	},
 	data: () => ({
+		visData: {
+			nodes: [],
+			edges: []
+		},
 		ratio: 5
 	}),
 	methods: {
@@ -83,7 +111,7 @@ drawMinimapWrapper2(){
   } = this.getNetwork().body.container;
   const minimapWrapper = document.getElementById('minimapWrapper2');
   const width = Math.round(clientWidth / this.ratio);
-  const height = Math.round(clientHeight / this.ratio);
+  const height = Math.round(clientHeight / this.ratio) + 20;
 
   minimapWrapper.style.width = `${width}px`;
   minimapWrapper.style.height = `${height}px`;
@@ -154,11 +182,8 @@ drawRadar(){
 },
 upDateMinimap1(){
 	//save the viewport
-
 	let scale = this.getNetwork().getScale()
 	let viewPosition = this.getNetwork().getViewPosition()
-	let positions = this.getNetwork().getPositions()
-//	this.$emit('saveGraphLayoutSnap')
 	//zoom out
 	//this.getNetwork().fit();
   const {
@@ -169,18 +194,25 @@ upDateMinimap1(){
   const height = Math.round(clientHeight / this.ratio);
   const minimapImage = document.getElementById('minimapImage');
   const minimapWrapper = document.getElementById('minimapWrapper2');
-  // Initial render, no src
-  this.drawMinimapWrapper2();
-	if(minimapImage.hasAttribute('src')){
-		minimapImage.removeAttribute('src');
-		}
-	this.drawMinimapImage2();
+  // Initial render
+  if (!minimapImage.hasAttribute('src') || minimapImage.src === '') {
+    if (!minimapWrapper.style.width || !minimapWrapper.style.height) {
+      this.drawMinimapWrapper2();
+    }
+    this.drawMinimapImage2();
+    //this.drawRadar();
+  } else if (
+    minimapWrapper.style.width !== `${width}px` ||
+    minimapWrapper.style.height !== `${height}px`
+  ) {
+    minimapImage.removeAttribute('src');
+    this.drawMinimapWrapper2();
  //   this.getNetwork().fit();
+  } else {
   //  this.drawRadar();
+	}
+	//reset network
 
- //reset network
- //	this.$emit('loadGraphLayoutSnap')
-//	this.$parent.loadGraphLayoutSnap();
 },
 upDateMinimap(){
 	this.initMinimapGraph()
