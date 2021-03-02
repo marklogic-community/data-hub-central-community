@@ -1,12 +1,38 @@
 <template>
-			<v-row>
-				<v-col>
-				<div ref="minimapwrapper2" id="minimapWrapper2" style="margin: 5px; border: 1px solid #ddd; overflow: hidden; background-color: #FFF; z-index: 9;" class="minimapWrapperIdle">
-				<img id="minimapImage" class="minimapImage" />
-				<div id="minimapRadar" class="minimapRadar"></div>
-				</div>
-				</v-col>
-			</v-row>
+
+	 <v-card
+    class="mx-auto"
+    max-width="344"
+  >
+    <v-expand-transition>
+			<v-img
+			v-show="showMiniMap"
+			id="minimapImage"
+      :src="this.imgSrc"
+      height="200px"
+    	>
+			</v-img>
+		</v-expand-transition>
+
+    <v-card-actions>
+      <v-btn
+        light
+        text
+      >
+        Minimap
+      </v-btn>
+
+      <v-spacer></v-spacer>
+
+      <v-btn
+        icon
+        @click="showMiniMap = !showMiniMap"
+      >
+        <v-icon>{{ showMiniMap ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+      </v-btn>
+    </v-card-actions>
+
+  </v-card>
 </template>
 
 <script>
@@ -17,124 +43,34 @@ export default {
 	name: 'minimap',
 	emits: ['saveGraphLayoutSnap', 'loadGraphLayoutSnap'],
 	props: {
-		events: {
-			type: Array,
-			default: () => [
-				//'click',
-				// 'doubleClick',
-				//'oncontext',
-				// 'hold',
-				// 'release',
-				// 'select',
-				// 'selectNode',
-				// 'selectEdge',
-				// 'deselectNode',
-				// 'deselectEdge',
-				//'dragStart',
-				// 'dragging',
-				//'dragEnd',
-				// 'hoverNode',
-				// 'blurNode',
-				// 'hoverEdge',
-				// 'blurEdge',
-				//'zoom',
-				// 'showPopup',
-				// 'hidePopup',
-				// 'startStabilizing',
-				// 'stabilizationProgress',
-				// 'stabilizationIterationsDone',
-				// 'stabilized',
-				// 'resize',
-				// 'initRedraw',
-				// 'beforeDrawing',
-				//'afterDrawing',
-				// 'animationFinished',
-				// 'configChange'
-			]
-		},
-		options: {
-			type: Object,
-			default: () => ({})
-		}
+
 	},
 	data: () => ({
-		ratio: 5
+		graph:{},
+		dialog:false,
+		show: false,
+		showMiniMap:false,
+		ratio: 3,
+		imgSrc:'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg'
 	}),
+	computed:{
+		imgSrc: {
+		get: function () { return this.imgSrc },
+		set: function(url) { this.imgSrc = url }
+		}
+	},
 	methods: {
 		//****************************support for minimap
 getNetwork(){ return this.$parent.network },
-setNetworkFromParent( ){this.network = this.getNetwork() },
-drawMinimapWrapper(){
-  const {
-    clientWidth,
-    clientHeight
-  } = this.getNetwork().body.container;
-  const minimapWrapper = document.getElementById('minimapWrapper');
-  const width = Math.round(clientWidth / this.ratio);
-  const height = Math.round(clientHeight / this.ratio) + 20;
 
-  minimapWrapper.style.width = `${width}px`;
-  minimapWrapper.style.height = `${height}px`;
-},
-drawMinimapWrapper2(){
-  const {
-    clientWidth,
-    clientHeight
-  } = this.getNetwork().body.container;
-  const minimapWrapper = document.getElementById('minimapWrapper2');
-  const width = Math.round(clientWidth / this.ratio);
-  const height = Math.round(clientHeight / this.ratio);
-
-  minimapWrapper.style.width = `${width}px`;
-  minimapWrapper.style.height = `${height}px`;
-},
-// Draw minimap Image
-//we want to draw the network fully zoomed out in the mimimap
-//then radar represents the user's zoomed in port
-drawMinimapImage(){
-	const originalCanvas = document.getElementsByTagName('canvas')[0]
-	const minimapImage = document.getElementById('minimapImage')
-
-  const {
-    clientWidth,
-    clientHeight
-  } = this.getNetwork().body.container
-
-  const tempCanvas = document.createElement('canvas')
-  const tempContext = tempCanvas.getContext('2d')
-
-  const width = Math.round((tempCanvas.width = clientWidth / this.ratio))
-  const height = Math.round((tempCanvas.height = clientHeight / this.ratio))
-
-  if (tempContext) {
-    tempContext.drawImage(originalCanvas, 0, 0, width, height)
-		minimapImage.src = tempCanvas.toDataURL()
-    minimapImage.width = width
-    minimapImage.height = height
-  }
-},
 drawMinimapImage2(){
-	const originalCanvas = document.getElementsByTagName('canvas')[0] //this is the wrong canvas
+	//we need to create the save/restore graphics logic here in the component
+	const originalCanvas = document.getElementsByTagName('canvas')[0] //this is the graph canvas but we really need a btter way of targeting it
 	const minimapImage = document.getElementById('minimapImage')
+	//set the minimap image url
+	this.imgSrc = originalCanvas.toDataURL()
 
-  const {
-    clientWidth,
-    clientHeight
-  } = this.getNetwork().body.container
-
-  const tempCanvas = document.createElement('canvas')
-  const tempContext = tempCanvas.getContext('2d')
-
-  const width = Math.round((tempCanvas.width = clientWidth / this.ratio))
-  const height = Math.round((tempCanvas.height = clientHeight / this.ratio))
-
-  if (tempContext) {
-    tempContext.drawImage(originalCanvas, 0, 0, width, height)
-		minimapImage.src = tempCanvas.toDataURL()
-    minimapImage.width = width
-    minimapImage.height = height
-  }
-},
+  },
 // Draw minimap Radar
 drawRadar(){
   const {
@@ -153,34 +89,7 @@ drawRadar(){
   minimapRadar.style.height = `${clientHeight / this.ratio}px`
 },
 upDateMinimap1(){
-	//save the viewport
-
-	let scale = this.getNetwork().getScale()
-	let viewPosition = this.getNetwork().getViewPosition()
-	let positions = this.getNetwork().getPositions()
-//	this.$emit('saveGraphLayoutSnap')
-	//zoom out
-	//this.getNetwork().fit();
-  const {
-    clientWidth,
-    clientHeight
-  } = this.getNetwork().body.container;
-  const width = Math.round(clientWidth / this.ratio);
-  const height = Math.round(clientHeight / this.ratio);
-  const minimapImage = document.getElementById('minimapImage');
-  const minimapWrapper = document.getElementById('minimapWrapper2');
-  // Initial render, no src
-  this.drawMinimapWrapper2();
-	if(minimapImage.hasAttribute('src')){
-		minimapImage.removeAttribute('src');
-		}
-	this.drawMinimapImage2();
- //   this.getNetwork().fit();
-  //  this.drawRadar();
-
- //reset network
- //	this.$emit('loadGraphLayoutSnap')
-//	this.$parent.loadGraphLayoutSnap();
+  this.drawMinimapImage2();
 },
 upDateMinimap(){
 	this.initMinimapGraph()
@@ -433,7 +342,9 @@ copyDataFromParent()
 }
 
 .minimapImage {
-  position: absolute;
+	position: absolute;
+	height: 300px;
+	width: 300px;
 }
 
 .minimapWrapperIdle {

@@ -21,9 +21,10 @@
 							ref="graph"
 						>
 							<minimap
-								:nodes="nodes"
-								:edges="edges"
-								style="position: absolute; bottom:0; left:0;" ref="minimap">
+								:graph="this.$refs.graph"
+								ref="minimap"
+								style="position: absolute; bottom:0; left:0;"
+								>
 							</minimap>
 							<div class="vis-manipulation">
 								<v-btn data-cy="modeler.addEntity" @click="addEntity" :disabled="!model"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
@@ -63,6 +64,7 @@
 						<ul class="hideUnlessTesting edges">
 							<li v-for="edge in edges" :key="edge.id" data-cy="edgeList" v-on:click="selectEdge(edge)">{{ edge.id }}</li>
 						</ul>
+
 					</v-flex>
 					<v-flex md4 class="right-pane">
 						<entity-pick-list
@@ -283,6 +285,8 @@ export default {
 	},
 	mounted: function() {
 		this.loadGraphLayout()
+		//update the Minimap graph prop
+		this.$refs.minimap.graph=this.$refs.graph
 	},
 	methods: {
 		addEntity() {
