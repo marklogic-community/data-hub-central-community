@@ -1,6 +1,6 @@
-# Contributing to Envision
+# Contributing to Data Hub Central Community Edition (DHCCE)
 
-Envision welcomes new contributors. This document will guide you
+DHCCE welcomes new contributors. This document will guide you
 through the process.
 
  - [Question or Problem?](#question)
@@ -10,8 +10,8 @@ through the process.
  
 ## <a name="question"></a> Got a Question or Problem?
 
-If you need help working with Envision, please ask it on [Stack
-Overflow with the "marklogic-envision" tag][stackoverflow]. 
+If you need help working with DHCCE, please ask it on [Stack
+Overflow with the "marklogic-dhcce" tag][stackoverflow]. 
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you 
@@ -35,7 +35,7 @@ being dealt with quickly:
 
 * **Overview of the Issue** - if an error is being thrown a stack trace helps
 * **Motivation for or Use Case** - explain why this is a bug for you
-* **Envision Version** - is it a named version or from our dev branch
+* **DHCCE Version** - is it a named version or from our dev branch
 * **MarkLogic Version** - the version of MarkLogic you're working with
 * **Operating System** - Mac, windows? details help
 * **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point to what might be
@@ -43,15 +43,15 @@ being dealt with quickly:
 
 ### Submitting a Pull Request
 
-#### Fork Envision
+#### Fork DHCCE
 
 Fork the project [on GitHub](https://github.com/marklogic-community/envision/fork) 
 and clone
 your copy.
 
 ```sh
-git clone git@github.com:username/envision.git
-cd envision
+git clone git@github.com:username/envision.git dhcce
+cd dhcce
 git remote add upstream git://github.com/marklogic-community/envision.git
 ```
 
@@ -185,6 +185,5 @@ from the main (upstream) repository:
 
 [issue tracker]: https://github.com/marklogic-community/envision/issues
 [.editorconfig]: http://editorconfig.org/
-[stackoverflow]: http://stackoverflow.com/questions/ask?tags=marklogic-envision
-[test ui]: http://localhost:8042/test
+[stackoverflow]: http://stackoverflow.com/questions/ask?tags=marklogic-dhcce
 [cla]: http://developer.marklogic.com/products/cla

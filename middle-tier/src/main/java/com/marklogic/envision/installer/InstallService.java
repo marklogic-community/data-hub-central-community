@@ -37,7 +37,7 @@ public class InstallService {
 	public void install(boolean force) {
 		if (!force && !needsInstall()) return;
 
-		System.out.println("Installing Envision Modules...\n");
+		System.out.println("Installing DHCCE Modules...\n");
 
 		ManageClient manageClient = config.getManageClient();
 		AppDeployer appDeployer = new SimpleAppDeployer(manageClient, config.getAdminManager(), new DeployEnvisionModulesCommand(config.getModulesClient(), config.isMultiTenant()));

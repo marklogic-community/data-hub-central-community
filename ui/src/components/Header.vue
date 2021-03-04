@@ -1,7 +1,7 @@
 <template>
 	<v-app-bar dense dark>
     <img src="@/assets/images/MarkLogic-avatar.svg" height="70%"/>
-		<span class="page-title">Envision</span>
+		<span class="page-title">Data Hub Central Community Edition</span>
 		<a target="_blank" :href="versionLink" class="version">{{version}}</a>
 		<v-spacer />
 		<v-toolbar-items>
