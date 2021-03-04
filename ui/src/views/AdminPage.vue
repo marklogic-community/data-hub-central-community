@@ -59,7 +59,7 @@ export default {
 				</v-btn>
 			</template>
 		</v-snackbar>
-		<h1>Envision Admin Page</h1>
+		<h1>Data Hub Central Community Edition Admin Page</h1>
 		<fieldset class="col-sm-9">
 			<legend>Reset</legend>
 			<p>Press the reset button to delete documents created while demonstrating. This button clears the Jobs

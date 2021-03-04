@@ -15,8 +15,8 @@ Element Level Security hides parts of a document. Redaction can conceal, mask, p
 ## Data hubs and PII
 While defining a model the user can identify properties that contain PII. A security configuration can then be deployed that restricts access to these properties to users that have the 'pii-reader' role. This approach uses Element Level Security - please refer to https://docs.marklogic.com/datahub/5.2/security/pii/pii-data-mgmt.html
 
-## Redaction in Envision
-In Envision you can set redaction rules for a property by selecting "Redacted" in the advance tab for a property setting at the parent entity level. Envision supports ways of defining rules that determine how to redact parts of a document based on selecting this setting.
+## Redaction in Data Hub Central Community Edition (DHCCE)
+In DHCCE you can set redaction rules for a property by selecting "Redacted" in the advance tab for a property setting at the parent entity level. DHCCE supports ways of defining rules that determine how to redact parts of a document based on selecting this setting.
 
 You can also set the PII for a property on an entity to implement Element Level Security for that property.
 
@@ -25,7 +25,7 @@ For redaction to work the "envision" role must also have the "redaction-user" ro
 ./gradlew mlDeployRoles 
 ```
 
-When you define a model, using the Connect tab, the user can select the 'Advanced' property options and mark a property as containing Redacted. In Envision this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'redactionRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called redactionRule4<currentUserName>. 
+When you define a model, using the Connect tab, the user can select the 'Advanced' property options and mark a property as containing Redacted. In DHCCE this creates a redaction rule in the schema database associated with the final database. The collection for the rule is 'redactionRule' if the system is not configured for multi tenant. If multi tenant is being used the collection is called redactionRule4<currentUserName>. 
 
 After doing this, all users will see the message "### Redacted ###" when they view a document that uses the property.
 

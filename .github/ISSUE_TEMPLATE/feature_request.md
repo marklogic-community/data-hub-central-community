@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for Envision
+about: Suggest an idea for Data Hub Central Community Edition (DHCCE)
 title: "[FEATURE]"
 labels: 'enhancement'
 assignees: ''
