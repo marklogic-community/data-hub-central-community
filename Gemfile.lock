@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/paxtonhare/rouge.git
+  revision: 35703d6b76a0c8e7c5f7121dc86cd81691c884d2
+  branch: adding_xquery
+  specs:
+    rouge (2.2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
