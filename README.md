@@ -1,5 +1,5 @@
-# Envision Website
-This branch contains the code that generates the github.io website for Envision.
+# Data Hub Central Community Edition (formerly Envision) Website
+This branch contains the code that generates the github.io website for Data Hub Central Community Edition. (formerly known as Envision)
 
 Before you can get going you must have Ruby installed. This project has .ruby-version and .ruby-gem files if you are using [RVM](https://rvm.io/).
 
