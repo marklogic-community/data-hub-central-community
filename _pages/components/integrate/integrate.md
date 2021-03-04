@@ -12,7 +12,7 @@ Create flows, define mapping and mastering steps and run them to integrate data 
 ### Getting Started
 A flow is just a collection of steps. Steps are what you configure to integrate data in the data hub.  Steps can be of type ingest, mapping, matching, merging, and custom.
 
-Envision allows you to create mapping, matching, and merging steps. However, you can run Envision against an existing hub and you'll have your existing flows and steps available for use. You will find that all step types are respected and usable by Envision. See "Additional Step Info" below for more details on ingest and custom step types.
+Data Hub Central Community Edition (DHCCE) allows you to create mapping, matching, and merging steps. However, you can run DHCCE against an existing hub and you'll have your existing flows and steps available for use. You will find that all step types are respected and usable by DHCCE. See "Additional Step Info" below for more details on ingest and custom step types.
 
 <br> 
 ![Integrate](/envision/images/IntegrateGH.png)
@@ -44,7 +44,7 @@ Collapsing the "Manage My Data" pane to increase the size of the workspace of ma
 	* If you run a flow and get an error. You can inspect the Jobs information for error messages.
 
 #### Additional Step Info
-Ingest steps aren't really needed if you think about it. Data can be loaded outside of Envision into the hub as well and still processed in mapping and mastering steps by Envision.  All a mapping step requires to map a source file to the target is a collection name or a query, not a previous ingestion step. Using Upload, we already know what the file is and where it came from, so no additional ingest step required.
+Ingest steps aren't really needed if you think about it. Data can be loaded outside of DHCCE into the hub as well and still processed in mapping and mastering steps by DHCCE.  All a mapping step requires to map a source file to the target is a collection name or a query, not a previous ingestion step. Using Upload, we already know what the file is and where it came from, so no additional ingest step required.
 
 The path of data for existing ingest steps is editable. For other ingest step configurations, attend to the corresponding .json config file in the data hub project.
 

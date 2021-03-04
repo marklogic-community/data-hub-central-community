@@ -17,7 +17,7 @@ This capability enables Human In The Loop (HITL) validation of entity deduplicat
 
 ### Getting Started
 
-Assuming you have set the action in the smart mastering Match step of your data hub flow to "notify" and the flow has been run,  an alert for how many matching records have been identified will be reported in the upper right of Envision next to the user name after login.
+Assuming you have set the action in the smart mastering Match step of your data hub flow to "notify" and the flow has been run,  an alert for how many matching records have been identified will be reported in the upper right of Data Hub Central Community Edition (DHCCE) next to the user name after login.
 
 ![Alerts](/envision/images/notifications-alert.png){: .center-image }
 

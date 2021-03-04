@@ -5,7 +5,7 @@ permalink: /components/
 ---
 
 # Component Guides
-Guides for each of the Envision components follow.  Use of the apps themselves is relatively straightforward.  The finer details for more complex configurations and rule setting can be found within these guides.
+Guides for each of the Data Hub Central Community Edition components follow.  Use of the apps themselves is relatively straightforward.  The finer details for more complex configurations and rule setting can be found within these guides.
 
 1. Upload
 2. Connect
