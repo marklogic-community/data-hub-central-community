@@ -11,7 +11,7 @@ For the UI you need:
  - [Node 12.x or later](https://nodejs.org/en/)
  - Npm 6.9.0 or later
 
-### Data Hub Central Community Editicion Installation Instructions 
+### Data Hub Central Community Edition Installation Instructions 
 
 First follow the instructions in the [Contributing doc](./CONTRIBUTING.md) for how to properly fork and clone and branch. Once you've done that come back here.
 
