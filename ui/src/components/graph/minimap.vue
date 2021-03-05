@@ -12,6 +12,14 @@
       height="200px"
     	>
 			</v-img>
+			<v-overlay
+				absolute
+				color="#036358"
+				id="minimapRadar"
+				v-show="!hideRadar"
+			>
+				<v-btn @click="hideRadar = !hideRadar" >Hide Radar</v-btn>
+			</v-overlay>
 		</v-expand-transition>
 
     <v-card-actions>
@@ -36,23 +44,19 @@
 </template>
 
 <script>
-const arrayDiff = (arr1, arr2) =>
-	arr1.filter(x => arr2.indexOf(x) === -1)
-
 export default {
 	name: 'minimap',
-	emits: ['saveGraphLayoutSnap', 'loadGraphLayoutSnap'],
 	props: {
 
 	},
 	data: () => ({
-		graph:{},
-		graphLayout: {},
-		dialog:false,
-		show: false,
 		showMiniMap:false,
-		ratio: 3,
-		imgSrc:'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg'
+		hideRadar:false,
+		imgSrc:'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
+		graphLayout:{
+			position: { x: 0, y: 0 },
+			scale: 1.0
+		}
 	}),
 	computed:{
 		imgSrc: {
@@ -61,179 +65,78 @@ export default {
 		}
 	},
 	methods: {
-		//****************************support for minimap
-getNetwork(){ return /*this.$parent.network*/ this.graph },
-loadGraphLayoutSnap(graph) {
-	const key = `snap-layout-${this._uid}`
-	const item = localStorage.getItem(key)
-	var graphLayout = item ? JSON.parse(item) : {
-		position: { x: 0, y: 0 },
-		scale: 1.0
-	}
-	graph.moveTo(graphLayout)
-},
-saveGraphLayoutSnap(graph) {
-	const key = `snap-layout-${this._uid}`
-	localStorage.setItem(key, JSON.stringify({
-		position: graph.getViewPosition(),
-		scale: graph.getScale(),
-		positions: graph.getPositions()
-	}))
-},
-drawMinimapImage2(graph){
-	//we need to create the save/restore graphics logic here in the component
-	//const originalCanvas = document.getElementsByTagName('canvas')[0] //this is the graph canvas but we really need a btter way of targeting it
-	const originalCanvas = graph.network.canvas.frame.canvas
-	const minimapImage = document.getElementById('minimapImage')
-	//set the minimap image url
-	this.imgSrc = originalCanvas.toDataURL()
 
-  },
-// Draw minimap Radar
-drawRadar(){
-  const {
-    clientWidth,
-    clientHeight
-  } = this.getNetwork().body.container
-  const minimapRadar = document.getElementById('minimapRadar')
-  const {
-    targetScale
-  } = this.getNetwork().view
-  const scale = this.getNetwork().getScale()
-  const translate = this.getNetwork().getViewPosition()
-  minimapRadar.style.transform = `translate(${(translate.x / this.ratio) *
-        targetScale}px, ${(translate.y / this.ratio) * targetScale}px) scale(${targetScale / scale})`
-  minimapRadar.style.width = `${clientWidth / this.ratio}px`
-  minimapRadar.style.height = `${clientHeight / this.ratio}px`
-},
-upDateMinimap1(){
-  this.drawMinimapImage2();
-},
-upDateMinimap2(){
-	this.saveGraphLayoutSnap()
-	let fitOptions = this.graph.options;
-	fitOptions.physics.enabled = true;
-	this.graph.setOptions(fitOptions)
-	this.graph.fit(this.nodes);
-	fitOptions.physics.enabled = false;
-	this.graph.setOptions(fitOptions)
-	this.drawMinimapImage2();
-	this.loadGraphLayoutSnap()
-//  this.drawRadar();
-},
-upDateMinimap(graph){
-	this.saveGraphLayoutSnap(graph)
-	let fitOptions = graph.options;
-	fitOptions.physics.enabled = true;
-	graph.setOptions(fitOptions)
-	graph.fit(graph.nodes);
-	fitOptions.physics.enabled = false;
-	graph.setOptions(fitOptions)
-	this.drawMinimapImage2(graph);
-	this.loadGraphLayoutSnap(graph)
-//  this.drawRadar();
-},
-zoomMinimap()
-{
-	const minimapWrapper = document.getElementById('minimapWrapper');
-  minimapWrapper.classList.remove('minimapWrapperIdle');
-  minimapWrapper.classList.add('minimapWrapperMove')
-},
-dragStartMinimap()
-{
-	const minimapWrapper = document.getElementById('minimapWrapper');
-  minimapWrapper.classList.remove('minimapWrapperIdle');
-  minimapWrapper.classList.add('minimapWrapperMove');
-},
-dragEndMinimap()
-{
-	const minimapWrapper = document.getElementById('minimapWrapper');
-  minimapWrapper.classList.remove('minimapWrapperMove');
-  minimapWrapper.classList.add('minimapWrapperIdle')
-},
-// Extra settings and cool effects :)
-/*
-this.network.on('resize', () => {
-  network.fit();
-})
-network.on('dragStart', () => {
-  const minimapWrapper = document.getElementById('minimapWrapper');
-  minimapWrapper.classList.remove('minimapWrapperIdle');
-  minimapWrapper.classList.add('minimapWrapperMove');
-})
-network.on('dragEnd', () => {
-  const minimapWrapper = document.getElementById('minimapWrapper');
-  minimapWrapper.classList.remove('minimapWrapperMove');
-  minimapWrapper.classList.add('minimapWrapperIdle')
-})
-network.on('zoom', () => {
-  const minimapWrapper = document.getElementById('minimapWrapper');
-  minimapWrapper.classList.remove('minimapWrapperIdle');
-  minimapWrapper.classList.add('minimapWrapperMove')
-})
-*/
-//************************End minimap support
-initMinimapGraph()
-{
-//	this.copyDataFromParent()
-		this.visData.nodes = this.mountVisData('nodes')
-		this.visData.edges = this.mountVisData('edges')
-		this.minimap = new Network(
-			this.$refs.minimapwrapper,
-			this.visData,
-			this.options
-		)
-
-},
-copyDataFromParent()
-	{
-		const parentnetwork = this.getNetwork()
-		this.setData(parentnetwork.body.nodes, parentnetwork.body.edges)
+	loadGraphLayoutSnap(graph) {
+		//load graph's position, scale, etc
+		graph.moveTo(this.graphLayout)
 	},
-	setData(n, e) {
-		this.visData.nodes = Array.isArray(n) ? new DataSet(n) : n
-		this.visData.edges = Array.isArray(e) ? new DataSet(e) : e
-	//	this.minimap.setData(this.visData)
-	},
-	mountVisData(propName) {
-			let data = this[propName]
-			// If data is DataSet or DataView we return early without attaching our own events
-			if (!(this[propName] instanceof DataSet || this[propName] instanceof DataView)) {
-				data = new DataSet(this[propName])
-				// Rethrow all events
-				data.on('*', (event, properties, senderId) =>
-					this.$emit(`${propName}-${event}`, { event, properties, senderId })
-				)
-				// We attach deep watcher on the prop to propagate changes in the DataSet
-				const callback = value => {
-					if (Array.isArray(value)) {
-						const newIds = new DataSet(value).getIds()
-						const diff = arrayDiff(this.visData[propName].getIds(), newIds)
-						this.visData[propName].update(value)
-						this.visData[propName].remove(diff)
-					}
-				}
-
-				this.$watch(propName, callback, {
-					deep: true
-				})
-			}
-
-			// Emitting DataSets back
-			this.$emit(`${propName}-mounted`, data)
-
-			return data
+	saveGraphLayoutSnap(graph) {
+		this.graphLayout={
+			position: graph.getViewPosition(),
+			scale: graph.getScale(),
+			positions: graph.getPositions()
 		}
-},
-	created() {
-
 	},
-
-	mounted() {
-//		this.initMinimapGraph()
+	drawMinimapImage(graph){
+		//copies the graph canvas to the minimap image
+		const originalCanvas = graph.network.canvas.frame.canvas
+		const minimapImage = document.getElementById('minimapImage')
+		//set the minimap image url
+		this.imgSrc = originalCanvas.toDataURL()
 	},
-	beforeDestroy() {
+	// Draw minimap Radar
+	drawRadar(graph){
+		const {
+			clientWidth,
+			clientHeight
+		} = graph.network.canvas.frame.canvas
+		const minimapRadar = document.getElementById('minimapRadar')
+		const {
+			targetScale
+		} = graph.network.view
+		const scale = graph.getScale()
+		const translate = graph.getViewPosition()
+		const minimapImage = document.getElementById('minimapImage');
+		var ratio = clientWidth/minimapImage.clientWidth
+		minimapRadar.style.transform = `translate(${(translate.x / ratio) *
+					targetScale}px, ${(translate.y / ratio) * targetScale}px) scale(${targetScale / scale})`
+		minimapRadar.style.width = `${clientWidth / ratio}px`
+		minimapRadar.style.height = `${clientHeight / ratio}px`
+	},
+	upDateMinimap(graph){
+		//save user state of the graph
+		this.saveGraphLayoutSnap(graph)
+		let fitOptions = graph.options;
+		//prep graph for fit call
+		fitOptions.physics.enabled = true;
+		graph.setOptions(fitOptions)
+		//fit draws a zoomed out graph wih all nodes
+		graph.fit(graph.nodes);
+		fitOptions.physics.enabled = false;
+		graph.setOptions(fitOptions)
+		this.drawMinimapImage(graph);
+		this.loadGraphLayoutSnap(graph)
+	  this.drawRadar(graph);
+	},
+	zoomMinimap()
+	{
+		const minimapWrapper = document.getElementById('minimapWrapper');
+		minimapWrapper.classList.remove('minimapWrapperIdle');
+		minimapWrapper.classList.add('minimapWrapperMove')
+	},
+	dragStartMinimap()
+	{
+		const minimapWrapper = document.getElementById('minimapWrapper');
+		minimapWrapper.classList.remove('minimapWrapperIdle');
+		minimapWrapper.classList.add('minimapWrapperMove');
+	},
+	dragEndMinimap()
+	{
+		const minimapWrapper = document.getElementById('minimapWrapper');
+		minimapWrapper.classList.remove('minimapWrapperMove');
+		minimapWrapper.classList.add('minimapWrapperIdle')
 	}
+}
 }
 </script>
 

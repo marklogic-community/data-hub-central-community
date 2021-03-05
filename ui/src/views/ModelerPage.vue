@@ -1,8 +1,5 @@
 <template>
-	<v-container fluid class="modeler"
-		@saveGraphLayoutSnap="this.saveGraphLayoutSnap"
-		@loadGraphLayoutSnap="this.loadGraphLayoutSnap"
-		>
+	<v-container fluid class="modeler">
 		<v-layout column>
 			<v-flex md12 class="fullHeight">
 				<v-layout row>
@@ -60,7 +57,6 @@
 							<li v-for="edge in edges" :key="edge.id" data-cy="edgeList" v-on:click="selectEdge(edge)">{{ edge.id }}</li>
 						</ul>
 						<minimap
-							:graph="this.$refs.graph"
 							ref="minimap"
 							style="position: absolute; bottom:0; left:0;"
 							>
