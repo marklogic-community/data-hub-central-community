@@ -3,7 +3,7 @@ package com.marklogic.envision.flows;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.mapping.MappingFunctions;
+import com.marklogic.hub.dataservices.MappingService;
 import com.marklogic.hub.mapping.MappingValidator;
 import com.marklogic.hub.step.StepDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,8 +79,8 @@ public class FlowsController extends AbstractController {
 	@RequestMapping(value = "/mappings/functions", method = RequestMethod.GET)
 	@ResponseBody
 	public JsonNode getMappingFunctions() {
-		MappingFunctions mappingFunctions = new MappingFunctions(getHubClient().getStagingClient());
-		return mappingFunctions.getMappingFunctions();
+		MappingService mappingService = MappingService.on(getHubClient().getStagingClient());
+		return mappingService.getMappingFunctions();
 	}
 
 	@RequestMapping(value = "/mappings/sampleDoc", method = RequestMethod.POST)

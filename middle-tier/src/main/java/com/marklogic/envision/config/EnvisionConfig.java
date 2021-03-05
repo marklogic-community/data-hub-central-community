@@ -84,15 +84,11 @@ public class EnvisionConfig {
 		return hubConfig;
 	}
 
-//	public HubProject getHubProject() {
-//		return hubProject;
-//	}
-
 	@Autowired
-	EnvisionConfig(Environment environment, HubConfigImpl hubConfig, HubProject hubProject) {
+	EnvisionConfig(Environment environment, HubConfigImpl hubConfig) {
 		this.environment = environment;
 		this.hubConfig = hubConfig;
-		this.hubProject = hubProject;
+		this.hubProject = hubConfig.getHubProject();
 	}
 
 	public HubClient newAdminHubClient() {
@@ -116,7 +112,7 @@ public class EnvisionConfig {
 		if (isMultiTenant) {
 			hp = new MultiTenantProjectImpl(hubProject, username);
 		}
-		HubConfigImpl hubConfig = new HubConfigImpl(hp, environment);
+		HubConfigImpl hubConfig = new HubConfigImpl(hp);
 		setupHubConfig(hubConfig, username, password);
 		return hubConfig;
 	}
@@ -152,7 +148,7 @@ public class EnvisionConfig {
 			hubProject.createProject(projectDir);
 			hubConfig.setMlUsername(username);
 			hubConfig.setMlPassword(password);
-			hubConfig.resetAppConfigs();
+			// hubConfig.resetAppConfigs();
 
 			String envName = dhfEnv;
 			if (envName == null || envName.isEmpty()) {
@@ -160,7 +156,7 @@ public class EnvisionConfig {
 			}
 			System.out.println("envName: " + envName);
 			hubConfig.withPropertiesFromEnvironment(envName);
-			hubConfig.resetHubConfigs();
+			// hubConfig.resetHubConfigs();
 			hubConfig.refreshProject();
 			hubConfig.getAppConfig().setAppServicesUsername(username);
 			hubConfig.getAppConfig().setAppServicesPassword(password);

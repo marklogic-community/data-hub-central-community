@@ -43,7 +43,8 @@ export default {
 			}))
 		},
 		targetEntity() {
-			return this.entities[this.step.options.targetEntity]
+			const targetEntityType =  this.step.options ? this.step.options.targetEntity: this.step.targetEntityType
+			return this.entities[targetEntityType]
 		},
 		...mapState({
 			entities: state => state.flows.entities

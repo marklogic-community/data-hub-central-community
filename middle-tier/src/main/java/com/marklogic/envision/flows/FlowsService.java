@@ -15,6 +15,7 @@ import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.MappingManager;
 import com.marklogic.hub.StepDefinitionManager;
+import com.marklogic.hub.dataservices.FlowService;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
@@ -77,10 +78,7 @@ public class FlowsService {
 	}
 
 	public Flow getFlow(HubClient client, String flowName) {
-		List<String> flowNames = new ArrayList<>();
-		flowNames.add(flowName);
-		JsonNode flows = Flows.on(client.getFinalClient()).getFlows(mapper.valueToTree(flowNames));
-		JsonNode flow =  flows.get(0);
+		JsonNode flow = newFlowService(client.getStagingClient()).getFlow(flowName);
 		if (flow != null) {
 			return flowManager.createFlowFromJSON(flow);
 		}
@@ -138,8 +136,7 @@ public class FlowsService {
 	}
 
 	public JsonNode getFlows(DatabaseClient client) {
-		List<String> flowNames = flowManager.getFlows().stream().map(Flow::getName).collect(Collectors.toList());
-		return Flows.on(client).getFlows(mapper.valueToTree(flowNames));
+		return newFlowService(client).getFlowsWithStepDetails();
 	}
 
 	public void createStep(HubClient hubClient, String flowName, JsonNode stepJson) {
@@ -298,5 +295,9 @@ public class FlowsService {
 		}
 
 		return 1;
+	}
+
+	private FlowService newFlowService(DatabaseClient client) {
+		return FlowService.on(client);
 	}
 }

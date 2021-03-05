@@ -139,8 +139,8 @@ public class OSController extends AbstractController {
 			}
 
 			@Override
-			public void onError() {
-				System.out.println("Deploy controller in error");
+			public void onError(String msg, Exception ex) {
+				System.out.println("Deploy controller in error: " + msg);
 			}
 		};
 		return listener;

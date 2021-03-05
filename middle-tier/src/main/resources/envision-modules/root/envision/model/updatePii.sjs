@@ -1,6 +1,6 @@
 'use strict';
 
-const hent = require('/data-hub/5/impl/hub-entities.xqy');
+const hubEs = require('/data-hub/5/impl/hub-es.sjs');
 const piiLib = require('/envision/pii-lib.sjs');
 
 var oldModel;
@@ -10,7 +10,7 @@ oldModel = oldModel.toObject();
 newModel = newModel.toObject();
 
 function getPii(model) {
-	return hent.dumpPii(model).toObject().config['protected-path'];
+	return hubEs.generateProtectedPathConfig(model).toObject().config['protected-path'];
 }
 
 const oldPii = getPii(Object.values(oldModel));

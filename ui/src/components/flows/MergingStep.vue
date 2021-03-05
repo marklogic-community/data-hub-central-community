@@ -180,7 +180,8 @@ export default {
 			return this.strategies ? this.strategies.filter(s => !s.default).map(s => s.name) : []
 		},
 		targetEntity() {
-			return this.entities[this.step.options.targetEntity]
+			const targetEntityType = this.step.options ? this.step.options.targetEntity: this.step.targetEntityType;
+			return this.entities[targetEntityType]
 		},
 		expandedOptions() {
 			return this.options.map(o => ({

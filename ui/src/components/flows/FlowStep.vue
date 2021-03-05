@@ -134,7 +134,7 @@ export default {
 	},
 	computed: {
 		entityName() {
-			return this.step && this.step.options && this.step.options.targetEntity
+			return this.step && ((this.step.options && this.step.options.targetEntity) || this.step.targetEntityType)
 		},
 	},
 	methods: {

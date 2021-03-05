@@ -31,7 +31,7 @@
 									</td>
 									<td>{{step.name}}</td>
 									<td>{{step.description}}</td>
-									<td>{{step.options.targetEntity}}</td>
+									<td>{{step.options ? step.options.targetEntity: step.targetEntityType}}</td>
 									<td>{{step.stepDefinitionType}}</td>
 								</tr>
 							</tbody>

@@ -369,9 +369,9 @@ export default {
 					.map(step => {
 						return {
 							name: step.name,
-							targetEntity: step.options.targetEntity,
+							targetEntity: step.options ? step.options.targetEntity: step.targetEntityType,
 							stepType: step.stepDefinitionType,
-							dataSource: step.options.sourceCollection,
+							dataSource: step.options ? step.options.sourceCollection: step.sourceCollection,
 							raw: step
 						}
 					}) : []
