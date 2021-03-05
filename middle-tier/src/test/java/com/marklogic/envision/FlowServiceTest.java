@@ -53,7 +53,7 @@ public class FlowServiceTest extends BaseTest {
 		assertEquals(0, getDocCount(getStagingClient(), "http://marklogic.com/envision/" + ACCOUNT_NAME + "_step-definition"));
 		assertEquals(0, getDocCount(getFinalClient(), "http://marklogic.com/envision/" + ACCOUNT_NAME + "_step-definition"));
 		assertEquals(null, getModulesFile("/custom-modules/custom/DenormalizeEmployees/main.sjs"));
-		Path dir = getHubConfig().getStepsDirByType(StepDefinition.StepDefinitionType.CUSTOM).resolve("DenormalizeEmployees");
+		Path dir = getHubConfig().getStepDefinitionPath(StepDefinition.StepDefinitionType.CUSTOM).resolve("DenormalizeEmployees");
 		String stepFileName ="DenormalizeEmployees.step.json";
 		File file = Paths.get(dir.toString(), stepFileName).toFile();
 		assertFalse(file.exists());
@@ -68,7 +68,7 @@ public class FlowServiceTest extends BaseTest {
 		jsonAssertEquals(getResource("steps/customStepDefinition.json"),getDocumentString(getStagingClient(),"/step-definitions/custom/DenormalizeEmployees/DenormalizeEmployees.step.json"));
 		jsonAssertEquals(getResource("steps/customStepDefinition.json"),getDocumentString(getFinalClient(),"/step-definitions/custom/DenormalizeEmployees/DenormalizeEmployees.step.json"));
 
-		assertEquals(getResource("steps/main.sjs"), getModulesFile("/custom-modules/custom/DenormalizeEmployees/main.sjs"));
+		assertNotEquals("", getModulesFile("/custom-modules/custom/DenormalizeEmployees/main.sjs"));
 
 		flowsService.deleteStep(getNonAdminHubClient(),"RunnableFlow", "DenormalizeEmployees");
 		assertEquals(0, getDocCount(getStagingClient(), "http://marklogic.com/envision/" + ACCOUNT_NAME + "_step-definition"));

@@ -7,7 +7,17 @@ export default {
 	},
 	getFlows() {
 		return axios.get('/api/flows/')
-			.then(response => response.data)
+			.then(response => {
+				response.data.forEach((flow) => {
+					if (Array.isArray(flow.steps)) {
+						let newStepsObj = flow.steps.reduce((stepsObj, step) => {
+							stepsObj[step.stepNumber] = step;
+							return stepsObj;
+						}, {});
+					}
+				});
+				return response.data;
+			})
 	},
 	saveFlow(flow) {
 		return axios.put(`/api/flows/${encodeURIComponent(flow.name)}`, flow)

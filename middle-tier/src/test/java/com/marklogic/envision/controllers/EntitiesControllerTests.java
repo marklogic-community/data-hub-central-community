@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class EntitiesControllerTests extends AbstractMvcTest {
@@ -40,7 +41,7 @@ public class EntitiesControllerTests extends AbstractMvcTest {
 		getJson(GET_ENTITIES_URL)
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					ArrayNode entities = readJsonArray(result.getResponse().getContentAsString());
 					assertEquals(5, entities.size());
 				})
@@ -60,7 +61,7 @@ public class EntitiesControllerTests extends AbstractMvcTest {
 		getJson(GET_ENTITY_URL + "/Planet")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode entity = readJsonObject(result.getResponse().getContentAsString());
 					jsonAssertEquals(expectedEntity, entity);
 				})

@@ -286,7 +286,7 @@ public class ModelTests extends BaseTest {
 		assertEquals(1, files.length);
 
 		JsonNode paths = getProtectedPaths(getAdminHubClient().getFinalClient());
-		jsonAssertEquals("[\"/envelope//instance//Employee/piiProp\"]", paths);
+		jsonAssertEquals("[\"/(es:envelope|envelope)/(es:instance|instance)/Employee/piiProp\"]", paths);
 
 		JsonNode result = EntityModeller.on(client).toDatahub();
 		System.out.println(objectMapper.writeValueAsString(result));
@@ -310,7 +310,7 @@ public class ModelTests extends BaseTest {
 		assertEquals(1, files.length);
 
 		paths = getProtectedPaths(getAdminHubClient().getFinalClient());
-		jsonAssertEquals("[\"/envelope//instance//Employee/piiProp\"]", paths);
+		jsonAssertEquals("[\"/(es:envelope|envelope)/(es:instance|instance)/Employee/piiProp\"]", paths);
 
 		result = EntityModeller.on(client).toDatahub();
 		System.out.println(objectMapper.writeValueAsString(result));

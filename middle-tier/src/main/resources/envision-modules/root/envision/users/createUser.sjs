@@ -14,7 +14,7 @@ xdmp.invokeFunction(function() {
 			roleName,
 			'a role for ' + user.email,
 			['envision'].concat(user.roles || []),
-			xdmp.defaultPermissions(),
+			xdmp.defaultPermissions(null, 'elements'),
 			xdmp.defaultCollections()
 		);
 	}

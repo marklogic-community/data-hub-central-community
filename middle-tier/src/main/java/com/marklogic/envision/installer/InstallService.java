@@ -58,6 +58,7 @@ public class InstallService {
 				"resetSystem.json",
 				"createTdes.json",
 				"updatePii.json",
+				"hcGetUsers.json",
 				"masteringUnblock.json"
 			};
 			for (String file: files) {

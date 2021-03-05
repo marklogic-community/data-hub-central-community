@@ -143,13 +143,15 @@ export default {
 	},
 	computed: {
 		targetEntity() {
-			return this.entities[this.step.options.targetEntity]
+			const targetEntityType = String(this.mapping.targetEntity || this.mapping.targetEntityType);
+			const targetEntityTitle = targetEntityType.substring(targetEntityType.lastIndexOf("/") + 1)
+			return this.entities[targetEntityType] || this.entities[targetEntityTitle];
 		},
 		sampleDocUri() {
 			return this.mapping.sourceURI || (this.docUris ? this.docUris[0] : null)
 		},
 		mapName() {
-			return (this.flow && this.step) ? `${this.flow.name}-${this.step.name}` : ''
+			return (this.flow && this.step) ? `${this.flow.name}-${this.step.stepName}` : ''
 		},
 		validate() {
 			return _.debounce(() => {
@@ -282,7 +284,7 @@ export default {
 				.previewMapping({
 					mappingName: this.mapName,
 					mappingVersion: this.mapping.version,
-					format: this.step.options.outputFormat,
+					format: this.step.options ? this.step.options.outputFormat: this.step.outputFormat,
 					uri: this.sampleDocUri
 				})
 				.then(resp => this.previewDoc = resp)
@@ -295,7 +297,9 @@ export default {
 				})
 		},
 		loadSampleDocs() {
-			searchApi.getResultsByQuery(this.step.options.sourceDatabase, this.step.options.sourceQuery, 20, true).then(response => {
+			const sourceDatabase = this.step.options ? this.step.options.sourceDatabase: this.step.sourceDatabase;
+			const sourceQuery = this.step.options ? this.step.options.sourceQuery: this.step.sourceQuery;
+			searchApi.getResultsByQuery(sourceDatabase, sourceQuery, 20, true).then(response => {
 				this.docUris = response.map(doc => doc.uri)
 
 				if (this.uriIndex !== 1) {

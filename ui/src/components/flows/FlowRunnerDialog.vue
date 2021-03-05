@@ -29,9 +29,9 @@
 									<td>
 										<v-checkbox dense v-model="checkedSteps[index]"></v-checkbox>
 									</td>
-									<td>{{step.name}}</td>
+									<td>{{step.stepName}}</td>
 									<td>{{step.description}}</td>
-									<td>{{step.options.targetEntity}}</td>
+									<td>{{step.options ? step.options.targetEntity: step.targetEntityType}}</td>
 									<td>{{step.stepDefinitionType}}</td>
 								</tr>
 							</tbody>
@@ -67,15 +67,7 @@ export default {
 			if (!this.flow) {
 				return []
 			}
-			let steps = []
-
-			for (let key in this.flow.steps) {
-				steps.push({
-					...this.flow.steps[key],
-					stepOrder: key
-				})
-			}
-			return steps
+			return this.flow.steps
 		},
 
 		open: {
@@ -104,7 +96,7 @@ export default {
 			return this.steps.filter((v, idx) => this.checkedIndexes.findIndex(x => x == idx) >= 0)
 		},
 		selectedFlowSteps() {
-			return this.selectedFlows.map(f => f.stepOrder)
+			return this.selectedFlows.map(f => f.stepNumber)
 		}
 	},
 	methods: {

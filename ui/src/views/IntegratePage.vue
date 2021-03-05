@@ -106,15 +106,15 @@
 						<v-layout v-if="steps && steps.length > 0" row>
 							<draggable v-bind="dragOptions" v-model="steps" class="flex step-scroller md12" draggable=".step-wrapper">
 								<transition-group type="transition" tag="div" :class="['flexxy', { contracted: currentStepName }]" ref="scroller">
-									<div :id="step.name" class="step-wrapper" v-for="(step, index) in steps" :key="step.name">
-										<div :class="['step', {active: (currentStepName === step.name)}, `elevation-${(currentStepName === step.name) ? 6 : 1}`]" @click="currentStepName = step.name">
-											<div :class="['bar', step.stepType]">
+									<div :id="step.stepName" class="step-wrapper" v-for="(step, index) in steps" :key="step.stepName">
+										<div :class="['step', {active: (currentStepName === step.stepName)}, `elevation-${(currentStepName === step.stepName) ? 6 : 1}`]" @click="currentStepName = step.stepName">
+											<div :class="['bar', step.stepDefinitionType]">
 												<v-icon color="white" small>drag_indicator</v-icon>
 												<v-spacer></v-spacer>
-												<span class="steptype">{{step.stepType}}</span>
+												<span class="steptype">{{step.stepDefinitionType}}</span>
 											</div>
 											<div class="step-body">
-												<h4>{{step.name}}</h4>
+												<h4>{{step.stepName}}</h4>
 												<div class="meta">
 													<span v-if="step.dataSource">{{step.dataSource}} => </span>
 													{{step.targetEntity}}
@@ -352,14 +352,14 @@ export default {
 		},
 		currentStep() {
 			return (this.flow && this.currentStepName) ?
-				Object.values(this.flow.steps).find(s => s.name === this.currentStepName) : null
+				Object.values(this.flow.steps).find(s => s.stepName === this.currentStepName) : null
 		},
 		sortedSteps() {
 			return this.entities.map(e => e.info.title)
 				.map(e => {
 					return {
 						name: e,
-						steps: this.steps.filter(s => s.targetEntity === e)
+						steps: this.steps ? this.steps.filter(s => s.targetEntity === e): []
 					}
 				})
 		},
@@ -368,10 +368,9 @@ export default {
 				return (this.flow && this.flow.steps) ? Object.values(this.flow.steps)
 					.map(step => {
 						return {
-							name: step.name,
-							targetEntity: step.options.targetEntity,
-							stepType: step.stepDefinitionType,
-							dataSource: step.options.sourceCollection,
+							stepName: step.stepName,
+							stepDefinitionType: step.stepDefinitionType,
+							dataSource: step.options ? step.options.sourceCollection: step.sourceCollection,
 							raw: step
 						}
 					}) : []
@@ -400,7 +399,7 @@ export default {
 				p.flowName = this.flowName
 			}
 			if (this.currentStep) {
-				p.stepName = this.currentStep.name
+				p.stepName = this.currentStep.stepName
 			}
 			return p
 		},
@@ -441,6 +440,7 @@ export default {
 		flow: function() {
 			this.updateRoute()
 			this.getJobs()
+			this.getFullFlow();
 		},
 		flows: function() {
 			this.handleRouteParams()
@@ -513,7 +513,7 @@ export default {
 			this.currentStepName = params.stepName || null
 			if (params.stepName) {
 				if (this.flow) {
-					const stepIdx = Object.values(this.flow.steps).findIndex(s => s.name === params.stepName)
+					const stepIdx = Object.values(this.flow.steps).findIndex(s => s.stepName === params.stepName)
 					if (stepIdx >= 0) {
 						this.currentStepIdx = stepIdx + 1
 					}
@@ -531,11 +531,11 @@ export default {
 			this.showAddFlow = true
 		},
 		stepCreated(step) {
-			const idx = this.steps.findIndex(s => s.name === step.name)
+			const idx = this.steps.findIndex(s => s.stepName === step.stepName)
 			if (idx >= 0) {
 				this.currentStepIdx = idx
 			}
-			this.currentStepName = step.name
+			this.currentStepName = step.stepName
 		},
 		flowCreated(flow) {
 			this.flowName = flow.name
@@ -595,6 +595,18 @@ export default {
 					)
 					.sort((a, b) => this.$moment(b.timeEnded).diff(this.$moment(a.timeEnded)))
 			})
+		},
+		async getFullFlow() {
+			if (this.flow && this.flow.steps) {
+				let fullFlow = await flowsApi.getFlow(this.flowName);
+				Object.values(this.flow.steps).forEach((step) => {
+					if (fullFlow.steps[step.stepNumber]) {
+						step.raw = fullFlow.steps[step.stepNumber];
+						let optionsRoot = step.raw.options ? step.raw.options : step.raw;
+						step.targetEntity = optionsRoot.targetEntityType || optionsRoot.targetEntity;
+					}
+				})
+			}
 		}
 	}
 }

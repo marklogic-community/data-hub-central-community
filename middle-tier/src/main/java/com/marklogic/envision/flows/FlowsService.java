@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.envision.hub.HubClient;
@@ -15,11 +16,15 @@ import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.MappingManager;
 import com.marklogic.hub.StepDefinitionManager;
+import com.marklogic.hub.dataservices.FlowService;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.impl.EntityManagerImpl;
+import com.marklogic.hub.impl.FlowManagerImpl;
+import com.marklogic.hub.impl.MappingManagerImpl;
+import com.marklogic.hub.impl.StepDefinitionManagerImpl;
 import com.marklogic.hub.mapping.Mapping;
 import com.marklogic.hub.scaffold.Scaffolding;
 import com.marklogic.hub.step.StepDefinition;
@@ -53,16 +58,14 @@ public class FlowsService {
 
 	@Autowired
 	FlowsService(
-		FlowManager flowManager,
-		StepDefinitionManager stepDefinitionManager,
-		MappingManager mappingManager,
+		EnvisionConfig envisionConfig,
 		DeployService deployService,
 		SimpMessagingTemplate template,
 		Scaffolding scaffolding
 	) {
-		this.flowManager = flowManager;
-		this.stepDefinitionManager = stepDefinitionManager;
-		this.mappingManager = mappingManager;
+		this.flowManager = new FlowManagerImpl(envisionConfig.getHubConfig());
+		this.stepDefinitionManager = new StepDefinitionManagerImpl(envisionConfig.getHubConfig());
+		this.mappingManager = new MappingManagerImpl(envisionConfig.getHubConfig());
 		this.deployService = deployService;
 		this.template = template;
 		this.scaffolding = scaffolding;
@@ -77,10 +80,7 @@ public class FlowsService {
 	}
 
 	public Flow getFlow(HubClient client, String flowName) {
-		List<String> flowNames = new ArrayList<>();
-		flowNames.add(flowName);
-		JsonNode flows = Flows.on(client.getFinalClient()).getFlows(mapper.valueToTree(flowNames));
-		JsonNode flow =  flows.get(0);
+		JsonNode flow = newFlowService(client.getStagingClient()).getFullFlow(flowName);
 		if (flow != null) {
 			return flowManager.createFlowFromJSON(flow);
 		}
@@ -138,14 +138,13 @@ public class FlowsService {
 	}
 
 	public JsonNode getFlows(DatabaseClient client) {
-		List<String> flowNames = flowManager.getFlows().stream().map(Flow::getName).collect(Collectors.toList());
-		return Flows.on(client).getFlows(mapper.valueToTree(flowNames));
+		return newFlowService(client).getFlowsWithStepDetails();
 	}
 
 	public void createStep(HubClient hubClient, String flowName, JsonNode stepJson) {
 		String stepType = stepJson.get("stepDefinitionType").asText();
 		String stepName = stepJson.get("name").asText();
-		String entityName = stepJson.get("options").get("targetEntity").asText();
+		String entityName = getEntityTypeFromStep(stepJson);
 		Flow flow = getFlow(hubClient, flowName);
 		Step step = Step.deserialize(stepJson);
 
@@ -260,7 +259,7 @@ public class FlowsService {
 			ObjectReader reader = mapper.readerFor(new TypeReference<String[]>() {});
 			String[] stepsList = reader.readValue(steps);
 			FlowInputs inputs = new FlowInputs(flowName, stepsList);
-			FlowRunnerImpl flowRunner = new FlowRunnerImpl(hubClient.getHubConfig());
+			FlowRunnerImpl flowRunner = new FlowRunnerImpl(hubClient);
 			flowRunner.onStatusChanged((jobId, step, jobStatus, percentComplete, successfulEvents, failedEvents, message) -> {
 				StatusMessage msg = StatusMessage.newStatus(jobId)
 					.withMessage(message)
@@ -271,7 +270,7 @@ public class FlowsService {
 			flowRunner.awaitCompletion();
 		}
 		catch(Exception e) {
-			throw new RuntimeException("invalid steps");
+			throw new RuntimeException("invalid steps", e);
 		}
 	}
 
@@ -298,5 +297,14 @@ public class FlowsService {
 		}
 
 		return 1;
+	}
+
+	private String getEntityTypeFromStep(JsonNode step) {
+		JsonNode optionsRoot = step.has("options") ? step.get("options") : step;
+		return optionsRoot.path("targetEntityType").asText(optionsRoot.path("targetEntity").asText());
+	}
+
+	private FlowService newFlowService(DatabaseClient client) {
+		return FlowService.on(client);
 	}
 }

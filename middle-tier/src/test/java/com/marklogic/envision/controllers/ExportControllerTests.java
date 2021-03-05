@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -126,7 +127,7 @@ public class ExportControllerTests extends AbstractMvcTest {
 		postJson(GET_EXPORT_URL, "[\"col1\", \"col2\"]")
 			.andDo(
 				result -> {
-//					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+//					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 //					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 //					assertEquals(0, response.get("results").size());
 				})
@@ -159,14 +160,14 @@ public class ExportControllerTests extends AbstractMvcTest {
 					ZipEntry zipEntry = zipInputStream.getNextEntry();
 					assertEquals("Employee.csv", zipEntry.getName());
 					InputStream fileInputStream = readZipFileContents(zipInputStream);
-					List<String> lines = IOUtils.readLines(fileInputStream);
+					List<String> lines = IOUtils.readLines(fileInputStream, Charset.defaultCharset());
 					assertEquals("name,departmentId,employeeId,skills,skills2,json,empty", lines.get(0));
 					assertEquals("### Redacted ###,\"2, has a comma\",\"55002 'hi'\",\"[\"\"general ledger\"\",\"\"not visible in search\"\"]\",\"[\"\"SPARQL\"\", \"\"XQuery\"\", \"\"Java\"\", \"\"RDF\"\"]\",\"{\"\"key\"\":\"\"value\"\"}\",", lines.get(1));
 
 					zipEntry = zipInputStream.getNextEntry();
 					assertEquals("Department.csv", zipEntry.getName());
 					fileInputStream = readZipFileContents(zipInputStream);
-					lines = IOUtils.readLines(fileInputStream);
+					lines = IOUtils.readLines(fileInputStream, Charset.defaultCharset());
 					assertEquals("empty,departmentId,employeeIds,name", lines.get(0));
 					assertEquals(",2,55002,\"Marketing, has a comma\"", lines.get(1));
 

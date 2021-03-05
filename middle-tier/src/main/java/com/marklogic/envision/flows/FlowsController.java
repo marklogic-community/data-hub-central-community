@@ -3,7 +3,7 @@ package com.marklogic.envision.flows;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.mapping.MappingFunctions;
+import com.marklogic.hub.dataservices.MappingService;
 import com.marklogic.hub.mapping.MappingValidator;
 import com.marklogic.hub.step.StepDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,8 +79,8 @@ public class FlowsController extends AbstractController {
 	@RequestMapping(value = "/mappings/functions", method = RequestMethod.GET)
 	@ResponseBody
 	public JsonNode getMappingFunctions() {
-		MappingFunctions mappingFunctions = new MappingFunctions(getHubClient().getStagingClient());
-		return mappingFunctions.getMappingFunctions();
+		MappingService mappingService = MappingService.on(getHubClient().getStagingClient());
+		return mappingService.getMappingFunctions();
 	}
 
 	@RequestMapping(value = "/mappings/sampleDoc", method = RequestMethod.POST)
@@ -96,13 +96,13 @@ public class FlowsController extends AbstractController {
 	public ResponseEntity<String> previewMapping(@RequestBody JsonNode body) {
 		String mappingName = body.get("mappingName").asText();
 		int mappingVersion = body.get("mappingVersion").asInt();
-		String format = body.get("format").asText();
-		String uri = body.get("uri").asText();
+		String format = body.path("format").asText("json");
+		String uri = body.path("uri").asText("");
 
 		String response = Flows.on(getHubClient().getStagingClient()).previewMapping(mappingName, mappingVersion, format, uri);
 		HttpHeaders headers = new HttpHeaders();
 		if (format.equals("json")) {
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			headers.setContentType(MediaType.APPLICATION_JSON);
 		} else {
 			headers.setContentType(MediaType.APPLICATION_XML);
 		}

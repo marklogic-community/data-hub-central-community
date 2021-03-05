@@ -176,7 +176,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		getJson(GET_MAPPING_FUNCTIONS_URL)
 			.andDo(
 				result -> {
-					ObjectNode node = readJsonObject(result.getResponse().getContentAsString());
+					ArrayNode node = readJsonArray(result.getResponse().getContentAsString());
 					assertTrue(node.size() > 100);
 				})
 			.andExpect(status().isOk());

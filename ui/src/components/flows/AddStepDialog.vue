@@ -228,15 +228,16 @@ export default {
 				this.targetDatabase = 'Final'
 				return
 			}
+			const stepDetails = step.options ? step.options : step;
 			this.stepName = step.name
 			this.stepType = step.stepDefinitionType
-			this.entityName = step.options.targetEntity
+			this.entityName = stepDetails.targetEntityType || stepDetails.targetEntity
 			this.stepDescription = step.description
-			this.sourceCollection = step.options.sourceCollection
-			this.outputFormat = step.options.outputFormat
+			this.sourceCollection = stepDetails.sourceCollection
+			this.outputFormat = stepDetails.outputFormat
 			if (this.stepInfo && this.stepInfo.databases) {
-				this.sourceDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === step.options.sourceDatabase))
-				this.targetDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === step.options.targetDatabase))
+				this.sourceDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === stepDetails.sourceDatabase))
+				this.targetDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === stepDetails.targetDatabase))
 			}
 		},
 		inputErrors(field, fieldName) {
@@ -257,17 +258,15 @@ export default {
 			const step = {
 				name: this.stepName,
 				description: this.stepDescription,
-				options: {
-					additionalCollections: [],
-					targetEntity: this.entityName,
-					sourceDatabase : this.stepInfo.databases[this.sourceDatabase.toLowerCase()],
-					targetDatabase : this.stepInfo.databases[this.targetDatabase.toLowerCase()],
-					collections : [this.entityName],
-					sourceCollection : this.sourceCollection,
-					sourceQuery: `cts.collectionQuery(["${this.sourceCollection}"])`,
-					permissions: 'data-hub-operator,read,data-hub-operator,update',
-					outputFormat: this.outputFormat
-				},
+				additionalCollections: [],
+				targetEntity: this.entityName,
+				sourceDatabase : this.stepInfo.databases[this.sourceDatabase.toLowerCase()],
+				targetDatabase : this.stepInfo.databases[this.targetDatabase.toLowerCase()],
+				collections : [this.entityName],
+				sourceCollection : this.sourceCollection,
+				sourceQuery: `cts.collectionQuery(["${this.sourceCollection}"])`,
+				permissions: 'data-hub-common,read,data-hub-common,update',
+				outputFormat: this.outputFormat,
 				customHook: {
 					module: '',
 					parameters: {},
@@ -278,14 +277,11 @@ export default {
 				batchSize: 100,
 				threadCount: 4,
 				stepDefinitionName: 'entity-services-mapping',
-				stepDefinitionType: this.stepType
+				stepDefinitionType: this.stepType,
+				options: {}
 			}
 
 			if (this.stepType === 'MAPPING') {
-				step.options.mapping = {
-          name : `${this.flowName}-${this.stepName}`,
-          version : 1
-				}
 				// default to use our custom uri remapper hook. it will
 				// allow 2 steps to run against the same input doc
 				step.customHook.module = '/envision/customHooks/uriRemapper.sjs'

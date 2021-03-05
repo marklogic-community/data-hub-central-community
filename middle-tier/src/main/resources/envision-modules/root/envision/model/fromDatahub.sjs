@@ -4,6 +4,10 @@ let entities = fn.collection('http://marklogic.com/entity-services/models').toAr
 let edges = {}
 let nodes = {}
 
+function arrayHasValue(arr, value) {
+	return arr ? arr.indexOf(value) >= 0: false;
+}
+
 function buildProperties(entityName, entity, definitions) {
 	const props = entity.properties
 
@@ -49,12 +53,12 @@ function buildProperties(entityName, entity, definitions) {
 			...newProp,
 			isArray: prop.datatype === 'array',
 			isStructured: isStructured,
-			isRequired: entity.required.indexOf(propName) >= 0,
-			isPii: entity.pii.indexOf(propName) >= 0,
+			isRequired: arrayHasValue(entity.required, propName),
+			isPii: arrayHasValue(entity.pii, propName),
 			isPrimaryKey: (entity.primaryKey && entity.primaryKey === propName),
-			isElementRangeIndex: entity.elementRangeIndex.indexOf(propName) >= 0,
-			isRangeIndex: entity.rangeIndex.indexOf(propName) >= 0,
-			isWordLexicon: entity.wordLexicon.indexOf(propName) >= 0,
+			isElementRangeIndex: arrayHasValue(entity.elementRangeIndex, propName),
+			isRangeIndex: arrayHasValue(entity.rangeIndex, propName),
+			isWordLexicon: arrayHasValue(entity.wordLexicon, propName),
 			description: prop.description || null,
 			collation: prop.collation || (prop.items && prop.items.collation)
 		}

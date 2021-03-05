@@ -21,6 +21,7 @@ import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.auth.UserPojo;
 import com.marklogic.envision.auth.UserService;
 import com.marklogic.envision.config.EnvisionConfig;
+import com.marklogic.envision.dataServices.Users;
 import com.marklogic.envision.email.EmailService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.installer.InstallService;
@@ -38,6 +39,7 @@ import com.marklogic.mgmt.api.security.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -82,9 +84,8 @@ public class BaseTest {
 	protected EnvisionConfig envisionConfig;
 
 	@Autowired
-	private HubConfigImpl hubConfig;
+	private HubConfig hubConfig;
 
-	@Autowired
 	private HubProject hubProject;
 
 	@Autowired
@@ -124,25 +125,24 @@ public class BaseTest {
 	}
 
 	protected HubConfigImpl getHubConfig() {
+		HubConfigImpl hubConfigImpl = (HubConfigImpl) hubConfig;
 		if (!configFinished) {
 			String projectDir = dhfDir.getAbsolutePath();
 			hubProject.createProject(projectDir);
-			hubConfig.setMlUsername(username);
-			hubConfig.setMlPassword(password);
-			hubConfig.resetAppConfigs();
+			hubConfigImpl.setMlUsername(username);
+			hubConfigImpl.setMlPassword(password);
 			String envName = dhfEnv;
 			if (envName == null || envName.isEmpty()) {
 				envName = "local";
 			}
 			System.out.println("envName: " + envName);
-			hubConfig.withPropertiesFromEnvironment(envName);
-			hubConfig.resetHubConfigs();
-			hubConfig.refreshProject();
-			hubConfig.getAppConfig().setAppServicesUsername(username);
-			hubConfig.getAppConfig().setAppServicesPassword(password);
+			hubConfigImpl.withPropertiesFromEnvironment(envName);
+			hubConfigImpl.refreshProject();
+			hubConfigImpl.getAppConfig().setAppServicesUsername(username);
+			hubConfigImpl.getAppConfig().setAppServicesPassword(password);
 			configFinished = true;
 		}
-		return hubConfig;
+		return (HubConfigImpl) hubConfigImpl;
 	}
 
 	protected void registerAccount() throws IOException {
@@ -194,7 +194,7 @@ public class BaseTest {
 	}
 
 	protected DatabaseClient getClient(DatabaseKind kind) {
-		HubConfigImpl hubConfig = getHubConfig();
+		HubConfigImpl hubConfig = getNonAdminHubClient().getHubConfig();
 		if (hubConfig != null) {
 			AppConfig appConfig = hubConfig.getAppConfig();
 			if (appConfig != null) {
@@ -285,17 +285,17 @@ public class BaseTest {
 		client.newServerEval().xquery("import module namespace sec = \"http://marklogic.com/xdmp/security\" at \"/MarkLogic/security.xqy\";\n" +
 			"      \n" +
 			"xdmp:invoke-function(function() {\n" +
-			"for $path in /*:protected-path\n" +
+			"for $path in /sec:protected-path\n" +
 			"return\n" +
-			"  sec:unprotect-path($path/sec:path-expression, ())\n" +
+			"  sec:unprotect-path($path/sec:path-expression, $path/sec:path-namespaces/sec:path-namespace)\n" +
 			"}, map:entry(\"database\", xdmp:security-database())),\n" +
 			"xdmp:invoke-function(function() {\n" +
-			"for $path in /*:protected-path\n" +
+			"for $path in /sec:protected-path\n" +
 			"return\n" +
-			"  sec:remove-path($path/sec:path-expression, ())\n" +
+			"  sec:remove-path($path/sec:path-expression, $path/sec:path-namespaces/sec:path-namespace)\n" +
 			"}, map:entry(\"database\", xdmp:security-database())),\n" +
 			"xdmp:invoke-function(function() {\n" +
-			"for $path in /*:protected-path\n" +
+			"for $path in /sec:protected-path\n" +
 			"return\n" +
 			"  $path\n" +
 			"}, map:entry(\"database\", xdmp:security-database()))").eval();
@@ -325,7 +325,7 @@ public class BaseTest {
 	}
 
 	public void clearDatabases(String... databases) {
-		ServerEvaluationCall eval = getStagingClient().newServerEval();
+		ServerEvaluationCall eval = getAdminHubClient().getStagingClient().newServerEval();
 		String installer =
 			"declare option xdmp:mapping \"false\";\n" +
 			"declare variable $databases external;\n" +
@@ -351,34 +351,7 @@ public class BaseTest {
 	}
 
 	public void removeUser(String username) {
-		ServerEvaluationCall eval = getStagingClient().newServerEval();
-		String installer =
-			"import module namespace sec=\"http://marklogic.com/xdmp/security\" at \n" +
-			"    \"/MarkLogic/security.xqy\";\n" +
-			"    \n" +
-			"declare variable $username external;\n" +
-			"let $role := xdmp:md5($username)\n" +
-			"where xdmp:invoke-function(function() {\n" +
-			"    sec:user-exists($username)\n" +
-			"  },\n" +
-			"  map:entry(\"database\", xdmp:security-database()))\n" +
-			"return (\n" +
-			"  xdmp:invoke-function(function() {\n" +
-			"    sec:remove-user($username)\n" +
-			"  },\n" +
-			"  map:entry(\"database\", xdmp:security-database())),\n" +
-			"  \n" +
-			"  xdmp:invoke-function(function() {\n" +
-			"    sec:remove-role($role)\n" +
-			"  },\n" +
-			"  map:entry(\"database\", xdmp:security-database()))\n" +
-			")";
-		eval.addVariable("username", username);
-		EvalResultIterator result = eval.xquery(installer).eval();
-		if (result.hasNext()) {
-			logger.error(result.next().getString());
-		}
-		removeDoc(getFinalClient(), "/envision/users/" + DigestUtils.md5Hex(username) + ".json");
+		Users.on(getAdminHubClient().getFinalClient()).deleteUser(username);
 	}
 
 	public Path createProjectDir() throws IOException {
@@ -456,6 +429,7 @@ public class BaseTest {
 		envisionConfig.dhfDir = dhfDir;
 		hubConfig.createProject(projectPath.toString());
 		hubConfig.refreshProject();
+		hubProject = hubConfig.getHubProject();
 		if(!hubProject.isInitialized()) {
 			hubConfig.initHubProject();
 		}

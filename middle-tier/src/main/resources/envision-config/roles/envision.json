@@ -2,11 +2,14 @@
   "role-name": "envision",
   "description": "",
   "role": [
+		"hub-central-user",
     "data-hub-module-writer",
     "data-hub-operator",
 		"data-hub-entity-model-writer",
 		"data-hub-flow-writer",
 		"data-hub-mapping-writer",
+		"data-hub-custom-writer",
+		"data-hub-step-definition-writer",
 		"ps-internal",
 		"redaction-user"
 	],

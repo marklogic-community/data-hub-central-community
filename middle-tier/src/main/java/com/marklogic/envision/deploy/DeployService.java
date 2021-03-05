@@ -13,6 +13,7 @@ import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.JacksonHandle;
 import com.marklogic.client.io.StringHandle;
 import com.marklogic.envision.commands.DeployEntitiesCommand;
+import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.hub.deploy.commands.LoadUserModulesCommand;
 import com.marklogic.hub.flow.Flow;
@@ -45,8 +46,8 @@ public class DeployService extends LoggingObject {
 	}
 
 	@Autowired
-	DeployService(LoadUserModulesCommand loadUserModulesCommand) {
-		this.loadUserModulesCommand = loadUserModulesCommand;
+	DeployService(EnvisionConfig envisionConfig) {
+		this.loadUserModulesCommand = new LoadUserModulesCommand(envisionConfig.getHubConfig());
 	}
 
 	public void loadHubModules(HubClient hubClient){

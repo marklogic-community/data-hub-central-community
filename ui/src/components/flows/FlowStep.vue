@@ -1,10 +1,10 @@
 <template>
 	<v-container fluid>
-		<v-row v-if="step && flow" id="flow-step">
+		<v-row v-if="step && step.raw && flow" id="flow-step">
 			<v-flex md12>
 				<v-card>
 					<v-card-title>
-						<h2><span v-if="entityName">{{entityName}} => </span>{{step.name}}</h2>
+						<h2><span v-if="entityName">{{entityName}} => </span>{{step.stepName}}</h2>
 						<v-spacer></v-spacer>
 						<v-btn
 							v-if="!['CUSTOM', 'INGESTION'].includes(step.stepDefinitionType)"
@@ -49,32 +49,32 @@
 					<v-card-text>
 						<div id="step-type-mapping-container" v-if="step.stepDefinitionType === 'MAPPING'">
 							<mapping-step
-								:step="step"
+								:step="step.raw"
 								:flow="flow"
 								@saveStep="saveStep"
 							></mapping-step>
 						</div>
 						<div id="step-type-matching-container" v-else-if="step.stepDefinitionType === 'MATCHING'">
 							<matching-step
-								:step="step"
+								:step="step.raw"
 								@saveStep="saveStep"
 							></matching-step>
 						</div>
 						<div id="step-type-merging-container" v-else-if="step.stepDefinitionType === 'MERGING'">
 							<merging-step
-								:step="step"
+								:step="step.raw"
 								@saveStep="saveStep"
 							></merging-step>
 						</div>
 						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType === 'INGESTION'">
 							<ingestion-step
-								:step="step"
+								:step="step.raw"
 								@saveStep="saveStep"
 							></ingestion-step>
 						</div>
 						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType === 'CUSTOM'">
 							<custom-step
-								:step="step"
+								:step="step.raw"
 								@saveStep="saveStep"
 							></custom-step>
 						</div>
@@ -86,9 +86,10 @@
 			</v-flex>
 		</v-row>
 		<add-step-dialog
+			v-if="step && step.raw"
 			:showDialog="showEditStep"
 			:entityName="entityName"
-			:step="step"
+			:step="step.raw"
 			:flowName="flow.name"
 			:stepInfo="stepInfo"
 			:isEditing="true"
@@ -134,7 +135,7 @@ export default {
 	},
 	computed: {
 		entityName() {
-			return this.step && this.step.options && this.step.options.targetEntity
+			return this.step ? this.step.targetEntityType || this.step.targetEntity: ""
 		},
 	},
 	methods: {
@@ -149,7 +150,7 @@ export default {
 		},
 		deleteStep() {
 			this.deleteInProgress = true
-			flowsApi.deleteStep(this.flow.name, this.step.name)
+			flowsApi.deleteStep(this.flow.name, this.step.stepName)
 				.then(() => {
 					this.deleteInProgress = false
 					this.confirmDeleteMenu = false
