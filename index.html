@@ -8,7 +8,7 @@
 
     <!-- Meta -->
     <meta charset="utf-8">
-    <title>Envision - Envision</title>
+    <title>Data Hub Central Community Edition - Envision</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta content="yes" name="apple-mobile-web-app-capable">
@@ -166,7 +166,7 @@
   
   <li  class="list-group-item"  >
     
-    <a href="https://github.com/marklogic-community/envision">Envision on GitHub</a>
+    <a href="https://github.com/marklogic-community/envision">Data Hub Central Community Edition on GitHub</a>
     
     
   </li>
@@ -177,8 +177,10 @@
 
         </div>
         <div class="col-md-9">
-          <h1 id="envision-for-marklogic-data-hub">Envision for MarkLogic Data Hub</h1>
-<p>Envision for MarkLogic Data Hub provides a visual way to interact with and experience your true multi-model data hub.  You can go from loading data, to integrating, exploring, validating, and exporting curated results using the following components:  </p>
+          <h1 id="data-hub-central-community-edition-dhcce">Data Hub Central Community Edition (DHCCE)</h1>
+<p>Data Hub Central Community Edition provides a visual way to interact with and experience your true multi-model data hub.  You can go from loading data, to integrating, exploring, validating, and exporting curated results using the following components:  </p>
+
+<p><i>This project was formerly known as Envision.  We are in the process of renaming and enhancing this project to be compatible with Data Hub 5.4.  This project works with Data Hub Framework versions 5.1 and 5.2.  More news to come...</i></p>
 
 <ul>
   <li><strong>Upload</strong> to load source csv files as-is into the data hub via drag and drop</li>
@@ -190,7 +192,7 @@
 </ul>
 
 <h2 id="integration-with-marklogic-data-hub">Integration with MarkLogic Data Hub</h2>
-<p>Envision requires <strong><a href="https://github.com/marklogic/marklogic-data-hub/releases">MarkLogic Data Hub Framework</a></strong> 5.1 or greater and <strong><a href="https://developer.marklogic.com/products/marklogic-server/10.0">MarkLogic 10</a></strong> or greater. It will work with on-prem data hubs as well as with cloud including MarkLogic Data Hub Service (DHS)</p>
+<p>DHCCE requires <strong><a href="https://github.com/marklogic/marklogic-data-hub/releases">MarkLogic Data Hub Framework</a></strong> 5.1 or greater and <strong><a href="https://developer.marklogic.com/products/marklogic-server/10.0">MarkLogic 10</a></strong> or greater. It will work with on-prem data hubs as well as with cloud including MarkLogic Data Hub Service (DHS)</p>
 
 <p>You can use Connect to create models that you can visualize in Explore with new as well as existing data hubs. Integrate also works with new as well as existing data hubs.  Know provides a visualization for Semantics triples only.
 <br /></p>
@@ -198,10 +200,10 @@
 
 <p>The jar is configured so that you can drop it into a DHF project directory and run it there.</p>
 
-<p><code class="highlighter-rouge">java -jar envision.jar</code></p>
+<p><code class="highlighter-rouge">java -jar hub-central-community.jar</code></p>
 
 <h4 id="non-standard-ports-or-different-user">Non-standard ports or different User</h4>
-<p>On first run Envision will install its modules into your DHF modules database. This happens before Envision tries to read your hub configuration. If you are using non-standard ports you’ll need to make a few changes to an application.properties file. Simply create application.properties next to envision.jar.</p>
+<p>On first run DHCCE will install its modules into your DHF modules database. This happens before DHCCE tries to read your hub configuration. If you are using non-standard ports you’ll need to make a few changes to an application.properties file. Simply create application.properties next to hub-central-community.jar.</p>
 
 <div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Change these as needed
 </span><span class="py">marklogic.username</span><span class="p">=</span><span class="s">admin</span>
@@ -211,19 +213,19 @@
 <span class="py">marklogic.adminPort</span><span class="p">=</span><span class="s">8001</span>
 </code></pre></div></div>
 
-<p><em>Note: Models will be saved in a directory called ./conceptConnectorModels, which can be found sibling to the envision.jar file by default. You can move your existing models here or see below for how to specify a different models directory.</em></p>
+<p><em>Note: Models will be saved in a directory called ./conceptConnectorModels, which can be found sibling to the hub-central-community.jar file by default. You can move your existing models here or see below for how to specify a different models directory.</em></p>
 
 <p>If you need to point it at another folder where the DHF is installed, run like so:</p>
 
-<p><code class="highlighter-rouge">java -DdhfDir=/full/path/to/your/datahub -jar envision.jar</code></p>
+<p><code class="highlighter-rouge">java -DdhfDir=/full/path/to/your/datahub -jar hub-central-community.jar</code></p>
 
 <p>If you have existing Connect models you’d like to use you can also specify a different models directory:</p>
 
-<p><code class="highlighter-rouge">java -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar</code></p>
+<p><code class="highlighter-rouge">java -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar hub-central-community.jar</code></p>
 
 <p>And if you need to specify the DHF environment (it defaults to local):</p>
 
-<p><code class="highlighter-rouge">java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar</code></p>
+<p><code class="highlighter-rouge">java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar hub-central-community.jar</code></p>
 
         </div>
       </div>
