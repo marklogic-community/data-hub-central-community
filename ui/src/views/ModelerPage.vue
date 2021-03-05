@@ -20,12 +20,7 @@
 							@afterDrawing="handleAfterDrawing"
 							ref="graph"
 						>
-							<minimap
-								:graph="this.$refs.graph"
-								ref="minimap"
-								style="position: absolute; bottom:0; left:0;"
-								>
-							</minimap>
+
 							<div class="vis-manipulation">
 								<v-btn data-cy="modeler.addEntity" @click="addEntity" :disabled="!model"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
 								<template v-if="!addEdgeMode">
@@ -64,7 +59,12 @@
 						<ul class="hideUnlessTesting edges">
 							<li v-for="edge in edges" :key="edge.id" data-cy="edgeList" v-on:click="selectEdge(edge)">{{ edge.id }}</li>
 						</ul>
-
+						<minimap
+							:graph="this.$refs.graph"
+							ref="minimap"
+							style="position: absolute; bottom:0; left:0;"
+							>
+						</minimap>
 					</v-flex>
 					<v-flex md4 class="right-pane">
 						<entity-pick-list
@@ -286,7 +286,9 @@ export default {
 	mounted: function() {
 		this.loadGraphLayout()
 		//update the Minimap graph prop
-		this.$refs.minimap.graph=this.$refs.graph
+		//this.$refs.minimap.graph=this.$refs.graph
+		//update the minimap
+		this.$refs.minimap.upDateMinimap(this.$refs.graph)
 	},
 	methods: {
 		addEntity() {
@@ -517,16 +519,17 @@ export default {
 		},
 		handleDragEnd(e)
 		{
-			let fitOptions = this.graphOptions;
-			fitOptions.physics.enabled = true;
+			// let fitOptions = this.graphOptions;
+			// fitOptions.physics.enabled = true;
 			this.graphDragEnd(e)
-			this.saveGraphLayoutSnap()
-			this.$refs.graph.setOptions(fitOptions)
-			this.$refs.graph.fit(this.nodes);
-			fitOptions.physics.enabled = false;
-			this.$refs.graph.setOptions(this.graphOptions)
-			this.upDateMinimap()
-			this.loadGraphLayoutSnap()
+			// this.saveGraphLayoutSnap()
+			// this.$refs.graph.setOptions(fitOptions)
+			// this.$refs.graph.fit(this.nodes);
+			// fitOptions.physics.enabled = false;
+			// this.$refs.graph.setOptions(this.graphOptions)
+			//this.upDateMinimap()
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
+			// this.loadGraphLayoutSnap()
 		},
 		handleDragStart(e)
 		{
@@ -534,8 +537,8 @@ export default {
 //			this.$refs.minimap.dragEndMinimap()
 		},
 upDateMinimap(){
-//	this.$refs.minimap.upDateMinimap()
-	this.$refs.minimap.upDateMinimap1()
+	this.$refs.minimap.upDateMinimap()
+//	this.$refs.minimap.upDateMinimap1()
 },
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({

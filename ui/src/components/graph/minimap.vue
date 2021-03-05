@@ -47,6 +47,7 @@ export default {
 	},
 	data: () => ({
 		graph:{},
+		graphLayout: {},
 		dialog:false,
 		show: false,
 		showMiniMap:false,
@@ -61,11 +62,28 @@ export default {
 	},
 	methods: {
 		//****************************support for minimap
-getNetwork(){ return this.$parent.network },
-
-drawMinimapImage2(){
+getNetwork(){ return /*this.$parent.network*/ this.graph },
+loadGraphLayoutSnap(graph) {
+	const key = `snap-layout-${this._uid}`
+	const item = localStorage.getItem(key)
+	var graphLayout = item ? JSON.parse(item) : {
+		position: { x: 0, y: 0 },
+		scale: 1.0
+	}
+	graph.moveTo(graphLayout)
+},
+saveGraphLayoutSnap(graph) {
+	const key = `snap-layout-${this._uid}`
+	localStorage.setItem(key, JSON.stringify({
+		position: graph.getViewPosition(),
+		scale: graph.getScale(),
+		positions: graph.getPositions()
+	}))
+},
+drawMinimapImage2(graph){
 	//we need to create the save/restore graphics logic here in the component
-	const originalCanvas = document.getElementsByTagName('canvas')[0] //this is the graph canvas but we really need a btter way of targeting it
+	//const originalCanvas = document.getElementsByTagName('canvas')[0] //this is the graph canvas but we really need a btter way of targeting it
+	const originalCanvas = graph.network.canvas.frame.canvas
 	const minimapImage = document.getElementById('minimapImage')
 	//set the minimap image url
 	this.imgSrc = originalCanvas.toDataURL()
@@ -91,13 +109,29 @@ drawRadar(){
 upDateMinimap1(){
   this.drawMinimapImage2();
 },
-upDateMinimap(){
-	this.initMinimapGraph()
-  	this.drawMinimapWrapper();
-		//this.drawMinimapImage();
-		this.copyDataFromParent();
-		this.minimap.fit();
-  //  this.drawRadar();
+upDateMinimap2(){
+	this.saveGraphLayoutSnap()
+	let fitOptions = this.graph.options;
+	fitOptions.physics.enabled = true;
+	this.graph.setOptions(fitOptions)
+	this.graph.fit(this.nodes);
+	fitOptions.physics.enabled = false;
+	this.graph.setOptions(fitOptions)
+	this.drawMinimapImage2();
+	this.loadGraphLayoutSnap()
+//  this.drawRadar();
+},
+upDateMinimap(graph){
+	this.saveGraphLayoutSnap(graph)
+	let fitOptions = graph.options;
+	fitOptions.physics.enabled = true;
+	graph.setOptions(fitOptions)
+	graph.fit(graph.nodes);
+	fitOptions.physics.enabled = false;
+	graph.setOptions(fitOptions)
+	this.drawMinimapImage2(graph);
+	this.loadGraphLayoutSnap(graph)
+//  this.drawRadar();
 },
 zoomMinimap()
 {
