@@ -4,25 +4,26 @@
     class="mx-auto"
     max-width="344"
   >
-    <v-expand-transition>
+	<v-expand-transition>
 			<v-img
 			v-show="showMiniMap"
 			id="minimapImage"
       :src="this.imgSrc"
       height="200px"
     	>
-			</v-img>
-			<v-overlay
+			<!-- <v-overlay -->
+			<div class="minimapRadar"
 				absolute
 				color="#036358"
 				id="minimapRadar"
 				v-show="!hideRadar"
 			>
-				<v-btn @click="hideRadar = !hideRadar" >Hide Radar</v-btn>
-			</v-overlay>
-		</v-expand-transition>
+			</div>
+			<!-- </v-overlay> -->
+			</v-img>
 
-    <v-card-actions>
+		</v-expand-transition>
+    	<v-card-actions>
       <v-btn
         light
         text
