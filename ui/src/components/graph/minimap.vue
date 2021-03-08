@@ -95,8 +95,10 @@ export default {
 		const {
 			targetScale
 		} = graph.network.view
-		const scale = graph.getScale()
-		const translate = graph.getViewPosition()
+//		const scale = graph.getScale()
+		const scale = this.graphLayout.scale
+//		const translate = graph.getViewPosition()
+		const translate = this.graphLayout.position
 		const minimapImage = document.getElementById('minimapImage');
 		var ratio = clientWidth/minimapImage.clientWidth
 		minimapRadar.style.transform = `translate(${(translate.x / ratio) *
