@@ -19,6 +19,6 @@ If you're using existing flows with existing integrate steps to ingest data, you
 As of 2.0.4 you can now upload Semantic triples directly into the data hub using Upload.  You'll notice an advanced option when setting the collection name for your data.  By default, all data is loaded into the Staging database. However, using the advanced dropdown, you can choose to load your data and triples to the Final database directly.
 
 <br><br> 
-![Upload](/envision/images/upload-1.png)
+![Upload](/data-hub-central-community/images/upload-1.png)
 <br><br>
 

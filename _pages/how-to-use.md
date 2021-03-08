@@ -10,7 +10,7 @@ permalink: /how-to-use/
 **Data Hub Central Community Edition (DHCCE)** provides a no-code solution for integrating data into the MarkLogic Data Hub.  For more advanced solutions, **DHCCE** components can be used with the **[DataHub Framework](http://docs.marklogic.com/datahub/)** and **[Pipes](https://github.com/marklogic-community/pipes/wiki)** to provide a low-code solution for integrating data in the MarkLogic Data Hub as well.
 
 ### Data Hub QuickStart
-With MarkLogic **[Data Hub Quickstart](https://docs.marklogic.com/datahub/5.2/install.html)** you can have a data hub set up and ready for use in minutes. After you've created your data hub, use Envision to begin integrating data.
+With MarkLogic **[Data Hub Quickstart](https://docs.marklogic.com/datahub/5.2/install.html)** you can have a data hub set up and ready for use in minutes. After you've created your data hub, use DHCCE to begin integrating data.
 
 ### Upload
 Use Upload to load csv files into your data hub via drag and drop.  

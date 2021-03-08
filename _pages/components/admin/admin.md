@@ -13,7 +13,7 @@ DHCCE (2.0.5 and greater) requires **[Data Hub Framework 5.2.3 (DHF)](https://de
 
 To use DHCCE with DHS, start by downloading the gradle config file for your DHS instance. After downloading, remember to update the username and password with your DHS credentials. <br><br>
 
-![DHS](/envision/images/DHS-1.png)
+![DHS](/data-hub-central-community/images/DHS-1.png)
 
 
 Save this file in your data hub root directory as         "gradle-dhs.properties".<br>

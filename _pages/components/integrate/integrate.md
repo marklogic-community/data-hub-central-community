@@ -15,7 +15,7 @@ A flow is just a collection of steps. Steps are what you configure to integrate 
 Data Hub Central Community Edition (DHCCE) allows you to create mapping, matching, and merging steps. However, you can run DHCCE against an existing hub and you'll have your existing flows and steps available for use. You will find that all step types are respected and usable by DHCCE. See "Additional Step Info" below for more details on ingest and custom step types.
 
 <br> 
-![Integrate](/envision/images/IntegrateGH.png)
+![Integrate](/data-hub-central-community/images/IntegrateGH.png)
 <br><br>
 
 * Flows are detailed on the left pane.  

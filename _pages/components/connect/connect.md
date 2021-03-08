@@ -15,7 +15,7 @@ When creating an entity, you can add an "Entity" or a "Concept" to the whiteboar
 
 Simply put, on the modeling canvas: solid line circles are documents, dotted line circles are IRIs.
 <br><br> 
-![Connect](/envision/images/ConnectGH.png)
+![Connect](/data-hub-central-community/images/ConnectGH.png)
 <br><br>
 
 ### Getting Started
@@ -51,11 +51,11 @@ Ideally, we’ll have ways to define relationships by more complex rules, but we
   * Select the ‘INFO tab for that entity
   * Select the property for the selected Entity to be used as its identifier.
 <br><br> 
-![Create an id.](/envision/images/connect-1.png)
+![Create an id.](/data-hub-central-community/images/connect-1.png)
 <br><br>
   * Once set, the property used as the identifier will be noted with an ‘id’ in the properties pane.
 <br><br> 
-![View in Properties Pane.](/envision/images/connect-2.png)
+![View in Properties Pane.](/data-hub-central-community/images/connect-2.png)
 <br><br>
 
 #### **Define the join keys for the Relationship**
@@ -66,7 +66,7 @@ Ideally, we’ll have ways to define relationships by more complex rules, but we
   * If one of these entities does not have an identifier defined, an error message will be displayed. You will not be able to link the entities until you define an identifier for one of the entities.
   * Click ‘SAVE’
 <br><br> 
-![Define Join Keys.](/envision/images/connect-3.png)
+![Define Join Keys.](/data-hub-central-community/images/connect-3.png)
 <br><br>
 
 #### **Setting the Label for What is Visualized in the Concept Explorer**
@@ -75,7 +75,7 @@ Ideally, we’ll have ways to define relationships by more complex rules, but we
   * Select the ‘INFO’ tab
   * Select the ‘Entity Label’ from the dropdown menu
 <br><br> 
-![Setting Node Label.](/envision/images/connect-4.png)
+![Setting Node Label.](/data-hub-central-community/images/connect-4.png)
 <br><br>
 
  

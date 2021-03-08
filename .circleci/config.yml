@@ -87,15 +87,15 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - envision-docs-{{ checksum "Gemfile.lock" }}
-            - envision-docs-
+            - data-hub-central-community-docs-{{ checksum "Gemfile.lock" }}
+            - data-hub-central-community-docs-
 
       - run: gem install bundler
       - run: bundle install
 
       # Store bundle cache
       - save_cache:
-          key: envision-docs-{{ checksum "Gemfile.lock" }}
+          key: data-hub-central-community-docs-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
 

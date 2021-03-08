@@ -42,7 +42,7 @@ bundle exec jekyll serve
 
 Open the docs website at the server address displayed in the terminal, e.g.: 
 
-`http://127.0.0.1:4000/envision/`
+`http://127.0.0.1:4000/data-hub-central-community/`
 
 ### Making Content Changes
 

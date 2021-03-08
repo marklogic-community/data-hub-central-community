@@ -19,20 +19,20 @@ This capability enables Human In The Loop (HITL) validation of entity deduplicat
 
 Assuming you have set the action in the smart mastering Match step of your data hub flow to "notify" and the flow has been run,  an alert for how many matching records have been identified will be reported in the upper right of Data Hub Central Community Edition (DHCCE) next to the user name after login.
 
-![Alerts](/envision/images/notifications-alert.png){: .center-image }
+![Alerts](/data-hub-central-community/images/notifications-alert.png){: .center-image }
 
 
 Simply navigate from the dropdown menu in the upper right to "Notifications" to view the matches to be curated.
 
-![Menu Option](/envision/images/notifications-menu.png){: .center-image }
+![Menu Option](/data-hub-central-community/images/notifications-menu.png){: .center-image }
 
 In the Notifications Inbox, choose the record to curate.
 
-![Notification Inbox](/envision/images/notifications-pane.png)
+![Notification Inbox](/data-hub-central-community/images/notifications-pane.png)
 
 The Merge Validation and History screen allows you to view the similar records for the notification.  The Flow and Step are reported along with the Entity type that was matched.   Here you can decide whether to merge the records, or block them from matching and merging if this step is ran again in the future in your data hub.
 
-![Merge Curation and History](/envision/images/merge-curation.png)
+![Merge Curation and History](/data-hub-central-community/images/merge-curation.png)
 
 The merge preview label will be replaced by the URI for the merged record in case of merging.
 
