@@ -287,8 +287,8 @@ th {
     border: 1px solid #ddd !important; } }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url("/envision/assets/bootstrap/glyphicons-halflings-regular.eot");
-  src: url("/envision/assets/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("/envision/assets/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("/envision/assets/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("/envision/assets/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("/envision/assets/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
+  src: url("/data-hub-central-community/assets/bootstrap/glyphicons-halflings-regular.eot");
+  src: url("/data-hub-central-community/assets/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("/data-hub-central-community/assets/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("/data-hub-central-community/assets/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("/data-hub-central-community/assets/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("/data-hub-central-community/assets/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
 .glyphicon {
   position: relative;
   top: 1px;
@@ -5842,20 +5842,20 @@ button.close {
   font-family: 'Font Awesome 5 Free';
   font-style: normal;
   font-weight: 900;
-  src: url("/envision/assets/font-awesome/fa-solid-900.eot");
-  src: url("/envision/assets/font-awesome/fa-solid-900.eot#iefix") format("embedded-opentype"), url("/envision/assets/font-awesome/fa-solid-900.woff2") format("woff2"), url("/envision/assets/font-awesome/fa-solid-900.woff") format("woff"), url("/envision/assets/font-awesome/fa-solid-900.ttf") format("truetype"), url("/envision/assets/font-awesome/fa-solid-900.svg#fontawesome") format("svg"); }
+  src: url("/data-hub-central-community/assets/font-awesome/fa-solid-900.eot");
+  src: url("/data-hub-central-community/assets/font-awesome/fa-solid-900.eot#iefix") format("embedded-opentype"), url("/data-hub-central-community/assets/font-awesome/fa-solid-900.woff2") format("woff2"), url("/data-hub-central-community/assets/font-awesome/fa-solid-900.woff") format("woff"), url("/data-hub-central-community/assets/font-awesome/fa-solid-900.ttf") format("truetype"), url("/data-hub-central-community/assets/font-awesome/fa-solid-900.svg#fontawesome") format("svg"); }
 @font-face {
   font-family: 'Font Awesome 5 Free';
   font-style: normal;
   font-weight: 400;
-  src: url("/envision/assets/font-awesome/fa-regular-400.eot");
-  src: url("/envision/assets/font-awesome/fa-regular-400.eot#iefix") format("embedded-opentype"), url("/envision/assets/font-awesome/fa-regular-400.woff2") format("woff2"), url("/envision/assets/font-awesome/fa-regular-400.woff") format("woff"), url("/envision/assets/font-awesome/fa-regular-400.ttf") format("truetype"), url("/envision/assets/font-awesome/fa-regular-400.svg#fontawesome") format("svg"); }
+  src: url("/data-hub-central-community/assets/font-awesome/fa-regular-400.eot");
+  src: url("/data-hub-central-community/assets/font-awesome/fa-regular-400.eot#iefix") format("embedded-opentype"), url("/data-hub-central-community/assets/font-awesome/fa-regular-400.woff2") format("woff2"), url("/data-hub-central-community/assets/font-awesome/fa-regular-400.woff") format("woff"), url("/data-hub-central-community/assets/font-awesome/fa-regular-400.ttf") format("truetype"), url("/data-hub-central-community/assets/font-awesome/fa-regular-400.svg#fontawesome") format("svg"); }
 @font-face {
   font-family: 'Font Awesome 5 Brands';
   font-style: normal;
   font-weight: normal;
-  src: url("/envision/assets/font-awesome/fa-brands-400.eot");
-  src: url("/envision/assets/font-awesome/fa-brands-400.eot#iefix") format("embedded-opentype"), url("/envision/assets/font-awesome/fa-brands-400.woff2") format("woff2"), url("/envision/assets/font-awesome/fa-brands-400.woff") format("woff"), url("/envision/assets/font-awesome/fa-brands-400.ttf") format("truetype"), url("/envision/assets/font-awesome/fa-brands-400.svg#fontawesome") format("svg"); }
+  src: url("/data-hub-central-community/assets/font-awesome/fa-brands-400.eot");
+  src: url("/data-hub-central-community/assets/font-awesome/fa-brands-400.eot#iefix") format("embedded-opentype"), url("/data-hub-central-community/assets/font-awesome/fa-brands-400.woff2") format("woff2"), url("/data-hub-central-community/assets/font-awesome/fa-brands-400.woff") format("woff"), url("/data-hub-central-community/assets/font-awesome/fa-brands-400.ttf") format("truetype"), url("/data-hub-central-community/assets/font-awesome/fa-brands-400.svg#fontawesome") format("svg"); }
 .fa,
 .fas {
   font-family: 'Font Awesome 5 Free';
