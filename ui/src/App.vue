@@ -58,10 +58,41 @@ export default {
   display: none !important;
 }
 
+@font-face {
+  font-family: MLCustomFont;
+  src: url(./fonts/ML_IconFont.ttf) format('truetype');
+  font-family: 'MLCustomFont';
+  font-weight: normal;
+  font-style: normal;
+}
+
 #app,
 .v-application--wrap {
 	height: 100vh;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+
+h1, h2, h3, h4{
+ font-family:Helvetica Neue;
+ font-weight: normal;
+ color: #333333
+}
+
+h1{
+font-size: 22px;
+}
+
+h2{
+ font-size: 20px;
+}
+
+h3{
+  font-size: 18px;
+ }
+
+h4{
+  font-size: 16px;
+ }
 
 .v-main {
 	overflow: auto;

@@ -1,42 +1,36 @@
 <template>
 	<div class="usermenu">
-		{{ profile && profile.fullname || username }}
-		<v-badge
-			color="red"
-			overlap
-			:content="notificationCount"
-			:value="notificationCount > 0"
-		>
-			<div>
-				<v-icon>person</v-icon>
-			</div>
-		</v-badge>
+	<div class="vertical"></div>
+		<a target="_blank" href="https://marklogic-community.github.io/data-hub-central-community/" class="docsLink">
+    	<v-icon>help_outline</v-icon>
+   </a>
+		<v-list-item :to="{name: 'root.notifications', query: { page: 1 }}" class="notification">
+    						<v-badge
+    							color="red"
+    						  overlap
+    							:content="notificationCount"
+    							:value="notificationCount > 0"
+    						>
+   <div>
+      	<v-icon>notifications_none</v-icon>
+   </div>
+    						</v-badge>
+            </v-list-item>
 		<v-menu bottom left>
 			<template v-slot:activator="{ on }">
 				<v-btn
 					right
 					icon
 					v-on="on"
+          class="userIcon"
 				>
-					<v-icon>more_vert</v-icon>
+					<v-icon>person_outline</v-icon>
 				</v-btn>
 			</template>
 
 			<v-list>
-				<v-list-item :to="{name: 'root.notifications', query: { page: 1 }}">
-          <v-list-item-title>
-						<v-badge
-							color="red"
-							inline
-							offset-x="10"
-							:content="notificationCount"
-							:value="notificationCount > 0"
-						>
-							Notifications
-						</v-badge>
-					</v-list-item-title>
-        </v-list-item>
-
+       <v-list-item class="username">{{ profile && profile.fullname || username }}</v-list-item>
+       <div class="horizontal"></div>
         <v-list-item v-if="isHosted && isAdmin" v-on:click.prevent="hostedAdminPage">
           <v-list-item-title>Admin</v-list-item-title>
         </v-list-item>
@@ -108,5 +102,38 @@ export default {
 
 .v-list-item__title > .v-badge {
 	margin-top: 0px;
+}
+
+.vertical{
+   display: inline-block;
+   position: relative;
+   top: 3px;
+   border-left: dotted 1px rgba(255, 255, 255, 0.65);
+   height: 24px;
+   margin: -6px 8px;
+   cursor: default;
+}
+
+.horizontal{
+  border-top: solid 1px #E5E5E5;
+  cursor: pointer;
+}
+
+.userIcon{
+	height: 0px !important;
+  width: 0px !important;
+  margin-right: 12px;
+}
+
+.username{
+  font-weight: 700;
+}
+
+.docsLink{
+  text-decoration:none;
+}
+
+.notification{
+  margin-right:10px;
 }
 </style>
