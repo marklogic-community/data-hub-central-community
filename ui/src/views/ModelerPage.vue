@@ -281,10 +281,6 @@ export default {
 	},
 	mounted: function() {
 		this.loadGraphLayout()
-		//update the Minimap graph prop
-		//this.$refs.minimap.graph=this.$refs.graph
-		//update the minimap
-		this.$refs.minimap.upDateMinimap(this.$refs.graph)
 	},
 	methods: {
 		addEntity() {
@@ -468,35 +464,14 @@ export default {
 				scale: 1.0
 			}
 			this.$refs.graph.moveTo(this.graphLayout)
+			//update the minimap
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		saveGraphLayout() {
 			if (!this.model) {
 				return
 			}
 			const key = `layout-${this.model.name.replace(' ', '-')}`
-			localStorage.setItem(key, JSON.stringify({
-				position: this.$refs.graph.getViewPosition(),
-				scale: this.$refs.graph.getScale(),
-				positions: this.$refs.graph.getPositions()
-			}))
-		},
-		loadGraphLayoutSnap() {
-			if (!this.model) {
-				return
-			}
-			const key = `snap-layout-${this.model.name.replace(' ', '-')}`
-			const item = localStorage.getItem(key)
-			this.graphLayout = item ? JSON.parse(item) : {
-				position: { x: 0, y: 0 },
-				scale: 1.0
-			}
-			this.$refs.graph.moveTo(this.graphLayout)
-		},
-		saveGraphLayoutSnap() {
-			if (!this.model) {
-				return
-			}
-			const key = `snap-layout-${this.model.name.replace(' ', '-')}`
 			localStorage.setItem(key, JSON.stringify({
 				position: this.$refs.graph.getViewPosition(),
 				scale: this.$refs.graph.getScale(),
@@ -532,10 +507,7 @@ export default {
 			this.graphDragStart(e)
 //			this.$refs.minimap.dragEndMinimap()
 		},
-upDateMinimap(){
-	this.$refs.minimap.upDateMinimap()
-//	this.$refs.minimap.upDateMinimap1()
-},
+
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({
 				...this.model,

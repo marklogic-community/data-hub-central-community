@@ -1,47 +1,42 @@
 <template>
 
-	 <v-card
+	<v-card
     class="mx-auto"
     max-width="344"
   >
 	<v-expand-transition>
-			<v-img
+		<v-img
 			v-show="showMiniMap"
 			id="minimapImage"
       :src="this.imgSrc"
-      height="200px"
+			contain
     	>
-			<!-- <v-overlay -->
 			<div class="minimapRadar"
-				absolute
-				color="#036358"
-				id="minimapRadar"
-				v-show="!hideRadar"
+					id="minimapRadar"
+					v-show="showMiniMap"
+					:style="radarStyle"
 			>
 			</div>
-			<!-- </v-overlay> -->
-			</v-img>
+		</v-img>
+	</v-expand-transition>
+	<v-card-actions>
+		<v-btn
+			light
+			text
+		>
+			Minimap
+		</v-btn>
 
-		</v-expand-transition>
-    	<v-card-actions>
-      <v-btn
-        light
-        text
-      >
-        Minimap
-      </v-btn>
+		<v-spacer></v-spacer>
 
-      <v-spacer></v-spacer>
-
-      <v-btn
-        icon
-        @click="showMiniMap = !showMiniMap"
-      >
-        <v-icon>{{ showMiniMap ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
-
-  </v-card>
+		<v-btn
+			icon
+			@click="showMiniMap = !showMiniMap"
+		>
+			<v-icon>{{ showMiniMap ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+		</v-btn>
+	</v-card-actions>
+</v-card>
 </template>
 
 <script>
@@ -57,7 +52,13 @@ export default {
 		graphLayout:{
 			position: { x: 0, y: 0 },
 			scale: 1.0
-		}
+		},
+		radarStyle: {
+    left: '0px',
+		bottom: '0px',
+		height: '300px',
+		width: '300px'
+  	}
 	}),
 	computed:{
 		imgSrc: {
@@ -87,24 +88,39 @@ export default {
 	},
 	// Draw minimap Radar
 	drawRadar(graph){
+		//size of the graph canvas
 		const {
 			clientWidth,
 			clientHeight
 		} = graph.network.canvas.frame.canvas
-		const minimapRadar = document.getElementById('minimapRadar')
-		const {
-			targetScale
-		} = graph.network.view
-//		const scale = graph.getScale()
+
+		//load the scale, position the user was viewing
+		//we captured it in upDateMiniMap
+		//TODO make this an inline function in upDateMinimap
 		const scale = this.graphLayout.scale
-//		const translate = graph.getViewPosition()
 		const translate = this.graphLayout.position
 		const minimapImage = document.getElementById('minimapImage');
-		var ratio = clientWidth/minimapImage.clientWidth
-		minimapRadar.style.transform = `translate(${(translate.x / ratio) *
-					targetScale}px, ${(translate.y / ratio) * targetScale}px) scale(${targetScale / scale})`
-		minimapRadar.style.width = `${clientWidth / ratio}px`
-		minimapRadar.style.height = `${clientHeight / ratio}px`
+		//compute graphics unit ratio
+		var ratioX = minimapImage.clientWidth/(clientWidth * scale)
+		var ratioY = minimapImage.clientHeight/(clientHeight * scale)
+		var minimapCenterPointX = minimapImage.clientWidth * 0.5
+		var minimapCenterPointY =  minimapImage.clientHeight * 0.5
+		var radarCenterPointX =  minimapCenterPointX + (translate.x * scale * ratioX)
+		var radarCenterPointY =  minimapCenterPointY + (translate.y * scale * ratioY)
+		//translate div to map coordinates
+		const minimapRadar = document.getElementById('minimapRadar') //this is for debugging convenience
+		this.radarStyle.left = String(radarCenterPointX - ((clientWidth  * ratioX) * 0.5)) + 'px'
+		this.radarStyle.bottom = String(radarCenterPointY - ((clientHeight  * ratioY) * 0.5)) + 'px'
+
+		this.radarStyle.width = String(clientWidth  * ratioX)+ 'px'
+		this.radarStyle.height = String(clientHeight * ratioY)+ 'px'
+
+		// this.radarStyle.left = '0px'
+		// this.radarStyle.bottom = '0px'
+
+		// this.radarStyle.width = '100px'
+		// this.radarStyle.height = '100px'
+
 	},
 	upDateMinimap(graph){
 		//save user state of the graph
@@ -115,11 +131,21 @@ export default {
 		graph.setOptions(fitOptions)
 		//fit draws a zoomed out graph wih all nodes
 		graph.fit(graph.nodes);
+		//NOTE see below- if you call this here, the graph will not be zoomed out
+		//a vis-graph thing?
+		//this.drawMinimapImage(graph);
+
+		//reset options
 		fitOptions.physics.enabled = false;
 		graph.setOptions(fitOptions)
+
+		//capture the image of the zoomed out graph-- NOTE this happens after the setOptions
+		//call. If called before the graph is not zoomed out
 		this.drawMinimapImage(graph);
+		//restore the state of the graph
 		this.loadGraphLayoutSnap(graph)
-	  this.drawRadar(graph);
+		//draw the radar
+		this.drawRadar(graph);
 	},
 	zoomMinimap()
 	{
@@ -278,7 +304,7 @@ export default {
 .minimapRadar {
 	opacity: .2;
   position: absolute;
-  background-color: rgba(16, 84, 154, 0.26);
+	background-color: rgba(16, 84, 154, 0.26);
 }
 
 .minimapImage {
