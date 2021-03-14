@@ -1,0 +1,82 @@
+{
+	"page": 1,
+	"subjectsPerPage": 10,
+	"linksPerSubject": 100,
+	"nodes": {
+		"7c61b1a56eafe6035fdeae9c15856c81": {
+			"id": "7c61b1a56eafe6035fdeae9c15856c81",
+			"label": "ID-f27d7d86-1b2...",
+			"title": "/Taxonomy/ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c.json",
+			"orig": "/Taxonomy/ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c.json",
+			"isIRI": true,
+			"predicates": [
+				"http://agriculture.gov.au/Taxonomy/hasCommonName"
+			]
+		},
+		"dceab5333a5f2d578ab8faf9252fec4c": {
+			"id": "dceab5333a5f2d578ab8faf9252fec4c",
+			"label": "Wilt",
+			"title": "Wilt",
+			"orig": "Wilt",
+			"isIRI": true,
+			"predicates": []
+		},
+		"39d59d9a830bdd617456785c7aae7051": {
+			"id": "39d59d9a830bdd617456785c7aae7051",
+			"label": "doc.json",
+			"title": "/doc.json",
+			"orig": "/doc.json",
+			"isIRI": true,
+			"predicates": [
+				"http://unittest.com/isCool",
+				"http://unittest.com/shouldBeThere"
+			]
+		},
+		"ea77c15e3daf849dbd96a5ce0907b9f0": {
+			"id": "ea77c15e3daf849dbd96a5ce0907b9f0",
+			"label": "ID-f27d7d86-1b2...",
+			"title": "ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c",
+			"orig": "ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c",
+			"isIRI": true,
+			"predicates": []
+		},
+		"419107f1667df41b85d4eef9455ae41a": {
+			"id": "419107f1667df41b85d4eef9455ae41a",
+			"label": "anywhere",
+			"title": "anywhere",
+			"orig": "anywhere",
+			"isIRI": true,
+			"predicates": []
+		}
+	},
+	"edges": {
+		"4850608565c9348360380178cb0a7e5b": {
+			"id": "4850608565c9348360380178cb0a7e5b",
+			"label": "hasCommonName",
+			"title": "http://agriculture.gov.au/Taxonomy/hasCommonName",
+			"from": "7c61b1a56eafe6035fdeae9c15856c81",
+			"to": "dceab5333a5f2d578ab8faf9252fec4c",
+			"orig": "http://agriculture.gov.au/Taxonomy/hasCommonName",
+			"isIRI": true
+		},
+		"281895cc24e402c7e037343fcdd7a86f": {
+			"id": "281895cc24e402c7e037343fcdd7a86f",
+			"label": "isCool",
+			"title": "http://unittest.com/isCool",
+			"from": "39d59d9a830bdd617456785c7aae7051",
+			"to": "ea77c15e3daf849dbd96a5ce0907b9f0",
+			"orig": "http://unittest.com/isCool",
+			"isIRI": true
+		},
+		"d5c84f05ad0009ffa73d200172b98086": {
+			"id": "d5c84f05ad0009ffa73d200172b98086",
+			"label": "shouldBeThere",
+			"title": "http://unittest.com/shouldBeThere",
+			"from": "39d59d9a830bdd617456785c7aae7051",
+			"to": "419107f1667df41b85d4eef9455ae41a",
+			"orig": "http://unittest.com/shouldBeThere",
+			"isIRI": true
+		}
+	},
+	"total": 3
+}

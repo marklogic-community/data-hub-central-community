@@ -32,7 +32,7 @@ public interface Triples {
             }
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode browseTriples(String qtext, Integer page, Integer subjectsPerPage, Integer linksPerSubject, String sort) {
+            public com.fasterxml.jackson.databind.JsonNode browseTriples(String qtext, Integer page, Integer subjectsPerPage, Integer linksPerSubject, String sort, String dedup) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("browseTriples.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
@@ -42,7 +42,8 @@ public interface Triples {
                     BaseProxy.atomicParam("page", false, BaseProxy.IntegerType.fromInteger(page)),
                     BaseProxy.atomicParam("subjectsPerPage", false, BaseProxy.IntegerType.fromInteger(subjectsPerPage)),
                     BaseProxy.atomicParam("linksPerSubject", true, BaseProxy.IntegerType.fromInteger(linksPerSubject)),
-                    BaseProxy.atomicParam("sort", false, BaseProxy.StringType.fromString(sort)))
+                    BaseProxy.atomicParam("sort", false, BaseProxy.StringType.fromString(sort)),
+                    BaseProxy.atomicParam("dedup", false, BaseProxy.StringType.fromString(dedup)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -50,7 +51,7 @@ public interface Triples {
 
 
             @Override
-            public com.fasterxml.jackson.databind.JsonNode getRelated(String item, String itemId, Boolean isIRI, String qtext, String predicate, Integer maxRelated) {
+            public com.fasterxml.jackson.databind.JsonNode getRelated(String item, String itemId, Boolean isIRI, String qtext, String predicate, Integer maxRelated, Boolean filterText) {
               return BaseProxy.JsonDocumentType.toJsonNode(
                 baseProxy
                 .request("getRelated.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
@@ -61,7 +62,8 @@ public interface Triples {
                     BaseProxy.atomicParam("isIRI", false, BaseProxy.BooleanType.fromBoolean(isIRI)),
                     BaseProxy.atomicParam("qtext", true, BaseProxy.StringType.fromString(qtext)),
                     BaseProxy.atomicParam("predicate", true, BaseProxy.StringType.fromString(predicate)),
-                    BaseProxy.atomicParam("maxRelated", false, BaseProxy.IntegerType.fromInteger(maxRelated)))
+                    BaseProxy.atomicParam("maxRelated", false, BaseProxy.IntegerType.fromInteger(maxRelated)),
+                    BaseProxy.atomicParam("filterText", false, BaseProxy.BooleanType.fromBoolean(filterText)))
                 .withMethod("POST")
                 .responseSingle(false, Format.JSON)
                 );
@@ -80,9 +82,10 @@ public interface Triples {
    * @param subjectsPerPage	provides input
    * @param linksPerSubject	provides input
    * @param sort	provides input
+   * @param dedup	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode browseTriples(String qtext, Integer page, Integer subjectsPerPage, Integer linksPerSubject, String sort);
+    com.fasterxml.jackson.databind.JsonNode browseTriples(String qtext, Integer page, Integer subjectsPerPage, Integer linksPerSubject, String sort, String dedup);
 
   /**
    * Invokes the getRelated operation on the database server
@@ -93,8 +96,9 @@ public interface Triples {
    * @param qtext	provides input
    * @param predicate	provides input
    * @param maxRelated	provides input
+   * @param filterText	provides input
    * @return	as output
    */
-    com.fasterxml.jackson.databind.JsonNode getRelated(String item, String itemId, Boolean isIRI, String qtext, String predicate, Integer maxRelated);
+    com.fasterxml.jackson.databind.JsonNode getRelated(String item, String itemId, Boolean isIRI, String qtext, String predicate, Integer maxRelated, Boolean filterText);
 
 }

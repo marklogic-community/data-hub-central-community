@@ -1,144 +1,91 @@
+'use strict';
+
+const triplesLib = require('triplesLib.sjs');
+
 var qtext;
 var page;
 var subjectsPerPage;
 var linksPerSubject;
 var sort;
+var dedup;
 
 let start = ((page - 1) * subjectsPerPage)
-let queries = []
+dedup = (dedup == 'on') ? 'on' : 'off';
+sort = sort || 'default'
+subjectsPerPage = subjectsPerPage ? subjectsPerPage : 10;
+linksPerSubject = linksPerSubject ? linksPerSubject : 10;
 
-if (qtext && qtext !== '') {
-	queries.push(cts.wordQuery(qtext));
+/**
+ * Find the distinct subjects based on their predicate frequency and query text.
+ */
+const op = require('/MarkLogic/optic');
+const s = op.col('s');
+const p = op.col('p');
+const o = op.col('o');
+
+let trip = op.fromTriples([op.pattern(s, p, o)], null, null, { 'dedup': dedup }).where(op.as('isIRI', op.sem.isIRI(s)));
+
+if (qtext) {
+	xdmp.log('qtext: ' + qtext);
+	trip = trip.where(cts.wordQuery(qtext, ['case-insensitive']))
 }
 
-function createTitle(s) {
-	let label = s.toString()
-	if (label.match('#')) {
-		label = label.split('#')[1]
-	}
-	return label
+let countR = trip.groupBy(null, [op.count('count', s)]).result();
+let count = fn.head(countR).count
+
+trip = trip.groupBy(s, [op.count('pCount', p)]);
+
+if (sort == 'most-connected') {
+	trip = trip.orderBy(op.desc('pCount'));
+} else if (sort == 'least-connected') {
+	trip = trip.orderBy(op.asc('pCount'));
 }
 
-function createLabel(s) {
-	let label = createTitle(s)
-	if (label.match('/')) {
-		const splits = label.split('/')
-		label = splits[splits.length - 1]
-	}
-	if (label.length <= 15) {
-		return label
-	}
-	return label.slice(0, 15) + '...'
+trip = trip.offset(start);
+
+if (subjectsPerPage && subjectsPerPage > -1) {
+	trip = trip.limit(subjectsPerPage);
 }
 
-let nodes = {}
-let edges = {}
-
-let textFilter = ""
-if (qtext && qtext !== '') {
-	textFilter = `
-	filter (
-		cts:contains(?s, cts:word-query(("${qtext}"), "case-insensitive")) ||
-		cts:contains(?p, cts:word-query(("${qtext}"), "case-insensitive")) ||
-		cts:contains(?o, cts:word-query(("${qtext}"), "case-insensitive"))
-	  )
-	`
+let iris = [];
+for (let item of trip.result()) {
+	iris.push(item.s)
 }
 
-let count = sem.sparql(`
-PREFIX cts: <http://marklogic.com/cts#>
-SELECT distinct (COUNT(?s) AS ?count) where {
-	?s ?p ?o
-	filter isIRI(?s)
-	${textFilter}
+/**
+ * Find the distinct links to these node filtered by the query text.
+ */
+const s2 = op.col('s');
+const p2 = op.col('p');
+const o2 = op.col('o');
+
+let r2 = op.fromTriples([op.pattern(s2, p2, o2)], null, null, { 'dedup': dedup });
+
+if (iris && iris.length > 0) {
+	r2 = r2.where(op.in(s2, iris));
 }
-`).toArray()[0].count
-
-sort = sort || 'DESC'
-
-let subjectQuery = `
-PREFIX cts: <http://marklogic.com/cts#>
-SELECT distinct ?s (COUNT(?p) AS ?count) where {
-	?s ?p ?o
-	filter isIRI(?s)
-	${textFilter}
-}
-GROUP BY ?s
-ORDER BY ${sort}(?count)
-LIMIT ${subjectsPerPage}
-OFFSET ${start}
-`
-let iris = sem.sparql(subjectQuery)
-  .toArray()
-  .map(t => t.s)
-
-let limit = ''
-if (linksPerSubject > 0) {
-	limit = `LIMIT ${linksPerSubject}`
+if (qtext && qtext != '') {
+	r2 = r2.where(cts.wordQuery(qtext));
 }
 
-sem.sparql(`
-	PREFIX cts: <http://marklogic.com/cts#>
-	SELECT distinct ?s ?o ?p
-		where {
-		?s ?p ?o .
-		filter(?s = ?x)
-		${textFilter}
-	}
-	${limit}
-`, { x: iris })
-  .toArray()
-  .forEach(t => {
-		const fromId = xdmp.md5(t.s)
+r2 = r2.where(op.as('isIRI', op.sem.isIRI(s2)));
+r2 = (linksPerSubject && linksPerSubject > 0) ? r2.limit(linksPerSubject) : r2;
 
-		if (!nodes[fromId]) {
-			nodes[fromId] = {
-				id: fromId,
-				label: createLabel(t.s),
-				title: createTitle(t.s),
-				orig: t.s,
-				isIRI: sem.isIRI(t.s)
-			}
+/**
+ * Iterate the result set and create the nodes and edges to plot the graph.
+ */
+let nodesAndEdges = triplesLib.buildNodesAndEdges(r2.result());
 
-			const allPredicatesQuery = `
-			PREFIX cts: <http://marklogic.com/cts#>
-			SELECT distinct ?p
-			where {
-				?s ?p ?o
-			}
-			`
-			nodes[fromId].predicates = sem.sparql(allPredicatesQuery, { s: t.s })
-				.toArray()
-				.map(t => t.p)
-		}
-
-		const toId = sem.isIRI(t.o) ? xdmp.md5(t.o) : xdmp.md5(`${t.s}-${t.p}-${t.o}`)
-		nodes[toId] = {
-			id: toId,
-			label: createLabel(t.o),
-			title: createTitle(t.o),
-			orig: t.o,
-			isIRI: sem.isIRI(t.o)
-		}
-
-		const edgeId = xdmp.md5(`${t.s}-${t.p}-${t.o}`)
-		edges[edgeId] = {
-			id: edgeId,
-			label: createLabel(t.p),
-			title: createTitle(t.p),
-			from: fromId,
-			to: toId,
-			orig: t.p,
-			isIRI: sem.isIRI(t.p)
-		}
-  })
-
+/**
+ * Build response payload.
+ */
 let resp = {
 	page: page,
 	subjectsPerPage: subjectsPerPage,
-	linksPerSubject: linksPerSubject || 'all' ,
-	nodes: nodes,
-	edges: edges,
+	linksPerSubject: linksPerSubject || 'all',
+	nodes: nodesAndEdges.nodes,
+	edges: nodesAndEdges.edges,
 	total: count
 }
+
 resp

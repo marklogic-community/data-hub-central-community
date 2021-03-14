@@ -47,9 +47,9 @@ public class TestBrowseTriples extends BaseTest {
 
 	@Test
 	void bug144() throws Exception {
-		JsonNode resp = Triples.on(getFinalClient()).browseTriples("ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c", 1, 10, 100, "DESC");
+		JsonNode resp = Triples.on(getFinalClient()).browseTriples("ID-f27d7d86-1b2f-4352-bd9c-73820ea0755c", 1, 10, 100, "most-connected", "on");
 		System.out.println(objectMapper.writeValueAsString(resp));
-		jsonAssertEquals(getResource("output/know/browseOutput.json"), resp, false);
+		jsonAssertEquals(getResource("output/know/browseOutputNew.json"), resp, false);
 	}
 
 }
