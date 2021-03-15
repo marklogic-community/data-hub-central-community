@@ -41,7 +41,8 @@ function createLabel(subject) {
 	if (label.length <= 15) {
 		return label
 	}
-	return label.slice(0, 15) + '...'
+
+	return (label) ? fn.substring(label, 0, 15)  + '...' : '';
 }
 
 /**
