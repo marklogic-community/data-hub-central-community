@@ -101,26 +101,49 @@ export default {
 		const translate = this.graphLayout.position
 		const minimapImage = document.getElementById('minimapImage');
 		//compute graphics unit ratio
-		var corner = graph.canvasToDom({x:0,y:0})
-
 		var ratioX = minimapImage.clientWidth/(clientWidth * scale)
 		var ratioY = minimapImage.clientHeight/(clientHeight * scale)
-
 		var minimapCenterPointX = minimapImage.clientWidth * 0.5
 		var minimapCenterPointY =  minimapImage.clientHeight * 0.5
+var corner = graph.canvasToDom({x:0,y:0})
+const centeredInCanvas1 = graph.domToCanvas(translate) //in context of whole coordinate space
+var canvasWidth1 = centeredInCanvas1.x * 2
+const centeredInCanvas = graph.canvasToDom(translate) //gives the center of the canvas
+var canvasWidth = centeredInCanvas.x * 2
+var scaleTest = clientWidth * scale
+var ratioTest = centeredInCanvas.x/centeredInCanvas1.x
+var ratioTest2 = centeredInCanvas1.x/centeredInCanvas.x
 
-		//convert position
-		const centeredInCanvas = graph.canvasToDom(translate) //gives offset from the center of the canvas
+const translatedCenterX = (centeredInCanvas1.x - centeredInCanvas.x) /scale
 
-		var radarCenterPointX =  minimapCenterPointX + (translate.x/scale)
-		var radarCenterPointY =  minimapCenterPointY + ((translate.y * -1)/scale)
+		var radarCenterPointX1 =  minimapCenterPointX + (translate.x * scale * ratioX)
+		var radarCenterPointY1 =  minimapCenterPointY + (translate.y * scale * ratioY)
+		//translate div to map coordinates
+var radarCenterPointX2 =  minimapCenterPointX + (centeredInCanvas.x * ratioX) //too far to right
+var radarCenterPointY2 =  minimapCenterPointY + (centeredInCanvas.y * ratioY) //too low
 
-		const minimapRadar = document.getElementById('minimapRadar') //this is for debugging convenience
-		this.radarStyle.left = String(radarCenterPointX * 0.5) + 'px'
-		this.radarStyle.bottom = String(radarCenterPointY * 0.5) + 'px'
+var radarCenterPointX3 =  minimapCenterPointX + ((centeredInCanvas.x / scale) * ratioX)
+var radarCenterPointY3 =  minimapCenterPointY + (((centeredInCanvas.y * -1) / scale) *ratioY)
 
-		this.radarStyle.width = String((clientWidth/scale) * ratioX)+ 'px'
-		this.radarStyle.height = String((clientHeight/scale) * ratioY)+ 'px'
+scale = corner.x/minimapImage.clientWidth
+
+var radarCenterPointX =  minimapCenterPointX + ((centeredInCanvas.x / scale))
+var radarCenterPointY =  minimapCenterPointY + (((centeredInCanvas.y * -1) / scale))
+
+
+const minimapRadar = document.getElementById('minimapRadar') //this is for debugging convenience
+		this.radarStyle.left = String(radarCenterPointX - ((corner.x  * ratioX) * 0.5)) + 'px'
+		this.radarStyle.bottom = String(radarCenterPointY - ((corner.y  * ratioY) * 0.5)) + 'px'
+
+		this.radarStyle.width = String(clientWidth  * ratioX)+ 'px'
+		this.radarStyle.height = String(clientHeight * ratioY)+ 'px'
+
+		// this.radarStyle.left = '0px'
+		// this.radarStyle.bottom = '0px'
+
+		// this.radarStyle.width = '100px'
+		// this.radarStyle.height = '100px'
+
 	},
 	upDateMinimap(graph){
 		//save user state of the graph
