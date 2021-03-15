@@ -13,8 +13,9 @@
 							@oncontext="graphRightClick"
 							@dragStart="handleDragStart"
 							@dragEnd="handleDragEnd"
-							@zoom="saveGraphLayout"
+							@zoom="handleZoom"
 							@afterDrawing="handleAfterDrawing"
+							@animationFinished="handleAnimationFinished"
 							ref="graph"
 						>
 
@@ -289,10 +290,12 @@ export default {
 				label: "new"
 			}
 			this.graphAddNode(nodeData)
+//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		addRelationship() {
 			this.addEdgeMode = true
 			this.$refs.graph.addEdgeMode()
+//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		cancelAddRelationship() {
 			this.addEdgeMode = false
@@ -301,6 +304,7 @@ export default {
 		deleteNode() {
 			this.$refs.graph.deleteSelected()
 			this.confirmDeleteNode = false
+//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		// called by Cypress to select a node, as couldn't find how to make it click the graph directly
 		selectNode( selectedNode ) {
@@ -360,7 +364,12 @@ export default {
 					},
 					animation: true
 				})
+			} else {
+				this.$refs.minimap.upDateMinimap(this.$refs.graph)
 			}
+		},
+		handleAnimationFinished(e){
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		deleteEntity(entityId, save = true) {
 			const idx = this.nodes.findIndex(e => e.id === entityId)
@@ -464,8 +473,6 @@ export default {
 				scale: 1.0
 			}
 			this.$refs.graph.moveTo(this.graphLayout)
-			//update the minimap
-			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		saveGraphLayout() {
 			if (!this.model) {
@@ -481,31 +488,20 @@ export default {
 		handleAfterDrawing()
 		{
 			this.saveGraphLayout()
-	//		this.upDateMinimap()
 		},
-		handleZoom()
+		handleZoom(e)
 		{
 			this.saveGraphLayout()
-//			this.$refs.minimap.zoomMinimap()
+			this.$refs.minimap.handleZoom(e)
 		},
 		handleDragEnd(e)
 		{
-			// let fitOptions = this.graphOptions;
-			// fitOptions.physics.enabled = true;
 			this.graphDragEnd(e)
-			// this.saveGraphLayoutSnap()
-			// this.$refs.graph.setOptions(fitOptions)
-			// this.$refs.graph.fit(this.nodes);
-			// fitOptions.physics.enabled = false;
-			// this.$refs.graph.setOptions(this.graphOptions)
-			//this.upDateMinimap()
 			this.$refs.minimap.upDateMinimap(this.$refs.graph)
-			// this.loadGraphLayoutSnap()
 		},
 		handleDragStart(e)
 		{
 			this.graphDragStart(e)
-//			this.$refs.minimap.dragEndMinimap()
 		},
 
 		async doMLSave() {
@@ -572,7 +568,9 @@ export default {
 						// select the entity after making it
 						setTimeout(() => {
 							this.$refs.graph.selectNodes([node.id])
+							this.$refs.minimap.upDateMinimap(this.$refs.graph)
 						}, 500)
+
 					}
 					else {
 						!!callback && callback(null)
@@ -598,16 +596,19 @@ export default {
 				.finally(() => {
 					this.addEdgeMode = false
 					this.$refs.graph.disableEditMode()
+//					this.$refs.minimap.upDateMinimap(this.$refs.graph)
 				})
 			}
 		},
 		graphDeleteNode(nodeData, callback) { // eslint-disable-line no-unused-vars
 			nodeData.edges.forEach(item => this.deleteEdge(item, false))
 			nodeData.nodes.forEach(item => this.deleteEntity(item, false))
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 			this.doMLSave()
 		},
 		graphDeleteEdge(edgeData, callback) {	// eslint-disable-line no-unused-vars
 			edgeData.edges.forEach(item => this.deleteEdge(item, false))
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 			this.doMLSave()
 		},
 		graphClick(e) {
@@ -625,6 +626,7 @@ export default {
 				this.currentNodeId = null
 				this.currentEdgeId = null
 			}
+//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		graphRightClick(e) {
 			e.event.preventDefault()

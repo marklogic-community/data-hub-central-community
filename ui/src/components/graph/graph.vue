@@ -53,7 +53,7 @@ export default {
 				// 'initRedraw',
 				// 'beforeDrawing',
 				'afterDrawing',
-				// 'animationFinished',
+			  'animationFinished',
 				// 'configChange'
 			]
 		},
