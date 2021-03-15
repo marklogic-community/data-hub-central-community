@@ -6,7 +6,7 @@ The Envision project is being renamed Data Hub Central Community Edition (DHCCE)
 
 Download the [Data Hub Central Community Jar][jar]
 
-Go read the docs here: https://marklogic-community.github.io/envision/
+Go read the docs here: https://marklogic-community.github.io/data-hub-central-community/ 
 
 ## Want to write some code or tests?
 You want to write code? Great! If not see above.
