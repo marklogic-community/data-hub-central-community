@@ -1,8 +1,9 @@
 <template>
-	<v-app-bar dense dark>
-    <img src="@/assets/images/MarkLogic-avatar.svg" height="70%"/>
-		<span class="page-title">Data Hub Central Community Edition</span>
-		<a target="_blank" :href="versionLink" class="version">{{version}}</a>
+	<v-app-bar dense dark color="#2B333C">
+    <img src="@/assets/images/logo.svg" height="70%"/>
+    <div class="vertical"></div>
+		<span class="page-title">DHCCE</span>
+		<!-- <a target="_blank" :href="versionLink" class="version">{{version}}</a> -->
 		<v-spacer />
 		<v-toolbar-items>
       <template v-for="(link, i) in visibleRoutes">
@@ -18,14 +19,14 @@
 			</template>
     </v-toolbar-items>
 		<v-spacer />
-		<v-btn v-if="showVideoLinks" color="blue-grey" class="ma-2 white--text" :href="currentRoute.meta.tutorialLink" target="_blank">
+		<v-btn v-if="showVideoLinks" color="#394494" class="ma-2 white--text" href="https://www.youtube.com/playlist?list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2" target="_blank">
 			<v-icon
         left
         dark
       >
         fa-youtube
       </v-icon>
-			{{currentRoute.meta.tutorialName}}</v-btn>
+			Tutorials</v-btn>
 		<UserMenu/>
 	</v-app-bar>
 </template>
@@ -93,4 +94,18 @@ export default {
 		color: white;
 		text-decoration: none;
 	}
+
+	.vertical{
+        display: inline-block;
+        position: relative;
+        top: 3px;
+        border-left: dotted 1px rgba(255, 255, 255, 0.65);
+        height: 24px;
+        margin: -6px 8px;
+        cursor: default;
+  }
+  .mainNav{
+  color: #2B333C !important;
+  }
+
 </style>

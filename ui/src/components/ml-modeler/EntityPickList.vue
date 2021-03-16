@@ -398,4 +398,8 @@ export default {
 	display: flex;
 	justify-content: flex-start;
 }
+
+.text-center{
+  color: #ffffff;
+}
 </style>
