@@ -23,11 +23,12 @@ const s = op.col('s');
 const p = op.col('p');
 const o = op.col('o');
 
-let trip = op.fromTriples([op.pattern(s, p, o)], null, null, { 'dedup': dedup }).where(op.as('isIRI', op.sem.isIRI(s)));
+let trip =
+	  op.fromTriples([op.pattern(s, p, o)], null, null, { 'dedup': dedup })
+	    .where(op.as('isIRI', op.sem.isIRI(s)));
 
 if (qtext) {
-	xdmp.log('qtext: ' + qtext);
-	trip = trip.where(cts.wordQuery(qtext, ['case-insensitive']))
+	trip = trip.where(cts.wordQuery(qtext, ['case-insensitive']));
 }
 
 let countR = trip.groupBy(null, [op.count('count', s)]).result();
