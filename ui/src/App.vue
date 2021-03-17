@@ -4,7 +4,7 @@
 		<v-main>
           <router-view/>
 		</v-main>
-    <ml-footer/>
+    <mlFooter v-if="isLoggedIn"/>
 		<progress-listener />
 	</v-app>
 </template>

@@ -1,8 +1,8 @@
 <template>
-	<v-app-bar dense dark color="#2B333C">
-    <img src="@/assets/images/logo.svg" height="70%"/>
+	<v-app-bar dark color="#2B333C">
+    <img src="@/assets/images/MarkLogic-avatar.svg" height="60%"/>
     <div class="vertical"></div>
-		<span class="page-title">DHCCE</span>
+    <img src="@/assets/images/hub-central-community-edition.png" height="60%"/>
 		<!-- <a target="_blank" :href="versionLink" class="version">{{version}}</a> -->
 		<v-spacer />
 		<v-toolbar-items>
@@ -81,7 +81,7 @@ export default {
 
 <style lang="less" scoped>
 	header {
-		max-height: 48px;
+		max-height: 64px;
 	}
 
 	.page-title {
@@ -101,7 +101,7 @@ export default {
         top: 3px;
         border-left: dotted 1px rgba(255, 255, 255, 0.65);
         height: 24px;
-        margin: -6px 8px;
+        margin: -6px 16px;
         cursor: default;
   }
   .mainNav{

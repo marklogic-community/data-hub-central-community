@@ -1,19 +1,31 @@
 <template>
-	<v-container fluid fill-height class="login-page">
-		<v-layout align-center justify-center>
+<div class="background">
+<v-app-bar dark color="#2B333C" >
+          <img src="@/assets/images/MarkLogic-avatar.svg" height="60%"/>
+       <div class="vertical"></div>
+          <img src="@/assets/images/hub-central-community-edition.png" height="60%"/>
+          <v-spacer></v-spacer>
+       <div>
+      		<a target="_blank" href="https://marklogic-community.github.io/data-hub-central-community/" class="docsLink">
+                    	<v-icon>help_outline</v-icon>
+          </a>
+       </div>
+  </v-app-bar>
+	<v-container fluid fill-height >
+		<v-layout align-center justify-center class="loginContainer">
 			<v-flex xs12 sm8 md4>
 				<v-card class="elevation-12">
-					<v-card-title>Login to your account</v-card-title>
+					<v-card-title></v-card-title>
 					<v-form v-on:submit.prevent="isLoggedIn ? doLogout() : doLogin()">
 						<v-card-text>
 							<v-alert type="error" v-show="hasLoginError" v-cloak>Username and/or Password Incorrect</v-alert>
 							<v-alert type="success" v-show="hasLoginSuccess" v-cloak>You successfully logged in</v-alert>
 							<v-alert type="error" v-show="hasLogoutError" v-cloak>Logout failed</v-alert>
 							<v-alert type="success" v-show="hasLogoutSuccess" v-cloak>You successfully logged out</v-alert>
-							<v-text-field autofocus outlined prepend-inner-icon="person" name="login" v-model="user" :label="isHosted ? 'Email Address' : 'User Name'" type="text"></v-text-field>
-							<v-text-field outlined prepend-inner-icon="lock" name="password" label="Password" v-model="pass" type="password"></v-text-field>
+							<v-text-field autofocus outlined prepend-inner-icon="person" name="login" v-model="user" :label="isHosted ? 'Enter email address' : 'Enter username'" type="text"></v-text-field>
+							<v-text-field outlined prepend-inner-icon="lock" name="password" label="Enter password" v-model="pass" type="password"></v-text-field>
 							<div class="buttons">
-								<v-btn id="submit-btn" type="submit" :disabled="pending" color="primary">Login</v-btn>
+								<v-btn id="submit-btn" type="submit" :disabled="pending" color="primary">LogIn</v-btn>
 							</div>
 						</v-card-text>
 						<v-card-actions v-if="isHosted">
@@ -27,6 +39,14 @@
 			</v-flex>
 		</v-layout>
 	</v-container>
+	<div class="mainFooter">
+          <span>© {{new Date().getUTCFullYear()}} MarkLogic Corporation</span>
+          |
+          <span>
+            <a href="https://www.marklogic.com/privacy/" class="linkStyle">Privacy</a>
+          </span>
+  </div>
+	</div>
 </template>
 
 <script>
@@ -111,9 +131,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login-page {
-	background: linear-gradient(0deg, black, #555);
-}
+
 h2 {
 	margin-bottom: 2em;
 }
@@ -149,4 +167,55 @@ h2 {
 		color: white;
 	}
 }
+
+.background {
+   width: 100%;
+   height: 100%;
+   background-image: url("../assets/images/background-fast-lines.jpg");
+   background-position: center center;
+   background-size: cover;
+   background-repeat: no-repeat;
+   position:fixed;
+}
+
+.loginContainer {
+   width: 100%;
+   margin-top: -200px;
+}
+
+.docsLink{
+  text-decoration:none;
+}
+
+.vertical{
+   display: inline-block;
+   position: relative;
+   top: 3px;
+   border-left: dotted 1px rgba(255, 255, 255, 0.65);
+   height: 24px;
+   margin: -6px 16px;
+   cursor: default;
+}
+
+ .page-title {
+   margin-left: 10px;
+}
+
+.mainFooter {
+		text-align: center;
+    margin-top: -110px;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.linkStyle {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
+
+.linkStyle:hover{
+  color: #7fade3;
+ }
+
 </style>
