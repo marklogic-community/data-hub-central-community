@@ -71,7 +71,10 @@ public class TriplesController extends AbstractController {
 		}
 		int maxRelated = node.get("maxRelated").asInt();
 
-		boolean filterText = node.get("filterText").asBoolean();
+		boolean filterText = false;
+		if (node.get("filterText") != null && node.get("filterText").isBoolean()) {
+			filterText = node.get("filterText").asBoolean();
+		}
 
 		DatabaseClient client = getProperClient(database);
 		return Triples.on(client).getRelated(item, itemId, isIRI, qtext, predicate, maxRelated, filterText);
