@@ -60,6 +60,7 @@
 						<minimap
 							ref="minimap"
 							style="position: absolute; bottom:0; left:0;"
+							:graph="this.$refs.graph"
 							>
 						</minimap>
 					</v-flex>

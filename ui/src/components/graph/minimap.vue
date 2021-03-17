@@ -10,6 +10,7 @@
 			id="minimapImage"
       :src="this.miniMapImgSrc"
 			contain
+			@click="handleImgClick"
     	>
 			<div class="minimapRadar"
 					id="minimapRadar"
@@ -37,7 +38,7 @@
 export default {
 	name: 'minimap',
 	props: {
-
+		graph:{}
 	},
 	data: () => ({
 		showMiniMap:false,
@@ -49,6 +50,14 @@ export default {
 			positionDom: { x: 0, y: 0 }
 		},
 		graphCanvas:{
+			canvasWidth: 0,
+			canvasHeight: 0,
+			topLeft: { x: 0, y: 0 },
+			bottomRight: { x: 0, y: 0 },
+			canvasBounds: { top: 0, left: 0, right: 0, bottom: 0 }
+		},
+		//keep a snapshot of the last time we checked the full expanse of the graph
+		graphFullCanvas:{
 			canvasWidth: 0,
 			canvasHeight: 0,
 			topLeft: { x: 0, y: 0 },
@@ -74,6 +83,29 @@ export default {
 	methods: {
 	getRadarStyle(){
 		return this.radarStyle
+	},
+	handleImgClick(e){
+		const{
+			offsetX,
+			offsetY
+		} = e
+		const minimapImage = document.getElementById('minimapImage');
+		//compute scale of map canvas to zoomed out canvas
+		var ratioX = (this.graphFullCanvas.bottomRight.x - this.graphFullCanvas.topLeft.x)/minimapImage.clientWidth
+		var ratioY = (this.graphFullCanvas.topLeft.y - this.graphFullCanvas.bottomRight.y)/minimapImage.clientHeight
+		//translate to canvas space
+		var canvasX = this.graphFullCanvas.topLeft.x + (offsetX * ratioX)
+		var canvasY = this.graphFullCanvas.topLeft.y - (offsetY * ratioY)
+		//move the graph
+		var positions = {
+		  position: this.graph.getViewPosition(),
+			scale: this.graph.getScale(),
+			positions: this.graph.getPositions(),
+			animation: true
+		}
+		positions.position.x = canvasX
+		positions.position.y = canvasY
+		this.graph.moveTo(positions)
 	},
 	handleZoom(e){
 			var myEvent = e;
@@ -107,53 +139,40 @@ export default {
 	},
 	// Draw minimap Radar
 	drawRadar(graph){
-		//calculate current in canvas space
-		//load the scale, position the user was viewing
-		//we captured it in upDateMiniMap
-		//TODO make this an inline function in upDateMinimap
-		const scale = this.graphLayout.scale
-		const translate = this.graphLayout.position
-
-		//zoomed out dimensions (graph should be zoomed at scale of ~1.0)
+		//zoomed out dimensions
+		//PRE-REQ: graph should be zoomed at scale of ~1.0
+		//TODO: qualify the graph is zoomed out
 		const topLeftZoomed = graph.domToCanvas({ x: 0, y: 0 })
 		const canvasWidthZoomed = graph.network.canvas.frame.canvas.clientWidth
 		const canvasHeightZoomed = graph.network.canvas.frame.canvas.clientHeight
 		const bottomRightZoomed = graph.domToCanvas({ x: canvasWidthZoomed, y: canvasHeightZoomed })
+
+		//store a snapshot of the full expanse of the graph for mouseclicks
+		this.graphFullCanvas.topLeft = topLeftZoomed;
+		this.graphFullCanvas.bottomRight = bottomRightZoomed;
 
 		const minimapImage = document.getElementById('minimapImage');
 		//compute scale of map canvas to zoomed out canvas
 		var ratioX = minimapImage.clientWidth/(bottomRightZoomed.x - topLeftZoomed.x)
 		var ratioY = minimapImage.clientHeight/(topLeftZoomed.y - bottomRightZoomed.y)
 
-		//move camera in minimap to center
-		var minimapCenterPointX = minimapImage.clientWidth * 0.5
-		var minimapCenterPointY =  minimapImage.clientHeight * 0.5
-
-		//translate minimap centerpoint to original graph position
-		var radarCenterPointX =  ((translate.x - this.graphCanvas.topLeft.x) * ratioX)
-		var radarCenterPointY =  (((translate.y - this.graphCanvas.bottomRight.y) * -1) * ratioY)  //flipped coords-- up = < 0
-		var radarWidth = (this.graphCanvas.canvasWidth/scale) * ratioX
-		var radarHeight = (this.graphCanvas.canvasHeight/scale) * ratioY
-
+		//compare canvas dimensions of captured viewport to full graph canvas
+		//update radar styles with new dimensions
 		this.radarStyle.left = String(Math.round((this.graphCanvas.topLeft.x -  topLeftZoomed.x) * ratioX)) + 'px'
-		this.radarStyle.bottom = String(Math.round(this.graphCanvas.bottomRight.y * ratioY * -1)) + 'px'
-	this.radarStyle.bottom = '0px'
-		//this.radarStyle.right = String(this.graphCanvas.bottomRight.x * ratioX) + 'px'
-		//this.radarStyle.top = String(this.graphCanvas.topLeft.y * ratioY * -1) + 'px'
+		this.radarStyle.bottom = String(Math.round((this.graphCanvas.bottomRight.y - bottomRightZoomed.y) * ratioY )) + 'px'
 
 		this.radarStyle.width = String(Math.round((this.graphCanvas.bottomRight.x - this.graphCanvas.topLeft.x) * ratioX )) + 'px'
-		this.radarStyle.height = String(Math.round(((this.graphCanvas.topLeft.y - this.graphCanvas.bottomRight.y) * -1 ) * ratioY )) + 'px'
-	this.radarStyle.height =  '300px'
-
+		this.radarStyle.height = String(Math.round((this.graphCanvas.topLeft.y - this.graphCanvas.bottomRight.y) * ratioY )) + 'px'
 	},
 	upDateMinimap(graph){
 		//save user state of the graph
+		//this is zoom and position user has set
 		this.saveGraphLayoutSnap(graph)
 		let fitOptions = graph.options;
 		//prep graph for fit call
 		fitOptions.physics.enabled = true;
 		graph.setOptions(fitOptions)
-		//fit draws a zoomed out graph wih all nodes
+		//fit draws a zoomed out graph to show all nodes
 		graph.fit(graph.nodes);
 		//NOTE see below- if you call this here, the graph will not be zoomed out
 		//a vis-graph thing?
@@ -163,33 +182,16 @@ export default {
 		fitOptions.physics.enabled = false;
 		graph.setOptions(fitOptions)
 
-		//capture the image of the zoomed out graph-- NOTE this happens after the setOptions
+		//draw the minimap image of the zoomed out graph-- NOTE this happens after the setOptions
 		//call. If called before the graph is not zoomed out
 		this.drawMinimapImage(graph);
 		//draw the radar
+		//NOTE we still need the graph zoomed out to fit here
 		if( this.showMiniMapRadar ) this.drawRadar(graph);
 
 		//restore the state of the graph
 		this.loadGraphLayoutSnap(graph)
 
-	},
-	zoomMinimap()
-	{
-		const minimapWrapper = document.getElementById('minimapWrapper');
-		minimapWrapper.classList.remove('minimapWrapperIdle');
-		minimapWrapper.classList.add('minimapWrapperMove')
-	},
-	dragStartMinimap()
-	{
-		const minimapWrapper = document.getElementById('minimapWrapper');
-		minimapWrapper.classList.remove('minimapWrapperIdle');
-		minimapWrapper.classList.add('minimapWrapperMove');
-	},
-	dragEndMinimap()
-	{
-		const minimapWrapper = document.getElementById('minimapWrapper');
-		minimapWrapper.classList.remove('minimapWrapperMove');
-		minimapWrapper.classList.add('minimapWrapperIdle')
 	}
 }
 }
