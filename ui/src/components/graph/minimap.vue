@@ -11,6 +11,7 @@
       :src="this.miniMapImgSrc"
 			contain
 			@click="handleImgClick"
+			@load="handleMapImgLoad"
     	>
 			<div class="minimapRadar"
 					id="minimapRadar"
@@ -26,7 +27,7 @@
 		<v-spacer></v-spacer>
 		<v-btn
 			icon
-			@click="showMiniMap = !showMiniMap"
+			@click="handleDiscloseButtonClick"
 		>
 			<v-icon>{{ showMiniMap ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
 		</v-btn>
@@ -44,11 +45,12 @@ export default {
 		showMiniMap:false,
 		showMiniMapRadar:true,
 		imgSrc: '', //'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
+		//snapshot of the camera position
 		graphLayout:{
 			position: { x: 0, y: 0 },
-			scale: 1.0,
-			positionDom: { x: 0, y: 0 }
+			scale: 1.0
 		},
+		//keep a snapshot of the graph viewport
 		graphCanvas:{
 			canvasWidth: 0,
 			canvasHeight: 0,
@@ -64,6 +66,7 @@ export default {
 			bottomRight: { x: 0, y: 0 },
 			canvasBounds: { top: 0, left: 0, right: 0, bottom: 0 }
 		},
+		//positioning of the map overlay showing the viewport
 		radarStyle: {
 			position:'absolute',
 			left: '0px',
@@ -71,6 +74,7 @@ export default {
 			height: '0px',
 			width: '0px'
 		},
+		//animation transition keys
 		minimapImageKey:'',
 		minimapRadarKey:''
 	}),
@@ -83,6 +87,38 @@ export default {
 	methods: {
 	getRadarStyle(){
 		return this.radarStyle
+	},
+	handleMapImgLoad(){
+	},
+	//use the two graph states
+	//graphFullCanvas represents the canvas of the full graph in canvas coordinates
+	//graphCanvas represents the user's viewport on the graph (camera position, scale) in canvas coordinates
+	setRadarSizeFromStoredGraphStates(){
+		//draw the radar
+		const minimapImage = document.getElementById('minimapImage');
+		if(minimapImage.clientWidth > 0 && minimapImage.clientHeight > 0){
+			//compare canvas dimensions of captured viewport to full graph canvas
+			//update radar styles with new dimensions
+			//compute scale of map canvas to zoomed out canvas
+			var ratioX = minimapImage.clientWidth/(this.graphFullCanvas.bottomRight.x - this.graphFullCanvas.topLeft.x)
+			var ratioY = minimapImage.clientHeight/(this.graphFullCanvas.topLeft.y - this.graphFullCanvas.bottomRight.y)
+
+			this.radarStyle.left = String(Math.round((this.graphCanvas.topLeft.x -  this.graphFullCanvas.topLeft.x ) * ratioX)) + 'px'
+			this.radarStyle.bottom = String(Math.round((this.graphCanvas.bottomRight.y - this.graphFullCanvas.bottomRight.y) * ratioY )) + 'px'
+
+			this.radarStyle.width = String(Math.round((this.graphCanvas.bottomRight.x - this.graphCanvas.topLeft.x) * ratioX )) + 'px'
+			this.radarStyle.height = String(Math.round((this.graphCanvas.topLeft.y - this.graphCanvas.bottomRight.y) * ratioY )) + 'px'
+		}
+	},
+	handleDiscloseButtonClick(){
+		this.showMiniMap = !this.showMiniMap;
+		if (this.showMiniMap){
+			//initialize minimap if there is no image
+			if(this.imgSrc === ''){
+				//update the minimap
+				this.upDateMinimap(this.graph)
+			}
+		}
 	},
 	handleImgClick(e){
 		const{
@@ -106,10 +142,6 @@ export default {
 		positions.position.x = canvasX
 		positions.position.y = canvasY
 		this.graph.moveTo(positions)
-	},
-	handleZoom(e){
-			var myEvent = e;
-			//console.log(myEvent)
 	},
 	loadGraphLayoutSnap(graph) {
 		//load graph's position, scale, etc
@@ -139,30 +171,20 @@ export default {
 	},
 	// Draw minimap Radar
 	drawRadar(graph){
-		//zoomed out dimensions
 		//PRE-REQ: graph should be zoomed at scale of ~1.0
 		//TODO: qualify the graph is zoomed out
+		//calculate the canvas dimensions for the full graph
 		const topLeftZoomed = graph.domToCanvas({ x: 0, y: 0 })
 		const canvasWidthZoomed = graph.network.canvas.frame.canvas.clientWidth
 		const canvasHeightZoomed = graph.network.canvas.frame.canvas.clientHeight
 		const bottomRightZoomed = graph.domToCanvas({ x: canvasWidthZoomed, y: canvasHeightZoomed })
 
-		//store a snapshot of the full expanse of the graph for mouseclicks
+		//store a snapshot of the full expanse of the graph
 		this.graphFullCanvas.topLeft = topLeftZoomed;
 		this.graphFullCanvas.bottomRight = bottomRightZoomed;
 
-		const minimapImage = document.getElementById('minimapImage');
-		//compute scale of map canvas to zoomed out canvas
-		var ratioX = minimapImage.clientWidth/(bottomRightZoomed.x - topLeftZoomed.x)
-		var ratioY = minimapImage.clientHeight/(topLeftZoomed.y - bottomRightZoomed.y)
-
-		//compare canvas dimensions of captured viewport to full graph canvas
-		//update radar styles with new dimensions
-		this.radarStyle.left = String(Math.round((this.graphCanvas.topLeft.x -  topLeftZoomed.x) * ratioX)) + 'px'
-		this.radarStyle.bottom = String(Math.round((this.graphCanvas.bottomRight.y - bottomRightZoomed.y) * ratioY )) + 'px'
-
-		this.radarStyle.width = String(Math.round((this.graphCanvas.bottomRight.x - this.graphCanvas.topLeft.x) * ratioX )) + 'px'
-		this.radarStyle.height = String(Math.round((this.graphCanvas.topLeft.y - this.graphCanvas.bottomRight.y) * ratioY )) + 'px'
+		//handleImgLoad processes the saved graph states
+		this.setRadarSizeFromStoredGraphStates()
 	},
 	upDateMinimap(graph){
 		//save user state of the graph
