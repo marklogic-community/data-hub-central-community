@@ -8,6 +8,7 @@
 		<v-img
 			v-show="showMiniMap"
 			id="minimapImage"
+			data-cy="minimapVue.mapImage"
       :src="this.miniMapImgSrc"
 			contain
 			@click="handleImgClick"
@@ -20,7 +21,6 @@
 			>
 			</div>
 		</v-img>
-		</transition>
 	</v-expand-transition>
 	<v-card-actions>
 		<label class="menu-label v-label v-label--active theme--light">Map</label>
@@ -28,6 +28,7 @@
 		<v-btn
 			icon
 			@click="handleDiscloseButtonClick"
+			data-cy="minimapVue.openMapButton"
 		>
 			<v-icon>{{ showMiniMap ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
 		</v-btn>

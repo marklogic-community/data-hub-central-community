@@ -879,4 +879,18 @@ describe('End to end test to create and update model', () => {
 		cy.get('[name="address1"] [data-cy="entityPickList.entityPropertyName"]').contains('zip').should('exist')
 		cy.get('[name="address1"] [data-cy="entityPickList.entityPropertyName"]').contains('stuff').should('exist')
 	})
+	it('can hide and show the map', () => {
+		cy.route('GET', '/api/models/', [ { "name": "Test Model", "edges": {}, "nodes": { "poet": { "id": "poet", "x": -156.3861003861004, "y": -130.42857142857144, "label": "Poet", "entityName": "Poet", "type": "entity", "properties": [] }, "philosopher": { "id": "philosopher", "x": -156.3861003861004, "y": 100.42857142857144, "label": "Philosopher", "entityName": "Philosopher", "type": "entity", "properties": [] } } } ])
+		cy.visit('/')
+		cy.url().should('include', '/model')
+		cy.wait('@saveModel')
+			.its('request.body')
+			.should(body => {
+				expect(body.nodes.poet.properties).to.deep.equal([])
+			})
+
+		cy.get('[data-cy="minimapVue.openMapButton"]').click()
+		cy.get('[data-cy="minimapVue.mapImage"]').should('be.visible')
+		cy.get('[data-cy="minimapVue.openMapButton"]').click()
+	})
 })
