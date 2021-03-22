@@ -79,7 +79,7 @@
 							></custom-step>
 						</div>
 						<div id="step-type-unsupported-container" v-else>
-							<div>Editing/Viewing this step type is unsupported in Envision. <strong>You can still run it.</strong></div>
+							<div>Editing/Viewing this step type is unsupported in DHCCE. <strong>You can still run it.</strong></div>
 						</div>
 					</v-card-text>
 				</v-card>

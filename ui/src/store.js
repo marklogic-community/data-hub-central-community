@@ -547,18 +547,18 @@ const triples = {
 		}
 	},
 	actions: {
-		browse({ commit, state }, { database, sort }) {
+		browse({ commit, state }, { database, sort, dedup }) {
 			return triplesApi
-				.getTriples(state.qtext, state.page, state.subjectsPerPage, state.linksPerSubject, database, sort)
+				.getTriples(state.qtext, state.page, state.subjectsPerPage, state.linksPerSubject, database, sort, dedup)
 				.then(response => {
 					if (response) {
 						commit('setDocs', response)
 					}
 				});
 		},
-		getRelated({ commit, state }, { item, itemId, isIRI, database, predicate }) {
+		getRelated({ commit, state }, { item, itemId, isIRI, database, predicate, filterText}) {
 			return triplesApi
-				.getRelated(item, itemId, isIRI, database, state.maxRelated, state.qtext, predicate)
+				.getRelated(item, itemId, isIRI, database, state.maxRelated, state.qtext, predicate, filterText)
 				.then(response => {
 					if (response) {
 						commit('addDocs', response)

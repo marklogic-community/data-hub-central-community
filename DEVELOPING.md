@@ -11,19 +11,19 @@ For the UI you need:
  - [Node 12.x or later](https://nodejs.org/en/)
  - Npm 6.9.0 or later
 
-### Envision Installation Instructions 
+### Data Hub Central Community Edition Installation Instructions 
 
 First follow the instructions in the [Contributing doc](./CONTRIBUTING.md) for how to properly fork and clone and branch. Once you've done that come back here.
 
 ### Running the project (Single Tenant)
-Single tenant is the traditional way to run Envision. It relies on MarkLogic's users/roles to provide access.
+Single tenant is the traditional way to run DHCCE. It relies on MarkLogic's users/roles to provide access.
 
 #### Development Mode (single-tenant)
 
 Open 2 terminal tabs/windows
 
 ##### Middle Tier (single-tenant)
-Open a terminal in the project root: /path/to/envision
+Open a terminal in the project root: /path/to/dhcce
 
 The command to run the middle tier is:  
 `gradlew -DdhfDir=/full/path/to/your/datahub bootrun`
@@ -41,20 +41,20 @@ You will still need a running Data Hub Framework
 `gradlew -DdhfDir=/full/path/to/your/datahub test`
 
 ##### User Interface (single-tenant)
-Open a terminal in the project root: /path/to/envision
+Open a terminal in the project root: /path/to/dhcce
 
 launch the ui in develop mode
 `gradlew runui`
 
 ### Running the project (Multi Tenant)
-Multi tenant mode allows you to run Envision in a hosted environment. It provides a signup flow for new users. It's main purpose is for running Envision as a self-service demo.
+Multi tenant mode allows you to run DHCCE in a hosted environment. It provides a signup flow for new users. It's main purpose is for running DHCCE as a self-service demo.
 
 #### Development Mode (multi-tenant)
 
 Open 2 terminal tabs/windows
 
 ##### Middle Tier (multi-tenant)
-Open a terminal in the project root: /path/to/envision
+Open a terminal in the project root: /path/to/dhcce
 
 Edit application.properties:
 ```
@@ -68,7 +68,7 @@ The command to run the middle tier is:
 `gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir bootrun`
 
 ##### User Interface (multi-tenant)
-Open a terminal in the project root: /path/to/envision
+Open a terminal in the project root: /path/to/dhcce
 
 launch the ui in develop mode
 `gradlew -Penv=cloud runui`
@@ -79,7 +79,7 @@ You will still need a MarkLogic instance with no datahub installed.
 
 `gradlew test`
 
-### Access the Envision UI (development mode)
+### Access the DHCCE UI (development mode)
 http://localhost:9999
 
 You can log in with your MarkLogic username and password.
@@ -100,7 +100,7 @@ In the other run the ui, as above:
 `gradlew runui`
 
 #### Running End to End UI Tests
-Open a terminal in the top-level envision directory.
+Open a terminal in the top-level dhcce directory.
 
 `gradlew testUi`
 
@@ -131,23 +131,23 @@ Note that you do need a running Data Hub Framework instance with a project folde
 
 
 ##### Run the jar
-`java -jar middle-tier/build/lib/envision.jar`
+`java -jar middle-tier/build/lib/dhcce.jar`
 
 The jar is configured so that you can drop it into a Data Hub Framework project dir and run it there.
 
-`java -jar envision.jar`
+`java -jar dhcce.jar`
 
 However, if you need to point it at another folder where the Data Hub Framework is installed, run like so:
 
-`java -DdhfDir=/full/path/to/your/datahub -jar envision.jar`
+`java -DdhfDir=/full/path/to/your/datahub -jar dhcce.jar`
 
 If you also need to specify a different models directory:
 
-`java -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
+`java -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar dhcce.jar`
 
 If you need to specify the Data Hub Framework environment (it defaults to local):
 
-`java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar envision.jar`
+`java -DdhfEnv=prod -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir -jar dhcce.jar`
 
 #### Troubleshooting
 

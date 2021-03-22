@@ -79,6 +79,14 @@
 							v-model="currentSort"
 							required
 						></v-select>
+							<v-select
+							:items="dedup"
+							item-text="label"
+							item-value="value"
+							label="Deduplicate Triples"
+							v-model="currentDedup"
+							required
+						></v-select>
 						<div class="trip-view" v-if="currentTriple">
 							<div v-if="currentTriple.s">{{currentTriple.s.orig}}</div>
 							<div v-if="currentTriple.p">{{currentTriple.p.orig}}</div>
@@ -195,12 +203,26 @@ export default {
 			],
 			sorts: [
 				{
+					label: 'Default',
+					value: 'default'
+				},
+				{
 					label: 'Least Connected First',
-					value: 'ASC'
+					value: 'least-connected'
 				},
 				{
 					label: 'Most Connected First',
-					value: 'DESC'
+					value: 'most-connected'
+				}
+			],
+			dedup: [
+				{
+					label: 'On',
+					value: 'on'
+				},
+				{
+					label: 'Off',
+					value: 'off'
 				}
 			],
 			rightClickMenu: null,
@@ -210,7 +232,8 @@ export default {
 			title: 'Explore',
 			colors: {},
 			currentDatabase: 'final',
-			currentSort: 'DESC',
+			currentSort: 'default',
+			currentDedup: 'off',
 			qtext: '',
 			graphOptions: {
 				autoResize: false,
@@ -314,6 +337,9 @@ export default {
 		},
 		currentSort() {
 			this.getTriples()
+		},
+		currentDedup() {
+			this.getTriples()
 		}
 	},
 	mounted: function() {
@@ -353,7 +379,8 @@ export default {
 			this.$store
 				.dispatch('triples/browse', {
 					database: this.currentDatabase,
-					sort: this.currentSort
+					sort: this.currentSort,
+					dedup: this.currentDedup
 				})
 				.then(() => {
 					this.searchPending = false;
@@ -426,18 +453,27 @@ export default {
 								predicate: p
 							}
 						})
+
+						predicates.unshift( {
+							label: 'All (Search-Filtered)',
+							filterText: true,
+							action: 'expand',
+							node: node
+						})
+
 						predicates.unshift( {
 							label: 'All',
+							filterText: false,
 							action: 'expand',
 							node: node
 						})
 					}
 
-
 					this.rightClickItems = [
 						{
 							label: 'Get Related',
 							action: 'expand',
+							filterText: false,
 							node: node,
 							submenu: predicates
 						},
@@ -476,7 +512,8 @@ export default {
 					itemId: rel.node.id,
 					isIRI: rel.node.isIRI,
 					database: this.currentDatabase,
-					predicate: rel.predicate || null
+					predicate: rel.predicate || null,
+					filterText: rel.filterText
 				})
 		}
 	}

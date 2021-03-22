@@ -1,4 +1,4 @@
-### Welcome Envision enthusiast!
+### Welcome Data Hub Central Community Edition enthusiast!
 
 Let's get the most out of this ticket.
 
@@ -20,4 +20,4 @@ Which version of Data Hub are you using?
 
 If possible, rerun the command with -d for debugging output and attach the output:
 
-  `java -jar envision.jar -d > myoutput.txt`
+  `java -jar dhcce.jar -d > myoutput.txt`
