@@ -105,7 +105,6 @@
 </template>
 
 <script>
-//import VisjsGraph from '@/components/graph/graph.vue'
 import VisjsGraph from '@/components/graph/graph.vue'
 import EntityPickList from '@/components/ml-modeler/EntityPickList'
 import AddRelationshipDialog from '@/components/AddRelationshipDialog.vue'
@@ -291,12 +290,10 @@ export default {
 				label: "new"
 			}
 			this.graphAddNode(nodeData)
-//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		addRelationship() {
 			this.addEdgeMode = true
 			this.$refs.graph.addEdgeMode()
-//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		cancelAddRelationship() {
 			this.addEdgeMode = false
@@ -305,7 +302,6 @@ export default {
 		deleteNode() {
 			this.$refs.graph.deleteSelected()
 			this.confirmDeleteNode = false
-//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		// called by Cypress to select a node, as couldn't find how to make it click the graph directly
 		selectNode( selectedNode ) {
@@ -597,7 +593,6 @@ export default {
 				.finally(() => {
 					this.addEdgeMode = false
 					this.$refs.graph.disableEditMode()
-//					this.$refs.minimap.upDateMinimap(this.$refs.graph)
 				})
 			}
 		},
@@ -627,7 +622,6 @@ export default {
 				this.currentNodeId = null
 				this.currentEdgeId = null
 			}
-//			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		graphRightClick(e) {
 			e.event.preventDefault()
