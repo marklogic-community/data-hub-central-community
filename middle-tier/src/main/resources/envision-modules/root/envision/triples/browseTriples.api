@@ -22,7 +22,11 @@
       {
         "datatype": "string",
         "name": "sort"
-      }
+      },
+			{
+				"datatype": "string",
+				"name": "dedup"
+			}
     ],
     "return": {
       "datatype": "jsonDocument",

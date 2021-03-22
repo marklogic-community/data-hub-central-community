@@ -1,52 +1,23 @@
+'use strict';
+
+const triplesLib = require('triplesLib.sjs');
+
 var item;
 var itemId;
 var isIRI;
 var qtext;
 var predicate;
 var maxRelated;
+var filterText;
 
-function createTitle(s) {
-	let label = s.toString()
-	if (label.match('#')) {
-		label = label.split('#')[1]
-	}
-	return label
-}
+var isString = typeof item == 'string';
 
-function createLabel(s) {
-	let label = createTitle(s)
-	if (label.match('/')) {
-		const splits = label.split('/')
-		label = splits[splits.length - 1]
-	}
-	if (label.length <= 15) {
-		return label
-	}
-	return label.slice(0, 15) + '...'
-}
-
-function getPredicates(iri) {
-	const allPredicatesQuery = `
-	PREFIX cts: <http://marklogic.com/cts#>
-	SELECT distinct ?p
-	where {
-		?s ?p ?o .
-		?x ?p ?o .
-		filter(?s = ?x)
-	}
-	`
-	let bindings = {
-		x: iri
-	}
-	return sem.sparql(allPredicatesQuery, bindings)
-		.toArray().map(t => t.p)
-}
-
-let nodes = {}
-let edges = {}
-
+/**
+ * Find the distinct triples based on the user item being in either the subject or object.
+ * Filter the results also based on the user's query text.
+ */
 let textFilter = ""
-if (qtext && qtext !== '' && predicate == null) {
+if (qtext && qtext !== '' && predicate == null && filterText == true) {
 	textFilter = `
 	filter (
 		cts:contains(?s, cts:word-query(("${qtext}"), "case-insensitive")) ||
@@ -56,78 +27,48 @@ if (qtext && qtext !== '' && predicate == null) {
 	`
 }
 
-let predFilter = ""
+let predicateBind = '';
 if (predicate != null) {
-	predFilter = `
-	filter (?p = <${predicate}>)
-	`
+	predicateBind = 'BIND(<' + predicate + '> as ?p)';
 }
 
-let limit = ''
+let limit = '';
 if (maxRelated > 0) {
 	limit = `LIMIT ${maxRelated}`
 }
 
-
-let bindings = {
-    x: isIRI ? sem.iri(item) : item
+let bindItem = item;
+if (isIRI) {
+	bindItem = '<' + item + '>'
+} else if (isString) {
+	bindItem = '"' + item + '"';
 }
+
 const query = `
 PREFIX cts: <http://marklogic.com/cts#>
-SELECT * where {
-	?s ?p ?o .
-	FILTER (?o = ?x || ?s = ?x)
-	FILTER isIRI(?s)
+SELECT DISTINCT ?s ?p ?o {
+    {
+      SELECT ?s ?p ?o {
+        BIND(${bindItem} as ?o)
+        ${predicateBind}
+        ?s ?p ?o
+        FILTER isIri(?s)
+      }
+    } UNION {
+       SELECT * {
+         BIND(${bindItem} as ?s)
+         ${predicateBind}
+         ?s ?p ?o
+       }
+    }
 	${textFilter}
-	${predFilter}
 }
 ${limit}
 `
-let iris = sem.sparql(query, bindings)
-  .toArray()
-  .forEach(t => {
-	const fromId = xdmp.md5(t.s)
-	if (!nodes[fromId]) {
-		nodes[fromId] = {
-			id: fromId,
-			label: createLabel(t.s),
-			title: createTitle(t.s),
-			orig: t.s,
-			isIRI: sem.isIRI(t.s)
-		}
 
-		nodes[fromId].predicates = getPredicates(t.s)
-	}
+/**
+ * Iterate the result set and create the nodes and edges to plot the graph.
+ */
+let resp = triplesLib.buildNodesAndEdges(sem.sparql(query));
 
-	const toId = sem.isIRI(t.o) ? xdmp.md5(t.o) : xdmp.md5(`${t.s}-${t.p}-${t.o}`)
-	if (!nodes[toId]) {
-		nodes[toId] = {
-			id: toId,
-			label: createLabel(t.o),
-			title: createTitle(t.o),
-			orig: t.o,
-			isIRI: sem.isIRI(t.o)
-		}
-
-		if (sem.isIRI(t.o)) {
-			nodes[toId].predicates = getPredicates(t.o)
-		}
-	}
-
-	const edgeId = xdmp.md5(`${t.s}-${t.p}-${t.o}`)
-    edges[edgeId] ={
-		id: edgeId,
-		label: createLabel(t.p),
-		title: createTitle(t.p),
-		from: fromId,
-		to: toId,
-		orig: t.p,
-		isIRI: sem.isIRI(t.p)
-	}
-  })
-
-let resp = {
-	nodes: nodes,
-	edges: edges,
-}
 resp

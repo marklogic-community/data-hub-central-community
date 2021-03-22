@@ -6,7 +6,7 @@ export default {
 
 	cancelTriples: null,
 	cancelRelated: null,
-	getTriples(qtext, page, subjectsPerPage, linksPerSubject, database, sort) {
+	getTriples(qtext, page, subjectsPerPage, linksPerSubject, database, sort, dedup) {
 		qtext = qtext !== undefined ? qtext : ''
 
 		if (this.cancelTriples) {
@@ -20,8 +20,9 @@ export default {
 				page: page,
 				subjectsPerPage: subjectsPerPage,
 				linksPerSubject: linksPerSubject,
-                database: database,
-                sort: sort
+				database: database,
+				sort: sort,
+				dedup: dedup
 			},
 			{
 				cancelToken: new CancelToken(c => this.cancelTriples = c)
@@ -36,21 +37,22 @@ export default {
 			return error
 		})
     },
-    getRelated(item, itemId, isIRI, database, maxRelated, qtext, predicate) {
+    getRelated(item, itemId, isIRI, database, maxRelated, qtext, predicate, filterText) {
         if (this.cancelRelated) {
 			this.cancelRelated()
         }
-        
+
 		return axios.post(
 			'/api/triples/related',
 			{
-                item: item,
-                itemId: itemId,
+				item: item,
+				itemId: itemId,
 				isIRI: isIRI,
 				maxRelated: maxRelated,
 				database: database,
 				qtext: qtext,
-				predicate: predicate
+				predicate: predicate,
+				filterText: filterText
 			},
 			{
 				cancelToken: new CancelToken(c => this.cancelRelated = c)

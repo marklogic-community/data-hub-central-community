@@ -25,13 +25,17 @@ public class TriplesController extends AbstractController {
 		if (!node.get("qtext").isNull()) {
 			qtext = node.get("qtext").asText();
 		}
+		String dedup = null;
+		if (!node.get("dedup").isNull()) {
+			dedup = node.get("dedup").asText();
+		}
 		int page = node.get("page").asInt();
 		int subjectsPerPage = node.get("subjectsPerPage").asInt();
 		int linksPerSubject = node.get("linksPerSubject").asInt();
 		String sort = node.get("sort").asText();
 		String database = node.get("database").asText();
 		DatabaseClient client = getProperClient(database);
-		return Triples.on(client).browseTriples(qtext, page, subjectsPerPage, linksPerSubject, sort);
+		return Triples.on(client).browseTriples(qtext, page, subjectsPerPage, linksPerSubject, sort, dedup);
 	}
 
 	private DatabaseClient getProperClient(String database) {
@@ -67,7 +71,12 @@ public class TriplesController extends AbstractController {
 		}
 		int maxRelated = node.get("maxRelated").asInt();
 
+		boolean filterText = false;
+		if (node.get("filterText") != null && node.get("filterText").isBoolean()) {
+			filterText = node.get("filterText").asBoolean();
+		}
+
 		DatabaseClient client = getProperClient(database);
-		return Triples.on(client).getRelated(item, itemId, isIRI, qtext, predicate, maxRelated);
+		return Triples.on(client).getRelated(item, itemId, isIRI, qtext, predicate, maxRelated, filterText);
 	}
 }

@@ -36,7 +36,7 @@ public class TriplesControllerTests extends AbstractMvcTest {
 
 		login();
 
-		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"DESC\", \"database\": \"final\"}")
+		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"most-connected\",  \"dedup\": \"on\", \"database\": \"final\"}")
 			.andDo(
 				result -> {
 					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
@@ -49,7 +49,7 @@ public class TriplesControllerTests extends AbstractMvcTest {
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(hubClient, getResourceStream("models/model.json"));
 
-		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"DESC\", \"database\": \"final\"}")
+		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"most-connected\",  \"dedup\": \"on\", \"database\": \"final\"}")
 			.andDo(
 				result -> {
 					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
@@ -59,22 +59,22 @@ public class TriplesControllerTests extends AbstractMvcTest {
 				})
 			.andExpect(status().isOk());
 
-		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": \"Department\", \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"DESC\", \"database\": \"final\"}")
+		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": \"Department\", \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"most-connected\", \"dedup\": \"on\", \"database\": \"final\"}")
 			.andDo(
 				result -> {
 					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
-					assertEquals(35, response.get("total").asInt());
+					assertEquals(67, response.get("total").asInt());
 					assertEquals(1, response.get("page").asInt());
 				})
 			.andExpect(status().isOk());
 
-		postJson(GET_TRIPLES_URL, "{\"page\": 2, \"qtext\": \"Department\", \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"DESC\", \"database\": \"final\"}")
+		postJson(GET_TRIPLES_URL, "{\"page\": 2, \"qtext\": \"Department\", \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"most-connected\", \"dedup\": \"on\", \"database\": \"final\"}")
 			.andDo(
 				result -> {
 					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
-					assertEquals(35, response.get("total").asInt());
+					assertEquals(67, response.get("total").asInt());
 					assertEquals(2, response.get("page").asInt());
 				})
 			.andExpect(status().isOk());
@@ -87,7 +87,7 @@ public class TriplesControllerTests extends AbstractMvcTest {
 //
 //		login();
 //
-//		postJson(GET_RELATED_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"DESC\", \"database\": \"final\"}")
+//		postJson(GET_RELATED_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"most-connected\", \"dedup\": \"on\", \"database\": \"final\"}")
 //			.andDo(
 //				result -> {
 //					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
@@ -100,7 +100,7 @@ public class TriplesControllerTests extends AbstractMvcTest {
 //		HubClient hubClient = getNonAdminHubClient();
 //		modelService.saveModel(hubClient, getResourceStream("models/model.json"));
 //
-//		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"DESC\", \"database\": \"final\"}")
+//		postJson(GET_TRIPLES_URL, "{\"page\": 1, \"qtext\": null, \"subjectsPerPage\": 1, \"linksPerSubject\": 1, \"sort\": \"most-connected\", \"dedup\": \"on\", \"database\": \"final\"}")
 //			.andDo(
 //				result -> {
 //					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
