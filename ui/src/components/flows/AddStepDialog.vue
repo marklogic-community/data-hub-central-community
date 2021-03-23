@@ -276,61 +276,33 @@ export default {
 				retryLimit: 0,
 				batchSize: 100,
 				threadCount: 4,
-				stepDefinitionName: 'entity-services-mapping',
-				stepDefinitionType: this.stepType,
-				options: {}
+				stepDefinitionName: '',
+				stepDefinitionType: this.stepType
 			}
 
-			if (this.stepType === 'MAPPING') {
+			if (this.stepType.toLowerCase() === 'mapping') {
 				// default to use our custom uri remapper hook. it will
 				// allow 2 steps to run against the same input doc
 				step.customHook.module = '/envision/customHooks/uriRemapper.sjs'
 				step.stepDefinitionName = 'entity-services-mapping'
+				step.properties = {}
 			}
-			else if (this.stepType === 'MATCHING') {
-				step.options = Object.assign(step.options, {
-					matchOptions: {
-						propertyDefs: { property: [] },
-						algorithms: { algorithm: [] },
-						collections: { content: [] },
-						scoring: {
-							add: [],
-							expand: [],
-							reduce: []
-						},
-						actions: { action: [] },
-						thresholds: { threshold: [] },
-						tuning: { maxScan: 200 }
-					}
+			else if (this.stepType.toLowerCase() === 'matching') {
+				Object.assign(step, {
+					matchRulesets: [],
+					thresholds:[]
 				})
 				step.stepDefinitionName = 'default-matching'
 			}
-			else if (this.stepType === 'MERGING') {
-				step.options = Object.assign(step.options, {
-					matchOptions: '',
-					mergeOptions: {
-						propertyDefs: {
-							properties: [],
-							namespaces: {}
-						},
-						algorithms: {
-							stdAlgorithm: { timestamp: {} },
-							custom: [],
-							collections: {}
-						},
-						mergeStrategies: [],
-						merging: [
-							{
-								algorithmRef: "standard",
-								sourceWeights: [],
-								default: true
-							}
-						]
-					}
+			else if (this.stepType.toLowerCase() === 'merging') {
+				Object.assign(step, {
+					mergeRules:  [],
+					mergeStrategies: [],
+					targetCollections: {}
 				})
 				step.stepDefinitionName = 'default-merging'
 			}
-			else if (this.stepType === 'CUSTOM') {
+			else if (this.stepType.toLowerCase() === 'custom') {
 
 				// default to use our custom uri remapper hook. it will
 				// allow 2 steps to run against the same input doc
@@ -360,7 +332,7 @@ export default {
 		showDialog: 'updateValues',
 		stepInfo: 'updateValues',
 		stepType() {
-			if (this.stepType == 'MATCHING' || this.stepType === 'MERGING') {
+			if (this.stepType && (this.stepType.toLowerCase() == 'matching' || this.stepType.toLowerCase() === 'merging')) {
 				this.sourceDatabase = 'Final'
 			}
 			else {

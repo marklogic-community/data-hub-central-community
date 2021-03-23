@@ -143,7 +143,7 @@ export default {
 	},
 	computed: {
 		targetEntity() {
-			const targetEntityType = String(this.mapping.targetEntity || this.mapping.targetEntityType);
+			const targetEntityType = String(this.mapping.targetEntityType || this.mapping.targetEntity);
 			const targetEntityTitle = targetEntityType.substring(targetEntityType.lastIndexOf("/") + 1)
 			return this.entities[targetEntityType] || this.entities[targetEntityTitle];
 		},
@@ -151,7 +151,7 @@ export default {
 			return this.mapping.sourceURI || (this.docUris ? this.docUris[0] : null)
 		},
 		mapName() {
-			return (this.flow && this.step) ? `${this.flow.name}-${this.step.stepName}` : ''
+			return (this.step && this.step.mapping) ? this.step.mapping.name : ''
 		},
 		validate() {
 			return _.debounce(() => {
@@ -189,13 +189,13 @@ export default {
 			}
 
 			let props = []
-			const getProps = (entity, mappings, values, parent, indent) =>
+			const getProps = (entity, mappings, values, parent, indent) => {
 				entity.properties
 					.slice()
 					.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
 					.forEach(p => {
 						if (!mappings[p.name]) {
-							mappings[p.name] = { sourcedFrom: '' }
+							mappings[p.name] = {sourcedFrom: ''}
 						}
 						const mapping = mappings[p.name]
 						let newP = {
@@ -228,6 +228,7 @@ export default {
 							}
 						}
 					})
+			}
 			let mapping = this.mapping
 			const values = (this.mapTestResp && this.mapTestResp.properties) || {}
 			getProps(this.targetEntity, mapping.properties, values, null, 0)
@@ -283,7 +284,6 @@ export default {
 			flowsApi
 				.previewMapping({
 					mappingName: this.mapName,
-					mappingVersion: this.mapping.version,
 					format: this.step.options ? this.step.options.outputFormat: this.step.outputFormat,
 					uri: this.sampleDocUri
 				})

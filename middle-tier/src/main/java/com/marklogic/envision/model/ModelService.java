@@ -6,19 +6,24 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.FailedRequestException;
 import com.marklogic.client.io.DocumentMetadataHandle;
 import com.marklogic.client.io.JacksonHandle;
+import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.dataServices.EntityModeller;
 import com.marklogic.envision.deploy.DeployService;
+import com.marklogic.envision.entities.EntityManagerService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.HubConfig;
+import com.marklogic.hub.dataservices.ModelsService;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.impl.EntityManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,45 +33,59 @@ import java.util.*;
 
 @Service
 public class ModelService {
-
-    private final DeployService deployService;
+	private final EnvisionConfig envisionConfig;
+	private final DeployService deployService;
+	private final EntityManagerService entityManagerService;
 
     @Autowired
-	ModelService(DeployService deployService) {
+	ModelService(EnvisionConfig envisionConfig, DeployService deployService, EntityManagerService entityManagerService) {
+    	this.envisionConfig = envisionConfig;
     	this.deployService = deployService;
+    	this.entityManagerService = entityManagerService;
 	}
 
 	EntityManager getEntityManager(HubClient hubClient) {
 		return new EntityManagerImpl(hubClient.getHubConfig());
 	}
 
-	@Value("${modelsDir}")
-	public void setModelsDir(File modelsDir) {
-		try {
-			this.modelsDir = modelsDir.getCanonicalFile();
-			System.out.println("modelsDir: " + this.modelsDir.toString());
-		}
-		catch(Exception e) {
-			throw new RuntimeException(e);
-		}
-		if (!modelsDir.exists()) {
-			modelsDir.mkdirs();
-		}
-	}
+	@Value("${modelsDir:conceptConnectorModels}")
+	private Path modelsDir;
 
-	private File modelsDir;
+    private File modelsDirFile = null;
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
+	@PostConstruct
+	public void postConstruct() {
+		getModelsDirFile();
+	}
+
+	private File getModelsDirFile() {
+		if (this.modelsDirFile == null) {
+			try {
+				this.modelsDirFile = envisionConfig.dhfDir.toPath().resolve(modelsDir).toAbsolutePath().toFile();
+				if (!modelsDirFile.exists()) {
+					modelsDirFile.mkdirs();
+				}
+				System.out.println("modelsDir: " + modelsDirFile.getAbsolutePath());
+			}
+			catch(Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return this.modelsDirFile;
+	}
+
 	public File getModelsDir(boolean isMultiTenant, String username) {
+		File modelsDirFile = getModelsDirFile();
 		if (isMultiTenant) {
-			File userModelsDir = new File(modelsDir, username);
+			File userModelsDir = new File(modelsDirFile, username);
 			if (!userModelsDir.exists()) {
 				userModelsDir.mkdirs();
 			}
 			return userModelsDir;
 		}
-		return modelsDir;
+		return modelsDirFile;
 	}
 
 	private File getModelFile(boolean isMultiTenant, String username, String modelName) {
@@ -82,22 +101,23 @@ public class ModelService {
         newEntities.fieldNames().forEachRemaining(entityName -> {
 			fieldNames.add(entityName);
             String entityFileName = entityName + ".entity.json";
-            HubEntity hubEntity = HubEntity.fromJson(entityFileName, newEntities.get(entityName));
+            JsonNode hubEntityJSON = newEntities.get(entityName);
+            HubEntity hubEntity = HubEntity.fromJson(entityFileName, hubEntityJSON);
 
-            try {
-            	EntityManager em = getEntityManager(hubClient);
-            	em.saveEntity(hubEntity, false);
-				Path protectedPaths = hubClient.getHubConfig().getUserSecurityDir().resolve("protected-paths");
-				File[] files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
-				if (files != null) {
-					for (File f : files) {
-						f.delete();
-					}
+			EntityManager em = getEntityManager(hubClient);
+			try {
+				em.saveEntity(hubEntity, false);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			Path protectedPaths = hubClient.getHubConfig().getUserSecurityDir().resolve("protected-paths");
+			File[] files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
+			if (files != null) {
+				for (File f : files) {
+					f.delete();
 				}
-            	em.savePii();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+			}
+			em.savePii();
         });
 
         EntityModeller.on(hubClient.getFinalClient()).removeAllEntities(hubClient.isMultiTenant() ?  hubClient.getUsername() : null);
@@ -145,14 +165,17 @@ public class ModelService {
 	}
 
 	private void deleteExtraEntities(HubClient hubClient, List<String> legitEntities) {
-		getEntityManager(hubClient).getEntities().forEach(hubEntity -> {
-			try {
-				String entityName = hubEntity.getInfo().getTitle();
-				if (!legitEntities.contains(entityName.toLowerCase())) {
+		 entityManagerService.getEntities(hubClient).forEach(hubEntity -> {
+			String entityName = hubEntity.getInfo().getTitle();
+			if (!legitEntities.contains(entityName.toLowerCase())) {
+				// attempt delete from server
+				try {
+					entityManagerService.deleteEntity(hubClient, entityName);
+				} catch (FailedRequestException e) {}
+				// attempt to delete from project folder
+				try {
 					getEntityManager(hubClient).deleteEntity(entityName);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				} catch (IOException e) {}
 			}
 		});
 	}

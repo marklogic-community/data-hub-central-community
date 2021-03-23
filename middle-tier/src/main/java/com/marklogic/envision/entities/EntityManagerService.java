@@ -2,6 +2,7 @@ package com.marklogic.envision.entities;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.andrewoma.dexx.collection.Iterable;
+import com.marklogic.client.FailedRequestException;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.dataservices.ModelsService;
@@ -26,14 +27,36 @@ public class EntityManagerService {
 	}
 
 	public HubEntity getEntity(HubClient hubClient, String entityName, Boolean extendSubEntities) {
-		return getEntityManager(hubClient) .getEntityFromProject(entityName, extendSubEntities);
+		ModelsService service = newService(hubClient);
+		Iterator<JsonNode> models = service.getPrimaryEntityTypes().elements();
+		while (models.hasNext()) {
+			JsonNode model = models.next();
+			String modelTitle = model.path("info").path("title").asText("");
+			if (modelTitle.equals(entityName)) {
+				return HubEntity.fromJson(modelTitle, model.path("model"));
+			}
+		}
+		// Not found in the server, try the project
+		EntityManager em = new EntityManagerImpl(hubClient.getHubConfig());
+		HubEntity hubEntity = em.getEntityFromProject(entityName, extendSubEntities);
+		if (hubEntity != null) {
+			try {
+				service.saveModel(hubEntity.toJson());
+			} catch (FailedRequestException e) {}
+		}
+		return hubEntity;
+	}
+
+	public void deleteEntity(HubClient hubClient, String entityName) {
+		newService(hubClient).deleteModel(entityName);
 	}
 
 	private ModelsService newService(HubClient hubClient) {
 		return ModelsService.on(hubClient.getStagingClient());
 	}
 
-	private EntityManager getEntityManager(HubClient hubClient) {
+	private EntityManager newEntityManager(HubClient hubClient) {
 		return new EntityManagerImpl(hubClient.getHubConfig());
 	}
+
 }

@@ -9,14 +9,14 @@ let collections = {
 	staging: xdmp.invokeFunction(() =>
 	cts.collections()
 	.toArray()
-	.filter(c => !fn.startsWith(c, 'http://marklogic.com'))
+	.filter(c => !(fn.startsWith(c, 'http://marklogic.com') || String(c) === 'hub-core-artifact'))
 	.map(c => ({ collection: c, count: cts.frequency(c)})),
 		{ database: xdmp.database(databases.staging)}
 	),
 	final: xdmp.invokeFunction(() =>
 		cts.collections()
 			.toArray()
-			.filter(c => !fn.startsWith(c, 'http://marklogic.com'))
+			.filter(c => !(fn.startsWith(c, 'http://marklogic.com') || String(c) === 'hub-core-artifact'))
 			.map(c => ({ collection: c, count: cts.frequency(c)})),
 		{ database: xdmp.database(databases.final)}
 	)

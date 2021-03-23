@@ -119,7 +119,7 @@ let $ns-sequence :=
 	return
 		($key, fn:string(map:get($ns, $key)))
 
-let $_ := xdmp:set($namespaces, -$namespaces)
+let $_ := if (fn:exists($ns-sequence)) then xdmp:set($namespaces, -$namespaces) else xdmp:set($namespaces, map:map())
 
 let $doc := fn:doc($uri)
 let $i := ($doc/*:envelope/*:instance, $doc)[1]

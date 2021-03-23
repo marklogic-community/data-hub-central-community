@@ -7,51 +7,47 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.DatabaseClient;
+import com.marklogic.client.FailedRequestException;
 import com.marklogic.envision.config.EnvisionConfig;
-import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.pojo.StatusMessage;
 import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.FlowManager;
-import com.marklogic.hub.MappingManager;
 import com.marklogic.hub.StepDefinitionManager;
 import com.marklogic.hub.dataservices.FlowService;
-import com.marklogic.hub.entity.HubEntity;
+import com.marklogic.hub.dataservices.StepService;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.impl.FlowManagerImpl;
-import com.marklogic.hub.impl.MappingManagerImpl;
 import com.marklogic.hub.impl.StepDefinitionManagerImpl;
-import com.marklogic.hub.mapping.Mapping;
 import com.marklogic.hub.scaffold.Scaffolding;
 import com.marklogic.hub.step.StepDefinition;
 import com.marklogic.hub.step.impl.CustomStepDefinitionImpl;
 import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class FlowsService {
+	final private EnvisionConfig envisionConfig;
 	final private ObjectMapper mapper = new ObjectMapper();
 	final private FlowManager flowManager;
 	final private StepDefinitionManager stepDefinitionManager;
-	final private MappingManager mappingManager;
 	final private DeployService deployService;
 	final private SimpMessagingTemplate template;
 	final private Scaffolding scaffolding;
@@ -63,16 +59,12 @@ public class FlowsService {
 		SimpMessagingTemplate template,
 		Scaffolding scaffolding
 	) {
+		this.envisionConfig = envisionConfig;
 		this.flowManager = new FlowManagerImpl(envisionConfig.getHubConfig());
 		this.stepDefinitionManager = new StepDefinitionManagerImpl(envisionConfig.getHubConfig());
-		this.mappingManager = new MappingManagerImpl(envisionConfig.getHubConfig());
 		this.deployService = deployService;
 		this.template = template;
 		this.scaffolding = scaffolding;
-	}
-
-	EntityManager getEntityManager(HubClient hubClient) {
-		return new EntityManagerImpl(hubClient.getHubConfig());
 	}
 
 	public JsonNode getJsonFlow(HubClient client, String flowName) {
@@ -80,7 +72,12 @@ public class FlowsService {
 	}
 
 	public Flow getFlow(HubClient client, String flowName) {
-		JsonNode flow = newFlowService(client.getStagingClient()).getFullFlow(flowName);
+		JsonNode flow = null;
+		try {
+			flow = newFlowService(client.getStagingClient()).getFullFlow(flowName);
+		} catch (FailedRequestException ex) {
+			// We want to create a new flow if it doesn't exist
+		}
 		if (flow != null) {
 			return flowManager.createFlowFromJSON(flow);
 		}
@@ -92,8 +89,12 @@ public class FlowsService {
 		return newFlow;
 	}
 
+	public Flow createFlowFromJSON(JsonNode flowJson) {
+		return flowManager.createFlowFromJSON(flowJson);
+	}
+
 	public void createFlow(HubClient hubClient, JsonNode flowJson) {
-		Flow flow = flowManager.createFlowFromJSON(flowJson);
+		Flow flow = createFlowFromJSON(flowJson);
 		flowManager.saveFlow(flow);
 		deployService.loadFlow(hubClient, flow);
 	}
@@ -101,15 +102,7 @@ public class FlowsService {
 	public void deleteFlow(HubClient hubClient, String flowName) {
 		Flow flow = flowManager.getFlow(flowName);
 		flow.getSteps().forEach((stepName, step) -> {
-			String mappingName = step.getMappingName();
-			if (mappingName != null) {
-				File mappingFile  = hubClient.getHubConfig().getHubMappingsDir().resolve(flowName + "-" + mappingName).toFile();
-				try {
-					FileUtils.deleteDirectory(mappingFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			StepService.on(hubClient.getStagingClient()).deleteStep(step.getStepDefinitionType().toString(), stepName);
 		});
 		flowManager.deleteFlow(flowName);
 	}
@@ -123,81 +116,80 @@ public class FlowsService {
 		});
 	}
 
-	public String getMapping(String mapName) {
-		return mappingManager.getMappingAsJSON(mapName, -1, true);
-	}
-
 	public StepDefinition getCustomStep(String stepName) {
 		return stepDefinitionManager.getStepDefinition(stepName, StepDefinition.StepDefinitionType.CUSTOM);
-	}
-
-	public void addMapping(HubClient hubClient, JsonNode mappingJson) throws IOException {
-		Mapping mapping = mappingManager.createMappingFromJSON(mappingJson);
-		mappingManager.saveMapping(mapping);
-		deployService.loadMapping(hubClient, mapping);
 	}
 
 	public JsonNode getFlows(DatabaseClient client) {
 		return newFlowService(client).getFlowsWithStepDetails();
 	}
 
-	public void createStep(HubClient hubClient, String flowName, JsonNode stepJson) {
-		String stepType = stepJson.get("stepDefinitionType").asText();
-		String stepName = stepJson.get("name").asText();
-		String entityName = getEntityTypeFromStep(stepJson);
-		Flow flow = getFlow(hubClient, flowName);
-		Step step = Step.deserialize(stepJson);
+	public void createStep(HubClient hubClient, String flowName, JsonNode... stepsJson) {
+		createStep(hubClient, getFlow(hubClient, flowName), stepsJson);
+	}
 
-		if (hubClient.isMultiTenant()) {
-			// update the permissions to be the user's unique role
-			// so that when the flow runs, the output docs are visible only to the current user
-			// user's unique role is an md5 hash of the username
-			String email = hubClient.getUsername();
-			String roleName = DigestUtils.md5Hex(email);
-			step.getOptions().put("permissions", String.format("%s,read,%s,update", roleName, roleName));
-			ArrayNode collections = (ArrayNode)step.getOptions().get("collections");
-			collections.add("http://marklogic.com/envision/user/" + hubClient.getUsername());
-		}
+	public void createStep(HubClient hubClient, Flow flow, JsonNode... stepsJson) {
+		for (JsonNode stepJson: stepsJson) {
+			String stepType = stepJson.get("stepDefinitionType").asText();
+			String stepName = stepJson.get("name").asText();
+			String entityName = getEntityTypeFromStep(stepJson);
+			String stepId = stepJson.path("stepId").asText(stepName + "-" + stepType.toLowerCase());
 
-		Map<String, Step> steps = flow.getSteps();
-		final String[] existingIndex = {String.valueOf(steps.size() + 1)};
-
-		// see if the step already exists. happens when updating
-		steps.forEach((idx, step1) -> {
-			if (step1.getName().equals(step.getName())) {
-				existingIndex[0] = idx;
+			if (hubClient.isMultiTenant()) {
+				// update the permissions to be the user's unique role
+				// so that when the flow runs, the output docs are visible only to the current user
+				// user's unique role is an md5 hash of the username
+				String email = hubClient.getUsername();
+				String roleName = DigestUtils.md5Hex(email);
+				((ObjectNode) stepJson).put("permissions", String.format("%s,read,%s,update", roleName, roleName));
+				ArrayNode collections = (ArrayNode) stepJson.get("collections");
+				if (collections == null) {
+					collections = ((ObjectNode) stepJson).putArray("collections");
+				}
+				collections.add("http://marklogic.com/envision/user/" + hubClient.getUsername());
 			}
-		});
-		steps.put(existingIndex[0], step);
+
+			StepService.on(hubClient.getStagingClient()).saveStep(stepType, stepJson, false, false);
+			try {
+				saveStepToProject(stepType, stepJson);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
+			Map<String, Step> steps = flow.getSteps();
+			final String[] existingIndex = {String.valueOf(steps.size() + 1)};
+
+			// see if the step already exists. happens when updating
+			steps.forEach((idx, step1) -> {
+				if (stepId.equals(step1.getStepId())) {
+					existingIndex[0] = idx;
+				}
+			});
+			Step step = new Step();
+			step.setStepId(stepId);
+			step.setName(stepName);
+			step.setStepDefinitionType(StepDefinition.StepDefinitionType.getStepDefinitionType(stepType));
+
+			steps.put(existingIndex[0], step);
+
+			if (stepType.toUpperCase().equals("CUSTOM")) {
+				try {
+					ObjectMapper om = new ObjectMapper();
+					JsonNode node = om.readTree(String.format("{\"name\":\"%s\",\"type\":\"custom\" }",stepName));
+					CustomStepDefinitionImpl stepDefinition = (CustomStepDefinitionImpl) stepDefinitionManager.createStepDefinitionFromJSON(node);
+					stepDefinition.setModulePath(String.format("/custom-modules/custom/%s/main.sjs", stepName));
+					stepDefinitionManager.saveStepDefinition(stepDefinition);
+					deployService.loadStepDefinition(hubClient, stepDefinition);
+					scaffolding.createCustomModule(stepName,stepType);
+					deployService.loadHubModules(hubClient);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		flowManager.saveFlow(flow);
 
-		if (stepType.equals("MAPPING")) {
-			String mappingName = flowName + "-" + stepName;
-			try {
-				mappingManager.getMapping(mappingName);
-			}
-			catch(Exception e) {
-				HubEntity entity = getEntityManager(hubClient).getEntityFromProject(entityName);
-				Mapping mapping =  Mapping.create(mappingName, entity);
-				mappingManager.saveMapping(mapping);
-				deployService.loadMapping(hubClient, mapping);
-			}
-		}
-		else if (stepType.equals("CUSTOM")) {
-			try {
-				ObjectMapper om = new ObjectMapper();
-				JsonNode node = om.readTree(String.format("{\"name\":\"%s\",\"type\":\"custom\" }",stepName));
-				CustomStepDefinitionImpl stepDefinition = (CustomStepDefinitionImpl) stepDefinitionManager.createStepDefinitionFromJSON(node);
-				stepDefinition.setModulePath(String.format("/custom-modules/custom/%s/main.sjs", stepName));
-				stepDefinitionManager.saveStepDefinition(stepDefinition);
-				deployService.loadStepDefinition(hubClient, stepDefinition);
-				scaffolding.createCustomModule(stepName,stepType);
-		        deployService.loadHubModules(hubClient);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		deployService.loadFlow(hubClient, flow);
 	}
 
@@ -206,25 +198,16 @@ public class FlowsService {
 		String stepKey = getStepKeyByName(flow, stepName);
 		if (stepKey != null) {
 			Step step = flow.getStep(stepKey);
-			String mappingName = step.getMappingName();
 			StepDefinition.StepDefinitionType stepType = step.getStepDefinitionType();
-
-			if (mappingName != null) {
-				int mappingVersion = getMappingVersion(step);
-
-				// delete from disk
-				mappingManager.deleteMapping(mappingName);
-
-				// delete from MarkLogic
-				deployService.deleteMapping(hubClient, mappingName, mappingVersion);
+			if (step.getStepId() != null) {
+				StepService.on(hubClient.getStagingClient()).deleteStep(stepType.toString(), stepName);
 			}
-
-		    if (stepType.equals(StepDefinition.StepDefinitionType.CUSTOM)){
+			if (stepType.equals(StepDefinition.StepDefinitionType.CUSTOM)){
 				CustomStepDefinitionImpl sdm = (CustomStepDefinitionImpl)stepDefinitionManager.getStepDefinition(stepName,stepType);
 
-		    	stepDefinitionManager.deleteStepDefinition(sdm);
-                deployService.deleteStepDefinition(hubClient,stepName);
-                deployService.deleteCustomModule(hubClient, sdm.getModulePath());
+				stepDefinitionManager.deleteStepDefinition(sdm);
+				deployService.deleteStepDefinition(hubClient,stepName);
+				deployService.deleteCustomModule(hubClient, sdm.getModulePath());
 
 				Path customModuleDir = hubClient.getHubConfig().getHubProject().getCustomModuleDir(stepName, stepType.toString().toLowerCase());
 				File moduleFile = customModuleDir.resolve("main.sjs").toFile();
@@ -232,7 +215,6 @@ public class FlowsService {
 					moduleFile.delete();
 				}
 			}
-
 			Map<String, Step> steps = flow.getSteps();
 			steps.remove(stepKey);
 
@@ -284,24 +266,32 @@ public class FlowsService {
 		return null;
 	}
 
-	public int getMappingVersion(Step step) {
-		Map<String, Object> options = step.getOptions();
-		if (options != null) {
-			Object obj = options.get("mapping");
-			if (obj instanceof ObjectNode) {
-				ObjectNode mapping = (ObjectNode)obj;
-				if (mapping.has("version")) {
-					return mapping.get("name").asInt();
-				}
-			}
-		}
-
-		return 1;
-	}
-
 	private String getEntityTypeFromStep(JsonNode step) {
 		JsonNode optionsRoot = step.has("options") ? step.get("options") : step;
 		return optionsRoot.path("targetEntityType").asText(optionsRoot.path("targetEntity").asText());
+	}
+
+	private void saveStepToProject(String stepType, JsonNode step) throws IOException {
+		File stepPathDir = envisionConfig.dhfDir.toPath().resolve("steps").resolve(stepType.toLowerCase()).toAbsolutePath().toFile();
+		if (!stepPathDir.exists()) {
+			stepPathDir.mkdirs();
+		}
+		File stepFile = stepPathDir.toPath().resolve(step.get("name").asText() + ".step.json").toFile();
+		if (stepFile.exists()) {
+			JsonNode existingStep = mapper.readTree(new FileReader(stepFile));
+			Iterator<String> fieldNames = existingStep.fieldNames();
+			while (fieldNames.hasNext()) {
+				String fieldName = fieldNames.next();
+				if (!step.has(fieldName)) {
+					((ObjectNode)step).set(fieldName, existingStep.get(fieldName));
+				}
+			}
+		} else {
+			stepFile.createNewFile();
+		}
+		FileWriter fw = new FileWriter(stepFile);
+		fw.write(step.toPrettyString());
+		fw.close();
 	}
 
 	private FlowService newFlowService(DatabaseClient client) {

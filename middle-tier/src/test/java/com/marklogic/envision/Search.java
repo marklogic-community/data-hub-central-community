@@ -62,7 +62,7 @@ public class Search extends BaseTest {
 		HubClient hubClient = getNonAdminHubClient();
 		DatabaseClient finalClient = hubClient.getFinalClient();
 
-		modelService.setModelsDir(hubClient.getHubConfig().getHubProjectDir().resolve("conceptConnectorModels").toFile());
+		modelService.setModelsDir(hubClient.getHubConfig().getHubProjectDir().resolve("conceptConnectorModels"));
 		modelService.saveModel(hubClient, getResourceStream("models/model.json"));
 		installDoc(finalClient, "entities/employee-mastering-audit.xml", "/com.marklogic.smart-mastering/auditing/merge/87ab3989-912c-436c-809f-1b6c0b87f374.xml", "MasterEmployees", "sm-Employee-auditing", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);
 		installDoc(finalClient, "entities/employee1.json", "/CoastalEmployees/55002.json", "MasterEmployees", "MapCoastalEmployees", "sm-Employee-archived", "Employee", "http://marklogic.com/envision/user/" + ACCOUNT_NAME);

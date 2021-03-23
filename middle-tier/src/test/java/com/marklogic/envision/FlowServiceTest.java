@@ -36,8 +36,7 @@ public class FlowServiceTest extends BaseTest {
 
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(hubClient, getResourceStream("models/MyHubModel.json"));
-		flowsService.addMapping(hubClient, readJsonObject(getResource("mappings/myMappingStep.json")));
-		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/runnable.flow.json")));
+		flowsService.createStep(hubClient, flowsService.createFlowFromJSON(readJsonObject(getResourceFile("flows/runnable.flow.json"))),readJsonObject(getResource("mappings/myMappingStep.json")));
 
 		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/doc1.json", "myFile.csv");
 	}

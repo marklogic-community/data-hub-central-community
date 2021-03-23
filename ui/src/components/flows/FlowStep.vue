@@ -1,13 +1,13 @@
 <template>
 	<v-container fluid>
-		<v-row v-if="step && step.raw && flow" id="flow-step">
+		<v-row v-if="step && step.stepDefinitionType && flow" id="flow-step">
 			<v-flex md12>
 				<v-card>
 					<v-card-title>
-						<h2><span v-if="entityName">{{entityName}} => </span>{{step.stepName}}</h2>
+						<h2><span v-if="entityName">{{entityName.substring(entityName.lastIndexOf("/")+1)}} => </span>{{step.name}}</h2>
 						<v-spacer></v-spacer>
 						<v-btn
-							v-if="!['CUSTOM', 'INGESTION'].includes(step.stepDefinitionType)"
+							v-if="!['custom', 'ingestion'].includes(step.stepDefinitionType.toLowerCase())"
 							data-cy="flowStep.editButton"
 							right
 							icon
@@ -47,34 +47,34 @@
 						</v-menu>
 					</v-card-title>
 					<v-card-text>
-						<div id="step-type-mapping-container" v-if="step.stepDefinitionType === 'MAPPING'">
+						<div id="step-type-mapping-container" v-if="step.stepDefinitionType.toLowerCase() === 'mapping'">
 							<mapping-step
-								:step="step.raw"
+								:step="step"
 								:flow="flow"
 								@saveStep="saveStep"
 							></mapping-step>
 						</div>
-						<div id="step-type-matching-container" v-else-if="step.stepDefinitionType === 'MATCHING'">
+						<div id="step-type-matching-container" v-else-if="step.stepDefinitionType.toLowerCase() === 'matching'">
 							<matching-step
-								:step="step.raw"
+								:step="step"
 								@saveStep="saveStep"
 							></matching-step>
 						</div>
-						<div id="step-type-merging-container" v-else-if="step.stepDefinitionType === 'MERGING'">
+						<div id="step-type-merging-container" v-else-if="step.stepDefinitionType.toLowerCase() === 'merging'">
 							<merging-step
-								:step="step.raw"
+								:step="step"
 								@saveStep="saveStep"
 							></merging-step>
 						</div>
-						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType === 'INGESTION'">
+						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType.toLowerCase() === 'ingestion'">
 							<ingestion-step
-								:step="step.raw"
+								:step="step"
 								@saveStep="saveStep"
 							></ingestion-step>
 						</div>
-						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType === 'CUSTOM'">
+						<div id="step-type-ingestion-container" v-else-if="step.stepDefinitionType.toLowerCase() === 'custom'">
 							<custom-step
-								:step="step.raw"
+								:step="step"
 								@saveStep="saveStep"
 							></custom-step>
 						</div>
@@ -86,10 +86,10 @@
 			</v-flex>
 		</v-row>
 		<add-step-dialog
-			v-if="step && step.raw"
+			v-if="step"
 			:showDialog="showEditStep"
 			:entityName="entityName"
-			:step="step.raw"
+			:step="step"
 			:flowName="flow.name"
 			:stepInfo="stepInfo"
 			:isEditing="true"

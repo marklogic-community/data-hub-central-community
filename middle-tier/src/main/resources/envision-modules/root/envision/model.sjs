@@ -1,5 +1,6 @@
 function modelToES(model) {
-	const entityNames = Object.values(model.nodes).map(n => n.entityName)
+	const entityNames = Object.values(model.nodes).map(n => n.entityName);
+
 	let entities = {}
 
 	function buildDefinitions(node) {
@@ -31,7 +32,7 @@ function modelToES(model) {
 				wordLexicon[p.name] = true
 			}
 			if (p.isArray) {
-				if (entityNames.indexOf(p.type) >= 0) {
+				if (entityNames.indexOf(p.type) >= 0 || p.isStructured) {
 					properties[p.name] = {
 						datatype: "array",
 						description: p.description,
@@ -39,9 +40,11 @@ function modelToES(model) {
 							"$ref": `#/definitions/${p.type}`
 						}
 					}
+					let typeNode = model.nodes[p.type.toLowerCase()]
+					let builtDefinition = typeNode ? buildDefinitions(typeNode) : (p.structureDefinitions || {})
 					definitions = {
 						...definitions,
-						...buildDefinitions(model.nodes[p.type.toLowerCase()])
+						...builtDefinition
 					}
 				}
 				else {
@@ -55,13 +58,15 @@ function modelToES(model) {
 					};
 				}
 			}
-			else if (entityNames.indexOf(p.type) >= 0) {
+			else if (entityNames.indexOf(p.type) >= 0 || p.isStructured) {
 				properties[p.name] = {
 					"$ref": `#/definitions/${p.type}`
 				}
+				let typeNode = model.nodes[p.type.toLowerCase()]
+				let builtDefinition = typeNode ? buildDefinitions(typeNode) : (p.structureDefinitions || {})
 				definitions = {
 					...definitions,
-					...buildDefinitions(model.nodes[p.type.toLowerCase()])
+					...builtDefinition
 				}
 			}
 			else {

@@ -47,18 +47,20 @@
 							</thead>
 							<tbody>
 								<tr v-for="(option, index) in expandedOptions" :key="index">
-									<td>{{option.propertyName}}</td>
-									<td>{{option.strategy}}</td>
+									<td>{{option.entityPropertyPath}}</td>
+									<td>{{option.mergeStrategyName}}</td>
 									<td>{{option.maxValues}}</td>
 									<td>{{option.maxSources}}</td>
 									<td>
-										<div v-for="source in option.sourceWeights.map(w => w.source)" :key="source.name">
-											<span class="lbl">{{source.name}}:</span><span class="value">{{source.weight}}</span>
+										<div v-if="option.priorityOrder && option.priorityOrder.sources">
+											<div v-for="source in option.priorityOrder.sources" :key="source.name">
+												<span class="lbl">{{source.sourceName}}:</span><span class="value">{{source.weight}}</span>
+											</div>
 										</div>
 									</td>
-									<td>{{(option.length || {}).weight}}</td>
+									<td>{{(option.priorityOrder || {}).lengthWeight}}</td>
 									<td>
-										<v-btn @click="editOption(option.raw, index)" icon small data-cy="mergeStep.editOption"><v-icon small>create</v-icon></v-btn>
+										<v-btn @click="editOption(option, index)" icon small data-cy="mergeStep.editOption"><v-icon small>create</v-icon></v-btn>
 										<v-btn @click="showDeleteOption($event, index)" icon small data-cy="mergeStep.deleteOption"><v-icon small>delete</v-icon></v-btn>
 									</td>
 								</tr>
@@ -90,15 +92,17 @@
 							</thead>
 							<tbody>
 								<tr v-for="(strategy, index) in strategies" :key="index">
-									<td>{{strategy.name}}</td>
+									<td>{{strategy.strategyName}}</td>
 									<td>{{strategy.maxValues}}</td>
 									<td>{{strategy.maxSources}}</td>
 									<td>
-										<div v-for="(source, idx) in strategy.sourceWeights.map(w => w.source)" :key="idx">
-											<span class="lbl">{{source.name}}:</span><span class="value">{{source.weight}}</span>
+										<div v-if="strategy.priorityOrder && strategy.priorityOrder.sources">
+											<div v-if="strategy.priorityOrder" v-for="(source, idx) in strategy.priorityOrder.sources" :key="idx">
+												<span class="lbl">{{source.sourceName}}:</span><span class="value">{{source.weight}}</span>
+											</div>
 										</div>
 									</td>
-									<td>{{strategy.length.weight}}</td>
+									<td>{{ (strategy.priorityOrder || {}).lengthWeight}}</td>
 									<td>
 										<v-btn @click="editStrategy(strategy, index)" icon small data-cy="merging.editStrategyBtn"><v-icon small>create</v-icon></v-btn>
 										<v-tooltip v-if="!strategy.default" top>
@@ -106,12 +110,12 @@
 												<span v-on="on">
 													<v-btn
 														data-cy="merging.deleteStrategyBtn"
-														:disabled="strategyInUse(strategy.name)"
+														:disabled="strategyInUse(strategy.strategyName)"
 														@click="showDeleteStrategy($event, strategy, index)"
 														icon small><v-icon small>delete</v-icon></v-btn>
 												</span>
 											</template>
-											<span>{{strategyInUse(strategy.name) ? 'Can\'t delete a strategy in use' : 'Delete Strategy'}}</span>
+											<span>{{strategyInUse(strategy.strategyName) ? 'Can\'t delete a strategy in use' : 'Delete Strategy'}}</span>
 										</v-tooltip>
 									</td>
 								</tr>
@@ -177,16 +181,17 @@ export default {
 			return this.targetEntity ? this.targetEntity.properties.map(p => p.name) : []
 		},
 		strategyNames() {
-			return this.strategies ? this.strategies.filter(s => !s.default).map(s => s.name) : []
+			return this.strategies ? this.strategies.filter(s => !s.default).map(s => s.strategyName) : []
 		},
 		targetEntity() {
-			const targetEntityType = this.step.options ? this.step.options.targetEntity: this.step.targetEntityType;
-			return this.entities[targetEntityType]
+			const targetEntityType = String(this.step.targetEntityType || this.step.targetEntity);
+			const targetEntityTitle = targetEntityType.substring(targetEntityType.lastIndexOf("/") + 1);
+			return this.entities[targetEntityType] || this.entities[targetEntityTitle];
 		},
 		expandedOptions() {
 			return this.options.map(o => ({
 				...o,
-				...(o.strategy ? this.strategies.find(s => s.name === o.strategy) : {}),
+				...(o.mergeStrategyName ? this.strategies.find(s => s.strategyName === o.mergeStrategyName) : {}),
 				raw: o
 			}))
 		},
@@ -286,7 +291,6 @@ export default {
 		},
 		save() {
 			let defaultStrategy = {
-				algorithmRef: "standard",
 				sourceWeights: [],
 				default: true
 			}
@@ -298,44 +302,32 @@ export default {
 				}
 			}
 
-			const merging = this.options
+			const mergeRules = this.options
 				.concat([defaultStrategy])
 			const newStep = {
 				...this.step,
-				options: {
-					...this.step.options,
-					mergeOptions: {
-						...this.step.options.mergeOptions,
-						merging,
-						mergeStrategies: this.strategies.filter(o => !o.default),
-						propertyDefs: {
-							namespaces: {},
-							properties: this.options
-								.map(o => o.propertyName)
-								.map(name => ({localname: name, name: name}))
-						}
-					}
-				}
+				mergeRules,
+				mergeStrategies: this.strategies.filter(o => !o.default)
 			}
 			this.$emit('saveStep', newStep)
 		},
 		updateValues() {
-			this.strategies = (this.step.options.mergeOptions.mergeStrategies || [])
+			this.strategies = (this.step.mergeStrategies || [])
 				.map(t => ({...t}))
 				.concat([
 					{
-						name: 'Default',
+						strategyName: 'Default',
 						default: true,
 						maxValues: null,
 						maxSources: null,
-						sourceWeights: [],
-						length: {
-							weight: null
+						priorityOrder: {
+							lengthWeight:null,
+							sources: []
 						},
-						...this.step.options.mergeOptions.merging.find(m => m.default)
+						...this.step.mergeRules.find(m => m.default)
 					}
 				])
-			this.options = (this.step.options.mergeOptions.merging || []).filter(m => m.propertyName)
+			this.options = (this.step.mergeRules || []).filter(m => m.entityPropertyPath)
 		}
 	},
 	mounted() {

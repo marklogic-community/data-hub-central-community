@@ -13,7 +13,7 @@ function reset() {
 	function deleteCollections() {
 		declareUpdate();
 		for (var col of cts.collections() ) {
-			if (col.toString().indexOf("http://marklogic.com/") < 0) {
+			if (col.toString().indexOf("http://marklogic.com/") < 0 && String(col) !== "hub-core-artifact") {
 				xdmp.collectionDelete(col)
 			}
 		}

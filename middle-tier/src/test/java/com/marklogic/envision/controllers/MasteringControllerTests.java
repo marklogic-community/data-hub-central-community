@@ -97,8 +97,8 @@ public class MasteringControllerTests extends AbstractMvcTest {
 		clearStagingFinalAndJobDatabases();
 
 		// now test w/o sufficient permissions
-		installFinalDoc("data/testFile.json", "/testFile.json");
-		installFinalDoc("data/testFile.xml", "/testFile.xml");
+		installDoc(getAdminHubClient().getFinalClient(), "data/testFile.json", "/testFile.json");
+		installDoc(getAdminHubClient().getFinalClient(), "data/testFile.xml", "/testFile.xml");
 
 		getJson(GET_DOC_URL + "?docUri=/testFile.json")
 			.andExpect(status().isNotFound());
@@ -181,7 +181,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 	@Test
 	void deleteNotifications() throws Exception {
 		getJson(GET_NOTIFICATION_URL + "?uri=/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml")
-			.andExpect(status().isNotFound());
+			.andExpect(status().isUnauthorized());
 
 		login();
 

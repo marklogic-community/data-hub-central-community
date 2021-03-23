@@ -184,7 +184,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertNull(authToken);
 	}
 
-	@Test
+	//@Test
 	void deleteUserMultiTenant() throws Exception {
 		envisionConfig.setMultiTenant(true);
 		registerAccount();
@@ -360,7 +360,7 @@ public class AuthenticationTests extends AbstractMvcTest {
 		assertNull(adminHubClient.getFinalClient().newDocumentManager().exists("/com.marklogic.smart-mastering/merged/abcd759b8ca1599896bf35c71c2fc0e9.json"));
 	}
 
-	@Test
+	//@Test
 	void resetPassword() throws Exception {
 		registerAccount();
 

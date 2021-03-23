@@ -36,7 +36,7 @@ else {
 	let refStepNumber = stepNumber || '1';
 	let flow = datahub.flow.getFlow(flowName);
 	let stepRef = flow.steps[refStepNumber];
-	let step = step = stepRef.stepId ? fn.head(cts.search(cts.andQuery([
+	let step = stepRef.stepId ? fn.head(cts.search(cts.andQuery([
 		cts.collectionQuery("http://marklogic.com/data-hub/steps"),
 		cts.jsonPropertyValueQuery("stepId", stepRef.stepId, "case-insensitive")
 	]))).toObject() : stepRef;

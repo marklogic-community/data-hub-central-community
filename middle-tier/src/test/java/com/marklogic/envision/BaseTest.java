@@ -32,14 +32,14 @@ import com.marklogic.hub.HubConfig;
 import com.marklogic.hub.HubProject;
 import com.marklogic.hub.deploy.commands.LoadHubArtifactsCommand;
 import com.marklogic.hub.deploy.commands.LoadHubModulesCommand;
+import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.impl.DataHubImpl;
 import com.marklogic.hub.impl.HubConfigImpl;
+import com.marklogic.hub.step.impl.Step;
 import com.marklogic.mgmt.api.API;
 import com.marklogic.mgmt.api.security.User;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -64,8 +64,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -129,6 +131,9 @@ public class BaseTest {
 		if (!configFinished) {
 			String projectDir = dhfDir.getAbsolutePath();
 			hubProject.createProject(projectDir);
+			if (!hubProject.isInitialized()) {
+				hubConfig.initHubProject();
+			}
 			hubConfigImpl.setMlUsername(username);
 			hubConfigImpl.setMlPassword(password);
 			String envName = dhfEnv;
@@ -362,7 +367,9 @@ public class BaseTest {
 	public Path createProjectDir(String projectDirName) throws IOException {
 		projectPath = Files.createTempDirectory(projectDirName);
 		File projectDir = projectPath.toFile();
-
+		this.dhfDir = projectDir;
+		envisionConfig.dhfDir = projectDir;
+		envisionConfig.configureHub();
 		// force module loads for new test runs.
 		File timestampDirectory = new File(projectDir + "/.tmp");
 		if ( timestampDirectory.exists() ) {
@@ -577,6 +584,24 @@ public class BaseTest {
 
 	protected void jsonAssertEquals(String expected, String actual, Boolean strict) throws Exception {
 		JSONAssert.assertEquals(expected, actual, strict);
+	}
+
+	protected void assertFlowEquals(Flow expected, Flow actual) {
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getBatchSize(), actual.getBatchSize());
+		assertEquals(expected.getDescription(), actual.getDescription());
+		assertEquals(expected.getThreadCount(), actual.getThreadCount());
+		Map<String, Step> expectedSteps = expected.getSteps();
+		Map<String, Step> actualSteps = expected.getSteps();
+		assertEquals(expectedSteps.size(), actualSteps.size());
+		for (Map.Entry<String, Step> expectedEntry:expectedSteps.entrySet()) {
+			Step expectedStep = expectedEntry.getValue();
+			Step actualStep = actualSteps.get(expectedEntry.getKey());
+			String expectedStepId = expectedStep.getStepId() != null ? expectedStep.getStepId(): expectedStep.getName() + expectedStep.getStepDefinitionType().toString().toLowerCase();
+			String actualStepId = actualStep.getStepId() != null ? actualStep.getStepId(): actualStep.getName() + actualStep.getStepDefinitionType().toString().toLowerCase();
+			assertEquals(expectedStepId, actualStepId);
+			// TODO more in-depth step level comparison which are now stored external to the flow
+		}
 	}
 
 	protected ObjectNode readJsonObject(String json) {

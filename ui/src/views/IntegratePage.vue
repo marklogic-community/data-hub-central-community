@@ -106,18 +106,18 @@
 						<v-layout v-if="steps && steps.length > 0" row>
 							<draggable v-bind="dragOptions" v-model="steps" class="flex step-scroller md12" draggable=".step-wrapper">
 								<transition-group type="transition" tag="div" :class="['flexxy', { contracted: currentStepName }]" ref="scroller">
-									<div :id="step.stepName" class="step-wrapper" v-for="(step, index) in steps" :key="step.stepName">
-										<div :class="['step', {active: (currentStepName === step.stepName)}, `elevation-${(currentStepName === step.stepName) ? 6 : 1}`]" @click="currentStepName = step.stepName">
-											<div :class="['bar', step.stepDefinitionType]">
+									<div :id="step.name" class="step-wrapper" v-for="(step, index) in steps" :key="index">
+										<div :class="['step', {active: (currentStepName === step.name)}, `elevation-${(currentStepName === step.name) ? 6 : 1}`]" @click="currentStepName = step.name">
+											<div :class="['bar', step.stepDefinitionType.toUpperCase()]">
 												<v-icon color="white" small>drag_indicator</v-icon>
 												<v-spacer></v-spacer>
-												<span class="steptype">{{step.stepDefinitionType}}</span>
+												<span class="steptype">{{step.stepDefinitionType.toUpperCase()}}</span>
 											</div>
 											<div class="step-body">
-												<h4>{{step.stepName}}</h4>
+												<h4>{{step.name}}</h4>
 												<div class="meta">
 													<span v-if="step.dataSource">{{step.dataSource}} => </span>
-													{{step.targetEntity}}
+													{{step.targetEntity ? step.targetEntity.substring(step.targetEntity.lastIndexOf("/")+1) : ''}}
 												</div>
 											</div>
 										</div>
@@ -129,7 +129,7 @@
 						<v-layout row>
 							<v-flex md12>
 								<flow-step
-									v-if="flow"
+									v-if="flow && currentStep"
 									:flow="flow"
 									:step="currentStep"
 									:stepInfo="stepInfo"
@@ -348,11 +348,11 @@ export default {
 			return this.flow && Object.keys(this.flow.steps).length > 0
 		},
 		hasIngestSteps() {
-			return this.flow && Object.values(this.flow.steps).filter(step => step.stepDefinitionType === 'INGESTION').length > 0
+			return this.flow && Object.values(this.flow.steps).filter(step => step.stepDefinitionType && step.stepDefinitionType.toLowerCase() === 'ingestion').length > 0
 		},
 		currentStep() {
 			return (this.flow && this.currentStepName) ?
-				Object.values(this.flow.steps).find(s => s.stepName === this.currentStepName) : null
+				Object.values(this.flow.steps).find(s => s.name === this.currentStepName) : null
 		},
 		sortedSteps() {
 			return this.entities.map(e => e.info.title)
@@ -367,17 +367,20 @@ export default {
 			get() {
 				return (this.flow && this.flow.steps) ? Object.values(this.flow.steps)
 					.map(step => {
+						if (!step.name) {
+							step.name = step.stepName;
+						}
 						return {
-							stepName: step.stepName,
-							stepDefinitionType: step.stepDefinitionType,
+							name: step.name,
+							stepDefinitionType: step.stepDefinitionType || "",
 							dataSource: step.options ? step.options.sourceCollection: step.sourceCollection,
-							raw: step
+							stepNumber: step.stepNumber
 						}
 					}) : []
 			},
 			set(steps) {
 				const newSteps = steps.reduce((output, step, idx) => {
-					output[idx + 1] = step.raw
+					output[idx + 1] = step
 					return output
 				}, {})
 				this.saveFlow({
@@ -399,7 +402,7 @@ export default {
 				p.flowName = this.flowName
 			}
 			if (this.currentStep) {
-				p.stepName = this.currentStep.stepName
+				p.stepName = this.currentStep.name
 			}
 			return p
 		},
@@ -440,7 +443,6 @@ export default {
 		flow: function() {
 			this.updateRoute()
 			this.getJobs()
-			this.getFullFlow();
 		},
 		flows: function() {
 			this.handleRouteParams()
@@ -487,7 +489,7 @@ export default {
 			const newFlow = {
 				...this.flow,
 				steps: {
-					...this.flow.steps,
+					...this.flow.steps
 				}
 			}
 			newFlow.steps[this.currentStepIdx] = step
@@ -513,7 +515,7 @@ export default {
 			this.currentStepName = params.stepName || null
 			if (params.stepName) {
 				if (this.flow) {
-					const stepIdx = Object.values(this.flow.steps).findIndex(s => s.stepName === params.stepName)
+					const stepIdx = Object.values(this.flow.steps).findIndex(s => s.name === params.stepName)
 					if (stepIdx >= 0) {
 						this.currentStepIdx = stepIdx + 1
 					}
@@ -533,7 +535,7 @@ export default {
 		stepCreated(step) {
 			const idx = this.steps.findIndex(s => s.stepName === step.stepName)
 			if (idx >= 0) {
-				this.currentStepIdx = idx
+				this.currentStepIdx = idx + 1
 			}
 			this.currentStepName = step.stepName
 		},
@@ -595,18 +597,6 @@ export default {
 					)
 					.sort((a, b) => this.$moment(b.timeEnded).diff(this.$moment(a.timeEnded)))
 			})
-		},
-		async getFullFlow() {
-			if (this.flow && this.flow.steps) {
-				let fullFlow = await flowsApi.getFlow(this.flowName);
-				Object.values(this.flow.steps).forEach((step) => {
-					if (fullFlow.steps[step.stepNumber]) {
-						step.raw = fullFlow.steps[step.stepNumber];
-						let optionsRoot = step.raw.options ? step.raw.options : step.raw;
-						step.targetEntity = optionsRoot.targetEntityType || optionsRoot.targetEntity;
-					}
-				})
-			}
 		}
 	}
 }
