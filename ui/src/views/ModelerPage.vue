@@ -11,12 +11,14 @@
 							layout="standard"
 							@click="graphClick"
 							@oncontext="graphRightClick"
-							@dragStart="graphDragStart"
-							@dragEnd="saveGraphLayout"
-							@zoom="saveGraphLayout"
-							@afterDrawing="saveGraphLayout"
+							@dragStart="handleDragStart"
+							@dragEnd="handleDragEnd"
+							@zoom="handleZoom"
+							@afterDrawing="handleAfterDrawing"
+							@animationFinished="handleAnimationFinished"
 							ref="graph"
 						>
+
 							<div class="vis-manipulation">
 								<v-btn data-cy="modeler.addEntity" @click="addEntity" :disabled="!model"><v-icon left small>fa fa-plus-circle</v-icon> Add Entity</v-btn>
 								<template v-if="!addEdgeMode">
@@ -55,6 +57,12 @@
 						<ul class="hideUnlessTesting edges">
 							<li v-for="edge in edges" :key="edge.id" data-cy="edgeList" v-on:click="selectEdge(edge)">{{ edge.id }}</li>
 						</ul>
+						<minimap
+							ref="minimap"
+							style="position: absolute; bottom:0; left:0;"
+							:graph="this.$refs.graph"
+							>
+						</minimap>
 					</v-flex>
 					<v-flex md4 class="right-pane">
 						<entity-pick-list
@@ -103,6 +111,7 @@ import AddRelationshipDialog from '@/components/AddRelationshipDialog.vue'
 import AddEntityDialog from '@/components/AddEntityDialog.vue'
 import Confirm from '@/components/Confirm.vue'
 import { mapState } from 'vuex'
+import Minimap from '../components/graph/minimap.vue'
 
 export default {
 	data() {
@@ -124,7 +133,8 @@ export default {
 		VisjsGraph,
 		EntityPickList,
 		AddRelationshipDialog,
-		AddEntityDialog
+		AddEntityDialog,
+		Minimap
 	},
 	computed: {
 		graphOptions() {
@@ -351,7 +361,12 @@ export default {
 					},
 					animation: true
 				})
+			} else {
+				this.$refs.minimap.upDateMinimap(this.$refs.graph)
 			}
+		},
+		handleAnimationFinished(e){
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 		},
 		deleteEntity(entityId, save = true) {
 			const idx = this.nodes.findIndex(e => e.id === entityId)
@@ -467,6 +482,25 @@ export default {
 				positions: this.$refs.graph.getPositions()
 			}))
 		},
+		handleAfterDrawing()
+		{
+			this.saveGraphLayout()
+		},
+		handleZoom(e)
+		{
+			this.saveGraphLayout()
+			this.$refs.minimap.handleZoom(e)
+		},
+		handleDragEnd(e)
+		{
+			this.graphDragEnd(e)
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
+		},
+		handleDragStart(e)
+		{
+			this.graphDragStart(e)
+		},
+
 		async doMLSave() {
 			const model = JSON.parse(JSON.stringify({
 				...this.model,
@@ -531,7 +565,9 @@ export default {
 						// select the entity after making it
 						setTimeout(() => {
 							this.$refs.graph.selectNodes([node.id])
+							this.$refs.minimap.upDateMinimap(this.$refs.graph)
 						}, 500)
+
 					}
 					else {
 						!!callback && callback(null)
@@ -563,10 +599,12 @@ export default {
 		graphDeleteNode(nodeData, callback) { // eslint-disable-line no-unused-vars
 			nodeData.edges.forEach(item => this.deleteEdge(item, false))
 			nodeData.nodes.forEach(item => this.deleteEntity(item, false))
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 			this.doMLSave()
 		},
 		graphDeleteEdge(edgeData, callback) {	// eslint-disable-line no-unused-vars
 			edgeData.edges.forEach(item => this.deleteEdge(item, false))
+			this.$refs.minimap.upDateMinimap(this.$refs.graph)
 			this.doMLSave()
 		},
 		graphClick(e) {
