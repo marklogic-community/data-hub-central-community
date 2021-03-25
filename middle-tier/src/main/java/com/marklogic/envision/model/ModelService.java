@@ -60,6 +60,12 @@ public class ModelService {
 		getModelsDirFile();
 	}
 
+	public void setModelsDir(Path modelsDir) {
+		this.modelsDir = modelsDir;
+		// clear out cached modelsDirFile
+		this.modelsDirFile = null;
+	}
+
 	private File getModelsDirFile() {
 		if (this.modelsDirFile == null) {
 			try {
