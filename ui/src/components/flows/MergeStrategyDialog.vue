@@ -53,11 +53,11 @@
 								<v-text-field
 									required
 									label="Source Name"
-									v-model="sw.name"
+									v-model="sw.sourceName"
 									data-cy="mergeStrategyDlg.sourceWeightNameField"
-									:error-messages="sourceWeightErrors(index, 'name', 'Source Name')"
-									@input="$v.sourceWeights.$each.$iter[index].name.$touch()"
-									@blur="$v.sourceWeights.$each.$iter[index].name.$touch()"
+									:error-messages="sourceWeightErrors(index, 'sourceName', 'Source Name')"
+									@input="$v.sourceWeights.$each.$iter[index].sourceName.$touch()"
+									@blur="$v.sourceWeights.$each.$iter[index].sourceName.$touch()"
 								></v-text-field>
 							</v-col>
 							<v-col md="5">
@@ -147,7 +147,7 @@ export default {
 		maxSources: { integer },
 		sourceWeights: {
 			$each: {
-        name: { required },
+        sourceName: { required },
 				weight: { required, integer }
       }
 		},
@@ -158,7 +158,7 @@ export default {
 	methods: {
 		addSourceWeight() {
 			this.sourceWeights.push({
-				name: null,
+				sourceName: null,
 				weight: null
 			})
 		},
@@ -177,11 +177,11 @@ export default {
 				return
 			}
 
-			this.name = strategy.name
+			this.name = strategy.strategyName
 			this.maxValues = strategy.maxValues
 			this.maxSources = strategy.maxSources
-			this.sourceWeights = strategy.sourceWeights.map(sw => sw.source)
-			this.lengthWeight = strategy.length.weight
+			this.sourceWeights = strategy.priorityOrder.sources
+			this.lengthWeight = strategy.priorityOrder.lengthWeight
 		},
 		sourceWeightErrors(idx, field, fieldName) {
 			const errors = []
@@ -206,18 +206,13 @@ export default {
 
 			const strategy = {
 				...(this.strategy || {}),
-				algorithmRef: 'standard',
-				length: {
-					weight: this.lengthWeight
-				},
 				maxSources: this.maxSources,
 				maxValues: this.maxValues,
-				name: this.name,
-				sourceWeights: this.sourceWeights.map(sw => ({
-					source: {
-						...sw
-					}
-				}))
+				strategyName: this.name,
+				priorityOrder: {
+					sources: this.sourceWeights,
+					lengthWeight: this.lengthWeight
+				}
 			}
 			this.$emit('save', strategy)
 			this.close()

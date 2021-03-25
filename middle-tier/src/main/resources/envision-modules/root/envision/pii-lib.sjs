@@ -8,7 +8,8 @@ function updatePii(oldPii, newPii) {
 		declareUpdate();
 
 		removeUs.forEach(pii => {
-			sec.unprotectPath(pii['path-expression'], pii['path-namespace']);
+			const securityPathNamespaces = piiNamespacesToSecurityXML(pii['path-namespace']);
+			sec.unprotectPath(pii['path-expression'], securityPathNamespaces);
 		})
 	}, { database: xdmp.securityDatabase() })
 
@@ -16,21 +17,34 @@ function updatePii(oldPii, newPii) {
 		declareUpdate();
 
 		removeUs.forEach(pii => {
-			sec.removePath(pii['path-expression'], pii['path-namespace']);
+			const securityPathNamespaces = piiNamespacesToSecurityXML(pii['path-namespace']);
+			sec.removePath(pii['path-expression'], securityPathNamespaces);
 		})
 	}, { database: xdmp.securityDatabase() })
 
 	xdmp.invokeFunction(function() {
 		declareUpdate();
-
 		addUs.forEach(pii => {
-			const perm = pii.permission
+			const perm = pii.permission;
+			const securityPathNamespaces = piiNamespacesToSecurityXML(pii['path-namespace']);
 			sec.protectPath(
 				pii['path-expression'],
-				pii['path-namespace'],
+				securityPathNamespaces,
 				xdmp.permission(perm['role-name'], perm['capability'], 'element'))
 		})
 	}, { database: xdmp.securityDatabase() })
+}
+
+const globalNamespaces = [{prefix: 'es', 'namespace-uri': 'http://marklogic.com/entity-services'}];
+
+function piiNamespacesToSecurityXML(piiNamespaces) {
+	const pathNamespaces = Sequence.from(piiNamespaces).toArray();
+	const globalNamespacesToAdd = globalNamespaces
+		.filter((gns) => !pathNamespaces.find((ns) => ns.prefix === gns.prefix));
+	return pathNamespaces.concat(globalNamespacesToAdd).map((pathNamespace) => {
+		return sec.securityPathNamespace(pathNamespace['prefix'], pathNamespace['namespace-uri']);
+	});
+
 }
 
 module.exports.updatePii = module.amp(updatePii);

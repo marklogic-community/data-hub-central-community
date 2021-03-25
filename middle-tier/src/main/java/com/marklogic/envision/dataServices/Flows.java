@@ -75,14 +75,13 @@ public interface Flows {
 
 
             @Override
-            public String previewMapping(String mappingName, Integer mappingVersion, String format, String uri) {
+            public String previewMapping(String mappingName, String format, String uri) {
               return BaseProxy.StringType.toString(
                 baseProxy
                 .request("previewMapping.sjs", BaseProxy.ParameterValuesKind.MULTIPLE_ATOMICS)
                 .withSession()
                 .withParams(
                     BaseProxy.atomicParam("mappingName", false, BaseProxy.StringType.fromString(mappingName)),
-                    BaseProxy.atomicParam("mappingVersion", false, BaseProxy.IntegerType.fromInteger(mappingVersion)),
                     BaseProxy.atomicParam("format", false, BaseProxy.StringType.fromString(format)),
                     BaseProxy.atomicParam("uri", false, BaseProxy.StringType.fromString(uri)))
                 .withMethod("POST")
@@ -124,11 +123,10 @@ public interface Flows {
    * Invokes the previewMapping operation on the database server
    *
    * @param mappingName	provides input
-   * @param mappingVersion	provides input
    * @param format	provides input
    * @param uri	provides input
    * @return	as output
    */
-    String previewMapping(String mappingName, Integer mappingVersion, String format, String uri);
+    String previewMapping(String mappingName, String format, String uri);
 
 }

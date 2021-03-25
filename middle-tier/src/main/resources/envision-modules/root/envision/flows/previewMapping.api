@@ -6,10 +6,6 @@
 				"name": "mappingName"
 			},
 			{
-				"datatype": "int",
-				"name": "mappingVersion"
-			},
-			{
 				"datatype": "string",
 				"name": "format"
 			},

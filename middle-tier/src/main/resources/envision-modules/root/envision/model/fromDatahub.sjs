@@ -4,6 +4,25 @@ let entities = fn.collection('http://marklogic.com/entity-services/models').toAr
 let edges = {}
 let nodes = {}
 
+function arrayHasValue(arr, value) {
+	return arr ? arr.indexOf(value) >= 0: false;
+}
+
+function buildDependentDefinitions(definition, allDefinitions, accumulatedDefinitions = {}) {
+	Object.values(definition.properties).forEach((prop) => {
+		const ref = prop['$ref'] || (prop.items && prop.items['$ref'])
+		const isStructured = ref && ref.startsWith('#/definitions')
+		if (isStructured) {
+			const otherName = ref.replace(/.*\/([^\/]+)/, '$1')
+			if (!Object.keys(accumulatedDefinitions).includes(otherName)) {
+				accumulatedDefinitions[otherName] = allDefinitions[otherName];
+				buildDependentDefinitions(accumulatedDefinitions[otherName], allDefinitions, accumulatedDefinitions)
+			}
+		}
+	});
+	return accumulatedDefinitions;
+}
+
 function buildProperties(entityName, entity, definitions) {
 	const props = entity.properties
 
@@ -27,10 +46,13 @@ function buildProperties(entityName, entity, definitions) {
 		}
 		let type = null
 		let isStructured = false
+		let structureDefinitions = null
 		if (ref && !isExternal) {
 			const otherName = ref.replace(/.*\/([^\/]+)/, '$1')
 			type = otherName;
 			isStructured = true;
+			let definition = definitions[otherName]
+			structureDefinitions = buildDependentDefinitions(definition, definitions, {[otherName]: definition})
 		}
 		else if (prop.datatype === 'array' && prop.items && prop.items.datatype) {
 			type = prop.items.datatype;
@@ -49,12 +71,13 @@ function buildProperties(entityName, entity, definitions) {
 			...newProp,
 			isArray: prop.datatype === 'array',
 			isStructured: isStructured,
-			isRequired: entity.required.indexOf(propName) >= 0,
-			isPii: entity.pii.indexOf(propName) >= 0,
+			structureDefinitions: structureDefinitions,
+			isRequired: arrayHasValue(entity.required, propName),
+			isPii: arrayHasValue(entity.pii, propName),
 			isPrimaryKey: (entity.primaryKey && entity.primaryKey === propName),
-			isElementRangeIndex: entity.elementRangeIndex.indexOf(propName) >= 0,
-			isRangeIndex: entity.rangeIndex.indexOf(propName) >= 0,
-			isWordLexicon: entity.wordLexicon.indexOf(propName) >= 0,
+			isElementRangeIndex: arrayHasValue(entity.elementRangeIndex, propName),
+			isRangeIndex: arrayHasValue(entity.rangeIndex, propName),
+			isWordLexicon: arrayHasValue(entity.wordLexicon, propName),
 			description: prop.description || null,
 			collation: prop.collation || (prop.items && prop.items.collation)
 		}

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ExploreControllerTests extends AbstractMvcTest {
@@ -63,7 +64,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 				})
@@ -91,7 +92,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults1.json"), response, resultCompare);
@@ -101,7 +102,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults2.json"), response, resultCompare);
@@ -117,7 +118,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResultsRedacted1.json"), response, resultCompare);
@@ -127,7 +128,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResultsRedacted2.json"), response, resultCompare);
@@ -142,7 +143,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults1.json"), response, resultCompare);
@@ -152,7 +153,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults2.json"), response, resultCompare);
@@ -170,7 +171,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 				})
@@ -184,7 +185,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/nestedConcepts.json"), response, resultCompare);
@@ -205,7 +206,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 				})
@@ -234,7 +235,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults1MT.json"), response, resultCompare);
@@ -244,7 +245,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults2MT.json"), response, resultCompare);
@@ -260,7 +261,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResultsRedacted1MT.json"), response, resultCompare);
@@ -270,7 +271,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResultsRedacted2MT.json"), response, resultCompare);
@@ -285,7 +286,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults1MT.json"), response, resultCompare);
@@ -295,7 +296,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					System.out.println(objectMapper.writeValueAsString(response));
 					jsonAssertEquals(getResource("output/explore/searchResults2MT.json"), response, resultCompare);
@@ -319,7 +320,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 				})
@@ -347,7 +348,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 				})
@@ -377,7 +378,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(7, response.get("results").size());
 					assertEquals(7, response.get("total").asInt());
@@ -391,7 +392,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(7, response.get("results").size());
 					assertEquals(7, response.get("total").asInt());
@@ -406,7 +407,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(1, response.get("results").size());
 					assertEquals(1, response.get("total").asInt());
@@ -419,7 +420,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(1, response.get("results").size());
 					assertEquals(1, response.get("total").asInt());
@@ -455,7 +456,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 			postJson(GET_ENTITIES_URL, "{ \"pageLength\": 1, \"page\": " + i + ", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 				.andDo(
 					result -> {
-						assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+						assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 						JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 						assertEquals(1, response.get("results").size());
 						assertEquals(7, response.get("total").asInt());
@@ -468,7 +469,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"pageLength\": 1, \"page\": 8, \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 					assertEquals(7, response.get("total").asInt());
@@ -501,7 +502,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(0, response.get("results").size());
 					assertEquals(0, response.get("total").asInt());
@@ -511,7 +512,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{ \"database\": \"staging\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(10, response.get("results").size());
 					assertEquals(17, response.get("total").asInt());
@@ -542,7 +543,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_ENTITIES_URL, "{\"filters\":{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Department\"]}]}}")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(3, response.get("results").size());
 					assertEquals(3, response.get("total").asInt());
@@ -576,7 +577,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_VALUES_URL, "{\"facetName\": \"Collections\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(10, response.get("values-response").get("distinct-value").size());
 				})
@@ -586,9 +587,9 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_VALUES_URL, "{\"facetName\": \"Collections\", \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 				.andDo(
 			result -> {
-			assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
-			JsonNode response = readJsonObject(result.getResponse().getContentAsString());
-			assertEquals(3, response.get("values-response").get("distinct-value").size());
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
+				JsonNode response = readJsonObject(result.getResponse().getContentAsString());
+				assertEquals(3, response.get("values-response").get("distinct-value").size());
 		})
 		.andExpect(status().isOk());
 
@@ -596,7 +597,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_VALUES_URL, "{\"facetName\": \"Collections\", \"filters\":{\"and\":[{\"type\":\"queryText\",\"value\":\"\"},{\"type\":\"selection\",\"constraint\":\"Collections\",\"constraintType\":\"collection\",\"mode\":\"and\",\"value\":[\"Department\"]}]}}")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(4, response.get("values-response").get("distinct-value").size());
 				})
@@ -629,7 +630,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_VALUES_URL, "{\"facetName\": \"Collections\", \"database\": \"staging\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(10, response.get("values-response").get("distinct-value").size());
 				})
@@ -639,7 +640,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_VALUES_URL, "{\"facetName\": \"Collections\", \"database\": \"staging\", \"qtext\": \"Roberta Jones\", \"filters\": { \"and\": [ { \"type\": \"queryText\", \"value\": \"Roberta Jones\" } ] } }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					assertEquals(3, response.get("values-response").get("distinct-value").size());
 				})
@@ -673,7 +674,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_RELATED_ENTITIES_URL, "{\"uri\": \"/CoastalEmployees/55003.json\", \"label\": \"has\", \"page\": 1, \"pageLength\": 10 }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					jsonAssertEquals(getResource("output/related-has.json"), response);
 				})
@@ -682,7 +683,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_RELATED_ENTITIES_URL, "{\"uri\": \"/CoastalEmployees/55003.json\", \"label\": \"belongsTo\", \"page\": 1, \"pageLength\": 10 }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					jsonAssertEquals(getResource("output/related-belongs-to.json"), response);
 				})
@@ -715,7 +716,7 @@ public class ExploreControllerTests extends AbstractMvcTest {
 		postJson(GET_RELATED_ENTITIES_TO_CONCEPT_URL, "{\"concept\": \"programming\", \"label\": \"has\", \"page\": 1, \"pageLength\": 10 }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					JsonNode response = readJsonObject(result.getResponse().getContentAsString());
 					jsonAssertEquals(getResource("output/concept-related-programming.json"), response);
 				})

@@ -9,7 +9,12 @@ var flowName; // the name of the flow being processed
 var stepNumber; // the index of the step within the flow being processed; the first step has a step number of 1
 var step; // the step definition object
 
+step = step.stepId ? fn.head(cts.search(cts.andQuery([
+	cts.collectionQuery("http://marklogic.com/data-hub/steps"),
+	cts.jsonPropertyValueQuery("stepId", step.stepId, "case-insensitive")
+]))).toObject() : step;
+
 content = content.map(c => {
-	c.uri = `/data/${xdmp.getCurrentUser()}/${step.options.sourceCollection}/${step.options.targetEntity}/${sem.uuidString()}.json`.replace(/\s+/g, '_')
+	c.uri = `/data/${xdmp.getCurrentUser()}/${step.sourceCollection}/${step.targetEntityType}/${sem.uuidString()}.json`.replace(/\s+/g, '_')
 	return c;
 });

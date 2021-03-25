@@ -1,20 +1,23 @@
 {
 	"name" : "myMappingStep",
+	"stepId": "myMappingStep-mapping",
 	"description" : "",
-	"options" : {
-		"additionalCollections" : [ ],
-		"sourceQuery" : "cts.collectionQuery([\"MyData.csv\"])",
-		"mapping" : {
-			"name" : "myMappingStep",
-			"version" : 1
+	"additionalCollections" : [ ],
+	"sourceQuery" : "cts.collectionQuery([\"MyData.csv\"])",
+	"targetEntityType" : "http://marklogic.envision.com/Planet-0.0.1/Planet",
+	"sourceDatabase" : "data-hub-STAGING",
+	"collections" : [ "Planet", "http://marklogic.com/envision/user/bob.smith@marklogic.com" ],
+	"permissions" : "81e946846cda588e6b5c4890ad1ef229,read,81e946846cda588e6b5c4890ad1ef229,update",
+	"sourceCollection" : "MyData.csv",
+	"outputFormat" : "json",
+	"targetDatabase" : "data-hub-FINAL",
+	"properties" : {
+		"name" : {
+			"sourcedFrom" : "name"
 		},
-		"targetEntity" : "Planet",
-		"sourceDatabase" : "data-hub-STAGING",
-		"collections" : [ "Planet", "http://marklogic.com/envision/user/bob.smith@marklogic.com" ],
-		"permissions" : "81e946846cda588e6b5c4890ad1ef229,read,81e946846cda588e6b5c4890ad1ef229,update",
-		"sourceCollection" : "MyData.csv",
-		"outputFormat" : "json",
-		"targetDatabase" : "data-hub-FINAL"
+		"age" : {
+			"sourcedFrom" : "age"
+		}
 	},
 	"customHook" : {
 		"module" : "/envision/customHooks/uriRemapper.sjs",

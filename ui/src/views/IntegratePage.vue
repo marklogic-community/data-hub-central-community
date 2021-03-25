@@ -106,18 +106,18 @@
 						<v-layout v-if="steps && steps.length > 0" row>
 							<draggable v-bind="dragOptions" v-model="steps" class="flex step-scroller md12" draggable=".step-wrapper">
 								<transition-group type="transition" tag="div" :class="['flexxy', { contracted: currentStepName }]" ref="scroller">
-									<div :id="step.name" class="step-wrapper" v-for="(step, index) in steps" :key="step.name">
+									<div :id="step.name" class="step-wrapper" v-for="(step, index) in steps" :key="index">
 										<div :class="['step', {active: (currentStepName === step.name)}, `elevation-${(currentStepName === step.name) ? 6 : 1}`]" @click="currentStepName = step.name">
-											<div :class="['bar', step.stepType]">
+											<div :class="['bar', step.stepDefinitionType.toUpperCase()]">
 												<v-icon color="white" small>drag_indicator</v-icon>
 												<v-spacer></v-spacer>
-												<span class="steptype">{{step.stepType}}</span>
+												<span class="steptype">{{step.stepDefinitionType.toUpperCase()}}</span>
 											</div>
 											<div class="step-body">
 												<h4>{{step.name}}</h4>
 												<div class="meta">
 													<span v-if="step.dataSource">{{step.dataSource}} => </span>
-													{{step.targetEntity}}
+													{{step.targetEntity ? step.targetEntity.substring(step.targetEntity.lastIndexOf("/")+1) : ''}}
 												</div>
 											</div>
 										</div>
@@ -129,7 +129,7 @@
 						<v-layout row>
 							<v-flex md12>
 								<flow-step
-									v-if="flow"
+									v-if="flow && currentStep"
 									:flow="flow"
 									:step="currentStep"
 									:stepInfo="stepInfo"
@@ -348,7 +348,7 @@ export default {
 			return this.flow && Object.keys(this.flow.steps).length > 0
 		},
 		hasIngestSteps() {
-			return this.flow && Object.values(this.flow.steps).filter(step => step.stepDefinitionType === 'INGESTION').length > 0
+			return this.flow && Object.values(this.flow.steps).filter(step => step.stepDefinitionType && step.stepDefinitionType.toLowerCase() === 'ingestion').length > 0
 		},
 		currentStep() {
 			return (this.flow && this.currentStepName) ?
@@ -359,7 +359,7 @@ export default {
 				.map(e => {
 					return {
 						name: e,
-						steps: this.steps.filter(s => s.targetEntity === e)
+						steps: this.steps ? this.steps.filter(s => s.targetEntity === e): []
 					}
 				})
 		},
@@ -367,18 +367,20 @@ export default {
 			get() {
 				return (this.flow && this.flow.steps) ? Object.values(this.flow.steps)
 					.map(step => {
+						if (!step.name) {
+							step.name = step.stepName;
+						}
 						return {
 							name: step.name,
-							targetEntity: step.options.targetEntity,
-							stepType: step.stepDefinitionType,
-							dataSource: step.options.sourceCollection,
-							raw: step
+							stepDefinitionType: step.stepDefinitionType || "",
+							dataSource: step.options ? step.options.sourceCollection: step.sourceCollection,
+							stepNumber: step.stepNumber
 						}
 					}) : []
 			},
 			set(steps) {
 				const newSteps = steps.reduce((output, step, idx) => {
-					output[idx + 1] = step.raw
+					output[idx + 1] = step
 					return output
 				}, {})
 				this.saveFlow({
@@ -487,7 +489,7 @@ export default {
 			const newFlow = {
 				...this.flow,
 				steps: {
-					...this.flow.steps,
+					...this.flow.steps
 				}
 			}
 			newFlow.steps[this.currentStepIdx] = step
@@ -531,11 +533,11 @@ export default {
 			this.showAddFlow = true
 		},
 		stepCreated(step) {
-			const idx = this.steps.findIndex(s => s.name === step.name)
+			const idx = this.steps.findIndex(s => s.stepName === step.stepName)
 			if (idx >= 0) {
-				this.currentStepIdx = idx
+				this.currentStepIdx = idx + 1
 			}
-			this.currentStepName = step.name
+			this.currentStepName = step.stepName
 		},
 		flowCreated(flow) {
 			this.flowName = flow.name

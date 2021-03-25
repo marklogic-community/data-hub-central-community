@@ -22,14 +22,14 @@ public class UserController extends AbstractController {
 		this.userService = userService;
 	}
 
-	@RequestMapping(value = "/signup", method = RequestMethod.POST)
+	//@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> signup(@RequestBody UserPojo user) throws IOException {
 		userService.createUser(user);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	//@RequestMapping(value = "/delete", method = RequestMethod.GET)
 	@Secured("ROLE_envisionAdmin")
 	@ResponseBody
 	public ResponseEntity<?> deleteUser(@RequestParam String username) throws IOException {
@@ -37,7 +37,7 @@ public class UserController extends AbstractController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	//@RequestMapping(value = "/users", method = RequestMethod.GET)
 	@Secured("ROLE_envisionAdmin")
 	@ResponseBody
 	public JsonNode getUsers() {
@@ -50,7 +50,7 @@ public class UserController extends AbstractController {
 		return userService.userExists(email);
 	}
 
-	@RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
+	//@RequestMapping(value = "/resetPassword", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<?> resetPassword(@RequestParam String email) {
 		userService.addResetTokenToUser(email);
@@ -63,7 +63,7 @@ public class UserController extends AbstractController {
 		return userService.validateResetToken(token);
 	}
 
-	@RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+	//@RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordPojo resetPwd) {
 		userService.updatePassword(resetPwd.token, resetPwd.password);

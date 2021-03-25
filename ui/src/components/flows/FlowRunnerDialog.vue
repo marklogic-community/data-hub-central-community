@@ -31,7 +31,7 @@
 									</td>
 									<td>{{step.name}}</td>
 									<td>{{step.description}}</td>
-									<td>{{step.options.targetEntity}}</td>
+									<td>{{step.targetEntityType ? step.targetEntityType.substring(step.targetEntityType.lastIndexOf("/")+1): ''}}</td>
 									<td>{{step.stepDefinitionType}}</td>
 								</tr>
 							</tbody>
@@ -67,15 +67,7 @@ export default {
 			if (!this.flow) {
 				return []
 			}
-			let steps = []
-
-			for (let key in this.flow.steps) {
-				steps.push({
-					...this.flow.steps[key],
-					stepOrder: key
-				})
-			}
-			return steps
+			return this.flow.steps
 		},
 
 		open: {
@@ -92,19 +84,19 @@ export default {
 		},
 		allChecked: {
 			get() {
-				return this.checkedIndexes.length > 0 && this.checkedIndexes.length === this.steps.length
+				return this.checkedIndexes.length > 0 && this.checkedIndexes.length === Object.keys(this.steps).length
 			},
 			set(val) {
-				this.steps.forEach((n, index) => {
-					this.$set(this.checkedSteps, index, val)
+				Object.values(this.steps).forEach((n, index) => {
+					this.$set(this.checkedSteps, index + 1, val)
 				})
 			}
 		},
 		selectedFlows() {
-			return this.steps.filter((v, idx) => this.checkedIndexes.findIndex(x => x == idx) >= 0)
+			return Object.values(this.steps).filter((v, idx) => this.checkedIndexes.findIndex(x => x == (idx + 1)) >= 0)
 		},
 		selectedFlowSteps() {
-			return this.selectedFlows.map(f => f.stepOrder)
+			return this.selectedFlows.map(f => f.stepNumber)
 		}
 	},
 	methods: {

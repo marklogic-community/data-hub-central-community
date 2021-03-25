@@ -10,10 +10,15 @@ var flowStep = '3'
 var uri = '/envision/datahub/data/CoastalEmployees/55002.json'
 
 let flowDoc= datahub.flow.getFlow(flowName);
-const step = flowDoc.steps[flowStep]
+const stepRef = flowDoc.steps[flowStep]
+const step = stepRef.stepId ? fn.head(cts.search(cts.andQuery([
+	cts.collectionQuery("http://marklogic.com/data-hub/steps"),
+	cts.jsonPropertyValueQuery("stepId", stepRef.stepId, "case-insensitive")
+]))).toObject() : stepRef;
+
 const options = step.options
 
-let stepDefinition = datahub.flow.step.getStepByNameAndType(step.stepDefinitionName, step.stepDefinitionType);
+let stepDefinition = datahub.flow.stepDefinition.getStepDefinitionByNameAndType(step.stepDefinitionName, step.stepDefinitionType);
 let combinedOptions = Object.assign({}, stepDefinition.options, flowDoc.options, step.options);
 const query = combinedOptions.sourceQuery
 const database = combinedOptions.sourceDatabase || requestParams.database;

@@ -5,7 +5,7 @@ import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.impl.HubConfigImpl;
 import com.marklogic.mgmt.ManageClient;
 
-public interface HubClient {
+public interface HubClient extends com.marklogic.hub.HubClient {
 
 	/**
 	 * @return the name of the MarkLogic user associated with this client

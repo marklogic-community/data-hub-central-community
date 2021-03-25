@@ -58,7 +58,9 @@ public class InstallService {
 				"resetSystem.json",
 				"createTdes.json",
 				"updatePii.json",
-				"masteringUnblock.json"
+				"hcGetUsers.json",
+				"masteringUnblock.json",
+				"redactionAmp.json"
 			};
 			for (String file: files) {
 				String amp = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("envision-config/amps/" + file)));

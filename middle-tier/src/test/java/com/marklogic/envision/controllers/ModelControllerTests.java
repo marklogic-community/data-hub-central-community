@@ -513,7 +513,7 @@ public class ModelControllerTests extends AbstractMvcTest {
 
 	@Test
 	void testActiveIndexes() throws Exception {
-		HubConfigImpl hubConfig = getNonAdminHubClient().getHubConfig();
+		HubConfigImpl hubConfig = getAdminHubClient().getHubConfig();
 		SimpleAppDeployer roleDeployer = new SimpleAppDeployer(hubConfig.getManageClient(), hubConfig.getAdminManager());
 		roleDeployer.getCommands().clear();
 		roleDeployer.getCommands().add(new DeployHubDatabaseCommand(hubConfig, getResourceFile("final-database.json"), "final-database.json"));

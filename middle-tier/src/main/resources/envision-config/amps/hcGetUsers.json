@@ -1,0 +1,7 @@
+{
+	"namespace": "http://marklogic.com/envision/security-lib",
+	"local-name" : "get-users",
+	"document-uri" : "/envision/security-lib.xqy",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "security" ]
+}

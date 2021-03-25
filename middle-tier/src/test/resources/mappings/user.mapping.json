@@ -1,9 +1,13 @@
 {
 	"lang" : "zxx",
 	"name" : "81e946846cda588e6b5c4890ad1ef229-myMappingStep",
+	"stepId" : "81e946846cda588e6b5c4890ad1ef229-myMappingStep-mapping",
+	"stepDefinitionName" : "entity-services-mapping",
+	"stepDefinitionType" : "MAPPING",
+	"selectedSource" : "query",
 	"description" : "Default description",
 	"version" : 1,
-	"targetEntityType" : "http://marklogic.envision.com/Person-0.0.1/Person",
+	"targetEntityType" : "http://marklogic.com/envision/Planet-0.0.1/Planet",
 	"sourceContext" : "/",
 	"sourceURI" : "",
 	"properties" : {

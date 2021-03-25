@@ -8,8 +8,10 @@ import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.MappingManager;
+import com.marklogic.hub.dataservices.StepService;
 import com.marklogic.hub.error.DataHubProjectException;
 import com.marklogic.hub.flow.Flow;
+import com.marklogic.hub.step.StepDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -112,7 +114,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 
 		flows = (ArrayNode)flowsService.getFlows(getNonAdminHubClient().getFinalClient());
 		assertEquals(1, flows.size());
-		JSONAssert.assertEquals(objectMapper.writeValueAsString(objectMapper.valueToTree(newFlow)), objectMapper.writeValueAsString(flows.get(0)), true);
+		assertFlowEquals(newFlow, flowsService.createFlowFromJSON(flows.get(0)));
 	}
 
 	@Test
@@ -123,12 +125,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		login();
 
 		getJson("/api/flows/mappings/bogus")
-			.andDo(
-				result -> {
-					JsonNode node = readJsonObject(result.getResponse().getContentAsString());
-					JSONAssert.assertEquals("{\"lang\":\"zxx\",\"name\":\"bogus\",\"description\":\"Default description\",\"version\":1,\"targetEntityType\":\"http://example.org/modelName-version/entityType\",\"sourceContext\":\"/\",\"sourceURI\":\"\",\"properties\":{},\"namespaces\":{}}", objectMapper.writeValueAsString(node), true);
-				})
-			.andExpect(status().isOk());
+			.andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -145,7 +142,11 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		postJson("/api/flows/mappings/", "{\"lang\":\"zxx\",\"name\":\"wacky\",\"description\":\"Default description\",\"version\":1,\"targetEntityType\":\"http://marklogic.com/envision/Planet-0.0.1/Planet\",\"sourceContext\":\"/\",\"sourceURI\":\"\",\"properties\":{},\"namespaces\":{}}")
 			.andExpect(status().isOk());
 
-		assertNotNull(mappingManager.getMappingAsJSON("wacky", -1, false));
+		assertDoesNotThrow(
+			() -> {
+				StepService.on(getStagingClient()).getStep(StepDefinition.StepDefinitionType.MAPPING.toString(), "wacky");
+			}
+		);
 	}
 
 	@Test
@@ -176,7 +177,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		getJson(GET_MAPPING_FUNCTIONS_URL)
 			.andDo(
 				result -> {
-					ObjectNode node = readJsonObject(result.getResponse().getContentAsString());
+					ArrayNode node = readJsonArray(result.getResponse().getContentAsString());
 					assertTrue(node.size() > 100);
 				})
 			.andExpect(status().isOk());
@@ -238,7 +239,12 @@ public class FlowsControllerTests extends AbstractMvcTest {
 			.andExpect(status().isOk());
 
 		flow = flowsService.getJsonFlow(hubClient, "MyCrazyFlow");
-		JSONAssert.assertEquals(objectMapper.writeValueAsString(flow.get("steps").get("1")), getResource("steps/MyMappingStepWithCorrectPermissions.json"), true);
+		assertEquals(flow.path("steps").path("1").path("stepId").asText(), "myMappingStep-mapping");
+		assertDoesNotThrow(
+			() -> {
+				StepService.on(getStagingClient()).getStep(StepDefinition.StepDefinitionType.MAPPING.toString(), "myMappingStep");
+			}
+		);
 	}
 
 	@Test
@@ -286,8 +292,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 		HubClient hubClient = getNonAdminHubClient();
 
 		modelService.saveModel(hubClient, getResourceStream("models/MyHubModel.json"));
-		flowsService.addMapping(hubClient, readJsonObject(getResource("mappings/myMappingStep.json")));
-		flowsService.createFlow(hubClient, readJsonObject(getResourceFile("flows/runnable.flow.json")));
+		flowsService.createStep(hubClient, flowsService.createFlowFromJSON(readJsonObject(getResourceFile("flows/runnable.flow.json"))),readJsonObject(getResource("mappings/myMappingStep.json")));
 
 		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/doc1.json", "myFile.csv");
 

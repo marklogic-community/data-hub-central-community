@@ -84,16 +84,13 @@ public class EnvisionConfig {
 		return hubConfig;
 	}
 
-//	public HubProject getHubProject() {
-//		return hubProject;
-//	}
-
 	@Autowired
-	EnvisionConfig(Environment environment, HubConfigImpl hubConfig, HubProject hubProject) {
+	EnvisionConfig(Environment environment) {
 		this.environment = environment;
-		this.hubConfig = hubConfig;
-		this.hubProject = hubProject;
+		this.hubProject = new HubProjectImpl();
+		this.hubConfig = new HubConfigImpl(hubProject);
 	}
+
 
 	public HubClient newAdminHubClient() {
 		return newHubClient(marklogicUsername, marklogicPassword);
@@ -116,7 +113,7 @@ public class EnvisionConfig {
 		if (isMultiTenant) {
 			hp = new MultiTenantProjectImpl(hubProject, username);
 		}
-		HubConfigImpl hubConfig = new HubConfigImpl(hp, environment);
+		HubConfigImpl hubConfig = new HubConfigImpl(hp);
 		setupHubConfig(hubConfig, username, password);
 		return hubConfig;
 	}
@@ -126,6 +123,7 @@ public class EnvisionConfig {
 	}
 
 	public DatabaseClient newAdminFinalClient() {
+		HubConfigImpl hubConfig = newHubConfig(marklogicUsername, marklogicPassword);
 		AppConfig appConfig = hubConfig.getAppConfig();
 		DatabaseClientConfig config = new DatabaseClientConfig(appConfig.getHost(), hubConfig.getPort(DatabaseKind.FINAL), hubConfig.getMlUsername(), hubConfig.getMlPassword());
 		config.setSecurityContextType(SecurityContextType.valueOf(hubConfig.getAuthMethod(DatabaseKind.FINAL).toUpperCase()));
@@ -150,20 +148,14 @@ public class EnvisionConfig {
 		try {
 			String projectDir = dhfDir.getCanonicalPath();
 			hubProject.createProject(projectDir);
-			hubConfig.setMlUsername(username);
-			hubConfig.setMlPassword(password);
-			hubConfig.resetAppConfigs();
-
 			String envName = dhfEnv;
 			if (envName == null || envName.isEmpty()) {
 				envName = "local";
 			}
-			System.out.println("envName: " + envName);
 			hubConfig.withPropertiesFromEnvironment(envName);
-			hubConfig.resetHubConfigs();
-			hubConfig.refreshProject();
-			hubConfig.getAppConfig().setAppServicesUsername(username);
-			hubConfig.getAppConfig().setAppServicesPassword(password);
+			hubConfig.applyProperties(buildPropertySource(username, password));
+			hubConfig.setMlUsername(username);
+			hubConfig.setMlPassword(password);
 			if (isMultiTenant()) {
 				String roleName = DigestUtils.md5Hex(username);
 				hubConfig.setEntityModelPermissions(String.format("%s,read,%s,update", roleName, roleName));
@@ -174,19 +166,27 @@ public class EnvisionConfig {
 		}
 	}
 
-//	protected com.marklogic.mgmt.util.PropertySource buildPropertySource(String username, String password) {
-//		Properties primaryProperties = new Properties();
-//		primaryProperties.setProperty("mlUsername", username);
-//		primaryProperties.setProperty("mlPassword", password);
-//
-//		return propertyName -> {
-//			String value = primaryProperties.getProperty(propertyName);
-//			if (value != null) {
-//				return value;
-//			}
-//			return environment.getProperty(propertyName);
-//		};
-//	}
+	/**
+	 * Construct a PropertySource based on the properties in the Spring Boot environment plus the given username and
+	 * password, which are supplied when a user authenticates.
+	 *
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	protected com.marklogic.mgmt.util.PropertySource buildPropertySource(String username, String password) {
+		Properties primaryProperties = new Properties();
+		primaryProperties.setProperty("mlUsername", username);
+		primaryProperties.setProperty("mlPassword", password);
+
+		return propertyName -> {
+			String value = primaryProperties.getProperty(propertyName);
+			if (value != null) {
+				return value;
+			}
+			return environment.getProperty(propertyName);
+		};
+	}
 
 	public DatabaseClient getClient() {
 		DatabaseClientConfig config = new DatabaseClientConfig(markLogicHost, markLogicPort, marklogicUsername, marklogicPassword);

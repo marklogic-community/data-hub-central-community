@@ -11,21 +11,22 @@
 					<v-text-field
 						required
 						label="Name"
-						v-model="label"
+						v-model="thresholdName"
 						data-cy="matchThresholdDlg.nameField"
-						:error-messages="inputErrors('label', 'Name')"
-						@input="$v.label.$touch()"
-						@blur="$v.label.$touch()"
+						:error-messages="inputErrors('thresholdName', 'Name')"
+						@input="$v.thresholdName.$touch()"
+						@blur="$v.thresholdName.$touch()"
 					></v-text-field>
 
 					<v-text-field
 						required
+						integer
 						label="Weight Threshold"
-						v-model="above"
+						v-model="score"
 						data-cy="matchThresholdDlg.aboveField"
-						:error-messages="inputErrors('above', 'Weight Threshold')"
-						@input="$v.above.$touch()"
-						@blur="$v.above.$touch()"
+						:error-messages="inputErrors('score', 'Weight Threshold')"
+						@input="$v.score.$touch()"
+						@blur="$v.score.$touch()"
 					></v-text-field>
 
 					<v-select
@@ -62,8 +63,8 @@ export default {
 	},
 	data() {
 		return {
-			label: null,
-			above: null,
+			thresholdName: null,
+			score: null,
 			action: '',
 			actions: [
 				{
@@ -91,8 +92,8 @@ export default {
 		}
 	},
 	validations: {
-		label: { required },
-		above: { required, integer },
+		thresholdName: { required },
+		score: { required, integer },
 		action: { required }
 	},
 	mounted() {
@@ -102,14 +103,14 @@ export default {
 			this.$v.$reset()
 			const threshold = this.threshold
 			if (!threshold) {
-				this.label = ''
-				this.above = ''
+				this.thresholdName = ''
+				this.score = 0
 				this.action = ''
 				return
 			}
 
-			this.label = threshold.label
-			this.above = threshold.above
+			this.thresholdName = threshold.thresholdName
+			this.score = threshold.score
 			this.action = threshold.action
 		},
 		inputErrors(field, fieldName) {
@@ -126,8 +127,8 @@ export default {
 			}
 
 			const threshold = {
-				label: this.label,
-				above: this.above,
+				thresholdName: this.thresholdName,
+				score: this.score,
 				action: this.action
 			}
 			this.$emit('save', threshold)

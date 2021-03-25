@@ -24,6 +24,6 @@ public class SystemUtilsTest extends BaseTest {
 	@Test
 	@WithMockUser
 	void resetSystem() {
-		SystemUtils.on(getFinalClient()).resetSystem();
+		SystemUtils.on(getAdminHubClient().getFinalClient()).resetSystem();
 	}
 }
