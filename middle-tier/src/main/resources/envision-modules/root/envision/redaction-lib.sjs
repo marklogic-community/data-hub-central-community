@@ -79,5 +79,5 @@ function redact(doc) {
 }
 
 module.exports = {
-	redact: redact
+	redact: module.amp(redact)
 }

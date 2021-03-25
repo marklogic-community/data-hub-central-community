@@ -21,6 +21,7 @@ import com.marklogic.client.query.StructuredQueryBuilder;
 import com.marklogic.envision.auth.UserPojo;
 import com.marklogic.envision.auth.UserService;
 import com.marklogic.envision.config.EnvisionConfig;
+import com.marklogic.envision.dataServices.Users;
 import com.marklogic.envision.email.EmailService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.installer.InstallService;
@@ -31,11 +32,12 @@ import com.marklogic.hub.HubConfig;
 import com.marklogic.hub.HubProject;
 import com.marklogic.hub.deploy.commands.LoadHubArtifactsCommand;
 import com.marklogic.hub.deploy.commands.LoadHubModulesCommand;
+import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.impl.DataHubImpl;
 import com.marklogic.hub.impl.HubConfigImpl;
+import com.marklogic.hub.step.impl.Step;
 import com.marklogic.mgmt.api.API;
 import com.marklogic.mgmt.api.security.User;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,8 +64,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -82,9 +86,8 @@ public class BaseTest {
 	protected EnvisionConfig envisionConfig;
 
 	@Autowired
-	private HubConfigImpl hubConfig;
+	private HubConfig hubConfig;
 
-	@Autowired
 	private HubProject hubProject;
 
 	@Autowired
@@ -124,25 +127,27 @@ public class BaseTest {
 	}
 
 	protected HubConfigImpl getHubConfig() {
+		HubConfigImpl hubConfigImpl = (HubConfigImpl) hubConfig;
 		if (!configFinished) {
 			String projectDir = dhfDir.getAbsolutePath();
 			hubProject.createProject(projectDir);
-			hubConfig.setMlUsername(username);
-			hubConfig.setMlPassword(password);
-			hubConfig.resetAppConfigs();
+			if (!hubProject.isInitialized()) {
+				hubConfig.initHubProject();
+			}
+			hubConfigImpl.setMlUsername(username);
+			hubConfigImpl.setMlPassword(password);
 			String envName = dhfEnv;
 			if (envName == null || envName.isEmpty()) {
 				envName = "local";
 			}
 			System.out.println("envName: " + envName);
-			hubConfig.withPropertiesFromEnvironment(envName);
-			hubConfig.resetHubConfigs();
-			hubConfig.refreshProject();
-			hubConfig.getAppConfig().setAppServicesUsername(username);
-			hubConfig.getAppConfig().setAppServicesPassword(password);
+			hubConfigImpl.withPropertiesFromEnvironment(envName);
+			hubConfigImpl.refreshProject();
+			hubConfigImpl.getAppConfig().setAppServicesUsername(username);
+			hubConfigImpl.getAppConfig().setAppServicesPassword(password);
 			configFinished = true;
 		}
-		return hubConfig;
+		return (HubConfigImpl) hubConfigImpl;
 	}
 
 	protected void registerAccount() throws IOException {
@@ -194,7 +199,7 @@ public class BaseTest {
 	}
 
 	protected DatabaseClient getClient(DatabaseKind kind) {
-		HubConfigImpl hubConfig = getHubConfig();
+		HubConfigImpl hubConfig = getNonAdminHubClient().getHubConfig();
 		if (hubConfig != null) {
 			AppConfig appConfig = hubConfig.getAppConfig();
 			if (appConfig != null) {
@@ -285,17 +290,17 @@ public class BaseTest {
 		client.newServerEval().xquery("import module namespace sec = \"http://marklogic.com/xdmp/security\" at \"/MarkLogic/security.xqy\";\n" +
 			"      \n" +
 			"xdmp:invoke-function(function() {\n" +
-			"for $path in /*:protected-path\n" +
+			"for $path in /sec:protected-path\n" +
 			"return\n" +
-			"  sec:unprotect-path($path/sec:path-expression, ())\n" +
+			"  sec:unprotect-path($path/sec:path-expression, $path/sec:path-namespaces/sec:path-namespace)\n" +
 			"}, map:entry(\"database\", xdmp:security-database())),\n" +
 			"xdmp:invoke-function(function() {\n" +
-			"for $path in /*:protected-path\n" +
+			"for $path in /sec:protected-path\n" +
 			"return\n" +
-			"  sec:remove-path($path/sec:path-expression, ())\n" +
+			"  sec:remove-path($path/sec:path-expression, $path/sec:path-namespaces/sec:path-namespace)\n" +
 			"}, map:entry(\"database\", xdmp:security-database())),\n" +
 			"xdmp:invoke-function(function() {\n" +
-			"for $path in /*:protected-path\n" +
+			"for $path in /sec:protected-path\n" +
 			"return\n" +
 			"  $path\n" +
 			"}, map:entry(\"database\", xdmp:security-database()))").eval();
@@ -325,7 +330,7 @@ public class BaseTest {
 	}
 
 	public void clearDatabases(String... databases) {
-		ServerEvaluationCall eval = getStagingClient().newServerEval();
+		ServerEvaluationCall eval = getAdminHubClient().getStagingClient().newServerEval();
 		String installer =
 			"declare option xdmp:mapping \"false\";\n" +
 			"declare variable $databases external;\n" +
@@ -351,34 +356,7 @@ public class BaseTest {
 	}
 
 	public void removeUser(String username) {
-		ServerEvaluationCall eval = getStagingClient().newServerEval();
-		String installer =
-			"import module namespace sec=\"http://marklogic.com/xdmp/security\" at \n" +
-			"    \"/MarkLogic/security.xqy\";\n" +
-			"    \n" +
-			"declare variable $username external;\n" +
-			"let $role := xdmp:md5($username)\n" +
-			"where xdmp:invoke-function(function() {\n" +
-			"    sec:user-exists($username)\n" +
-			"  },\n" +
-			"  map:entry(\"database\", xdmp:security-database()))\n" +
-			"return (\n" +
-			"  xdmp:invoke-function(function() {\n" +
-			"    sec:remove-user($username)\n" +
-			"  },\n" +
-			"  map:entry(\"database\", xdmp:security-database())),\n" +
-			"  \n" +
-			"  xdmp:invoke-function(function() {\n" +
-			"    sec:remove-role($role)\n" +
-			"  },\n" +
-			"  map:entry(\"database\", xdmp:security-database()))\n" +
-			")";
-		eval.addVariable("username", username);
-		EvalResultIterator result = eval.xquery(installer).eval();
-		if (result.hasNext()) {
-			logger.error(result.next().getString());
-		}
-		removeDoc(getFinalClient(), "/envision/users/" + DigestUtils.md5Hex(username) + ".json");
+		Users.on(getAdminHubClient().getFinalClient()).deleteUser(username);
 	}
 
 	public Path createProjectDir() throws IOException {
@@ -389,7 +367,9 @@ public class BaseTest {
 	public Path createProjectDir(String projectDirName) throws IOException {
 		projectPath = Files.createTempDirectory(projectDirName);
 		File projectDir = projectPath.toFile();
-
+		this.dhfDir = projectDir;
+		envisionConfig.dhfDir = projectDir;
+		envisionConfig.configureHub();
 		// force module loads for new test runs.
 		File timestampDirectory = new File(projectDir + "/.tmp");
 		if ( timestampDirectory.exists() ) {
@@ -456,6 +436,7 @@ public class BaseTest {
 		envisionConfig.dhfDir = dhfDir;
 		hubConfig.createProject(projectPath.toString());
 		hubConfig.refreshProject();
+		hubProject = hubConfig.getHubProject();
 		if(!hubProject.isInitialized()) {
 			hubConfig.initHubProject();
 		}
@@ -603,6 +584,24 @@ public class BaseTest {
 
 	protected void jsonAssertEquals(String expected, String actual, Boolean strict) throws Exception {
 		JSONAssert.assertEquals(expected, actual, strict);
+	}
+
+	protected void assertFlowEquals(Flow expected, Flow actual) {
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getBatchSize(), actual.getBatchSize());
+		assertEquals(expected.getDescription(), actual.getDescription());
+		assertEquals(expected.getThreadCount(), actual.getThreadCount());
+		Map<String, Step> expectedSteps = expected.getSteps();
+		Map<String, Step> actualSteps = expected.getSteps();
+		assertEquals(expectedSteps.size(), actualSteps.size());
+		for (Map.Entry<String, Step> expectedEntry:expectedSteps.entrySet()) {
+			Step expectedStep = expectedEntry.getValue();
+			Step actualStep = actualSteps.get(expectedEntry.getKey());
+			String expectedStepId = expectedStep.getStepId() != null ? expectedStep.getStepId(): expectedStep.getName() + expectedStep.getStepDefinitionType().toString().toLowerCase();
+			String actualStepId = actualStep.getStepId() != null ? actualStep.getStepId(): actualStep.getName() + actualStep.getStepDefinitionType().toString().toLowerCase();
+			assertEquals(expectedStepId, actualStepId);
+			// TODO more in-depth step level comparison which are now stored external to the flow
+		}
 	}
 
 	protected ObjectNode readJsonObject(String json) {

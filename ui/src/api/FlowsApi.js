@@ -4,10 +4,35 @@ export default {
 	getFlow(flowId) {
 		return axios.get(`/api/flows/${encodeURIComponent(flowId)}`)
 		.then(response => response.data)
+		.then((fullFlow) => {
+			Object.keys(fullFlow.steps).forEach((stepKey) => {
+				let step = fullFlow.steps[stepKey]
+				step.stepNumber = stepKey
+				if (step.options) {
+					Object.assign(step, step.options);
+					delete step.options;
+				}
+				step.targetEntityType = step.targetEntityType || step.targetEntity;
+			});
+			return fullFlow;
+		})
 	},
 	getFlows() {
 		return axios.get('/api/flows/')
-			.then(response => response.data)
+			.then(response => {
+				let flowDetailPromises = [];
+				response.data.forEach((flow) => {
+					if (Array.isArray(flow.steps)) {
+						let newStepsObj = flow.steps.reduce((stepsObj, step) => {
+							stepsObj[step.stepNumber] = step;
+							return stepsObj;
+						}, {});
+						flow.steps = newStepsObj;
+					}
+					flowDetailPromises.push(this.getFlow(flow.name).then((fullFlow) => flow.steps = fullFlow.steps));
+				});
+				return Promise.all(flowDetailPromises).then(() => response.data);
+			})
 	},
 	saveFlow(flow) {
 		return axios.put(`/api/flows/${encodeURIComponent(flow.name)}`, flow)

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo;
 
@@ -80,7 +81,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 		getJson(GET_DOC_URL + "?docUri=/testFile.json")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					jsonAssertEquals(getResource("data/testFile.json"), result.getResponse().getContentAsString());
 				})
 			.andExpect(status().isOk());
@@ -96,8 +97,8 @@ public class MasteringControllerTests extends AbstractMvcTest {
 		clearStagingFinalAndJobDatabases();
 
 		// now test w/o sufficient permissions
-		installFinalDoc("data/testFile.json", "/testFile.json");
-		installFinalDoc("data/testFile.xml", "/testFile.xml");
+		installDoc(getAdminHubClient().getFinalClient(), "data/testFile.json", "/testFile.json");
+		installDoc(getAdminHubClient().getFinalClient(), "data/testFile.xml", "/testFile.xml");
 
 		getJson(GET_DOC_URL + "?docUri=/testFile.json")
 			.andExpect(status().isNotFound());
@@ -116,7 +117,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 		postJson(GET_HISTORY_URL, "{ \"uri\": \"/com.marklogic.smart-mastering/merged/964e759b8ca1599896bf35c71c2fc0e8.json\" }")
 			.andDo(
 				result -> {
-					assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+					assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 					jsonAssertEquals(getResource("output/prov-history.json"), result.getResponse().getContentAsString());
 				})
 			.andExpect(status().isOk());
@@ -131,7 +132,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		getJson(GET_NOTIFICATION_URL + "?uri=/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals(getResource("output/notification.json"), result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -146,7 +147,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		postJson(GET_NOTIFICATIONS_URL, "{}").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals(getResource("output/notifications.json"), result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -161,7 +162,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		getJson(GET_NOTIFICATION_URL + "?uri=/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals(getResource("output/notification.json"), result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -171,7 +172,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		getJson(GET_NOTIFICATION_URL + "?uri=/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals(getResource("output/notification-updated.json"), result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -186,7 +187,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		getJson(GET_NOTIFICATION_URL + "?uri=/com.marklogic.smart-mastering/matcher/notifications/3b6cd608da7d7c596bd37e211207d2c8.xml").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals(getResource("output/notification.json"), result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -210,7 +211,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		postJson(GET_BLOCKS_URL, "[\"/CoastalEmployees/55003.json\", \"/MountainTopEmployees/employee4.json\"]").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals("{\"/CoastalEmployees/55003.json\":[],\"/MountainTopEmployees/employee4.json\":[]}", result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -220,7 +221,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		postJson(GET_BLOCKS_URL, "[\"/CoastalEmployees/55003.json\", \"/MountainTopEmployees/employee4.json\"]").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals("{\"/CoastalEmployees/55003.json\":[\"/MountainTopEmployees/employee4.json\"],\"/MountainTopEmployees/employee4.json\":[\"/CoastalEmployees/55003.json\"]}", result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());
@@ -230,7 +231,7 @@ public class MasteringControllerTests extends AbstractMvcTest {
 
 		postJson(GET_BLOCKS_URL, "[\"/CoastalEmployees/55003.json\", \"/MountainTopEmployees/employee4.json\"]").andDo(
 			result -> {
-				assertEquals("application/json;charset=UTF-8", result.getResponse().getHeader("Content-Type"));
+				assertTrue(result.getResponse().getHeader("Content-Type").startsWith("application/json"));
 				jsonAssertEquals("{\"/CoastalEmployees/55003.json\":[],\"/MountainTopEmployees/employee4.json\":[]}", result.getResponse().getContentAsString());
 			})
 			.andExpect(status().isOk());

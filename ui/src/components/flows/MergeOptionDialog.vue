@@ -11,13 +11,13 @@
 					<v-select
 						:items="properties"
 						label="Property to Merge"
-						v-model="propertyName"
+						v-model="entityPropertyPath"
 						data-cy="mergeOptionDlg.propertyNameField"
 						:disabled="isEditing"
 						required
-						:error-messages="inputErrors('propertyName', 'Property to Merge')"
-						@input="$v.propertyName.$touch()"
-						@blur="$v.propertyName.$touch()"
+						:error-messages="inputErrors('entityPropertyPath', 'Property to Merge')"
+						@input="$v.entityPropertyPath.$touch()"
+						@blur="$v.entityPropertyPath.$touch()"
 					></v-select>
 
 					<v-select
@@ -59,7 +59,7 @@ export default {
 		return {
 			advancedState: null,
 			isOpen: null,
-			propertyName: '',
+			entityPropertyPath: '',
 			strategy: '',
 		}
 	},
@@ -77,7 +77,7 @@ export default {
 		}
 	},
 	validations: {
-		propertyName: { required },
+		entityPropertyPath: { required },
 		strategy: { required }
   },
 	mounted() {
@@ -87,13 +87,13 @@ export default {
 			this.$v.$reset()
 			const option = this.option
 			if (!option) {
-				this.propertyName = ''
+				this.entityPropertyPath = ''
 				this.strategy = ''
 				return
 			}
 
-			this.propertyName = option.propertyName
-			this.strategy = option.strategy
+			this.entityPropertyPath = option.entityPropertyPath
+			this.strategy = option.mergeStrategyName
 		},
 		inputErrors(field, fieldName) {
 			const errors = []
@@ -110,13 +110,13 @@ export default {
 
 			const option = {
 				...(this.option || {}),
-				propertyName: this.propertyName,
-				algorithmRef: 'standard',
+				entityPropertyPath: this.entityPropertyPath,
+				mergeType: this.strategy ? 'strategy' : 'property-specific',
 				length: {
 					weight: null
 				},
 				sourceWeights: [],
-				strategy: this.strategy
+				mergeStrategyName: this.strategy
 			}
 			this.$emit('save', option)
 			this.close()

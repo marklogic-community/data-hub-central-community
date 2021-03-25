@@ -63,7 +63,7 @@ public class ModelTests extends BaseTest {
 	public void toDatahub() throws Exception {
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModel.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
@@ -80,7 +80,7 @@ public class ModelTests extends BaseTest {
 	public void toDatahubArrayOnly() throws Exception {
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModelArrayOnly.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
@@ -92,7 +92,7 @@ public class ModelTests extends BaseTest {
 	public void toDatahubNoArray() throws Exception {
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/nestedModelNoArray.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
@@ -140,7 +140,7 @@ public class ModelTests extends BaseTest {
 		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule"));
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noRedaction.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
@@ -161,7 +161,7 @@ public class ModelTests extends BaseTest {
 		assertEquals(0, getDocCount(getNonAdminHubClient().getFinalSchemasClient(), "redactionRule4bob.smith@marklogic.com"));
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noRedaction.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
@@ -184,7 +184,7 @@ public class ModelTests extends BaseTest {
 
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withRedaction.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		JsonNode result = EntityModeller.on(client).toDatahub();
@@ -214,7 +214,7 @@ public class ModelTests extends BaseTest {
 
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/withRedaction.json"));
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
@@ -258,7 +258,7 @@ public class ModelTests extends BaseTest {
 		assertTrue(files == null || files.length == 0);
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/noPii.json"));
 		files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
 		assertTrue(files == null || files.length == 0);
@@ -274,7 +274,7 @@ public class ModelTests extends BaseTest {
 		DatabaseClient client = getNonAdminHubClient().getFinalClient();
 		Path modelsDir = projectPath.resolve("models");
 		modelsDir.toFile().mkdirs();
-		modelService.setModelsDir(modelsDir.toFile());
+		modelService.setModelsDir(modelsDir);
 
 		Path protectedPaths = getNonAdminHubClient().getHubConfig().getUserSecurityDir().resolve("protected-paths");
 		File[] files = protectedPaths.toFile().listFiles((dir, name) -> name.endsWith(HubConfig.PII_PROTECTED_PATHS_FILE));
@@ -286,7 +286,7 @@ public class ModelTests extends BaseTest {
 		assertEquals(1, files.length);
 
 		JsonNode paths = getProtectedPaths(getAdminHubClient().getFinalClient());
-		jsonAssertEquals("[\"/envelope//instance//Employee/piiProp\"]", paths);
+		jsonAssertEquals("[\"/(es:envelope|envelope)/(es:instance|instance)/Employee/piiProp\"]", paths);
 
 		JsonNode result = EntityModeller.on(client).toDatahub();
 		System.out.println(objectMapper.writeValueAsString(result));
@@ -310,7 +310,7 @@ public class ModelTests extends BaseTest {
 		assertEquals(1, files.length);
 
 		paths = getProtectedPaths(getAdminHubClient().getFinalClient());
-		jsonAssertEquals("[\"/envelope//instance//Employee/piiProp\"]", paths);
+		jsonAssertEquals("[\"/(es:envelope|envelope)/(es:instance|instance)/Employee/piiProp\"]", paths);
 
 		result = EntityModeller.on(client).toDatahub();
 		System.out.println(objectMapper.writeValueAsString(result));

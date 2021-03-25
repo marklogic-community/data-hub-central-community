@@ -36,10 +36,14 @@ else {
 	let refStepNumber = stepNumber || '1';
 	let flow = datahub.flow.getFlow(flowName);
 	let stepRef = flow.steps[refStepNumber];
-	let stepDetails = datahub.flow.step.getStepByNameAndType(stepRef.stepDefinitionName, stepRef.stepDefinitionType);
+	let step = stepRef.stepId ? fn.head(cts.search(cts.andQuery([
+		cts.collectionQuery("http://marklogic.com/data-hub/steps"),
+		cts.jsonPropertyValueQuery("stepId", stepRef.stepId, "case-insensitive")
+	]))).toObject() : stepRef;
+	let stepDetails = datahub.flow.stepDefinition.getStepDefinitionByNameAndType(step.stepDefinitionName, step.stepDefinitionType);
 	// build combined options
 	let flowOptions = flow.options || {};
-	let stepRefOptions = stepRef.options || {};
+	let stepRefOptions = step.options ? step.options: step;
 	let stepDetailsOptions = stepDetails.options || {};
 	let combinedOptions = Object.assign({}, stepDetailsOptions, flowOptions, stepRefOptions);
 	let sourceDatabase = combinedOptions.sourceDatabase || datahub.flow.globalContext.sourceDatabase;

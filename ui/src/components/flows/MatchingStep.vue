@@ -36,28 +36,15 @@
 						<v-simple-table>
 							<thead>
 								<tr>
-									<th>Property To Match</th>
-									<th>Match Type</th>
+									<th>Match Ruleset Name</th>
 									<th>Weight</th>
-									<th>Other</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr v-for="(row, index) in tableData" :key="index">
-									<td>{{row.propertyName}}</td>
-									<td>{{row.matchType}}</td>
+									<td>{{row.name}}</td>
 									<td>{{row.weight}}</td>
-									<td>
-										<template v-if="row.zip5match9">
-											<div>
-												<span class="lbl">5-Matches-9 Boost:</span><span class="value">{{row.zip5match9}}</span>
-											</div>
-											<div>
-												<span class="lbl">9-Matches-5 Boost:</span><span class="value">{{row.zip9match5}}</span>
-											</div>
-										</template>
-									</td>
 									<td>
 										<v-btn @click="editOption(row.raw, index)" icon small data-cy="matchStep.editOption"><v-icon small>create</v-icon></v-btn>
 										<v-btn @click="showDeleteOption($event, index)" icon small data-cy="matchStep.deleteOption"><v-icon small>delete</v-icon></v-btn>
@@ -89,8 +76,8 @@
 							</thead>
 							<tbody>
 								<tr v-for="(threshold, index) in thresholds" :key="index">
-									<td>{{threshold.label}}</td>
-									<td>{{threshold.above}}</td>
+									<td>{{threshold.thresholdName}}</td>
+									<td>{{threshold.score}}</td>
 									<td class="capitalize">{{threshold.action}}</td>
 									<td>
 										<v-btn @click="editThreshold(threshold, index)" icon small data-cy="matching.editThresholdBtn"><v-icon small>create</v-icon></v-btn>
@@ -149,7 +136,7 @@ export default {
 			currentThreshold: null,
 			currentThresholdIdx: null,
 
-			options: [],
+			matchRulesets: [],
 			thresholds: []
 		}
 	},
@@ -158,18 +145,17 @@ export default {
 			return this.targetEntity ? this.targetEntity.properties.map(p => p.name) : []
 		},
 		tableData() {
-			return this.options.map((o, idx) => ({
-				propertyName: o.propertyName || o.propertiesReduce.join(', '),
-				matchType: this.getMatchType(o.algorithmRef),
+			return this.matchRulesets.map((o, idx) => ({
+				name: o.name,
 				weight: o.weight,
 				raw: o,
-				index: idx,
-				zip5match9: o.zip5match9,
-				zip9match5: o.zip9match5
+				index: idx
 			}))
 		},
 		targetEntity() {
-			return this.entities[this.step.options.targetEntity]
+			const targetEntityType = String(this.step.targetEntityType || this.step.targetEntity);
+			const targetEntityTitle = targetEntityType.substring(targetEntityType.lastIndexOf("/") + 1)
+			return this.entities[targetEntityType] || this.entities[targetEntityTitle];
 		},
 		...mapState({
 			entities: state => state.flows.entities
@@ -183,11 +169,11 @@ export default {
 		},
 		optionAdded(option) {
 			if (this.currentOptionIndex >= 0) {
-				this.$set(this.options, this.currentOptionIndex, option)
+				this.$set(this.matchRulesets, this.currentOptionIndex, option)
 			}
 			else {
-				this.options.push(option)
-				this.$set(this.options, this.currentOptionIndex, [...this.options])
+				this.matchRulesets.push(option)
+				this.$set(this.matchRulesets, this.currentOptionIndex, [...this.matchRulesets])
 			}
 			this.save()
 		},
@@ -206,7 +192,7 @@ export default {
 		},
 		deleteOption() {
 			this.confirmDeleteOptionMenu = false
-			this.options.splice(this.currentOptionIndex, 1)
+			this.matchRulesets.splice(this.currentOptionIndex, 1)
 			this.save()
 		},
 
@@ -250,117 +236,56 @@ export default {
 		save() {
 			const newStep = {
 				...this.step,
-				options: {
-					...this.step.options,
-					matchOptions: this.createMatchOptions()
-				}
+				...this.createMatchOptions()
 			}
 			this.$emit('saveStep', newStep)
 		},
 		createMatchOptions() {
-			let scoring = {
-				add: [],
-				expand: [],
-				reduce: []
-			}
-			let props = {}
-
-			this.options.forEach(option => {
-				if (option.propertyName) {
-					props[option.propertyName] = option.propertyName
-				}
-				else if (option.propertiesReduce) {
-					option.propertiesReduce.forEach(p => props[p] = p)
-				}
-
-				if (!option.algorithmRef || option.algorithmRef === 'exact') {
-					scoring.add.push({
-						propertyName: option.propertyName,
-						weight: option.weight
-					})
-				}
-				else if (option.algorithmRef === 'standard-reduction') {
-					scoring.reduce.push({
-						algorithmRef: option.algorithmRef,
-						weight: option.weight,
-						allMatch: {
-							property: option.propertiesReduce
-						}
-					})
-				}
-				else if (option.algorithmRef === 'zip-match') {
-					scoring.expand.push({
-						propertyName: option.propertyName,
-						algorithmRef: option.algorithmRef,
-						zip: [
-							{ origin: 5, weight: option.zip5match9 },
-							{ origin: 9, weight: option.zip9match5 }
-						]
-					})
-				}
+			let matchRulesets = []
+			let getMatchType = this.getMatchType;
+			this.matchRulesets.forEach(option => {
+				let prefix = option.reduce ? 'Reduce: ' : '';
+				let rulesetTitle = option.matchRules.map((rule) => `${rule.entityPropertyPath} - ${getMatchType(rule.matchType)}`).join(', ');
+				let matchRuleset = {name: `${prefix}${rulesetTitle}`, weight: option.weight, matchRules: option.matchRules };
+				matchRulesets.push(matchRuleset);
 			})
 
 			return {
-				...this.matchOptions,
-				scoring,
-				propertyDefs: {
-					properties: Object.values(props).map(p => ({
-						localname: p,
-						name: p
-					}))
-				},
-				thresholds: {
-					threshold: this.thresholds
-				}
+				matchRulesets,
+				thresholds: this.thresholds
 			}
 		},
 		getMatchType(algorithmRef) {
 			let matchType = 'Exact'
 			switch(algorithmRef) {
-				case 'double-metaphone':
+				case 'doubleMetaphone':
 					matchType = 'Double Metaphone'
 					break
-				case 'standard-reduction':
+				case 'Exact':
 					matchType = 'Reduce'
 					break
-				case 'zip-match':
+				case 'synonym':
+					matchType = 'Synonym'
+					break
+				case 'zip':
 					matchType = 'Zip'
+					break
+				case 'custom':
+					matchType = 'Custom'
 					break
 			}
 			return matchType
 		},
 		updateValues() {
-			this.thresholds = this.step.options.matchOptions.thresholds.threshold.map(t => ({...t}))
-			this.options = Object.values(this.step.options.matchOptions.scoring).reduce((output, s) => {
-				return output.concat(s.map(ss => {
-					const obj = {
-						algorithmRef: ss.algorithmRef,
-						propertyName: ss.propertyName,
-						propertiesReduce: (ss.allMatch && ss.allMatch.property),
-						weight: ss.weight,
-						zip5match9: ss.zip5match9,
-						zip9match5: ss.zip9match5
-					}
-					if (ss.zip) {
-						Object.values(ss.zip).forEach(z => {
-							if (z.origin === 5) {
-								obj.zip5match9 = z.weight
-							}
-							else if (z.origin === 9) {
-								obj.zip9match5 = z.weight
-							}
-						})
-					}
-					return obj
-				}))
-			}, [])
+			this.thresholds = [...this.step.thresholds]
+			this.matchRulesets = [...this.step.matchRulesets];
 		}
 	},
 	mounted() {
 		this.updateValues()
 	},
 	watch: {
-		'$route.params': 'updateValues',
+		'$route.params': 'updateValues'
 	}
 }
 </script>

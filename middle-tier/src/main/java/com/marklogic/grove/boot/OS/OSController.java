@@ -1,5 +1,6 @@
 package com.marklogic.grove.boot.OS;
 
+import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.deploy.DeployHubService;
 import com.marklogic.grove.boot.AbstractController;
 import com.marklogic.hub.deploy.util.HubDeployStatusListener;
@@ -33,9 +34,9 @@ public class OSController extends AbstractController {
 	private final DeployHubService deployService;
 
 	@Autowired
-	OSController(FlowManagerImpl flowManager, EntityManagerImpl entityManager, DeployHubService deployService) {
-		this.flowManager = flowManager;
-		this.entityManager = entityManager;
+	OSController(EnvisionConfig envisionConfig, DeployHubService deployService) {
+		this.flowManager = new FlowManagerImpl(envisionConfig.getHubConfig());
+		this.entityManager = new EntityManagerImpl(envisionConfig.getHubConfig());
 		this.deployService = deployService;
 	}
 
@@ -139,8 +140,8 @@ public class OSController extends AbstractController {
 			}
 
 			@Override
-			public void onError() {
-				System.out.println("Deploy controller in error");
+			public void onError(String msg, Exception ex) {
+				System.out.println("Deploy controller in error: " + msg);
 			}
 		};
 		return listener;

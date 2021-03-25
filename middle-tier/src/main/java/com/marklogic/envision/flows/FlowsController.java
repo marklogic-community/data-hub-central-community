@@ -1,11 +1,15 @@
 package com.marklogic.envision.flows;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.marklogic.client.FailedRequestException;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.mapping.MappingFunctions;
+import com.marklogic.hub.dataservices.MappingService;
+import com.marklogic.hub.dataservices.StepService;
 import com.marklogic.hub.mapping.MappingValidator;
 import com.marklogic.hub.step.StepDefinition;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,7 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.SSLParameters;
 import java.io.IOException;
+import java.net.URI;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/flows")
@@ -39,7 +48,10 @@ public class FlowsController extends AbstractController {
 	@RequestMapping(value = "/{flowName}", method = RequestMethod.PUT)
 	@ResponseBody
 	public ResponseEntity<?> updateFlow(@PathVariable String flowName, @RequestBody JsonNode flowJson) {
-		flowsService.createFlow(getHubClient(), flowJson);
+		Iterator<JsonNode> stepsIterator = flowJson.path("steps").elements();
+		List<JsonNode> stepsList = IteratorUtils.toList(stepsIterator);
+		JsonNode[] steps = new JsonNode[stepsList.size()];
+		flowsService.createStep(getHubClient(), flowsService.createFlowFromJSON(flowJson), stepsList.toArray(steps));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -50,12 +62,6 @@ public class FlowsController extends AbstractController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/mappings/{mapName}", method = RequestMethod.GET)
-	@ResponseBody
-	public String getMapping(@PathVariable String mapName) {
-		return flowsService.getMapping(mapName);
-	}
-
 	@RequestMapping(value = "/customSteps/{stepName}", method = RequestMethod.GET)
 	@ResponseBody
 	public StepDefinition getCustomStep(@PathVariable String stepName) {
@@ -63,11 +69,24 @@ public class FlowsController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/mappings", method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<?> addMapping(@RequestBody JsonNode mapping) throws IOException {
-		flowsService.addMapping(getHubClient(), mapping);
+    @ResponseBody
+    public ResponseEntity<?> addMapping(@RequestBody JsonNode mapping) throws IOException {
+		if (!mapping.has("selectedSource")) {
+			((ObjectNode) mapping).put("selectedSource", "query");
+		}
+		StepService.on(getHubClient().getStagingClient()).saveStep(StepDefinition.StepDefinitionType.MAPPING.toString(), mapping, false, false);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+    @RequestMapping(value = "/mappings/{mapName}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<JsonNode> getMapping(@PathVariable String mapName) {
+    	try {
+    		return new ResponseEntity<JsonNode>(StepService.on(getHubClient().getStagingClient()).getStep(StepDefinition.StepDefinitionType.MAPPING.toString(), mapName), HttpStatus.OK);
+		} catch (FailedRequestException e) {
+			return new ResponseEntity<JsonNode>(HttpStatus.NOT_FOUND);
+		}
+    }
 
 	@RequestMapping(value = "/mappings/validate", method = RequestMethod.POST)
 	@ResponseBody
@@ -79,8 +98,8 @@ public class FlowsController extends AbstractController {
 	@RequestMapping(value = "/mappings/functions", method = RequestMethod.GET)
 	@ResponseBody
 	public JsonNode getMappingFunctions() {
-		MappingFunctions mappingFunctions = new MappingFunctions(getHubClient().getStagingClient());
-		return mappingFunctions.getMappingFunctions();
+		MappingService mappingService = MappingService.on(getHubClient().getStagingClient());
+		return mappingService.getMappingFunctions();
 	}
 
 	@RequestMapping(value = "/mappings/sampleDoc", method = RequestMethod.POST)
@@ -95,14 +114,13 @@ public class FlowsController extends AbstractController {
 	@ResponseBody
 	public ResponseEntity<String> previewMapping(@RequestBody JsonNode body) {
 		String mappingName = body.get("mappingName").asText();
-		int mappingVersion = body.get("mappingVersion").asInt();
-		String format = body.get("format").asText();
-		String uri = body.get("uri").asText();
+		String format = body.path("format").asText("json");
+		String uri = body.path("uri").asText("");
 
-		String response = Flows.on(getHubClient().getStagingClient()).previewMapping(mappingName, mappingVersion, format, uri);
+		String response = Flows.on(getHubClient().getStagingClient()).previewMapping(mappingName, format, uri);
 		HttpHeaders headers = new HttpHeaders();
 		if (format.equals("json")) {
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			headers.setContentType(MediaType.APPLICATION_JSON);
 		} else {
 			headers.setContentType(MediaType.APPLICATION_XML);
 		}

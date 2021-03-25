@@ -1,0 +1,6 @@
+{
+	"local-name" : "redact",
+	"document-uri" : "/envision/redaction-lib.sjs",
+	"modules-database" : "%%mlModulesDbName%%",
+	"role" : [ "data-hub-user-reader" ]
+}

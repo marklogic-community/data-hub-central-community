@@ -228,15 +228,16 @@ export default {
 				this.targetDatabase = 'Final'
 				return
 			}
+			const stepDetails = step.options ? step.options : step;
 			this.stepName = step.name
 			this.stepType = step.stepDefinitionType
-			this.entityName = step.options.targetEntity
+			this.entityName = stepDetails.targetEntityType || stepDetails.targetEntity
 			this.stepDescription = step.description
-			this.sourceCollection = step.options.sourceCollection
-			this.outputFormat = step.options.outputFormat
+			this.sourceCollection = stepDetails.sourceCollection
+			this.outputFormat = stepDetails.outputFormat
 			if (this.stepInfo && this.stepInfo.databases) {
-				this.sourceDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === step.options.sourceDatabase))
-				this.targetDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === step.options.targetDatabase))
+				this.sourceDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === stepDetails.sourceDatabase))
+				this.targetDatabase = _.capitalize(_.findKey(this.stepInfo.databases, (db) => db === stepDetails.targetDatabase))
 			}
 		},
 		inputErrors(field, fieldName) {
@@ -257,17 +258,15 @@ export default {
 			const step = {
 				name: this.stepName,
 				description: this.stepDescription,
-				options: {
-					additionalCollections: [],
-					targetEntity: this.entityName,
-					sourceDatabase : this.stepInfo.databases[this.sourceDatabase.toLowerCase()],
-					targetDatabase : this.stepInfo.databases[this.targetDatabase.toLowerCase()],
-					collections : [this.entityName],
-					sourceCollection : this.sourceCollection,
-					sourceQuery: `cts.collectionQuery(["${this.sourceCollection}"])`,
-					permissions: 'data-hub-operator,read,data-hub-operator,update',
-					outputFormat: this.outputFormat
-				},
+				additionalCollections: [],
+				targetEntity: this.entityName,
+				sourceDatabase : this.stepInfo.databases[this.sourceDatabase.toLowerCase()],
+				targetDatabase : this.stepInfo.databases[this.targetDatabase.toLowerCase()],
+				collections : [this.entityName],
+				sourceCollection : this.sourceCollection,
+				sourceQuery: `cts.collectionQuery(["${this.sourceCollection}"])`,
+				permissions: 'data-hub-common,read,data-hub-common,update',
+				outputFormat: this.outputFormat,
 				customHook: {
 					module: '',
 					parameters: {},
@@ -277,64 +276,33 @@ export default {
 				retryLimit: 0,
 				batchSize: 100,
 				threadCount: 4,
-				stepDefinitionName: 'entity-services-mapping',
+				stepDefinitionName: '',
 				stepDefinitionType: this.stepType
 			}
 
-			if (this.stepType === 'MAPPING') {
-				step.options.mapping = {
-          name : `${this.flowName}-${this.stepName}`,
-          version : 1
-				}
+			if (this.stepType.toLowerCase() === 'mapping') {
 				// default to use our custom uri remapper hook. it will
 				// allow 2 steps to run against the same input doc
 				step.customHook.module = '/envision/customHooks/uriRemapper.sjs'
 				step.stepDefinitionName = 'entity-services-mapping'
+				step.properties = {}
 			}
-			else if (this.stepType === 'MATCHING') {
-				step.options = Object.assign(step.options, {
-					matchOptions: {
-						propertyDefs: { property: [] },
-						algorithms: { algorithm: [] },
-						collections: { content: [] },
-						scoring: {
-							add: [],
-							expand: [],
-							reduce: []
-						},
-						actions: { action: [] },
-						thresholds: { threshold: [] },
-						tuning: { maxScan: 200 }
-					}
+			else if (this.stepType.toLowerCase() === 'matching') {
+				Object.assign(step, {
+					matchRulesets: [],
+					thresholds:[]
 				})
 				step.stepDefinitionName = 'default-matching'
 			}
-			else if (this.stepType === 'MERGING') {
-				step.options = Object.assign(step.options, {
-					matchOptions: '',
-					mergeOptions: {
-						propertyDefs: {
-							properties: [],
-							namespaces: {}
-						},
-						algorithms: {
-							stdAlgorithm: { timestamp: {} },
-							custom: [],
-							collections: {}
-						},
-						mergeStrategies: [],
-						merging: [
-							{
-								algorithmRef: "standard",
-								sourceWeights: [],
-								default: true
-							}
-						]
-					}
+			else if (this.stepType.toLowerCase() === 'merging') {
+				Object.assign(step, {
+					mergeRules:  [],
+					mergeStrategies: [],
+					targetCollections: {}
 				})
 				step.stepDefinitionName = 'default-merging'
 			}
-			else if (this.stepType === 'CUSTOM') {
+			else if (this.stepType.toLowerCase() === 'custom') {
 
 				// default to use our custom uri remapper hook. it will
 				// allow 2 steps to run against the same input doc
@@ -364,7 +332,7 @@ export default {
 		showDialog: 'updateValues',
 		stepInfo: 'updateValues',
 		stepType() {
-			if (this.stepType == 'MATCHING' || this.stepType === 'MERGING') {
+			if (this.stepType && (this.stepType.toLowerCase() == 'matching' || this.stepType.toLowerCase() === 'merging')) {
 				this.sourceDatabase = 'Final'
 			}
 			else {

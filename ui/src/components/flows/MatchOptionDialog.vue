@@ -22,7 +22,7 @@
 						@blur="$v.matchType.$touch()"
 					></v-select>
 
-					<template v-if="matchType === 'standard-reduction'">
+					<template v-if="matchType === 'reduce'">
 						<v-select
 							chips
 							multiple
@@ -51,8 +51,8 @@
 					></v-select>
 
 					<v-text-field
-						v-if="matchType !== 'zip-match'"
 						required
+						integer
 						label="Weight"
 						v-model="weight"
 						data-cy="matchOptionDlg.weightField"
@@ -61,31 +61,64 @@
 						@blur="$v.weight.$touch()"
 					></v-text-field>
 
-					<!-- <template v-if="matchType === 'thesaurus'">
+					<template v-if="matchType === 'synonym'">
+						<v-text-field
+							required
+							label="Thesaurus URI"
+							v-model="thesaurusURI"
+							data-cy="matchOptionDlg.thesaurusUriField"
+							:error-messages="inputErrors('thesaurusURI', 'Thesaurus URI')"
+							@input="$v.thesaurusURI.$touch()"
+							@blur="$v.thesaurusURI.$touch()"
+						></v-text-field>
 					</template>
 
-					<template v-if="matchType === 'double-metaphone'">
-					</template> -->
-
-					<template v-if="matchType === 'zip-match'">
+					<template v-if="matchType === 'doubleMetaphone'">
 						<v-text-field
 							required
-							label="5-vs-9 Match Weight"
-							v-model="zip5match9"
-							data-cy="matchOptionDlg.zip5match9Field"
-							:error-messages="inputErrors('zip5match9', '5-vs-9 Match Weight')"
-							@input="$v.zip5match9.$touch()"
-							@blur="$v.zip5match9.$touch()"
+							label="Dictionary URI"
+							v-model="dictionaryURI"
+							data-cy="matchOptionDlg.dictionaryUriField"
+							:error-messages="inputErrors('dictionaryURI', 'Dictionary URI')"
+							@input="$v.dictionaryURI.$touch()"
+							@blur="$v.dictionaryURI.$touch()"
 						></v-text-field>
-
 						<v-text-field
 							required
-							label="9-vs-5 Match Weight"
-							v-model="zip9match5"
-							data-cy="matchOptionDlg.zip9match5Field"
-							:error-messages="inputErrors('zip9match5', '9-vs-5 Match Weight')"
-							@input="$v.zip9match5.$touch()"
-							@blur="$v.zip9match5.$touch()"
+							label="Distance Threshold"
+							v-model="distanceThreshold"
+							data-cy="matchOptionDlg.distanceThresholdField"
+							:error-messages="inputErrors('distanceThreshold', 'Distance Threshold')"
+							@input="$v.distanceThreshold.$touch()"
+							@blur="$v.distanceThreshold.$touch()"
+						></v-text-field>
+					</template>
+					<template v-if="matchType === 'custom'">
+						<v-text-field
+							label="Module Namespace"
+							v-model="algorithmModuleNamespace"
+							data-cy="matchOptionDlg.algorithmModuleNamespaceField"
+							:error-messages="inputErrors('algorithmModuleNamespace', 'Module Namespace')"
+							@input="$v.algorithmModuleNamespace.$touch()"
+							@blur="$v.algorithmModuleNamespace.$touch()"
+						></v-text-field>
+						<v-text-field
+							required
+							label="Module Path"
+							v-model="algorithmModulePath"
+							data-cy="matchOptionDlg.algorithmModulePathField"
+							:error-messages="inputErrors('algorithmModulePath', 'Module Path')"
+							@input="$v.algorithmModulePath.$touch()"
+							@blur="$v.algorithmModulePath.$touch()"
+						></v-text-field>
+						<v-text-field
+							required
+							label="Function Name"
+							v-model="algorithmFunction"
+							data-cy="matchOptionDlg.algorithmFunctionField"
+							:error-messages="inputErrors('algorithmFunction', 'Function Name')"
+							@input="$v.algorithmFunction.$touch()"
+							@blur="$v.algorithmFunction.$touch()"
 						></v-text-field>
 					</template>
 				</v-card-text>
@@ -118,35 +151,38 @@ export default {
 			propertyName: '',
 			propertiesReduce: [],
 			weight: null,
-			zip5match9: null,
-			zip9match5: null,
+			dictionaryURI: null,
+			distanceThreshold: 100,
+			thesaurusURI: null,
+			algorithmModuleNamespace: null,
+			algorithmModulePath: null,
+			algorithmFunction: null,
 
 			matchTypes: [
 				{
 					name: 'Exact',
 					value: 'exact'
 				},
-				// {
-				// 	name: 'Synonym',
-				// 	value: 'thesaurus'
-				// },
-				// {
-				// 	name: 'Double Metaphone',
-				// 	value: 'double-metaphone'
-				// },
-				{
+		    {
+					name: 'Synonym',
+			 		value: 'synonym'
+			  },
+			  {
+					name: 'Double Metaphone',
+			 		value: 'doubleMetaphone'
+			  },
+			 {
 					name: 'Zip',
-					value: 'zip-match'
-				},
+					value: 'zip'
+			 },
+			 {
+				 	name: 'Reduce',
+					value: 'reduce'
+			 },
 				{
-					name: 'Reduce',
-					value: 'standard-reduction'
+					name: 'Custom',
+					value: 'custom'
 				}
-				// ,
-				// {
-				// 	name: 'Custom',
-				// 	value: 'custom'
-				// }
 			]
 		}
 	},
@@ -170,20 +206,14 @@ export default {
 		let vals = {
 			matchType: { required },
 		}
-		if (this.matchType === 'standard-reduction') {
+		if (this.matchType === 'reduce') {
 			vals.propertiesReduce = { required }
 		}
 		else {
 			vals.propertyName = { required }
 		}
 
-		if (this.matchType === 'zip-match') {
-			vals.zip5match9 = { required, integer }
-			vals.zip9match5 = { required, integer }
-		}
-		else {
-			vals.weight = { required, integer }
-		}
+		vals.weight = { required, integer }
 		return vals
   },
 	mounted() {
@@ -199,17 +229,14 @@ export default {
 				this.propertyName = ''
 				this.propertiesReduce = []
 				this.weight = null
-				this.zip5match9 = null
-				this.zip9match5 = null
 				return
 			}
 
-			this.matchType = option.algorithmRef || 'exact'
-			this.propertyName = option.propertyName
-			this.propertiesReduce = option.propertiesReduce
+			this.reduce = option.reduce
+			this.matchType = this.reduce ? 'reduce': option.matchRules[0].matchType
+			this.propertyName = option.matchRules[0].entityPropertyPath
+			this.propertiesReduce = option.reduce ? option.matchRules.map((rule) => rule.entityPropertyPath): [];
 			this.weight = option.weight
-			this.zip5match9 = option.zip5match9
-			this.zip9match5 = option.zip9match5
 		},
 		inputErrors(field, fieldName) {
 			const errors = []
@@ -223,16 +250,34 @@ export default {
 			if (this.$v.$invalid) {
 				return
 			}
-
-			const option = {
-				algorithmRef: (this.matchType !== 'exact') ? this.matchType : null,
-				propertyName: (this.matchType !== 'standard-reduction') ? this.propertyName : null,
-				propertiesReduce: this.propertiesReduce,
-				weight: (this.matchType !== 'zip-match') ? this.weight : null,
-				zip5match9: (this.matchType === 'zip-match') ? this.zip5match9 : null,
-				zip9match5: (this.matchType === 'zip-match') ? this.zip9match5 : null
+			let reduce = this.matchType === 'reduce';
+			let prefix = reduce ? 'Reduce: ' : '';
+			let rulesetTitle = this.option.matchRules.map((rule) => `${rule.entityPropertyPath} - ${rule.matchType}`).join(', ');
+			const matchRuleset = {
+				name:  `${prefix}${rulesetTitle}`,
+				reduce,
+				weight: this.weight
 			}
-			this.$emit('save', option)
+			if (reduce) {
+				matchRuleset.matchRules = this.propertiesReduce.map((prop) => {return { entityPropertyPath: prop, matchType: 'exact', options: {} }})
+			} else {
+				const matchRule = { entityPropertyPath: this.propertyName, matchType: this.matchType, options: {} }
+				matchRuleset.matchRules = [ matchRule ]
+				switch (this.matchType) {
+					case "doubleMetaphone":
+						matchRule.options.dictionaryURI = this.dictionaryURI
+						matchRule.options.distanceThreshold = this.distanceThreshold
+						break;
+					case "synonym":
+						matchRule.options.thesaurusURI = this.thesaurusURI
+						break;
+					case "custom":
+						matchRule.options.dictionaryURI = this.dictionaryURI
+						matchRule.options.distanceThreshold = this.distanceThreshold
+						break;
+				}
+			}
+			this.$emit('save', matchRuleset)
 			this.close()
 		},
 		close() {
