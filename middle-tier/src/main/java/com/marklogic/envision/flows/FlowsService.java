@@ -101,8 +101,8 @@ public class FlowsService {
 
 	public void deleteFlow(HubClient hubClient, String flowName) {
 		Flow flow = flowManager.getFlow(flowName);
-		flow.getSteps().forEach((stepName, step) -> {
-			StepService.on(hubClient.getStagingClient()).deleteStep(step.getStepDefinitionType().toString(), stepName);
+		flow.getSteps().forEach((stepNumber, step) -> {
+			StepService.on(hubClient.getStagingClient()).deleteStep(step.getStepDefinitionType().toString(), step.getName());
 		});
 		flowManager.deleteFlow(flowName);
 	}

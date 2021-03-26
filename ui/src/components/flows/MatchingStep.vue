@@ -207,9 +207,9 @@ export default {
 			}
 			else {
 				this.thresholds.push({
-					above: threshold.above,
+					score: threshold.score,
 					action: threshold.action,
-					label: threshold.label
+					thresholdName: threshold.thresholdName
 				})
 			}
 			this.save()

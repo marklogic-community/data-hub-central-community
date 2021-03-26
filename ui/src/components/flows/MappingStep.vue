@@ -166,14 +166,7 @@ export default {
 		})
 	},
 	mounted() {
-		flowsApi.getFunctions().then(funcs => {
-			let functions = []
-			for (let func in funcs) {
-				functions.push({
-					name: func,
-					...funcs[func]
-				})
-			}
+		flowsApi.getFunctions().then(functions => {
 			this.functions = functions
 		})
 		this.stepChanged()
@@ -229,10 +222,12 @@ export default {
 						}
 					})
 			}
-			let mapping = this.mapping
-			const values = (this.mapTestResp && this.mapTestResp.properties) || {}
-			getProps(this.targetEntity, mapping.properties, values, null, 0)
-			this.entityProperties = props
+			if (this.targetEntity) {
+				let mapping = this.mapping
+				const values = (this.mapTestResp && this.mapTestResp.properties) || {}
+				getProps(this.targetEntity, mapping.properties, values, null, 0)
+				this.entityProperties = props
+			}
 		},
 		isPropRowVisible(prop) {
 			let isVisible = true
@@ -291,7 +286,10 @@ export default {
 		},
 		loadMapping() {
 			flowsApi.getMapping(this.mapName)
-				.then(map => this.mapping = map)
+				.then(map => {
+					this.mapping = map
+					this.createEntityProperties()
+				})
 				.catch(err => {
 					console.error(err)
 				})
@@ -320,7 +318,9 @@ export default {
 			}
 		},
 		async saveMapping() {
-			await flowsApi.saveMapping(this.mapping)
+			if (Object.keys(this.mapping).length) {
+				await flowsApi.saveMapping(this.mapping)
+			}
 		}
 	},
 	watch: {
@@ -336,7 +336,8 @@ export default {
 				this.validate()
 				//'createEntityProperties',
 			},
-			deep: true
+			deep: true,
+			immediate: true
 		},
 		step: 'stepChanged'
 	}

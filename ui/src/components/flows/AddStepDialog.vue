@@ -38,11 +38,13 @@
 						:items="entities"
 						label="Entity Type"
 						v-model="entityName"
+						item-text="text"
+						item-value="value"
 						:disabled="isEditing"
 						data-cy="addStepDialog.entityTypeField"
 						:menu-props="{ 'content-class': 'entityTypeArray'}"
 						required
-						:error-messages="inputErrors('stepType', 'Step Type')"
+						:error-messages="inputErrors('entityName', 'Entity Type')"
 						@input="$v.entityName.$touch()"
 						@blur="$v.entityName.$touch()"
 					></v-select>
@@ -180,7 +182,7 @@ export default {
 		collections() {
 			const cols = (this.sourceDatabase && this.stepInfo) ? (this.stepInfo.collections[this.sourceDatabase.toLowerCase()].map(c => c.collection) || []) : []
 			if (this.sourceDatabase === 'Final') {
-				return _.uniq(this.entities.concat(cols))
+				return _.uniq(this.entities.map((entity) => entity.text).concat(cols))
 			}
 			return cols
 		},
@@ -193,7 +195,7 @@ export default {
 			}
 		},
 		...mapState({
-			entities: state => Object.keys(state.flows.entities)
+			entities: state => Object.values(state.flows.entities).map((entity) => ({text: entity.name, value: entity.fullUri}))
 		})
 	},
 	validations: {
@@ -254,15 +256,17 @@ export default {
 			}
 
 			this.saveInProgress = true
+			let entityTitle = (this.entityName) ? this.entityName.substring(this.entityName.lastIndexOf('/')+1): null;
 
 			const step = {
 				name: this.stepName,
 				description: this.stepDescription,
 				additionalCollections: [],
-				targetEntity: this.entityName,
+				targetEntityType: this.entityName,
 				sourceDatabase : this.stepInfo.databases[this.sourceDatabase.toLowerCase()],
 				targetDatabase : this.stepInfo.databases[this.targetDatabase.toLowerCase()],
-				collections : [this.entityName],
+				collections : [entityTitle],
+				selectedSource: 'query',
 				sourceCollection : this.sourceCollection,
 				sourceQuery: `cts.collectionQuery(["${this.sourceCollection}"])`,
 				permissions: 'data-hub-common,read,data-hub-common,update',
@@ -292,6 +296,7 @@ export default {
 					matchRulesets: [],
 					thresholds:[]
 				})
+				//delete step.collections
 				step.stepDefinitionName = 'default-matching'
 			}
 			else if (this.stepType.toLowerCase() === 'merging') {
@@ -300,6 +305,7 @@ export default {
 					mergeStrategies: [],
 					targetCollections: {}
 				})
+				//delete step.collections
 				step.stepDefinitionName = 'default-merging'
 			}
 			else if (this.stepType.toLowerCase() === 'custom') {
