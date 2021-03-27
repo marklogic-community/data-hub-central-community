@@ -608,7 +608,9 @@ const flows = {
 				output[entity.info.title] = {
 					properties: entity.definitions.definitions[entity.info.title].properties,
 					filename: entity.filename,
-					info: entity.info
+					info: entity.info,
+					name: entity.info.title,
+					fullUri: `${entity.info.baseUri}${entity.info.baseUri.endsWith('/') ? '':'/'}${entity.info.title}-${entity.info.version}/${entity.info.title}`
 				}
 				return output
 			}, {})

@@ -150,7 +150,7 @@ export default {
 		},
 		deleteStep() {
 			this.deleteInProgress = true
-			flowsApi.deleteStep(this.flow.name, this.step.stepName)
+			flowsApi.deleteStep(this.flow.name, this.step.name)
 				.then(() => {
 					this.deleteInProgress = false
 					this.confirmDeleteMenu = false

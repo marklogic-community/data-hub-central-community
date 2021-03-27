@@ -35,7 +35,7 @@
 								<div v-for="category in categories" :key="category">
 									<v-subheader>{{category}}</v-subheader>
 									<v-list-item v-for="(func, index) in functionsByCategory(category)" :key="index" @click="selectedFunc = func">
-										<v-list-item-title>{{func.name}}</v-list-item-title>
+										<v-list-item-title>{{func.functionName}}</v-list-item-title>
 									</v-list-item>
 								</div>
 							</v-list-item-group>
@@ -43,10 +43,10 @@
 					</v-flex>
 					<v-flex md6 class="sigwrapper">
 						<v-container v-if="selectedFunc">
-							<h2><v-icon>functions</v-icon>{{selectedFunc.name}}</h2>
+							<h2><v-icon>functions</v-icon>{{selectedFunc.functionName}}</h2>
 							<p class="funcsig">{{selectedFunc.signature}}</p>
 							<p v-if="selectedFunc.category === 'xpath'">
-								<v-icon>menu_book</v-icon> <a data-cy="functions.docsLink" target="new" :href="`https://docs.marklogic.com/fn:${selectedFunc.name}`">Online Documentation</a>
+								<v-icon>menu_book</v-icon> <a data-cy="functions.docsLink" target="new" :href="`https://docs.marklogic.com/fn:${selectedFunc.functionName}`">Online Documentation</a>
 							</p>
 						</v-container>
 						<div class="text-center">
@@ -86,8 +86,8 @@ export default {
 		functionsByCategory(category) {
 			return this.functions
 				.filter(f => f.category === category)
-				.filter(f => f.name.toLowerCase().includes((this.funcSearch || '').toLowerCase()))
-				.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+				.filter(f => f.functionName.toLowerCase().includes((this.funcSearch || '').toLowerCase()))
+				.sort((a, b) => a.functionName.toLowerCase().localeCompare(b.functionName.toLowerCase()))
 		},
 		onSelected(func) {
 			this.selectedFunc = func

@@ -117,7 +117,7 @@
 												<h4>{{step.name}}</h4>
 												<div class="meta">
 													<span v-if="step.dataSource">{{step.dataSource}} => </span>
-													{{step.targetEntity ? step.targetEntity.substring(step.targetEntity.lastIndexOf("/")+1) : ''}}
+													{{step.targetEntityType ? step.targetEntityType.substring(step.targetEntityType.lastIndexOf("/")+1) : ''}}
 												</div>
 											</div>
 										</div>
@@ -374,7 +374,8 @@ export default {
 							name: step.name,
 							stepDefinitionType: step.stepDefinitionType || "",
 							dataSource: step.options ? step.options.sourceCollection: step.sourceCollection,
-							stepNumber: step.stepNumber
+							stepNumber: step.stepNumber,
+							targetEntityType: step.targetEntityType || step.targetEntity
 						}
 					}) : []
 			},

@@ -157,7 +157,7 @@ export default {
 			algorithmModuleNamespace: null,
 			algorithmModulePath: null,
 			algorithmFunction: null,
-
+			option: {},
 			matchTypes: [
 				{
 					name: 'Exact',
@@ -251,10 +251,7 @@ export default {
 				return
 			}
 			let reduce = this.matchType === 'reduce';
-			let prefix = reduce ? 'Reduce: ' : '';
-			let rulesetTitle = this.option.matchRules.map((rule) => `${rule.entityPropertyPath} - ${rule.matchType}`).join(', ');
 			const matchRuleset = {
-				name:  `${prefix}${rulesetTitle}`,
 				reduce,
 				weight: this.weight
 			}
@@ -277,6 +274,9 @@ export default {
 						break;
 				}
 			}
+			let prefix = reduce ? 'Reduce: ' : '';
+			let rulesetTitle = matchRuleset.matchRules.map((rule) => `${rule.entityPropertyPath} - ${rule.matchType}`).join(', ');
+			matchRuleset.name = `${prefix}${rulesetTitle}`;
 			this.$emit('save', matchRuleset)
 			this.close()
 		},
