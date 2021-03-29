@@ -8,7 +8,7 @@ permalink: /
 # Data Hub Central Community Edition (DHCCE)
 <p>Data Hub Central Community Edition provides a visual way to interact with and experience your true multi-model data hub.  You can go from loading data, to integrating, exploring, validating, and exporting curated results using the following components:  </p>
 
-<p><i>This project was formerly known as Envision.  We are in the process of renaming and enhancing this project to be compatible with Data Hub 5.4.  This project works with Data Hub Framework versions 5.1 and 5.2.  More news to come...</i></p>
+<p><i>This project was formerly known as Envision. This project has been renamed and enhanced to be compatible with Data Hub 5.4.</i></p>
 
 * **Upload** to load source csv files as-is into the data hub via drag and drop
 * **Connect** to visually model the specification for how you want to express your integrated business concepts as entities and relationships
@@ -18,7 +18,9 @@ permalink: /
 *  **Know** to search and navigate your semantics ontology.
 
 ## Integration with MarkLogic Data Hub
-DHCCE requires **[MarkLogic Data Hub Framework](https://github.com/marklogic/marklogic-data-hub/releases)** 5.1 or greater and **[MarkLogic 10](https://developer.marklogic.com/products/marklogic-server/10.0)** or greater. It will work with on-prem data hubs as well as with cloud including MarkLogic Data Hub Service (DHS)
+DHCCE v5.4.1 requires **[MarkLogic Data Hub Framework](https://github.com/marklogic/marklogic-data-hub/releases)** 5.4.x or greater and **[MarkLogic 10](https://developer.marklogic.com/products/marklogic-server/10.0)** or greater. It will work with on-prem data hubs as well as with cloud including MarkLogic Data Hub Service (DHS)
+
+<i>Note: If you are using MarkLogic Data Hub 5.2.x then continue to use DHCCE v2.0.5.</i>
 
 You can use Connect to create models that you can visualize in Explore with new as well as existing data hubs. Integrate also works with new as well as existing data hubs.  Know provides a visualization for Semantics triples only.
 <br>
