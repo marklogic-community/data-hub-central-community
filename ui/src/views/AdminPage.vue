@@ -69,7 +69,7 @@ export default {
 		</fieldset>
 		<fieldset class="col-sm-9">
 			<legend>Enhancements</legend>
-			<p>Please <a href="https://github.com/marklogic-community/envision/issues/new/choose" target="_blank">file an issue on Github</a> if you'd like to report a bug or request enhancements.</p>
+			<p>Please <a href="https://github.com/marklogic-community/data-hub-central-community/issues/new/choose" target="_blank">file an issue on Github</a> if you'd like to report a bug or request enhancements.</p>
 		</fieldset>
 	</div>
 </template>
