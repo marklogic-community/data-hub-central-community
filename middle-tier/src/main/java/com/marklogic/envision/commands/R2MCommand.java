@@ -1,45 +1,47 @@
 package com.marklogic.envision.commands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marklogic.client.DatabaseClient;
-import com.marklogic.client.document.DocumentWriteSet;
-import com.marklogic.client.document.JSONDocumentManager;
 import com.marklogic.client.ext.helper.LoggingObject;
-import com.marklogic.client.ext.util.DefaultDocumentPermissionsParser;
-import com.marklogic.client.ext.util.DocumentPermissionsParser;
-import com.marklogic.envision.hub.HubClient;
-import com.marklogic.mgmt.util.ObjectMapperFactory;
+import com.marklogic.r2m.RelationalToMarkLogic;
+import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class R2MCommand extends LoggingObject {
 
-	private final HubClient hubClient;
-	private final String username;
+	private final String joinConfigFilePath;
+	private final String sourceConfigFilePath;
+	private final String insertConfigFilePath;
+	private final String marklogicConfigFilePath;
 
-	private final DocumentPermissionsParser documentPermissionsParser = new DefaultDocumentPermissionsParser();
-	private final ObjectMapper objectMapper;
-
-
-	public R2MCommand(HubClient hubClient, String username) {
-		this.hubClient = hubClient;
-		this.username = username;
-		this.objectMapper = ObjectMapperFactory.getObjectMapper();
+	public R2MCommand(String joinConfigFilePath, String sourceConfigFilePath, String insertConfigFilePath, String marklogicConfigFilePath) {
+		this.joinConfigFilePath = joinConfigFilePath;
+		this.sourceConfigFilePath = sourceConfigFilePath;
+		this.insertConfigFilePath = insertConfigFilePath;
+		this.marklogicConfigFilePath = marklogicConfigFilePath;
 	}
 
-	public void execute() {
-		DatabaseClient stagingClient = hubClient.getStagingClient();
-		DatabaseClient finalClient = hubClient.getFinalClient();
-
-		Path entitiesPath = hubClient.getHubConfig().getHubEntitiesDir();
-
-		JSONDocumentManager finalDocMgr = finalClient.newJSONDocumentManager();
-		JSONDocumentManager stagingDocMgr = stagingClient.newJSONDocumentManager();
-
-		DocumentWriteSet finalEntityDocumentWriteSet = finalDocMgr.newWriteSet();
-		DocumentWriteSet stagingEntityDocumentWriteSet = stagingDocMgr.newWriteSet();
+	public void execute() throws Exception {
 		//run the R2M commandline app
+		try {
+			// Initialize the r2m tool
+			RelationalToMarkLogic r2m = new RelationalToMarkLogic();
+
+			String joinConfigJson = new String(Files.readAllBytes(Paths.get(this.joinConfigFilePath)));
+			String sourceConfigJson = new String(Files.readAllBytes(Paths.get(this.sourceConfigFilePath)));
+			String insertConfigJson = new String(Files.readAllBytes(Paths.get(this.insertConfigFilePath)));
+			String marklogicConfigJson = new String(Files.readAllBytes(Paths.get(this.marklogicConfigFilePath)));
+
+			r2m.setJoinConfigJson(joinConfigJson);
+			r2m.setSourceConfigJson(sourceConfigJson);
+			r2m.setInsertConfigJson(insertConfigJson);
+			r2m.setMarkLogicConfigJson(marklogicConfigJson);
+
+			r2m.run();
+		} catch (ParseException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

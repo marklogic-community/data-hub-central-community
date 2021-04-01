@@ -44,10 +44,18 @@ public class R2MService extends LoggingObject{
 	}
 
 	public void runR2M(HubClient hubClient) {
+		String joinConfigFilePath = "";
+		String sourceConfigFilePath = "";
+		String insertConfigFilePath = "";
+		String marklogicConfigFilePath = "";
 		try {
-			new R2MCommand(hubClient, hubClient.getUsername()).execute();
+			new R2MCommand(
+				joinConfigFilePath,
+				sourceConfigFilePath,
+				insertConfigFilePath,
+				marklogicConfigFilePath ).execute();
 		}
-		catch (Error error) {
+		catch (Error | Exception error) {
 			error.printStackTrace();
 		}
 	}

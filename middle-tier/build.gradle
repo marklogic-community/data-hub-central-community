@@ -81,6 +81,12 @@ dependencies {
 
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
+	// R2M Core dependencies needed for using Spring Batch, Spring JDBC, and marklogic-spring-batch
+	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
+	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
+	implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
+
+
 	testCompile group: 'org.springframework', name: 'spring-test'
 	testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
 		exclude group : 'junit', module: 'junit'
@@ -100,11 +106,19 @@ dependencies {
 	testCompile 'org.xmlunit:xmlunit-core:2.8.2'
 	testCompile 'org.xmlunit:xmlunit-matchers:2.8.2'
 	testCompile 'org.easymock:easymock:3.4'
-	testCompile 'ch.qos.logback:logback-classic:1.1.11'
 	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
+	testCompile 'ch.qos.logback:logback-classic:1.2'
 	testCompile "org.mockito:mockito-core:3.0.0"
 	testCompile "org.mockito:mockito-junit-jupiter:3.0.0"
 }
+
+//configurations {
+//	all {
+//			exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//			exclude group: 'ch.qos.logback', module: 'logback-classic'
+//			exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+//	}
+//}
 
 processResources {
 	filesMatching("**/version.properties") {
