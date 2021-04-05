@@ -81,35 +81,36 @@ dependencies {
 
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
+	//***********************R2M
 	// R2M Core dependencies needed for using Spring Batch, Spring JDBC, and marklogic-spring-batch
-	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
-	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
-	implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
+//	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
+//	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
+//	implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
+	//************************EndR2M
 
-
-	testCompile group: 'org.springframework', name: 'spring-test'
-	testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+	testImplementation group: 'org.springframework', name: 'spring-test'
+	testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
 		exclude group : 'junit', module: 'junit'
 		exclude group : 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testCompile group: 'org.springframework.security', name: 'spring-security-test'
+	testImplementation group: 'org.springframework.security', name: 'spring-security-test'
 
-//	testCompile "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
-	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testCompile "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
-	testCompile "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+//	testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+	testImplementation "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
 	testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 	testRuntime "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
 	testRuntime "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
 
-	testCompile 'org.skyscreamer:jsonassert:1.5.0'
-	testCompile 'org.xmlunit:xmlunit-core:2.8.2'
-	testCompile 'org.xmlunit:xmlunit-matchers:2.8.2'
-	testCompile 'org.easymock:easymock:3.4'
-	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
-	testCompile 'ch.qos.logback:logback-classic:1.2'
-	testCompile "org.mockito:mockito-core:3.0.0"
-	testCompile "org.mockito:mockito-junit-jupiter:3.0.0"
+	testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+	testImplementation 'org.xmlunit:xmlunit-core:2.8.2'
+	testImplementation 'org.xmlunit:xmlunit-matchers:2.8.2'
+	testImplementation 'org.easymock:easymock:3.4'
+	testImplementation 'ch.qos.logback:logback-classic:1.1.11'
+	testImplementation 'org.slf4j:log4j-over-slf4j:1.7.13'
+	testImplementation "org.mockito:mockito-core:3.0.0"
+	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0"
 }
 
 //configurations {
@@ -118,6 +119,9 @@ dependencies {
 //			exclude group: 'ch.qos.logback', module: 'logback-classic'
 //			exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
 //	}
+//}
+//configurations {
+//	all*.exclude module : 'spring-boot-starter-logging'
 //}
 
 processResources {

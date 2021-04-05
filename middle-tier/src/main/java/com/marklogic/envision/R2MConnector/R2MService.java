@@ -49,11 +49,13 @@ public class R2MService extends LoggingObject{
 		String insertConfigFilePath = "";
 		String marklogicConfigFilePath = "";
 		try {
-			new R2MCommand(
+/*			new R2MCommand(
 				joinConfigFilePath,
 				sourceConfigFilePath,
 				insertConfigFilePath,
 				marklogicConfigFilePath ).execute();
+
+ */
 		}
 		catch (Error | Exception error) {
 			error.printStackTrace();
