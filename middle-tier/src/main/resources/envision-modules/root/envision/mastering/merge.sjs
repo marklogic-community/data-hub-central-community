@@ -9,6 +9,7 @@ var performanceMetrics;
 
 uris = uris.toObject();
 const DataHubSingleton = require("/data-hub/5/datahub-singleton.sjs");
+const dhUtils = require("/envision/dh-utils.sjs")
 const mastering = require('/envision/mastering.sjs')
 
 if (!preview && mastering.isBlocked(uris).blocked) {
@@ -52,7 +53,7 @@ else {
 	combinedOptions.noWrite = !!preview;
 	combinedOptions.acceptsBatch = true;
 	let query = cts.documentQuery(uris);
-	let content = datahub.hubUtils.queryToContentDescriptorArray(query, combinedOptions, sourceDatabase);
+	let content = dhUtils.hubUtils.queryToContentDescriptorArray(query, combinedOptions, sourceDatabase);
 	let results = datahub.flow.runFlow(internalFlowName, jobId, content, combinedOptions, internalStepNumber);
 	const response = {
 		'success': results.errorCount === 0,
