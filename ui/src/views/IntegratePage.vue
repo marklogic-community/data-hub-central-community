@@ -604,10 +604,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@color-ingest: #ad1457;
-@color-mapping: #3F51B5;
-@color-mastering: #009688;
-@color-custom: #f4511e;
+@color-ingest: #4d538e;
+@color-mapping: #668ab6;
+@color-matching: #7777A8;
+@color-merging: #049CB1;
+@color-mastering: #727fcc;
+@color-custom: #30af9a;
 
 .bar {
 	height: 22px;
@@ -616,6 +618,7 @@ export default {
 	color: white;
 	line-height: 22px;
 	padding: 0px 5px;
+	font-weight: 600;
 
 	&.INGESTION {
 		background: @color-ingest;
@@ -630,10 +633,10 @@ export default {
 		background: @color-mastering;
 	}
 	&.MATCHING {
-		background: @color-mastering;
+		background: @color-matching;
 	}
 	&.MERGING {
-		background: @color-mastering;
+		background: @color-merging;
 	}
 }
 
