@@ -25,6 +25,7 @@ import com.marklogic.envision.dataServices.Users;
 import com.marklogic.envision.email.EmailService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.installer.InstallService;
+import com.marklogic.envision.model.ModelService;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.grove.boot.error.NotAuthenticatedException;
 import com.marklogic.hub.DatabaseKind;
@@ -107,6 +108,9 @@ public class BaseTest {
 
 	@Autowired
 	protected LoadHubArtifactsCommand loadHubArtifactsCommand;
+
+	@Autowired
+	protected ModelService modelService;
 
 	private File dhfDir;
 
@@ -369,6 +373,7 @@ public class BaseTest {
 		File projectDir = projectPath.toFile();
 		this.dhfDir = projectDir;
 		envisionConfig.dhfDir = projectDir;
+		modelService.clearCachedModelsDirFile();
 		envisionConfig.configureHub();
 		// force module loads for new test runs.
 		File timestampDirectory = new File(projectDir + "/.tmp");
@@ -434,6 +439,7 @@ public class BaseTest {
 		Path projectPath = createProjectDir().toAbsolutePath();
 		dhfDir = projectPath.toFile();
 		envisionConfig.dhfDir = dhfDir;
+		modelService.clearCachedModelsDirFile();
 		hubConfig.createProject(projectPath.toString());
 		hubConfig.refreshProject();
 		hubProject = hubConfig.getHubProject();

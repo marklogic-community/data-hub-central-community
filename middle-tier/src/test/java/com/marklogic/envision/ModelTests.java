@@ -131,7 +131,7 @@ public class ModelTests extends BaseTest {
 		DatabaseClient client = getFinalClient();
 		JsonNode result = EntityModeller.on(client).fromDatahub();
 		System.out.println(objectMapper.writeValueAsString(result));
-		jsonAssertEquals(getResource("output/esModel.json"), result, resultCompare);
+		jsonAssertEquals(getResource("output/esNestedModel.json"), result, resultCompare);
 	}
 
 	@Test
