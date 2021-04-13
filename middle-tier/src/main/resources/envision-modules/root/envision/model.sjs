@@ -32,7 +32,7 @@ function modelToES(model) {
 				wordLexicon[p.name] = true
 			}
 			if (p.isArray) {
-				if (entityNames.indexOf(p.type) >= 0 || p.isStructured) {
+				if (entityNames.indexOf(p.type) >= 0 || p.structureDefinitions) {
 					properties[p.name] = {
 						datatype: "array",
 						description: p.description,

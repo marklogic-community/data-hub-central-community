@@ -65,12 +65,12 @@
           }
         },
 				"address": {
-					"$ref" : "#/definitions/Address"
+					"$ref" : "http://marklogic.com/envision/Address-0.0.1/Address"
 				},
 				"workAddresses": {
 					"datatype" : "array",
 					"items" : {
-						"$ref": "#/definitions/Address"
+						"$ref": "http://marklogic.com/envision/Address-0.0.1/Address"
 					}
 				},
         "belongsTo" : {
