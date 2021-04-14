@@ -37,17 +37,19 @@ public class ModelTests extends BaseTest {
 	@Autowired
 	SessionManager sessionManager;
 
+	private boolean modulesInstalled = false;
+
 	@BeforeEach
 	void setUp() throws Exception {
+		envisionConfig.setMultiTenant(false);
+		super.setup();
 		deleteProtectedPaths(getAdminHubClient().getFinalClient());
 
 		removeUser(ACCOUNT_NAME);
 
-		envisionConfig.setMultiTenant(false);
 
 		clearStagingFinalAndJobDatabases();
 		clearDatabases(HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
-		installEnvisionModules();
 
 		registerAccount();
 		sessionManager.setHubClient(ACCOUNT_NAME, getAdminHubClient());

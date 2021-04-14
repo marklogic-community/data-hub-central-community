@@ -18,15 +18,16 @@ public class CrudCrontrollerTests extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
+	public void setup() throws IOException {
+		envisionConfig.setMultiTenant(true);
+		super.setup();
+
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
 
-		envisionConfig.setMultiTenant(true);
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD, "pii-reader");
-		installEnvisionModules();
 
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(hubClient, getResourceStream("entities/redactedName.json"));

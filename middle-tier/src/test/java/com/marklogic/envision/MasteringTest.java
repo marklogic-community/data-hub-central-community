@@ -30,10 +30,9 @@ public class MasteringTest extends BaseTest {
 	@BeforeEach
 	void setUp() throws IOException, InterruptedException {
 		envisionConfig.setMultiTenant(true);
+		super.setup();
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-
-		installEnvisionModules();
 
 		registerAccount();
 

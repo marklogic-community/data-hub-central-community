@@ -25,8 +25,10 @@ public class EntitiesControllerTests extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
+	public void setup() throws IOException {
+		clearStagingFinalAndJobDatabases();
 		envisionConfig.setMultiTenant(true);
+		super.setup();
 		HubClient hubClient = getNonAdminHubClient();
 		modelService.saveModel(hubClient, getResourceStream("models/model.json"));
 	}

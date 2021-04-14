@@ -21,16 +21,13 @@ public class TestExplore extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException, InterruptedException {
-		logout();
+	public void setup() throws IOException {
+		envisionConfig.setMultiTenant(true);
+		super.setup();
 
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
-
-		envisionConfig.setMultiTenant(true);
-
-		installEnvisionModules();
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
