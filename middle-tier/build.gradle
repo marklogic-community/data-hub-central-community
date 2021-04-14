@@ -13,6 +13,12 @@ plugins {
 	id 'com.marklogic.ml-development-tools' version '4.1.1'
 	id 'org.springframework.boot' version '2.2.13.RELEASE'
 }
+configurations {
+	all {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+		exclude group: 'ch.qos.logback'
+	}
+}
 
 apply plugin: "java"
 apply plugin: "io.spring.dependency-management"
@@ -80,12 +86,17 @@ dependencies {
 	compile('commons-codec:commons-codec:1.15')
 
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	//TODO Restore to logback implementation
+	//compile 'ch.qos.logback:logback-classic:1.1.11'
+	compile 'org.springframework.boot:spring-boot-starter-log4j2'
+	compile 'com.fasterxml.jackson.core:jackson-databind'
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml'
 
 	//***********************R2M
 	// R2M Core dependencies needed for using Spring Batch, Spring JDBC, and marklogic-spring-batch
-//	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
-//	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
-//	implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
+	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
+	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
+	//implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
 	//************************EndR2M
 
 	testImplementation group: 'org.springframework', name: 'spring-test'
@@ -112,17 +123,6 @@ dependencies {
 	testImplementation "org.mockito:mockito-core:3.0.0"
 	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0"
 }
-
-//configurations {
-//	all {
-//			exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-//			exclude group: 'ch.qos.logback', module: 'logback-classic'
-//			exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
-//	}
-//}
-//configurations {
-//	all*.exclude module : 'spring-boot-starter-logging'
-//}
 
 processResources {
 	filesMatching("**/version.properties") {
