@@ -39,15 +39,13 @@ public class ExportControllerTests extends AbstractMvcTest {
 	ExportService exportService;
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
+	public void setup() throws IOException {
+		envisionConfig.setMultiTenant(true);
+		super.setup();
 
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
-
-		envisionConfig.setMultiTenant(true);
-		installEnvisionModules();
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
@@ -62,6 +60,7 @@ public class ExportControllerTests extends AbstractMvcTest {
 		for (int i = 100; i < 300; i++) {
 			installDoc(hc.getFinalClient(), "entities/exportMe2.xml", "/col2/doc-" + i + ".xml", "Department");
 		}
+		deleteCollection(getAdminHubClient().getFinalClient(), ExportService.EXPORT_INFO_COLLECTION);
 	}
 
 	@AfterEach

@@ -12,9 +12,9 @@ public class GetSampleDocTest extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
+		super.setup();
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
 
 		registerAccount();
 

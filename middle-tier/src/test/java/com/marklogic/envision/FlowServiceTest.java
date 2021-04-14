@@ -25,12 +25,10 @@ public class FlowServiceTest extends BaseTest {
 
 	@BeforeEach
 	void setUp() throws IOException {
-		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		clearDatabases(HubConfig.DEFAULT_MODULES_DB_NAME);
-
-		installHubModules();
-		installEnvisionModules();
+		clearModules();
+		super.setup();
+		removeUser(ACCOUNT_NAME);
 
 		registerAccount();
 
