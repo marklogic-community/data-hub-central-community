@@ -23,7 +23,7 @@ describe('Login', () => {
 		cy.visit('/')
 		cy.url().should('include', '/login')
 
-		cy.contains('button', 'Login')
+		cy.contains('button', 'LogIn')
 		cy.get('input[name=login]').type('maverick')
 		cy.get('input[name=password]').type('goose')
 		cy.get('button').click()
@@ -33,7 +33,7 @@ describe('Login', () => {
 	it('fails with invalid credentials', () => {
 		cy.visit('/')
 		cy.url().should('include', '/login')
-		cy.contains('button', 'Login')
+		cy.contains('button', 'LogIn')
 		cy.get('input[name=login]').type('maverick')
 		cy.get('input[name=password]').type('moose')
 		cy.get('button').click()
@@ -47,7 +47,7 @@ describe('Login', () => {
 	it('fails with missing credentials', () => {
 		cy.visit('/')
 
-		cy.contains('button', 'Login')
+		cy.contains('button', 'LogIn')
 		cy.get('button').click()
 		cy.contains(
 			'div[class=v-alert__content]',

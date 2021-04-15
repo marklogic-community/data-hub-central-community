@@ -1,344 +1,176 @@
 {
-	"name": "21232f297a57a5a743894a0e4a801fc3",
-	"description": "null",
-	"batchSize": 100,
-	"threadCount": 4,
-	"stopOnError": false,
-	"options": {},
-	"version": 0,
-	"steps": {
-		"1": {
-			"name": "MappingTest",
-			"description": "Mapping Test rules!",
-			"options": {
-				"additionalCollections": [],
-				"sourceQuery": "cts.collectionQuery([\"DataSource1\"])",
-				"mapping": {
-					"name": "admin-MappingTest",
-					"version": 0
-				},
-				"targetEntity": "Resume",
-				"sourceDatabase": "data-hub-STAGING",
-				"collections": [
-					"Resume"
-				],
-				"validateEntity": false,
-				"sourceCollection": "DataSource1",
-				"outputFormat": "json",
-				"targetDatabase": "data-hub-FINAL"
-			},
-			"customHook": {
-				"module": "",
-				"parameters": {},
-				"user": "",
-				"runBefore": false
-			},
-			"retryLimit": 0,
-			"batchSize": 100,
-			"threadCount": 4,
-			"stepDefinitionName": "entity-services-mapping",
-			"stepDefinitionType": "MAPPING"
-		},
-		"2": {
-			"name": "MatchTest",
-			"description": "",
-			"options": {
-				"stepUpdate": false,
-				"additionalCollections": [],
-				"sourceQuery": "cts.collectionQuery([\"DataSource2\"])",
-				"acceptsBatch": true,
-				"targetEntity": "Employee",
-				"sourceDatabase": "data-hub-FINAL",
-				"collections": [
-					"DataSource2"
-				],
-				"matchOptions": {
-					"scoring": {
-						"add": [
-							{
-								"propertyName": "toolSkills",
-								"weight": "1"
-							},
-							{
-								"propertyName": "address",
-								"weight": "12"
-							},
-							{
-								"propertyName": "employeeId",
-								"weight": "124"
-							}
-						],
-						"expand": [
-							{
-								"propertyName": "country",
-								"algorithmRef": "zip-match",
-								"zip": [
-									{
-										"origin": 5,
+    "name": "21232f297a57a5a743894a0e4a801fc3",
+    "description": null,
+    "batchSize": 100,
+    "threadCount": 4,
+    "stopOnError": false,
+    "options": null,
+    "version": 0,
+    "steps": {
+        "1": {
+            "stepId": "MappingTest-mapping",
+            "name": "MappingTest",
+            "description": "Mapping Test rules!",
+            "options": {
+                "sourceQuery": "cts.collectionQuery(['DataSource1'])",
+                "mapping": {
+                    "name": "MappingTest"
+                },
+                "provenanceGranularityLevel": "coarse",
+                "collections": ["Resume"],
+                "targetEntityType": "http://example.org/Employee-0.0.1/Employee",
+                "sourceDatabase": "data-hub-STAGING",
+                "sourceCollection": "DataSource1",
+                "outputFormat": "json",
+                "permissions": "data-hub-common,read,data-hub-common,update",
+                "validateEntity": "doNotValidate",
+                "targetDatabase": "data-hub-FINAL"
+            },
+            "batchSize": 100,
+            "stepDefinitionName": "entity-services-mapping",
+            "stepDefinitionType": "MAPPING"
+        },
+        "2": {
+            "stepId": "MatchTest-matching",
+            "name": "MatchTest",
+            "description": "",
+            "options": {
+                "sourceQuery": "cts.collectionQuery([\"DataSource2\"])",
+                "thresholds": [{
+                    "thresholdName": "merge",
+                    "action": "merge",
+                    "score": 32
+                }, {
+                    "thresholdName": "notify",
+                    "action": "notify",
+                    "score": 1
+                }],
+                "provenanceGranularityLevel": "fine",
+                "sourceDatabase": "data-hub-FINAL",
+                "collections": ["DataSource2"],
+                "sourceCollection": "DataSource2",
+                "targetEntityType": "http://example.org/Employee-0.0.1/Employee",
+                "matchRulesets": [{
+                    "name": "toolSkills - Exact",
+                    "weight": 1,
+                    "matchRules": [{
+                        "entityPropertyPath": "toolSkills",
+                        "matchType": "exact",
+                        "options": {}
+                    }]
+                },{
+                    "name": "address - Exact",
+                    "weight": 12,
+                    "matchRules": [{
+                        "entityPropertyPath": "address",
+                        "matchType": "exact",
+                        "options": {}
+                    }]
+                },{
+                    "name": "employeeId - Exact",
+                    "weight": 80,
+                    "matchRules": [{
+                        "entityPropertyPath": "employeeId",
+                        "matchType": "exact",
+                        "options": {}
+                    }]
+                },    {
+                    "name": "country - Zip",
+                    "weight": 9,
+                    "matchRules": [{
+                        "entityPropertyPath": "country",
+                        "matchType": "zip",
+                        "options": {}
+                    }]
+                }, {
+                    "name": "city - Reduce",
+                    "weight": 5,
+                    "reduce": true,
+                    "matchRules": [{
+                        "entityPropertyPath": "city",
+                        "matchType": "exact",
+                        "options": {}
+                    }]
+                }],
+                "outputFormat": "json",
+                "targetDatabase": "data-hub-FINAL"
+            },
+            "stepDefinitionName": "default-matching",
+            "stepDefinitionType": "MATCHING"
+        },
+        "3": {
+            "stepId": "MergeTest-merging",
+            "name": "MergeTest",
+            "description": "",
+            "options": {
+                "sourceQuery": "cts.collectionQuery([\"DataSource3\"])",
+                "provenanceGranularityLevel": "fine",
+                "sourceDatabase": "data-hub-FINAL",
+                "sourceCollection": "DataSource3",
+                "collections": ["MergeTest", "Employee"],
+                "targetEntityType": "http://example.org/Employee-0.0.1/Employee",
+                "lastUpdatedLocation": {
+                    "documentXPath": "/envelope/headers/createdOn"
+                },
+                "mergeStrategies": [{
+                    "strategyName": "My Strategy",
+                    "maxValues": "2",
+					"maxSources": "3",
+                    "priorityOrder": {
+                        "lengthWeight": 55,
+                        "sources": [{
+										"sourceName": "source1",
 										"weight": "2"
 									},
 									{
-										"origin": 9,
+										"sourceName": "source2",
 										"weight": "3"
 									}
 								]
-							}
-						],
-						"reduce": [
-							{
-								"algorithmRef": "standard-reduction",
-								"weight": "4",
-								"allMatch": {
-									"property": [
-										"address",
-										"city"
-									]
-								}
-							}
-						]
-					},
-					"propertyDefs": {
-						"properties": [
-							{
-								"localname": "address",
-								"name": "address"
-							},
-							{
-								"localname": "employeeId",
-								"name": "employeeId"
-							},
-							{
-								"localname": "country",
-								"name": "country"
-							},
-							{
-								"localname": "city",
-								"name": "city"
-							},
-							{
-								"localname": "toolSkills",
-								"name": "toolSkills"
-							}
-						]
-					},
-					"thresholds": {
-						"threshold": [
-							{
-								"above": "32",
-								"label": "merge",
-								"action": "merge"
-							},
-							{
-								"above": "1",
-								"action": "notify",
-								"label": "notify"
-							}
-						]
-					}
-				},
-				"sourceCollection": "DataSource2",
-				"outputFormat": "json",
-				"targetDatabase": "data-hub-FINAL"
-			},
-			"customHook": {
-				"module": "",
-				"parameters": {},
-				"user": "",
-				"runBefore": false
-			},
-			"retryLimit": 0,
-			"batchSize": 100,
-			"threadCount": 4,
-			"stepDefinitionName": "default-matching",
-			"stepDefinitionType": "MATCHING"
-		},
-		"3": {
-			"name": "MergeTest",
-			"description": "",
-			"options": {
-				"stepUpdate": false,
-				"additionalCollections": [],
-				"sourceQuery": "cts.collectionQuery([\"DataSource3\"])",
-				"acceptsBatch": false,
-				"targetEntity": "Employee",
-				"sourceDatabase": "data-hub-FINAL",
-				"collections": [
-					"MergeTest",
-					"Employee"
-				],
-				"mergeOptions": {
-					"matchOptions": "",
-					"propertyDefs": {
-						"properties": [
-							{
-								"localname": "address",
-								"name": "address"
-							}
-						],
-						"namespaces": {}
-					},
-					"algorithms": {
-						"stdAlgorithm": {
-							"timestamp": {
-								"path": "/path/to/timestamp"
-							}
-						},
-						"custom": [],
-						"collections": {
-							"onMerge": {
-								"add": {
-									"collection": [
-										"wasMerged",
-										"superMerged"
-									]
-								},
-								"remove": {
-									"collection": []
-								},
-								"set": {
-									"collection": []
-								}
-							},
-							"onNoMatch": {
-								"add": {
-									"collection": [
-										"noMatch",
-										"reallyNoMatch"
-									]
-								},
-								"remove": {
-									"collection": []
-								},
-								"set": {
-									"collection": []
-								}
-							},
-							"onArchive": {
-								"add": {
-									"collection": [
-										"wasArchived"
-									]
-								},
-								"remove": {
-									"collection": []
-								},
-								"set": {
-									"collection": []
-								}
-							},
-							"onNotification": {
-								"add": {
-									"collection": [
-										"wasNotified"
-									]
-								},
-								"remove": {
-									"collection": []
-								},
-								"set": {
-									"collection": []
-								}
-							}
-						}
-					},
-					"mergeStrategies": [
-						{
-							"sourceWeights": [
-								{
-									"source": {
-										"name": "source1",
-										"weight": "2"
-									}
-								},
-								{
-									"source": {
-										"name": "source2",
-										"weight": "3"
-									}
-								}
-							],
-							"name": "My Strategy",
-							"algorithmRef": "standard",
-							"maxValues": "2",
-							"maxSources": "3",
-							"length": {
-								"weight": "55"
-							}
-						},
-						{
-							"sourceWeights": [
-								{
-									"source": {
-										"name": "source1",
+                    }
+                },
+                {
+                    "strategyName": "My Strategy2",
+                    "maxValues": "22",
+					"maxSources": "333",
+                    "priorityOrder": {
+                        "lengthWeight": 555,
+                        "sources": [{
+										"sourceName": "source1",
 										"weight": "22"
-									}
-								},
-								{
-									"source": {
-										"name": "source2",
+									},
+									{
+										"sourceName": "source2",
 										"weight": "33"
 									}
-								}
-							],
-							"name": "My Strategy2",
-							"algorithmRef": "standard",
-							"maxValues": "22",
-							"maxSources": "333",
-							"length": {
-								"weight": "555"
-							}
-						}
-					],
-					"merging": [
-						{
-							"propertyName": "address",
-							"strategy": "My Strategy",
-							"length": {
-								"weight": null
-							},
-							"sourceWeights": []
-						},
-						{
-							"algorithmRef": "standard",
-							"maxValues": "1",
-							"maxSources": "2",
-							"length": {
-								"weight": "22"
-							},
-							"sourceWeights": [
-								{
-									"source": {
-										"name": "source1",
-										"weight": "1"
-									}
-								},
-								{
-									"source": {
-										"name": "source2",
-										"weight": "2"
-									}
-								}
-							],
-							"default": true
-						}
-					]
-				},
-				"sourceCollection": "DataSource3",
-				"outputFormat": "json",
-				"targetDatabase": "data-hub-FINAL"
-			},
-			"customHook": {
-				"module": "",
-				"parameters": {},
-				"user": "",
-				"runBefore": false
-			},
-			"retryLimit": null,
-			"batchSize": 100,
-			"threadCount": 4,
-			"stepDefinitionName": "default-merging",
-			"stepDefinitionType": "MERGING"
-		}
-	},
-	"latestJob": {}
+								]
+                    }
+                }],
+                "targetCollections": {
+                    "onMerge": {
+                        "remove": ["no-match", "likely-match"]
+                    },
+                    "onNoMatch": {
+                        "add": ["no-match"]
+                    },
+                    "onNotification": {
+                        "add": ["likely-match"]
+                    }
+                },
+                "outputFormat": "json",
+                "targetDatabase": "data-hub-FINAL",
+                "mergeRules": [{
+                    "entityPropertyPath": "address",
+                    "mergeStrategyName": "My Strategy",
+                    "maxValues": 1,
+                    "priorityOrder": {
+                        "lengthWeight": "10",
+                        "sources": []
+                    }
+                }]
+            },
+            "stepDefinitionName": "default-merging",
+            "stepDefinitionType": "MERGING"
+        }
+    }
 }

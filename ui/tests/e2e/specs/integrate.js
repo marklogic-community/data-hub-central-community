@@ -42,7 +42,6 @@ describe('Integrate Tab', () => {
 
 	it('should suggest creating a data model', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
-
 		cy.visit('/integrate')
 		cy.contains('Start by creating a data model')
 		cy.get('[data-cy="integrate.addStepBtn"]').should('be.disabled')
@@ -60,7 +59,8 @@ describe('Integrate Tab', () => {
 	it('shows all the steps', () => {
 		cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
-		cy.route('GET', '/api/flows', 'fixture:flowsEnvision.json')
+		cy.route('GET', '/api/flows/', 'fixture:flowsEnvision.json')
+		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
 		cy.visit('/integrate')
 		cy.get('[data-cy="integrate.addStepBtn"]').should('not.be.disabled')
 		cy.get('[data-cy="integrate.runStepBtn"]').should('not.be.disabled')
@@ -162,7 +162,7 @@ describe('Integrate Tab', () => {
 		cy.get('[data-cy="integrate.flowRow"]').should('have.length', 1)
 	})
 
-	it.only('add a custom step', () => {
+	it('add a custom step', () => {
     cy.route('GET', '/api/flows/newStepInfo', 'fixture:newStepInfo.json')
 		cy.route('GET', '/api/entities', 'fixture:entities.json')
 		cy.route('GET', '/api/flows/21232f297a57a5a743894a0e4a801fc3', 'fixture:flow-envision.json')
@@ -185,8 +185,9 @@ describe('Integrate Tab', () => {
 			.its('request.body')
 			.should(body => {
 				console.log(JSON.stringify(body))
-				expect(body).to.deep.equal({"flowName":"21232f297a57a5a743894a0e4a801fc3","step":{"name":"MyCustomStep","description":"","options":{"additionalCollections":[],"targetEntity":"Customer","sourceDatabase":"data-hub-STAGING","targetDatabase":"data-hub-FINAL","collections":["Customer"],"sourceCollection":"DataSource1","sourceQuery":"cts.collectionQuery([\"DataSource1\"])","permissions":"data-hub-operator,read,data-hub-operator,update","outputFormat":"json"},"customHook":{"module":"/envision/customHooks/uriRemapper.sjs","parameters":{},"user":"","runBefore":false},"retryLimit":0,"batchSize":100,"threadCount":4,"stepDefinitionName":"MyCustomStep","stepDefinitionType":"CUSTOM"}})
+				expect(body).to.deep.equal({"flowName":"21232f297a57a5a743894a0e4a801fc3","step":{"name":"MyCustomStep","description":"","additionalCollections":[],"targetEntityType":"http://marklogic.com/envision/Customer-0.0.1/Customer","sourceDatabase":"data-hub-STAGING","targetDatabase":"data-hub-FINAL","collections":["Customer"],"selectedSource":"query","sourceCollection":"DataSource1","sourceQuery":"cts.collectionQuery([\"DataSource1\"])","permissions":"data-hub-common,read,data-hub-common,update","outputFormat":"json","customHook":{"module":"/envision/customHooks/uriRemapper.sjs","parameters":{},"user":"","runBefore":false},"retryLimit":0,"batchSize":100,"threadCount":4,"stepDefinitionName":"MyCustomStep","stepDefinitionType":"CUSTOM"}})
 			})
+		cy.get('#MyCustomStep').click();
 		cy.contains('Customer => MyCustomStep').should('exist')
 		cy.get('div#MyCustomStep').should('exist')
 
