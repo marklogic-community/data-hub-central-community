@@ -1,9 +1,14 @@
 package com.marklogic.envision.system;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.marklogic.client.DatabaseClient;
 import com.marklogic.envision.dataServices.SystemUtils;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.impl.DataHubImpl;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,8 +17,19 @@ public class SystemController extends AbstractController {
 
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	JsonNode reset() {
-		DatabaseClient client = getHubClient().getFinalClient();
-		return SystemUtils.on(client).resetSystem();
+		boolean success = false;
+		String error = "";
+		ObjectNode objectNode = new ObjectMapper().createObjectNode();
+		try {
+			new DataHubImpl(getHubClient()).clearUserData();
+			success = true;
+		} catch(Exception ex) {
+			error = ex.getMessage();
+		}
+		objectNode.put("success", success);
+		objectNode.put("error", error);
+
+		return (JsonNode) objectNode;
 	}
 
 	@RequestMapping(value = "/deleteCollection", method = RequestMethod.POST)
