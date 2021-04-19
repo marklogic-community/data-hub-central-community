@@ -35,14 +35,13 @@ public class ExploreControllerTests extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
+	public void setup() throws IOException {
+		super.setup();
 
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
 		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
-		installEnvisionModules();
 
 		registerAccount();
 		registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);

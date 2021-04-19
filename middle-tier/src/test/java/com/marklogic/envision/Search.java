@@ -51,11 +51,10 @@ public class Search extends BaseTest {
 
 	private void localSetUp(boolean isMultiTenant) throws IOException {
 		envisionConfig.setMultiTenant(isMultiTenant);
+		super.setup();
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
-
-		installEnvisionModules();
 
 		registerAccount();
 

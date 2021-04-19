@@ -10,15 +10,17 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
+
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = Application.class)
 public class SystemUtilsTest extends BaseTest {
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws IOException {
+		super.setup();
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
 	}
 
 	@Test

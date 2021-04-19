@@ -30,6 +30,11 @@ public class AbstractMvcTest extends BaseTest {
 
 	protected String authToken;
 
+	public void setup() throws IOException {
+		super.setup();
+		logout();
+	}
+
 	protected String buildLoginPayload(String username, String password) {
 		LoginInfo loginInfo = new LoginInfo();
 		loginInfo.username = username;

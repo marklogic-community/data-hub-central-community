@@ -46,14 +46,11 @@ public class FlowsControllerTests extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
-
-		removeUser(ACCOUNT_NAME);
+	public void setup() throws IOException {
 		envisionConfig.setMultiTenant(true);
+		super.setup();
+		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
-		installHubModules();
 
 		registerAccount();
 	}

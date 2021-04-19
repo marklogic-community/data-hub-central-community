@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,12 +19,11 @@ public class R2MControllerTests extends AbstractMvcTest {
 	R2MService r2mService;
 
 	@BeforeEach
-	void setup() {
-		logout();
+	public void setup() throws IOException {
+		super.setup();
 
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
 	}
 
 	@Test

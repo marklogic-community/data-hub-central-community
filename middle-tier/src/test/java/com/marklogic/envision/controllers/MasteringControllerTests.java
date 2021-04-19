@@ -33,11 +33,11 @@ public class MasteringControllerTests extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
+	public void setup() throws IOException {
+		super.setup();
+
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
 
 		registerAccount();
 

@@ -62,6 +62,10 @@ public class ModelService {
 
 	public void setModelsDir(Path modelsDir) {
 		this.modelsDir = modelsDir;
+		clearCachedModelsDirFile();
+	}
+
+	public void clearCachedModelsDirFile() {
 		// clear out cached modelsDirFile
 		this.modelsDirFile = null;
 	}

@@ -12,7 +12,6 @@ import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.deploy.DeployService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.pojo.StatusMessage;
-import com.marklogic.hub.EntityManager;
 import com.marklogic.hub.FlowManager;
 import com.marklogic.hub.StepDefinitionManager;
 import com.marklogic.hub.dataservices.FlowService;
@@ -20,7 +19,6 @@ import com.marklogic.hub.dataservices.StepService;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
-import com.marklogic.hub.impl.EntityManagerImpl;
 import com.marklogic.hub.impl.FlowManagerImpl;
 import com.marklogic.hub.impl.StepDefinitionManagerImpl;
 import com.marklogic.hub.scaffold.Scaffolding;
@@ -28,7 +26,6 @@ import com.marklogic.hub.step.StepDefinition;
 import com.marklogic.hub.step.impl.CustomStepDefinitionImpl;
 import com.marklogic.hub.step.impl.Step;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -241,7 +238,7 @@ public class FlowsService {
 			ObjectReader reader = mapper.readerFor(new TypeReference<String[]>() {});
 			String[] stepsList = reader.readValue(steps);
 			FlowInputs inputs = new FlowInputs(flowName, stepsList);
-			FlowRunnerImpl flowRunner = new FlowRunnerImpl(hubClient);
+			FlowRunnerImpl flowRunner = new FlowRunnerImpl(hubClient.getHubConfig(), flowManager);
 			flowRunner.onStatusChanged((jobId, step, jobStatus, percentComplete, successfulEvents, failedEvents, message) -> {
 				StatusMessage msg = StatusMessage.newStatus(jobId)
 					.withMessage(message)

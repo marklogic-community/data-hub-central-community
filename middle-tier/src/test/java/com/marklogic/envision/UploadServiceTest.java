@@ -44,7 +44,8 @@ public class UploadServiceTest extends BaseTest {
 	private LoadHubArtifactsCommand loadHubArtifactsCommand;
 
 	@BeforeEach
-	void setup() throws IOException {
+	public void setup() throws IOException {
+		super.setup();
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);

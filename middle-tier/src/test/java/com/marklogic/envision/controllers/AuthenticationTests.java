@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,23 +40,18 @@ public class AuthenticationTests extends AbstractMvcTest {
 	private static final String SAVE_MODEL_URL = "/api/models/";
 	private static final String CREATE_STEP_URL = "/api/flows/steps";
 
-	private boolean modulesInstalled = false;
-
 	@Autowired
 	ModelService modelService;
 
 	@Autowired
 	FlowsService flowsService;
 	@BeforeEach
-	void setup() {
-		if (!modulesInstalled) {
-			installEnvisionModules();
-			modulesInstalled = true;
-		}
+	public void setup() throws IOException {
+		envisionConfig.setMultiTenant(true);
+		super.setup();
 		removeUser(ACCOUNT_NAME);
 		removeUser(ADMIN_ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
-		envisionConfig.setMultiTenant(true);
 
 		// remove models
 		File modelDir = modelService.getModelsDir(true, ACCOUNT_NAME);
@@ -64,7 +60,6 @@ public class AuthenticationTests extends AbstractMvcTest {
 		}
 		clearStagingFinalAndJobDatabases();
 		clearDatabases(HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME, HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME);
-		installEnvisionModules();
 	}
 
 	@Test
