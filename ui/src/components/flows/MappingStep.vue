@@ -147,18 +147,15 @@ export default {
 			const targetEntityTitle = targetEntityType.substring(targetEntityType.lastIndexOf("/") + 1)
 			return this.entities[targetEntityType] || this.entities[targetEntityTitle];
 		},
-		sampleDocUri() {
-			return this.mapping.sourceURI || (this.docUris ? this.docUris[0] : null)
-		},
 		mapName() {
 			return (this.step && this.step.mapping) ? this.step.mapping.name : ''
 		},
 		validate() {
 			return _.debounce(() => {
-				if (!(this.mapping && this.sampleDocUri)) {
+				if (!(this.mapping && this.sampleDocUri())) {
 					return
 				}
-				flowsApi.validateMapping(this.mapping, this.sampleDocUri).then(resp => this.mapTestResp = resp)
+				flowsApi.validateMapping(this.mapping, this.sampleDocUri()).then(resp => this.mapTestResp = resp)
 			}, 500)
 		},
 		...mapState({
@@ -172,6 +169,9 @@ export default {
 		this.stepChanged()
 	},
 	methods: {
+	sampleDocUri() {
+  			return this.mapping.sourceURI || (this.docUris ? this.docUris[0] : null)
+  		},
 		stepChanged() {
 			this.loadMapping()
 			this.loadSampleDocs()
@@ -280,7 +280,7 @@ export default {
 				.previewMapping({
 					mappingName: this.mapName,
 					format: this.step.options ? this.step.options.outputFormat: this.step.outputFormat,
-					uri: this.sampleDocUri
+					uri: this.sampleDocUri()
 				})
 				.then(resp => this.previewDoc = resp)
 		},
@@ -310,8 +310,8 @@ export default {
 			})
 		},
 		loadSampleDoc() {
-			if (this.sampleDocUri) {
-				flowsApi.getSampleDoc(this.sampleDocUri, this.mapping.namespaces)
+			if (this.sampleDocUri()) {
+				flowsApi.getSampleDoc(this.sampleDocUri(), this.mapping.namespaces)
 					.then(doc => this.sampleDoc = doc)
 					.then(this.validate)
 					.catch((err) => console.error(err))
@@ -325,7 +325,7 @@ export default {
 	},
 	watch: {
 		uriIndex: function(newVal) {
-			this.mapping.sourceURI = this.docUris[newVal]
+			this.mapping.sourceURI = this.docUris[newVal-1]
 			this.loadSampleDoc()
 		},
 		mapTestResp: 'createEntityProperties',

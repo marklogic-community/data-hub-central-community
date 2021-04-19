@@ -1,7 +1,7 @@
 package com.marklogic.envision.commands;
 
 import com.marklogic.client.ext.helper.LoggingObject;
-//import com.marklogic.r2m.RelationalToMarkLogic;
+import com.marklogic.r2m.RelationalToMarkLogic;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class R2MCommand extends LoggingObject {
-/*
+
 	private final String joinConfigFilePath;
 	private final String sourceConfigFilePath;
 	private final String insertConfigFilePath;
@@ -26,7 +26,7 @@ public class R2MCommand extends LoggingObject {
 		//run the R2M commandline app
 		try {
 			// Initialize the r2m tool
-		//	RelationalToMarkLogic r2m = new RelationalToMarkLogic();
+			RelationalToMarkLogic r2m = new RelationalToMarkLogic();
 
 			String joinConfigJson = new String(Files.readAllBytes(Paths.get(this.joinConfigFilePath)));
 			String sourceConfigJson = new String(Files.readAllBytes(Paths.get(this.sourceConfigFilePath)));
@@ -43,7 +43,7 @@ public class R2MCommand extends LoggingObject {
 			e.printStackTrace();
 		}
 	}
-*/
+
 }
 
 

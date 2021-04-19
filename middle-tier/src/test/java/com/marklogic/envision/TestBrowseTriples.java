@@ -25,11 +25,10 @@ public class TestBrowseTriples extends BaseTest {
 	@BeforeEach
 	void setUp() throws IOException {
 		envisionConfig.setMultiTenant(true);
+		super.setup();
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
 		clearDatabases(HubConfig.DEFAULT_STAGING_SCHEMAS_DB_NAME, HubConfig.DEFAULT_FINAL_SCHEMAS_DB_NAME);
-
-		installEnvisionModules();
 
 		registerAccount();
 

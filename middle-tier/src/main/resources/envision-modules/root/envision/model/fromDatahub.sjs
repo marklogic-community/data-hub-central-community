@@ -9,17 +9,19 @@ function arrayHasValue(arr, value) {
 }
 
 function buildDependentDefinitions(definition, allDefinitions, accumulatedDefinitions = {}) {
-	Object.values(definition.properties).forEach((prop) => {
-		const ref = prop['$ref'] || (prop.items && prop.items['$ref'])
-		const isStructured = ref && ref.startsWith('#/definitions')
-		if (isStructured) {
-			const otherName = ref.replace(/.*\/([^\/]+)/, '$1')
-			if (!Object.keys(accumulatedDefinitions).includes(otherName)) {
-				accumulatedDefinitions[otherName] = allDefinitions[otherName];
-				buildDependentDefinitions(accumulatedDefinitions[otherName], allDefinitions, accumulatedDefinitions)
+	if (definition && definition.properties) {
+		Object.values(definition.properties).forEach((prop) => {
+			const ref = prop['$ref'] || (prop.items && prop.items['$ref'])
+			const isStructured = ref && ref.startsWith('#/definitions')
+			if (isStructured) {
+				const otherName = ref.replace(/.*\/([^\/]+)/, '$1')
+				if (!Object.keys(accumulatedDefinitions).includes(otherName)) {
+					accumulatedDefinitions[otherName] = allDefinitions[otherName];
+					buildDependentDefinitions(accumulatedDefinitions[otherName], allDefinitions, accumulatedDefinitions)
+				}
 			}
-		}
-	});
+		});
+	}
 	return accumulatedDefinitions;
 }
 
@@ -66,12 +68,13 @@ function buildProperties(entityName, entity, definitions) {
 			name: propName,
 			type: type
 		}
-
+		if (structureDefinitions) {
+			newProp.structureDefinitions = structureDefinitions;
+		}
 		newProp = {
 			...newProp,
 			isArray: prop.datatype === 'array',
 			isStructured: isStructured,
-			structureDefinitions: structureDefinitions,
 			isRequired: arrayHasValue(entity.required, propName),
 			isPii: arrayHasValue(entity.pii, propName),
 			isPrimaryKey: (entity.primaryKey && entity.primaryKey === propName),

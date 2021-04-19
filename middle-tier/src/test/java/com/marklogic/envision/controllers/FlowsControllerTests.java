@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,14 +47,11 @@ public class FlowsControllerTests extends AbstractMvcTest {
 	ModelService modelService;
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
-
-		removeUser(ACCOUNT_NAME);
+	public void setup() throws IOException {
 		envisionConfig.setMultiTenant(true);
+		super.setup();
+		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
-		installHubModules();
 
 		registerAccount();
 	}
@@ -130,6 +128,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 
 	@Test
 	void addMapping() throws Exception {
+		File stepPathDir = envisionConfig.dhfDir.toPath().toAbsolutePath().resolve("steps").resolve("mapping").toAbsolutePath().toFile();
 		modelService.saveModel(getNonAdminHubClient(), getResourceStream("models/model.json"));
 
 		postJson("/api/flows/mappings/", "{\"lang\":\"zxx\",\"name\":\"wacky\",\"description\":\"Default description\",\"version\":1,\"targetEntityType\":\"http://example.org/modelName-version/entityType\",\"sourceContext\":\"/\",\"sourceURI\":\"\",\"properties\":{},\"namespaces\":{}}")
@@ -137,6 +136,8 @@ public class FlowsControllerTests extends AbstractMvcTest {
 
 		login();
 
+		File stepFile = stepPathDir.toPath().resolve( "wacky.step.json").toFile();
+		assertFalse(stepFile.exists(), "Mapping step shouldn't be written yet.");
 		assertThrows(DataHubProjectException.class,() -> mappingManager.getMappingAsJSON("wacky", -1, false));
 
 		postJson("/api/flows/mappings/", "{\"lang\":\"zxx\",\"name\":\"wacky\",\"description\":\"Default description\",\"version\":1,\"targetEntityType\":\"http://marklogic.com/envision/Planet-0.0.1/Planet\",\"sourceContext\":\"/\",\"sourceURI\":\"\",\"properties\":{},\"namespaces\":{}}")
@@ -147,6 +148,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 				StepService.on(getStagingClient()).getStep(StepDefinition.StepDefinitionType.MAPPING.toString(), "wacky");
 			}
 		);
+		assertTrue(stepFile.exists(), "Mapping step should be written now.");
 	}
 
 	@Test

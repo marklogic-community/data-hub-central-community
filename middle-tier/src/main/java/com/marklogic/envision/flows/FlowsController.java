@@ -75,6 +75,11 @@ public class FlowsController extends AbstractController {
 			((ObjectNode) mapping).put("selectedSource", "query");
 		}
 		StepService.on(getHubClient().getStagingClient()).saveStep(StepDefinition.StepDefinitionType.MAPPING.toString(), mapping, false, false);
+		try {
+			flowsService.saveStepToProject(StepDefinition.StepDefinitionType.MAPPING.toString(), mapping);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to save mapping to project", e);
+		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

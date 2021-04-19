@@ -46,33 +46,6 @@ Open a terminal in the project root: /path/to/dhcce
 launch the ui in develop mode
 `gradlew runui`
 
-### Running the project (Multi Tenant)
-Multi tenant mode allows you to run DHCCE in a hosted environment. It provides a signup flow for new users. It's main purpose is for running DHCCE as a self-service demo.
-
-#### Development Mode (multi-tenant)
-
-Open 2 terminal tabs/windows
-
-##### Middle Tier (multi-tenant)
-Open a terminal in the project root: /path/to/dhcce
-
-Edit application.properties:
-```
-envision.multiTenant=true
-```
-
-The command to run the middle tier is:  
-`gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub bootrun`
-
-**OPTIONAL** Also you might want to override where the Concept Connector models live. Otherwise the models go in `./conceptConnectorModels`  
-`gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub -DmodelsDir=/full/path/to/your/models/dir bootrun`
-
-##### User Interface (multi-tenant)
-Open a terminal in the project root: /path/to/dhcce
-
-launch the ui in develop mode
-`gradlew -Penv=cloud runui`
-
 ### Running Middle Tier Tests
 You will still need a MarkLogic instance with no datahub installed.  
 **WARNING:** This command will wipe out all your data. Do not point it at a production instance of MarkLogic.
@@ -119,16 +92,6 @@ Note that you do need a running Data Hub Framework instance with a project folde
 **WARNING:** This command will wipe out all your data. Do not point it at a production instance.
 
 `gradlew -DdhfDir=/full/path/to/your/datahub clean build`
-
-###### Without tests (multi tenant)
-`gradlew -Penv=cloud clean build -x test`
-
-###### With tests (multi tenant)
-Note that you do need a running Data Hub Framework instance with a project folder  
-**WARNING:** This command will wipe out all your data. Do not point it at a production instance.
-
-`gradlew -Penv=cloud -DdhfDir=/full/path/to/your/datahub clean build`
-
 
 ##### Run the jar
 `java -jar middle-tier/build/lib/dhcce.jar`

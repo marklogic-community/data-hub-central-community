@@ -14,12 +14,11 @@ public class SystemControllerTests extends AbstractMvcTest {
 	private static final String DELETE_COLLECTIONS_URL = "/api/system/deleteCollection";
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
+	public void setup() throws IOException {
+		super.setup();
 
 		removeUser(ACCOUNT_NAME);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
 	}
 
 	@Test

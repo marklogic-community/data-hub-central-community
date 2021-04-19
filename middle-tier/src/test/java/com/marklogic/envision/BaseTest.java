@@ -25,6 +25,7 @@ import com.marklogic.envision.dataServices.Users;
 import com.marklogic.envision.email.EmailService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.installer.InstallService;
+import com.marklogic.envision.model.ModelService;
 import com.marklogic.grove.boot.Application;
 import com.marklogic.grove.boot.error.NotAuthenticatedException;
 import com.marklogic.hub.DatabaseKind;
@@ -108,6 +109,9 @@ public class BaseTest {
 	@Autowired
 	protected LoadHubArtifactsCommand loadHubArtifactsCommand;
 
+	@Autowired
+	protected ModelService modelService;
+
 	private File dhfDir;
 
 	@Value("${dhfEnv}")
@@ -122,8 +126,9 @@ public class BaseTest {
 	private boolean configFinished = false;
 
 	@BeforeEach
-	void setup() throws IOException {
+	public void setup() throws IOException {
 		MockitoAnnotations.initMocks(this);
+		installEnvisionModules();
 	}
 
 	protected HubConfigImpl getHubConfig() {
@@ -307,6 +312,11 @@ public class BaseTest {
 
 	}
 
+	protected void deleteCollection(DatabaseClient client, String collection) {
+		client.newServerEval().xquery("xdmp:collection-delete(\"" + collection + "\")").eval();
+
+	}
+
 	protected JsonNode getProtectedPaths(DatabaseClient client) throws IOException {
 		EvalResultIterator it = client.newServerEval().xquery("xdmp:invoke-function(function() {\n" +
 			"  json:to-array(/*:protected-path/*:path-expression/fn:string())\n" +
@@ -369,6 +379,7 @@ public class BaseTest {
 		File projectDir = projectPath.toFile();
 		this.dhfDir = projectDir;
 		envisionConfig.dhfDir = projectDir;
+		modelService.clearCachedModelsDirFile();
 		envisionConfig.configureHub();
 		// force module loads for new test runs.
 		File timestampDirectory = new File(projectDir + "/.tmp");
@@ -425,7 +436,20 @@ public class BaseTest {
 	}
 
 	public void installEnvisionModules() {
-		installService.install(true);
+		if (!InstallTracker.hasInstalledModules()) {
+			installHubModules();
+		}
+		String multiTenantValue = String.valueOf(envisionConfig.isMultiTenant());
+		if (!(InstallTracker.hasInstalledModules() && InstallTracker.getLastMultiTenantValue().equals(multiTenantValue))) {
+			installService.install(true);
+			InstallTracker.setInstalledModules(true);
+			InstallTracker.setLastMultiTenantValue(multiTenantValue);
+		}
+	}
+
+	public void clearModules() {
+		clearDatabases(HubConfig.DEFAULT_MODULES_DB_NAME);
+		InstallTracker.setInstalledModules(false);
 	}
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -434,6 +458,7 @@ public class BaseTest {
 		Path projectPath = createProjectDir().toAbsolutePath();
 		dhfDir = projectPath.toFile();
 		envisionConfig.dhfDir = dhfDir;
+		modelService.clearCachedModelsDirFile();
 		hubConfig.createProject(projectPath.toString());
 		hubConfig.refreshProject();
 		hubProject = hubConfig.getHubProject();
@@ -634,5 +659,27 @@ public class BaseTest {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static class InstallTracker {
+		protected static boolean installedModules = false;
+		protected static String lastMultiTenantValue = "";
+
+		public static String getLastMultiTenantValue() {
+			return lastMultiTenantValue;
+		}
+
+		public static void setLastMultiTenantValue(String lastMultiTenantValue) {
+			InstallTracker.lastMultiTenantValue = lastMultiTenantValue;
+		}
+
+		public static boolean hasInstalledModules() {
+			return installedModules;
+		}
+
+		public static void setInstalledModules(boolean installedModules) {
+			InstallTracker.installedModules = installedModules;
+		}
+
 	}
 }

@@ -63,8 +63,8 @@ public class ModelControllerTests extends AbstractMvcTest {
 	}
 
 	@BeforeEach
-	void setup() throws IOException {
-		logout();
+	public void setup() throws IOException {
+		super.setup();
 
 		// remove models
 		removeModelFiles(false, null);
@@ -80,7 +80,6 @@ public class ModelControllerTests extends AbstractMvcTest {
 		removeUser(ACCOUNT_NAME);
 		removeUser(ACCOUNT_NAME2);
 		clearStagingFinalAndJobDatabases();
-		installEnvisionModules();
 	}
 
 	@Test
