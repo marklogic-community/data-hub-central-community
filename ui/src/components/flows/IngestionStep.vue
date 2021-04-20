@@ -66,6 +66,7 @@ export default {
 			}
 			const newStep = {
 				...this.step,
+				inputFilePath: this.inputPath,
 				fileLocations: {
 					...this.step.fileLocations,
 					inputFilePath: this.inputPath
