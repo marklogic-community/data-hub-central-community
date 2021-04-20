@@ -8,6 +8,11 @@ export default {
 			Object.keys(fullFlow.steps).forEach((stepKey) => {
 				let step = fullFlow.steps[stepKey]
 				step.stepNumber = stepKey
+				if(step.fileLocations) {
+					Object.keys(step.fileLocations).forEach((attr) => {
+						step[attr] = step.fileLocations[attr];
+					});
+				}
 				if (step.options) {
 					Object.assign(step, step.options);
 					delete step.options;
