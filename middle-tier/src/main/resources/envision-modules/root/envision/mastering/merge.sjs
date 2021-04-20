@@ -29,19 +29,12 @@ else if (!preview && mastering.getMergedDoc(uris)) {
 	response;
 }
 else {
-	const datahub = DataHubSingleton.instance({
-		performanceMetrics: !!performanceMetrics
-	});
 	const internalFlowName = 'manual-merge-mastering';
 	const internalStepNumber = 1;
 	let refStepNumber = stepNumber || '1';
-	let flow = datahub.flow.getFlow(flowName);
-	let stepRef = flow.steps[refStepNumber];
-	let step = stepRef.stepId ? fn.head(cts.search(cts.andQuery([
-		cts.collectionQuery("http://marklogic.com/data-hub/steps"),
-		cts.jsonPropertyValueQuery("stepId", stepRef.stepId, "case-insensitive")
-	]))).toObject() : stepRef;
-	let stepDetails = datahub.flow.stepDefinition.getStepDefinitionByNameAndType(step.stepDefinitionName, step.stepDefinitionType);
+	let flow = dhUtils.getFullFlow(flowName);
+	let step = flow.steps[refStepNumber];
+	let stepDetails = dhUtils.stepDefinition.getStepDefinitionByNameAndType(step.stepDefinitionName, step.stepDefinitionType);
 	// build combined options
 	let flowOptions = flow.options || {};
 	let stepRefOptions = step.options ? step.options: step;
@@ -54,7 +47,7 @@ else {
 	combinedOptions.acceptsBatch = true;
 	let query = cts.documentQuery(uris);
 	let content = dhUtils.hubUtils.queryToContentDescriptorArray(query, combinedOptions, sourceDatabase);
-	let results = datahub.flow.runFlow(internalFlowName, jobId, content, combinedOptions, internalStepNumber);
+	let results = dhUtils.flow.runFlow(internalFlowName, jobId, content, combinedOptions, internalStepNumber);
 	const response = {
 		'success': results.errorCount === 0,
 		'errors': results.errors,
