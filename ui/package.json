@@ -58,7 +58,7 @@
     "vuex-router-sync": "^5.0.0",
     "webcomponents-lite": "^0.6.0",
     "webstomp-client": "^1.2.6",
-    "x2js": "^3.4.0"
+    "x2js": "^3.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -86,7 +86,7 @@
     "mock-socket": "^9.0.3",
     "sass": "^1.30.0",
     "sass-loader": "^9.0.2",
-    "start-server-and-test": "^1.11.6",
+    "start-server-and-test": "^1.12.1",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.1",
     "vue-cli-plugin-vuetify": "^2.0.8",
