@@ -14,7 +14,7 @@
 				"additionalCollections": [],
 				"sourceQuery": "cts.collectionQuery([\"DataSource1\"])",
 				"mapping": {
-					"name": "admin-MappingTest",
+					"name": "MappingTest",
 					"version": 0
 				},
 				"targetEntity": "Resume",

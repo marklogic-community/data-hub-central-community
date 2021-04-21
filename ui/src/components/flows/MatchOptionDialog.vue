@@ -157,7 +157,6 @@ export default {
 			algorithmModuleNamespace: null,
 			algorithmModulePath: null,
 			algorithmFunction: null,
-			option: {},
 			matchTypes: [
 				{
 					name: 'Exact',

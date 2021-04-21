@@ -65,7 +65,6 @@ describe('Mastering', () => {
 	})
 
 	it('Should have menu enabled when checked', () => {
-		cy.visit('/notifications')
 		cy.get('[data-cy="mastering.checkAll"]').parentsUntil('.v-input__slot').click()
 		cy.get('[data-cy="mastering.actionMenu"]').click()
 		cy.get('.v-list-item--disabled').should('not.exist')

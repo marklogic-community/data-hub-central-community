@@ -105,7 +105,7 @@ import { mapActions } from 'vuex'
 import { required, integer } from 'vuelidate/lib/validators'
 
 function strategyNotInUse(strategy) {
-	return (this.strategy && strategy === this.strategy.name)
+	return (this.strategy && strategy === this.strategy.strategyName)
 		|| !this.strategies.includes(strategy)
 }
 
@@ -210,9 +210,11 @@ export default {
 				maxValues: this.maxValues,
 				strategyName: this.name,
 				priorityOrder: {
-					sources: this.sourceWeights,
-					lengthWeight: this.lengthWeight
+					sources: this.sourceWeights
 				}
+			}
+			if (this.lengthWeight) {
+				strategy.priorityOrder.lengthWeight = this.lengthWeight
 			}
 			this.$emit('save', strategy)
 			this.close()
