@@ -1,12 +1,22 @@
 {
-	"lang": "zxx",
-	"name": "admin-MappingTest",
-	"description": "",
-	"version": 0,
-	"targetEntityType": "http://marklogic.com/envision/Employee-0.0.1/Employee",
-	"sourceContext": "/",
-	"sourceURI": "/sample/doc1.json",
-	"properties": {
+    "collections": ["Resume"],
+    "additionalCollections": [],
+    "permissions": "data-hub-common,read,data-hub-common,update",
+    "batchSize": 100,
+    "validateEntity": "doNotValidate",
+    "name": "MappingTest",
+    "targetEntityType": "http://example.org/Employee-0.0.1/Employee",
+    "description": "",
+    "selectedSource": "collection",
+    "sourceQuery": "cts.collectionQuery(['DataSource1'])",
+    "stepDefinitionName": "entity-services-mapping",
+    "stepDefinitionType": "MAPPING",
+    "stepId": "MappingTest-mapping",
+    "sourceDatabase": "data-hub-STAGING",
+    "targetDatabase": "data-hub-FINAL",
+    "provenanceGranularityLevel": "coarse",
+    "lastUpdated": "2021-04-14T11:35:30.448089-07:00",
+    "properties": {
 		"lastName": {
 			"sourcedFrom": "l_name"
 		},
@@ -102,5 +112,8 @@
 			"sourcedFrom": "email"
 		}
 	},
-	"namespaces": {}
+    "stepNumber": "1",
+    "mapping": {
+        "name": "MappingTest"
+    }
 }

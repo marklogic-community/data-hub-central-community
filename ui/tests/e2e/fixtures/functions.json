@@ -1,26 +1,497 @@
-{
-	"memoryLookup": {
-		"category": "builtin",
-		"signature": "memoryLookup(input,inputDictionary)"
-	},
-	"documentLookup": {
-		"category": "builtin",
-		"signature": "documentLookup(input,inputDictionaryPath)"
-	},
-	"parseDate": {
-		"category": "builtin",
-		"signature": "parseDate(value,pattern)"
-	},
-	"parseDateTime": {
-		"category": "builtin",
-		"signature": "parseDateTime(value,pattern)"
-	},
-	"unparsed-text": {
-		"category": "xpath",
-		"signature": "unparsed-text(xs:string)"
-	},
-	"minutes-from-duration": {
-		"category": "xpath",
-		"signature": "minutes-from-duration(xs:duration?)"
-	}
-}
+[{
+    "functionName": "abs",
+    "signature": "abs(xs:numeric?)",
+    "category": "xpath"
+}, {
+    "functionName": "adjust-date-to-timezone",
+    "signature": "adjust-date-to-timezone(xs:date?)",
+    "category": "xpath"
+}, {
+    "functionName": "adjust-dateTime-to-timezone",
+    "signature": "adjust-dateTime-to-timezone(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "adjust-time-to-timezone",
+    "signature": "adjust-time-to-timezone(xs:time?)",
+    "category": "xpath"
+}, {
+    "functionName": "analyze-string",
+    "signature": "analyze-string(xs:string?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "avg",
+    "signature": "avg(xs:anyAtomicType*)",
+    "category": "xpath"
+}, {
+    "functionName": "boolean",
+    "signature": "boolean(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "ceiling",
+    "signature": "ceiling(xs:numeric?)",
+    "category": "xpath"
+}, {
+    "functionName": "cleanPrefix",
+    "signature": "cleanPrefix(input)",
+    "category": "custom"
+}, {
+    "functionName": "codepoint-equal",
+    "signature": "codepoint-equal(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "codepoints-to-string",
+    "signature": "codepoints-to-string(xs:integer*)",
+    "category": "xpath"
+}, {
+    "functionName": "compare",
+    "signature": "compare(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "concat",
+    "signature": "concat(xs:anyAtomicType?)",
+    "category": "xpath"
+}, {
+    "functionName": "contains",
+    "signature": "contains(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "count",
+    "signature": "count(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "current-date",
+    "signature": "current-date()",
+    "category": "xpath"
+}, {
+    "functionName": "current-dateTime",
+    "signature": "current-dateTime()",
+    "category": "xpath"
+}, {
+    "functionName": "current-time",
+    "signature": "current-time()",
+    "category": "xpath"
+}, {
+    "functionName": "data",
+    "signature": "data()",
+    "category": "xpath"
+}, {
+    "functionName": "dateTime",
+    "signature": "dateTime(xs:date?, xs:time?)",
+    "category": "xpath"
+}, {
+    "functionName": "day-from-date",
+    "signature": "day-from-date(xs:date?)",
+    "category": "xpath"
+}, {
+    "functionName": "day-from-dateTime",
+    "signature": "day-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "days-from-duration",
+    "signature": "days-from-duration(xs:duration?)",
+    "category": "xpath"
+}, {
+    "functionName": "deep-equal",
+    "signature": "deep-equal(item()*, item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "doc-available",
+    "signature": "doc-available(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "document",
+    "signature": "document(xs:anyURI*)",
+    "category": "xpath"
+}, {
+    "functionName": "documentLookup",
+    "signature": "documentLookup(input,inputDictionaryPath)",
+    "category": "builtin"
+}, {
+    "functionName": "empty",
+    "signature": "empty(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "encode-for-uri",
+    "signature": "encode-for-uri(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "ends-with",
+    "signature": "ends-with(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "escape-html-uri",
+    "signature": "escape-html-uri(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "escape-uri",
+    "signature": "escape-uri(xs:string, xs:boolean)",
+    "category": "xpath"
+}, {
+    "functionName": "exactly-one",
+    "signature": "exactly-one(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "exists",
+    "signature": "exists(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "false",
+    "signature": "false()",
+    "category": "xpath"
+}, {
+    "functionName": "filter",
+    "signature": "filter(function(item())",
+    "category": "xpath"
+}, {
+    "functionName": "floor",
+    "signature": "floor(xs:numeric?)",
+    "category": "xpath"
+}, {
+    "functionName": "fold-left",
+    "signature": "fold-left(function(item()*, item())",
+    "category": "xpath"
+}, {
+    "functionName": "fold-right",
+    "signature": "fold-right(function(item(), item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "format-date",
+    "signature": "format-date(xs:date?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "format-dateTime",
+    "signature": "format-dateTime(xs:dateTime?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "format-number",
+    "signature": "format-number(xs:numeric*, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "format-time",
+    "signature": "format-time(xs:time?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "generate-id",
+    "signature": "generate-id()",
+    "category": "xpath"
+}, {
+    "functionName": "head",
+    "signature": "head(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "hours-from-dateTime",
+    "signature": "hours-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "hours-from-duration",
+    "signature": "hours-from-duration(xs:duration?)",
+    "category": "xpath"
+}, {
+    "functionName": "hours-from-time",
+    "signature": "hours-from-time(xs:time?)",
+    "category": "xpath"
+}, {
+    "functionName": "id",
+    "signature": "id(xs:string*)",
+    "category": "xpath"
+}, {
+    "functionName": "idref",
+    "signature": "idref(xs:string*)",
+    "category": "xpath"
+}, {
+    "functionName": "implicit-timezone",
+    "signature": "implicit-timezone()",
+    "category": "xpath"
+}, {
+    "functionName": "index-of",
+    "signature": "index-of(xs:anyAtomicType*, xs:anyAtomicType)",
+    "category": "xpath"
+}, {
+    "functionName": "insert-before",
+    "signature": "insert-before(item()*, xs:integer, item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "iri-to-uri",
+    "signature": "iri-to-uri(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "keyValue",
+    "signature": "keyValue(object,key)",
+    "category": "builtin"
+}, {
+    "functionName": "lang",
+    "signature": "lang(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "last",
+    "signature": "last()",
+    "category": "xpath"
+}, {
+    "functionName": "local-name",
+    "signature": "local-name()",
+    "category": "xpath"
+}, {
+    "functionName": "local-name-from-QName",
+    "signature": "local-name-from-QName(xs:QName?)",
+    "category": "xpath"
+}, {
+    "functionName": "lower-case",
+    "signature": "lower-case(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "map",
+    "signature": "map(function(item())",
+    "category": "xpath"
+}, {
+    "functionName": "map-pairs",
+    "signature": "map-pairs(function(item(), item())",
+    "category": "xpath"
+}, {
+    "functionName": "matches",
+    "signature": "matches(xs:string?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "max",
+    "signature": "max(xs:anyAtomicType*)",
+    "category": "xpath"
+}, {
+    "functionName": "memoryLookup",
+    "signature": "memoryLookup(input,inputDictionary)",
+    "category": "builtin"
+}, {
+    "functionName": "min",
+    "signature": "min(xs:anyAtomicType*)",
+    "category": "xpath"
+}, {
+    "functionName": "minutes-from-dateTime",
+    "signature": "minutes-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "minutes-from-duration",
+    "signature": "minutes-from-duration(xs:duration?)",
+    "category": "xpath"
+}, {
+    "functionName": "minutes-from-time",
+    "signature": "minutes-from-time(xs:time?)",
+    "category": "xpath"
+}, {
+    "functionName": "month-from-date",
+    "signature": "month-from-date(xs:date?)",
+    "category": "xpath"
+}, {
+    "functionName": "month-from-dateTime",
+    "signature": "month-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "months-from-duration",
+    "signature": "months-from-duration(xs:duration?)",
+    "category": "xpath"
+}, {
+    "functionName": "name",
+    "signature": "name()",
+    "category": "xpath"
+}, {
+    "functionName": "namespace-uri",
+    "signature": "namespace-uri()",
+    "category": "xpath"
+}, {
+    "functionName": "namespace-uri-for-prefix",
+    "signature": "namespace-uri-for-prefix(xs:string?, element())",
+    "category": "xpath"
+}, {
+    "functionName": "namespace-uri-from-QName",
+    "signature": "namespace-uri-from-QName(xs:QName?)",
+    "category": "xpath"
+}, {
+    "functionName": "node-name",
+    "signature": "node-name()",
+    "category": "xpath"
+}, {
+    "functionName": "normalize-space",
+    "signature": "normalize-space()",
+    "category": "xpath"
+}, {
+    "functionName": "normalize-unicode",
+    "signature": "normalize-unicode(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "not",
+    "signature": "not(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "number",
+    "signature": "number()",
+    "category": "xpath"
+}, {
+    "functionName": "one-or-more",
+    "signature": "one-or-more(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "parseDate",
+    "signature": "parseDate(value,pattern)",
+    "category": "builtin"
+}, {
+    "functionName": "parseDateTime",
+    "signature": "parseDateTime(value,pattern)",
+    "category": "builtin"
+}, {
+    "functionName": "position",
+    "signature": "position()",
+    "category": "xpath"
+}, {
+    "functionName": "prefix-from-QName",
+    "signature": "prefix-from-QName(xs:QName?)",
+    "category": "xpath"
+}, {
+    "functionName": "QName",
+    "signature": "QName(xs:string?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "remove",
+    "signature": "remove(item()*, xs:integer)",
+    "category": "xpath"
+}, {
+    "functionName": "remove-hyphens",
+    "signature": "remove-hyphens(val)",
+    "category": "custom"
+}, {
+    "functionName": "removeCommas",
+    "signature": "removeCommas(input)",
+    "category": "custom"
+}, {
+    "functionName": "replace",
+    "signature": "replace(xs:string?, xs:string, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "resolve-QName",
+    "signature": "resolve-QName(xs:string?, element())",
+    "category": "xpath"
+}, {
+    "functionName": "resolve-uri",
+    "signature": "resolve-uri(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "reverse",
+    "signature": "reverse(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "root",
+    "signature": "root()",
+    "category": "xpath"
+}, {
+    "functionName": "round",
+    "signature": "round(xs:numeric?)",
+    "category": "xpath"
+}, {
+    "functionName": "round-half-to-even",
+    "signature": "round-half-to-even(xs:numeric?)",
+    "category": "xpath"
+}, {
+    "functionName": "seconds-from-dateTime",
+    "signature": "seconds-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "seconds-from-duration",
+    "signature": "seconds-from-duration(xs:duration?)",
+    "category": "xpath"
+}, {
+    "functionName": "seconds-from-time",
+    "signature": "seconds-from-time(xs:time?)",
+    "category": "xpath"
+}, {
+    "functionName": "starts-with",
+    "signature": "starts-with(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "string",
+    "signature": "string()",
+    "category": "xpath"
+}, {
+    "functionName": "string-join",
+    "signature": "string-join(xs:string*)",
+    "category": "xpath"
+}, {
+    "functionName": "string-length",
+    "signature": "string-length()",
+    "category": "xpath"
+}, {
+    "functionName": "string-to-codepoints",
+    "signature": "string-to-codepoints(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "subsequence",
+    "signature": "subsequence(item()*, xs:numeric)",
+    "category": "xpath"
+}, {
+    "functionName": "substring",
+    "signature": "substring(xs:string?, xs:numeric)",
+    "category": "xpath"
+}, {
+    "functionName": "substring-after",
+    "signature": "substring-after(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "substring-before",
+    "signature": "substring-before(xs:string?, xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "sum",
+    "signature": "sum(xs:anyAtomicType*)",
+    "category": "xpath"
+}, {
+    "functionName": "tail",
+    "signature": "tail(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "timezone-from-date",
+    "signature": "timezone-from-date(xs:date?)",
+    "category": "xpath"
+}, {
+    "functionName": "timezone-from-dateTime",
+    "signature": "timezone-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "timezone-from-time",
+    "signature": "timezone-from-time(xs:time?)",
+    "category": "xpath"
+}, {
+    "functionName": "tokenize",
+    "signature": "tokenize(xs:string?, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "trace",
+    "signature": "trace(item()*, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "translate",
+    "signature": "translate(xs:string?, xs:string, xs:string)",
+    "category": "xpath"
+}, {
+    "functionName": "true",
+    "signature": "true()",
+    "category": "xpath"
+}, {
+    "functionName": "unordered",
+    "signature": "unordered(item()*)",
+    "category": "xpath"
+}, {
+    "functionName": "upper-case",
+    "signature": "upper-case(xs:string?)",
+    "category": "xpath"
+}, {
+    "functionName": "year-from-date",
+    "signature": "year-from-date(xs:date?)",
+    "category": "xpath"
+}, {
+    "functionName": "year-from-dateTime",
+    "signature": "year-from-dateTime(xs:dateTime?)",
+    "category": "xpath"
+}, {
+    "functionName": "years-from-duration",
+    "signature": "years-from-duration(xs:duration?)",
+    "category": "xpath"
+}, {
+    "functionName": "zero-or-one",
+    "signature": "zero-or-one(item()*)",
+    "category": "xpath"
+}]
