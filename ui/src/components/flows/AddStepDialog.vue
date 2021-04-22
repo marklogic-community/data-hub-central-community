@@ -182,7 +182,11 @@ export default {
 		collections() {
 			const cols = (this.sourceDatabase && this.stepInfo) ? (this.stepInfo.collections[this.sourceDatabase.toLowerCase()].map(c => c.collection) || []) : []
 			if (this.sourceDatabase === 'Final') {
-				return _.uniq(this.entities.map((entity) => entity.text).concat(cols))
+				if (this.stepType.toLowerCase() === 'merging') {
+					return _.uniq(this.entities.map((entity) => `datahubMasteringMatchSummary-${entity.text}`).concat(cols))
+				} else {
+					return _.uniq(this.entities.map((entity) => entity.text).concat(cols))
+				}
 			}
 			return cols
 		},
@@ -294,18 +298,22 @@ export default {
 			else if (this.stepType.toLowerCase() === 'matching') {
 				Object.assign(step, {
 					matchRulesets: [],
-					thresholds:[]
+					thresholds:[],
+					collections: [`datahubMasteringMatchSummary-${entityTitle}`]
 				})
-				//delete step.collections
 				step.stepDefinitionName = 'default-matching'
 			}
 			else if (this.stepType.toLowerCase() === 'merging') {
 				Object.assign(step, {
 					mergeRules:  [],
 					mergeStrategies: [],
-					targetCollections: {}
+					targetCollections: {},
+					collections: []
 				})
-				//delete step.collections
+				if (step.sourceCollection && step.sourceCollection === entityTitle) {
+					step.sourceCollection = `datahubMasteringMatchSummary-${entityTitle}`
+					step.sourceQuery =	`cts.collectionQuery(["${step.sourceCollection}"])`
+				}
 				step.stepDefinitionName = 'default-merging'
 			}
 			else if (this.stepType.toLowerCase() === 'custom') {
