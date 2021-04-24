@@ -15,23 +15,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class R2MService extends LoggingObject{
-	protected Random random;
-	protected long randomValue;
-	protected long milliSecs;
-	protected static Pattern[] patterns = new Pattern[] {
-		Pattern.compile("&"), Pattern.compile("<"), Pattern.compile(">") };
-
-
+//	protected static Pattern[] patterns = new Pattern[] {
+//		Pattern.compile("&"), Pattern.compile("<"), Pattern.compile(">") };
+//
+//
 	final private SimpMessagingTemplate template;
-	private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+//	private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 	@Autowired
 	R2MService(SimpMessagingTemplate template) {
 		this.template = template;
-		random = new Random();
-		randomValue = random.nextLong();
-		Calendar cal = Calendar.getInstance();
-		milliSecs = cal.getTimeInMillis();
 	}
 
 	@Async
