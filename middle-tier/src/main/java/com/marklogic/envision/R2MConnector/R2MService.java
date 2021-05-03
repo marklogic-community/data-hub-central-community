@@ -40,7 +40,7 @@ public class R2MService extends LoggingObject{
 		//TODO these paths need to be passed
 
 		String joinConfigFilePath = CONFIG_DIR + "customerConfig.json";
-		String sourceConfigFilePath = CONFIG_DIR + "customerConfig.json";
+		String sourceConfigFilePath = CONFIG_DIR + "sourceConfig.json";
 		String insertConfigFilePath = CONFIG_DIR + "customerInsertConfig.json";
 		String marklogicConfigFilePath = CONFIG_DIR + "marklogicConfiguration.json";
 

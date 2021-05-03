@@ -96,6 +96,8 @@ dependencies {
 	// R2M Core dependencies needed for using Spring Batch, Spring JDBC, and marklogic-spring-batch
 	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
 	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
+	// Using H2 as a sample database; can pull its JDBC driver from a Maven repository
+	runtimeOnly "com.h2database:h2:1.4.200"
 	//implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
 	//************************EndR2M
 
