@@ -31,8 +31,12 @@ public class R2MControllerTests extends AbstractMvcTest {
 	@Test
 	void r2mconnect() throws Exception {
 		HubClient hubClient = getNonAdminHubClient();
-		r2mService.asyncRunConnection(hubClient);
-
-		//verify(r2mService, times(1)).asyncRunConnection(hubClient);
+		try {
+		//r2mService.asyncRunConnection(hubClient);
+		r2mService.runR2M(hubClient);
+			//verify(r2mService, times(1)).asyncRunConnection(hubClient);
+		} catch (Exception e) {
+			throw new Exception("Unable to test r2m, cause: " + e.getMessage(), e);
+		}
 	}
 }
