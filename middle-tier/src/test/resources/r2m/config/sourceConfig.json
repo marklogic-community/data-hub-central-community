@@ -1,5 +1,5 @@
 {
-  "connectionString": "jdbc:h2:~/r2m",
+  "connectionString": "jdbc:oracle:thin:@localhost:1527:OraDoc",
   "username": "admin",
   "password": "admin",
   "numThreads": 5,
