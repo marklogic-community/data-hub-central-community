@@ -27,7 +27,8 @@ main:
 			{ url: '/components/notifications/', text: 'Mastering Notifications' },
 			{ url: '/components/export/', text: 'Export' },
 			{ url: '/components/know/', text: 'Know' },
-			{ url: '/components/admin/', text: 'Deploy to DHS' }
+			#{ url: '/components/admin/', text: 'Deploy to DHS' },
+      #{ url: '/components/docker/', text: 'MarkLogic Data Hub on Docker' }
       #{
       #  url: '/subpages/subsubpages/',
       #  text: 'Subsub pages',
@@ -37,6 +38,8 @@ main:
       #}
     ]
   }
+  - { url: '/deploy/', text: 'Deploy to DHS' }
+  - { url: '/docker/', text: 'MarkLogic Data Hub on Docker' }
   - { url: '/faqs/', text: 'FAQs' }
   - { url: '/troubleshooting/', text: 'Troubleshooting' }
   - { absurl: 'https://github.com/marklogic-community/data-hub-central-community', text: 'Data Hub Central Community Edition on GitHub' }
