@@ -8,7 +8,7 @@
 
     <!-- Meta -->
     <meta charset="utf-8">
-    <title>Troubleshooting - Data Hub Central Community</title>
+    <title>Docker - Data Hub Central Community</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta content="yes" name="apple-mobile-web-app-capable">
@@ -164,7 +164,7 @@
     
   </li>
   
-  <li  class="list-group-item active"  >
+  <li  class="list-group-item"  >
     
     <a href="/data-hub-central-community/troubleshooting/">Troubleshooting</a>
     
@@ -184,26 +184,7 @@
 
         </div>
         <div class="col-md-9">
-          <h1 id="troubleshooting">Troubleshooting</h1>
-
-<p>Tips for solving problems</p>
-
-<h3 id="unable-to-start-community-edition">Unable to start Community Edition</h3>
-
-<p>So you go to start CE and it won’t connect to your data hub.  Remember to have your  application.properties file defined.</p>
-
-<h3 id="i-changed-my-entities-outside-of-community-edition-and-connect-is-not-resynching">I changed my entities outside of Community Edition and Connect is not resynching.</h3>
-
-<p>The first time you start CE, it will look in the Final DB of your hub and if there are any entities present, will create a default “My Hub Model” for you.  CE assumes it’s in charge of all modeling edits so this read of Final and creation of “My Hub Model” only occurs the first time you start CE.  CE is intended to be an app, and not a developer tool.  However…</p>
-
-<p>If you wish to update your model with changes you’ve made out of CE. Then…</p>
-<ol>
-  <li>Delete your model.json from /conceptConnectorModels</li>
-  <li>Restart CE with a force install of modules to provide the first time initialization of CE.  This will recreate “My Hub Model” for you.</li>
-</ol>
-
-<p><code class="highlighter-rouge">java -DforceInstall=true -jar hub-central-community.jar</code></p>
-
+          <h1 id="marklogic-data-hub-on-docker">MarkLogic Data Hub on Docker</h1>
 
         </div>
       </div>

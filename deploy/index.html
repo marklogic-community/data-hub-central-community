@@ -8,7 +8,7 @@
 
     <!-- Meta -->
     <meta charset="utf-8">
-    <title>Troubleshooting - Data Hub Central Community</title>
+    <title>Deploy to DHS - Data Hub Central Community</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta content="yes" name="apple-mobile-web-app-capable">
@@ -143,7 +143,7 @@
     
   </li>
   
-  <li  class="list-group-item"  >
+  <li  class="list-group-item active"  >
     
     <a href="/data-hub-central-community/deploy/">Deploy to DHS</a>
     
@@ -164,7 +164,7 @@
     
   </li>
   
-  <li  class="list-group-item active"  >
+  <li  class="list-group-item"  >
     
     <a href="/data-hub-central-community/troubleshooting/">Troubleshooting</a>
     
@@ -184,26 +184,31 @@
 
         </div>
         <div class="col-md-9">
-          <h1 id="troubleshooting">Troubleshooting</h1>
+          <h1 id="deploy-to-dhs">Deploy to DHS</h1>
 
-<p>Tips for solving problems</p>
+<p>Data Hub Central Community Edition (DHCCE) is platform neutral and can be used with on-prem and cloud deployed Data Hubs as well as with the MarkLogic Data Hub Service (DHS).</p>
 
-<h3 id="unable-to-start-community-edition">Unable to start Community Edition</h3>
+<p>DHCCE (2.0.5 and greater) requires <strong><a href="https://developer.marklogic.com/products/data-hub/">Data Hub Framework 5.2.3 (DHF)</a></strong>  to be used with the current <strong><a href="https://docs.marklogic.com/cloudservices/azure/getting-started-azure.html">MarkLogic Data Hub Service on Azure (DHS)</a></strong>.</p>
 
-<p>So you go to start CE and it won’t connect to your data hub.  Remember to have your  application.properties file defined.</p>
+<p>To use DHCCE with DHS, start by downloading the gradle config file for your DHS instance. After downloading, remember to update the username and password with your DHS credentials. <br /><br /></p>
 
-<h3 id="i-changed-my-entities-outside-of-community-edition-and-connect-is-not-resynching">I changed my entities outside of Community Edition and Connect is not resynching.</h3>
+<p><img src="/data-hub-central-community/images/DHS-1.png" alt="DHS" /></p>
 
-<p>The first time you start CE, it will look in the Final DB of your hub and if there are any entities present, will create a default “My Hub Model” for you.  CE assumes it’s in charge of all modeling edits so this read of Final and creation of “My Hub Model” only occurs the first time you start CE.  CE is intended to be an app, and not a developer tool.  However…</p>
+<p>Save this file in your data hub root directory as         “gradle-dhs.properties”.<br /></p>
 
-<p>If you wish to update your model with changes you’ve made out of CE. Then…</p>
-<ol>
-  <li>Delete your model.json from /conceptConnectorModels</li>
-  <li>Restart CE with a force install of modules to provide the first time initialization of CE.  This will recreate “My Hub Model” for you.</li>
-</ol>
+<p>Use gradle deploy your data hub to DHS.<br />
+<code class="highlighter-rouge">gradlew hubDeploy -PenvironmentName=dhs -i </code></p>
 
-<p><code class="highlighter-rouge">java -DforceInstall=true -jar hub-central-community.jar</code></p>
+<p>Stop DHCCE, and restart it using the new properties file so that it points to your DHS instance.<br />
+<code class="highlighter-rouge">java -DdhfEnv=dhs -jar hub-central-community-2.0.5.jar</code></p>
 
+<p>Login to DHCCE and revisit the Admin pane to confirm your using DHCCE with your Data Hub Instance.<br /></p>
+
+<p>You can load your data and run your flows using gradle of course, and then use DHCCE Explore to explore your data and to curate entities that require mastering.  You can also load data and run your flows from DHCCE. <br /></p>
+
+<p>To run your flows in DHCCE, navigate to the Admin pane and click the “Run Flows” button to run your flows.  Data from any ingest steps will be loaded from the location the ingest step points to where DHCCE is currently running and transfer that data to the DHS Data Hub for processing.  Any flows defined will all be run then as well.<br /></p>
+
+<p>Using either method above you can then explore and master your data in DHS using DHCCE.</p>
 
         </div>
       </div>

@@ -8,7 +8,7 @@
 
     <!-- Meta -->
     <meta charset="utf-8">
-    <title>Troubleshooting - Data Hub Central Community</title>
+    <title>MarkLogic Data Hub on Docker - Data Hub Central Community</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta content="yes" name="apple-mobile-web-app-capable">
@@ -150,7 +150,7 @@
     
   </li>
   
-  <li  class="list-group-item"  >
+  <li  class="list-group-item active"  >
     
     <a href="/data-hub-central-community/docker/">MarkLogic Data Hub on Docker</a>
     
@@ -164,7 +164,7 @@
     
   </li>
   
-  <li  class="list-group-item active"  >
+  <li  class="list-group-item"  >
     
     <a href="/data-hub-central-community/troubleshooting/">Troubleshooting</a>
     
@@ -184,25 +184,52 @@
 
         </div>
         <div class="col-md-9">
-          <h1 id="troubleshooting">Troubleshooting</h1>
+          <h1 id="marklogic-data-hub-on-docker">MarkLogic Data Hub on Docker</h1>
 
-<p>Tips for solving problems</p>
+<p>Docker Hub provides the image <strong><a href="https://hub.docker.com/_/marklogic-datahub-hr360">MarkLogic Data Hub HR360 Developer Edition</a></strong> for free.</p>
 
-<h3 id="unable-to-start-community-edition">Unable to start Community Edition</h3>
+<p>This single image includes the following:</p>
+<ul>
+  <li>Marklogic Server: 10.0-6.1</li>
+  <li>Data Hub Central Community Edition: 5.4.2</li>
+  <li>Data Hub Hub Central 5.4.3</li>
+  <li>Pipes: 2.0.5</li>
+  <li>A pre-installed HR360 Data Hub with Sample Data and Flows</li>
+</ul>
 
-<p>So you go to start CE and it won’t connect to your data hub.  Remember to have your  application.properties file defined.</p>
+<p>These have all been preconfigured so you can just start the image and be up an running with an out of the box data hub example for a Human Resources (HR) 360 use case.</p>
 
-<h3 id="i-changed-my-entities-outside-of-community-edition-and-connect-is-not-resynching">I changed my entities outside of Community Edition and Connect is not resynching.</h3>
+<p>To access applications:</p>
 
-<p>The first time you start CE, it will look in the Final DB of your hub and if there are any entities present, will create a default “My Hub Model” for you.  CE assumes it’s in charge of all modeling edits so this read of Final and creation of “My Hub Model” only occurs the first time you start CE.  CE is intended to be an app, and not a developer tool.  However…</p>
+<ul>
+  <li>MarkLogic Admin Ui: http://localhost:8001</li>
+  <li>Data Hub Central Community Edition: http://localhost:9003</li>
+  <li>Hub Central: http://localhost:9000</li>
+  <li>Pipes: http://localhost:9005</li>
+  <li>MarkLogic Query Console: http://localhost:8000</li>
+</ul>
 
-<p>If you wish to update your model with changes you’ve made out of CE. Then…</p>
+<p>User: maverick/goose (update your credentials accordingly)</p>
+
+<p>The HR360 example is the same one provided in <strong><a href="https://www.youtube.com/watch?v=uwOryM5fO6A&amp;t=4s">this youtube demonstration</a></strong>.</p>
+
+<p>You can use the ootb example to get familiar with the applications. You can also use the applications to upload your own data, create your own model, and create your own flows and steps to harmonize and integrate your data as well.</p>
+
+<h3 id="getting-started-with-docker">Getting Started with Docker</h3>
+
 <ol>
-  <li>Delete your model.json from /conceptConnectorModels</li>
-  <li>Restart CE with a force install of modules to provide the first time initialization of CE.  This will recreate “My Hub Model” for you.</li>
+  <li>Install Docker Desktop for Mac or Windows – https://www.docker.com/products/docker-desktop</li>
+  <li>The Docker service is accessible through the Windows Task Bar or the Mac Menu Bar.</li>
+  <li>Navigate to Docker &gt; Preferences</li>
+  <li>In the Preferences pane, navigate to the Advanced section. Allocate at least 8GB of RAM to the project.</li>
+  <li><strong><a href="https://hub.docker.com/_/marklogic-datahub-hr360">Download MarkLogic Data Hub HR360</a></strong> Docker image from Docker Hub</li>
+  <li>Follow the run instructions provided on the Docker Hub page to start the image:</li>
 </ol>
 
-<p><code class="highlighter-rouge">java -DforceInstall=true -jar hub-central-community.jar</code></p>
+<p>docker run -d  –name hc -p 8000-8002:8000-8002 -p 8010-8011:8010-8011 -p 8013:8013 -p 9000-9005:9000-9005 store/marklogicdb/marklogic-hr360-datahub:5.4.2</p>
+<ol>
+  <li>Login to Community Edition using the URL and user above and Enjoy!</li>
+</ol>
 
 
         </div>
