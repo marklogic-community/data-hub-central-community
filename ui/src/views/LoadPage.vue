@@ -2,63 +2,31 @@
 	<v-container>
 		<v-layout row>
 			<v-flex md12 class="text-center">
-				<h1>Load Data</h1>
+				<h1>Load Data From RDBMS</h1>
 			</v-flex>
 		</v-layout>
-<div class="panel-body">
- <form action="" @submit.prevent="updateLoadDetails">
-<vue-form-generator :schema="schema" :model="loadModel" :options="formOptions"></vue-form-generator>
- </form>
-</div>
-				<v-layout row>
-			<v-flex md12 class="text-center">
-				<h1>My Data</h1>
-			</v-flex>
-		</v-layout>
-		<v-row justify="center">
-			<v-col cols="6" class="data-container">
-				<div class="text-center sample" v-if="(stagingData.length <= 0)">
-					Uploaded data will appear here.
-				</div>
-
-				<div class="sample-text" v-if="(stagingData.length <= 0)">
-					SAMPLE
-				</div>
-				<v-simple-table :class="(stagingData.length > 0) ? 'active': 'sample'">
-					<thead>
-						<tr>
-							<th>Data Source</th>
-							<th>Count</th>
-							<th data-cy="manageSources.deleteAll">
-								<delete-data-confirm
-								tooltip="Delete All Data Sources"
-								message="Do you really want to delete all Data Sources?"
-								:disabled="(stagingData.length <= 0)"
-								:collection="''"
-								:deleteInProgress="deleteInProgress"
-								@deleted="removeAllData($event)"/>
-							</th>
-						</tr>
-					</thead>
-					<tbody data-cy="manageSources.table">
-						<tr v-for="data of tableData" :key="data.collection">
-							<td>{{data.collection}}</td>
-							<td>{{data.count}}</td>
-							<td>
-								<delete-data-confirm
-									tooltip="Delete Data Source"
-									message="Do you really want to delete this data source?"
-									:disabled="(stagingData.length <= 0)"
-									:collection="data.collection"
-									:deleteInProgress="deleteInProgress"
-									@deleted="removeData($event)"/>
-							</td>
-						</tr>
-					</tbody>
-				</v-simple-table>
-			</v-col>
-		</v-row>
-		<upload-collection-dialog ref="uploadCollectionDlg" />
+	<vue-form-generator :schema="schema" :model="loadModel" :options="formOptions"></vue-form-generator>
+	<v-row justify="center">
+			<v-col cols="6">
+				<v-btn @click="choosePJConfigFile('preJoinChoose')" color="primary">
+				Pre-Join Config File
+				</v-btn>
+		</v-col>
+	</v-row>
+	<v-row justify="center">
+			<v-col cols="6">
+				<v-btn @click="choosePJConfigFile('insertConfigChoose')" color="primary">
+				Insert Config File
+				</v-btn>
+		</v-col>
+	</v-row>
+	<v-row justify="center">
+			<v-col cols="6">
+				<v-btn @click="loadFromRDBMS('insertConfigChoose')" color="primary">
+				Load
+				</v-btn>
+		</v-col>
+	</v-row>
 	</v-container>
 </template>
 
@@ -71,8 +39,10 @@ import DeleteDataConfirm from '@/components/DeleteDataConfirm'
 import axios from 'axios'
 import UploadCollectionDialog from '../components/UploadCollectionDialog.vue'
 import VueFormGenerator from 'vue-form-generator'
-import "vue-form-generator/dist/vfg.css";  // optional full css additions
-import userFormSchema from '../forms/userFormSchema'
+import 'vue-form-generator/dist/vfg-core.css'  // optional full css additions
+import 'vue-form-generator/dist/vfg.css'  // optional full css additions
+import userFormSchema from '../forms/userFormSchema2'
+import R2MConnectAPI from '@/api/R2MConnectApi'
 
 export default {
 	name: 'LoadPage',
@@ -182,6 +152,17 @@ export default {
 	},
 	methods: {
 		updateLoadDetails(){},
+		loadFromRDBMS(){},
+		choosePJConfigFile(myEvent){
+			this.chooseFileInput = document.createElement('input');
+			this.chooseFileInput.id = 'envision-config-file-chooser'
+			this.chooseFileInput.type = 'file'
+			this.chooseFileInput.multiple = true
+			this.chooseFileInput.addEventListener('change', () => {
+				this.$emit(myEvent, this.chooseFileInput.files)
+			})
+			this.chooseFileInput.click()
+		},
 		uploadFiles(files) {
 			const collection = files.length === 1 ? files[0].name : null
 			this.$refs.uploadCollectionDlg.open(collection).then(({collection, database}) => {
@@ -296,4 +277,50 @@ div.sample {
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none;
 }
+.vue-form-generator > div
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-grow: 1;
+  }
+
+  .form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 2%;
+    width: 50%;
+  }
+
+  .field-wrap, .wrapper{
+    width: 100%;
+  }
+
+  .dropList{
+    z-index: 10;
+    background-color: #FFF;
+    position: relative;
+    width: 40%;
+    top: 5px;
+    right: 12px;
+  }
+
+  legend{
+    margin: 10px 0 20px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+		color: purple;
+  }
+
+  .hint{
+    font-size: 10px;
+    font-style: italic;
+    color: purple;
+  }
+
+  .help-block{
+    color: red;
+  }
 </style>
