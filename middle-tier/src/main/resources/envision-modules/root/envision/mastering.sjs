@@ -1,6 +1,8 @@
+const dhUtils = require("/envision/dh-utils.sjs")
 const jobDB = require('/com.marklogic.hub/config.sjs').JOBDATABASE
 const matcher = require("/com.marklogic.smart-mastering/matcher.xqy");
 const model = require('/envision/model.sjs').model();
+
 
 function getLabels() {
 	const labels = model ? Object.values(model.nodes).reduce((prev, cur) => {
@@ -23,16 +25,20 @@ function getNotificationFlowInfo(uri) {
 		database: xdmp.database(jobDB)
 	}))
 
+	const metadata = xdmp.documentGetMetadata(uri);
+
 	const flows = fn.collection(['http://marklogic.com/data-hub/flow']).toArray()
 		.filter(flow => !xdmp.nodeUri(flow).match('/default-'))
 		.map(flow => flow.toObject())
 
-	const flow = flows.find(flow => prov.indexOf(flow.name) >= 0)
+	let flow = flows.find(flow => prov.indexOf(flow.name) >= 0 || flow.name === metadata.datahubCreatedInFlow)
 	if (flow) {
-		const steps = Object.values(flow.steps).map(step => step.name)
+		flow = dhUtils.getFullFlow(flow)
+		const steps = Object.values(flow.steps)
 		const flowName = flow.name
-		const stepName = steps.find(step => prov.indexOf(step) >= 0)
-		const stepNumber = Object.keys(flow.steps).find(key => prov.indexOf(flow.steps[key].name) >= 0);
+		const step = steps.find(step => prov.indexOf(step.name) >= 0 || step.name === metadata.datahubCreatedByStep)
+		const stepName = step ? step.name : "Unknown";
+		const stepNumber = step ?  Object.keys(flow.steps).find(key => flow.steps[key].name === stepName) : "Unknown";
 		const res = {
 			flowName,
 			stepName,

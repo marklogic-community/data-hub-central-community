@@ -16,4 +16,4 @@ Please go read the [Contributing doc](./CONTRIBUTING.md).
 Then go read the [Developing doc](./DEVELOPING.md) for info on building and running the project.
 
 
-[jar]:https://github.com/marklogic-community/envision/releases/download/v5.4.1/hub-central-community-5.4.1.jar 
+[jar]:https://github.com/marklogic-community/envision/releases/download/v5.4.2/hub-central-community-5.4.2.jar 
