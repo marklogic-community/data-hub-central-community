@@ -1,0 +1,11 @@
+{
+	"hosts":[
+         "localhost"
+        ],
+	"port": 8010,
+	"numThreadsPerHost": 5,
+	"batchSize": 10,
+	"username": "admin",
+	"password": "admin",
+	"authContext": "digest"
+}

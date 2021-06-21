@@ -1,14 +1,12 @@
-package com.marklogic.envision.commands;
+package com.marklogic.r2m;
 
-import com.marklogic.client.ext.helper.LoggingObject;
-//import com.marklogic.r2m.RelationalToMarkLogic;
-import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
 
-public class R2MCommand extends LoggingObject {
+public class R2MCommand  {
 
 	private final String joinConfigFilePath;
 	private final String sourceConfigFilePath;
@@ -24,10 +22,9 @@ public class R2MCommand extends LoggingObject {
 
 	public void execute() throws Exception {
 		//run the R2M commandline app
-	/*	try {
+		try {
 			// Initialize the r2m tool
-			//this command is being moved to the R2M component
-			//RelationalToMarkLogic r2m = new RelationalToMarkLogic();
+			RelationalToMarkLogic r2m = new RelationalToMarkLogic();
 
 			String joinConfigJson = new String(Files.readAllBytes(Paths.get(this.joinConfigFilePath)));
 			String sourceConfigJson = new String(Files.readAllBytes(Paths.get(this.sourceConfigFilePath)));
@@ -40,12 +37,9 @@ public class R2MCommand extends LoggingObject {
 			r2m.setMarkLogicConfigJson(marklogicConfigJson);
 
 			r2m.run();
-
-
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
 		}
-	 */
 	}
 
 }
