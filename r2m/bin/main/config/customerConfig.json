@@ -1,0 +1,21 @@
+{
+  "query": "SELECT * FROM Customer",
+  "primaryKeyColumnNames": ["ID"],
+  "propertyName": "customer",
+  "childQueries": [
+  {
+    "propertyName": "Invoices",
+    "query": "SELECT * FROM Invoice",
+    "primaryKeyColumnNames": ["ID"],
+    "foreignKeyColumnNames": ["CustomerID"],
+    "childQueries": [
+	  {
+      "propertyName": "Items",
+      "query": "SELECT * FROM Item",
+      "primaryKeyColumnNames": ["ID"],
+      "foreignKeyColumnNames": ["InvoiceID"]
+	  }
+	  ]
+  }
+  ]
+}

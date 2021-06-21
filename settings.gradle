@@ -1,2 +1,4 @@
 rootProject.name = 'middle-tier'
 include ':middle-tier'
+include 'r2m'
+
