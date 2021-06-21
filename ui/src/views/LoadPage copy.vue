@@ -5,8 +5,7 @@
 				<h1>Load Data From RDBMS</h1>
 			</v-flex>
 		</v-layout>
-
-	<vue-form-generator tag="div" :schema="schema" :model="loadModel" :options="formOptions"></vue-form-generator>
+	<vue-form-generator :schema="schema" :model="loadModel" :options="formOptions"></vue-form-generator>
 	<v-row justify="center">
 			<v-col cols="6">
 				<v-btn @click="choosePJConfigFile('preJoinChoose')" color="primary">
