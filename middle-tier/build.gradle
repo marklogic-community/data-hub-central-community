@@ -13,12 +13,6 @@ plugins {
 	id 'com.marklogic.ml-development-tools' version '4.1.1'
 	id 'org.springframework.boot' version '2.2.13.RELEASE'
 }
-configurations {
-	all {
-		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-		exclude group: 'ch.qos.logback'
-	}
-}
 
 apply plugin: "java"
 apply plugin: "io.spring.dependency-management"
@@ -86,48 +80,30 @@ dependencies {
 	compile('commons-codec:commons-codec:1.15')
 
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-	//TODO Restore to logback implementation
-	//compile 'ch.qos.logback:logback-classic:1.1.11'
-	compile 'org.springframework.boot:spring-boot-starter-log4j2'
-	compile 'com.fasterxml.jackson.core:jackson-databind'
-	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml'
 
-	//***********************R2M
-	// R2M Core dependencies needed for using Spring Batch, Spring JDBC, and marklogic-spring-batch
-	compile fileTree (dir: "/code/nm-hsd-dhf/offline-repository/com/oracle/ojdbc", includes:['*.jar'])
-	implementation ("com.marklogic:spring-batch-rdbms:1.4.2")
-	// Using H2 as a sample database; can pull its JDBC driver from a Maven repository
-	runtimeOnly "com.h2database:h2:1.4.200"
-	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:8.4.0.jre8'
-	// Can reference a local JDBC driver like this (Oracle, along with others, do not publish their JDBC driver to a public repo)
-	runtimeOnly files("build/libs/ojdbc8.jar")
-
-	//implementation (group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.2')
-	//************************EndR2M
-
-	testImplementation group: 'org.springframework', name: 'spring-test'
-	testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+	testCompile group: 'org.springframework', name: 'spring-test'
+	testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
 		exclude group : 'junit', module: 'junit'
 		exclude group : 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+	testCompile group: 'org.springframework.security', name: 'spring-security-test'
 
-//	testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
-	testImplementation "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+//	testCompile "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
+	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testCompile "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+	testCompile "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
 	testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 	testRuntime "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
 	testRuntime "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
 
-	testImplementation 'org.skyscreamer:jsonassert:1.5.0'
-	testImplementation 'org.xmlunit:xmlunit-core:2.8.2'
-	testImplementation 'org.xmlunit:xmlunit-matchers:2.8.2'
-	testImplementation 'org.easymock:easymock:3.4'
-	testImplementation 'ch.qos.logback:logback-classic:1.1.11'
-	testImplementation 'org.slf4j:log4j-over-slf4j:1.7.13'
-	testImplementation "org.mockito:mockito-core:3.0.0"
-	testImplementation "org.mockito:mockito-junit-jupiter:3.0.0"
+	testCompile 'org.skyscreamer:jsonassert:1.5.0'
+	testCompile 'org.xmlunit:xmlunit-core:2.8.2'
+	testCompile 'org.xmlunit:xmlunit-matchers:2.8.2'
+	testCompile 'org.easymock:easymock:3.4'
+	testCompile 'ch.qos.logback:logback-classic:1.1.11'
+	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
+	testCompile "org.mockito:mockito-core:3.0.0"
+	testCompile "org.mockito:mockito-junit-jupiter:3.0.0"
 }
 
 processResources {
