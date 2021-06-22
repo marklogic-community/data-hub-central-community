@@ -1,0 +1,51 @@
+{
+	"query": {
+		"query": "SELECT * FROM Customer",
+		"primaryKeyColumnNames": ["ID"],
+		"propertyName": "customer",
+		"childQueries": [
+			{
+				"propertyName": "Invoices",
+				"query": "SELECT * FROM Invoice",
+				"primaryKeyColumnNames": ["ID"],
+				"foreignKeyColumnNames": ["CustomerID"],
+				"childQueries": [
+					{
+						"propertyName": "Items",
+						"query": "SELECT * FROM Item",
+						"primaryKeyColumnNames": ["ID"],
+						"foreignKeyColumnNames": ["InvoiceID"]
+					}
+				]
+			}
+		]
+	},
+	"insert": {
+		"entityName": "customer",
+		"entityNamespace": "http://www.marklogic.com/r2m/example",
+		"uriPrefix": "/customer/",
+		"uriSuffix": ".xml",
+		"keys": ["ID"],
+		"keyDelimiter": "/",
+		"collections": ["customer", "otherCollection"],
+		"docType": "xml"
+	},
+	"source": {
+		"connectionString": "jdbc:h2:~/r2m",
+		"username": "admin",
+		"password": "admin",
+		"numThreads": 5,
+		"batchSize": 10
+	},
+	"mlConifg": {
+		"hosts":[
+			"localhost"
+		],
+		"port": 8010,
+		"numThreadsPerHost": 5,
+		"batchSize": 10,
+		"username": "admin",
+		"password": "admin",
+		"authContext": "digest"
+	}
+}

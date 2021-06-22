@@ -1,10 +1,10 @@
 package com.marklogic.r2m;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 
 public class RelationalToMarkLogic {
 
@@ -43,102 +42,71 @@ public class RelationalToMarkLogic {
 	private MarkLogicConfiguration marklogicConfiguration;
 	private SourceConfiguration sourceConfig;
 	private MLInsertConfig insertConfig;
-	
+
 	private String query;
 
 	private BlockingQueue<String> docQueue;
 	private BlockingQueue<List<Map<String, Object>>> rowQueue;
-	private int numChildQueryExecutors;	
+	private int numChildQueryExecutors;
 	private int docQueueSize;
 	private ChildQueryExecutor childQueryExecutors[];
 	private DocumentLoader docLoaders[];
 	private int joinBatchSize = 100;
-	
+
 	private String exitFlag = "Done";
-	
+
 	private ObjectMapper objectMapper = new ObjectMapper();
-	
+
 	private String dbUser;
-	
+
 	public void setDBPassword(String dbPassword) {
 		this.dbPassword = dbPassword;
 	}
 	private String dbPassword;
-	
-	public void setJoinConfigJson(String joinConfigJson) {
-		this.joinConfigJson = joinConfigJson;
-	}
-	private String joinConfigJson;
-	
-	public void setSourceConfigJson(String sourceConfigJson) {
-		this.sourceConfigJson = sourceConfigJson;
-	}
-	private String sourceConfigJson;
-	
-	public void setInsertConfigJson(String insertConfigJson) {
-		this.insertConfigJson = insertConfigJson;
-	}
-	private String insertConfigJson;
 
-	public void setMarkLogicConfigJson(String marklogicConfigJson) {
-		this.marklogicConfigJson = marklogicConfigJson;
-	}
-	private String marklogicConfigJson;
-	
-	
-	private void init() throws Exception
-	{
-		// Initialize config JSON files
-		try {
-			tableQuery = objectMapper.readerFor(TableQuery.class).readValue(joinConfigJson);
-		} catch (IOException e) {
-			throw new Exception("Unable to read join configuration JSON: " + joinConfigJson, e);
+	private void init() throws Exception {
+		if (this.tableQuery == null) {
+			throw new Exception("No join configuration present");
 		}
 
-		try {
-			sourceConfig = objectMapper.readerFor(SourceConfiguration.class).readValue(sourceConfigJson);
-		} catch (IOException e) {
-			throw new Exception("Unable to read MarkLogic insert configuration JSON: " + sourceConfigJson, e);
+		if (this.sourceConfig == null) {
+			throw new Exception("No source configuration present");
 		}
-		
-		try {
-			marklogicConfiguration = objectMapper.readerFor(MarkLogicConfiguration.class).readValue(marklogicConfigJson);
-		} catch (IOException e) {
-			throw new Exception("Unable to read MarkLogic configuration JSON: " + marklogicConfigJson, e);
+
+		if (this.marklogicConfiguration == null) {
+			throw new Exception("No marklogic configuration present");
 		}
-		
-		try {
-			insertConfig = objectMapper.readerFor(MLInsertConfig.class).readValue(insertConfigJson);
-		} catch (IOException e) {
-			throw new Exception("Unable to read insert configuration JSON: " + insertConfigJson, e);
+
+		if (this.insertConfig == null) {
+			throw new Exception("No insert configuration present");
 		}
 
 		connection = DriverManager.getConnection(sourceConfig.getConnectionString(), sourceConfig.getUsername(), sourceConfig.getPassword());
 		numChildQueryExecutors = sourceConfig.getNumThreads();
 		childQueryExecutors = new ChildQueryExecutor[numChildQueryExecutors];
 		joinBatchSize = sourceConfig.getBatchSize();
-		
+
 		query = tableQuery.getQuery();
-		
+
 		// Set the document queue to be large enough such that every document loader can grab a full batch should they all attempt
 		// to pull from the queue at the same time
 		docQueueSize = marklogicConfiguration.getBatchSize() * marklogicConfiguration.getNumThreadsPerHost() * marklogicConfiguration.getHosts().size();
 		docQueue = new LinkedBlockingQueue<>(docQueueSize);
-		
+
 		// Set the row queue to be large enough such that every child query executor can grab a job should they all attempt to pull
 		// from the queue at the same time
 		rowQueue = new LinkedBlockingQueue<>(numChildQueryExecutors);
 	}
-	
+
 	public void run() throws Exception {
-		
+
 		init();
-		
+
 		final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
-		
+
 		createDocumentLoaders();
 		createChildQueryExecutors();
-		
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		int rowNumber = 0;
@@ -153,12 +121,12 @@ public class RelationalToMarkLogic {
 			} catch (SQLException e) {
 				System.out.println("Error in Executing Query "+query+" " +e.toString());
 			};
-				
+
 
 			List<Map<String, Object>> columnMaps = new ArrayList<>();
 			while (resultSet.next()) {
 				columnMaps.add(rowMapper.mapRow(resultSet, rowNumber));
-				
+
 				rowNumber++;
 				if (rowNumber >= joinBatchSize) {
 					executeChildQueries(columnMaps);
@@ -170,12 +138,12 @@ public class RelationalToMarkLogic {
 					columnMaps = new ArrayList<>();
 				}
 			}
-			
+
 			totalRows += rowNumber;
 
 			// ResultSet is complete, so process final batch if it exists
 			// Wait for the queue to empty and then terminate the child threads
-			// Send 
+			// Send
 			if (!columnMaps.isEmpty()) {
 				System.out.println("Sending final batch of size: " + columnMaps.size());
 				executeChildQueries(columnMaps);
@@ -205,7 +173,7 @@ public class RelationalToMarkLogic {
 				}
 			}
 		}
-		// Watch both queues to see when they finally empty.  
+		// Watch both queues to see when they finally empty.
 		System.out.println("Placed " + totalRows + " documents in queue to be loaded");
 		System.out.println("Shutting down child query executors...");
 
@@ -226,14 +194,14 @@ public class RelationalToMarkLogic {
 				Thread.sleep(1000);
 			}
 		} while (childQueriesRemaining < numChildQueryExecutors);
-		
+
 		for(int i = 0; i < childQueryExecutors.length; i++) {
 			System.out.print("\rWaiting for executor #" + i + " to shut down");
 			while(!childQueryExecutors[i].doneRunning) {
 				Thread.sleep(1000);
 			}
 		}
-		
+
 		System.out.println("Shutting down document loaders...");
 		int docsRemaining = 0;
 		do {
@@ -249,7 +217,7 @@ public class RelationalToMarkLogic {
 				Thread.sleep(1000);
 			}
 		} while (docsRemaining < docQueueSize);
-		
+
 		System.out.println("Done!");
 	}
 
@@ -260,7 +228,7 @@ public class RelationalToMarkLogic {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createChildQueryExecutors() throws SQLException {
 		for(int i = 0; i < childQueryExecutors.length; i++) {
 			ChildQueryExecutor cqe = new ChildQueryExecutor(sourceConfig, tableQuery, insertConfig.getDocType(), rowQueue, docQueue);
@@ -268,11 +236,11 @@ public class RelationalToMarkLogic {
 			new Thread(cqe).start();
 		}
 	}
-	
-	private void createDocumentLoaders() 
-	{
+
+	private void createDocumentLoaders() throws JsonProcessingException {
 		List<String> hosts = marklogicConfiguration.getHosts();
 		int i = 0;
+		String insertConfigJson = this.objectMapper.writeValueAsString(insertConfig);
 		docLoaders = new DocumentLoader[hosts.size() * marklogicConfiguration.getNumThreadsPerHost()];
 		for (String host : hosts) {
 			for(int j = 0; j < marklogicConfiguration.getNumThreadsPerHost(); j++) {
@@ -282,6 +250,38 @@ public class RelationalToMarkLogic {
 				i++;
 			}
 		}
+	}
+
+	public TableQuery getTableQuery() {
+		return tableQuery;
+	}
+
+	public void setTableQuery(TableQuery tableQuery) {
+		this.tableQuery = tableQuery;
+	}
+
+	public MarkLogicConfiguration getMarklogicConfiguration() {
+		return marklogicConfiguration;
+	}
+
+	public void setMarklogicConfiguration(MarkLogicConfiguration marklogicConfiguration) {
+		this.marklogicConfiguration = marklogicConfiguration;
+	}
+
+	public SourceConfiguration getSourceConfig() {
+		return sourceConfig;
+	}
+
+	public void setSourceConfig(SourceConfiguration sourceConfig) {
+		this.sourceConfig = sourceConfig;
+	}
+
+	public MLInsertConfig getInsertConfig() {
+		return insertConfig;
+	}
+
+	public void setInsertConfig(MLInsertConfig insertConfig) {
+		this.insertConfig = insertConfig;
 	}
 }
 
