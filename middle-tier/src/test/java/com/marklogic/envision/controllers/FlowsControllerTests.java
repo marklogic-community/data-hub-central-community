@@ -3,6 +3,7 @@ package com.marklogic.envision.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.marklogic.client.FailedRequestException;
 import com.marklogic.envision.flows.FlowsService;
 import com.marklogic.envision.hub.HubClient;
 import com.marklogic.envision.model.ModelService;
@@ -50,7 +51,11 @@ public class FlowsControllerTests extends AbstractMvcTest {
 	public void setup() throws IOException {
 		envisionConfig.setMultiTenant(true);
 		super.setup();
-		removeUser(ACCOUNT_NAME);
+		try {
+			removeUser(ACCOUNT_NAME);
+		} catch (FailedRequestException e) {
+			// User is already removed
+		}
 		clearStagingFinalAndJobDatabases();
 
 		registerAccount();
