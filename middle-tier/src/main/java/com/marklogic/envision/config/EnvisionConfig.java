@@ -160,6 +160,7 @@ public class EnvisionConfig {
 				String roleName = DigestUtils.md5Hex(username);
 				hubConfig.setEntityModelPermissions(String.format("%s,read,%s,update", roleName, roleName));
 			}
+			hubConfig.setHost(markLogicHost);
 		}
 		catch(Exception e) {
 			throw new RuntimeException(e);
