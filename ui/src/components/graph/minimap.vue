@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 <template >
 
 	<v-card
@@ -138,7 +139,7 @@ export default {
 		var canvasY = this.graphFullCanvas.topLeft.y - (offsetY * ratioY)
 		//move the graph
 		var positions = {
-		  position: this.graph.getViewPosition(),
+			position: this.graph.getViewPosition(),
 			scale: this.graph.getScale(),
 			positions: this.graph.getPositions(),
 			animation: true

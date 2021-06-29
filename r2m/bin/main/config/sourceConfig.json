@@ -1,7 +1,0 @@
-{
-  "connectionString": "jdbc:h2:./data/test",
-  "username": "sa",
-  "password": "",
-  "numThreads": 5,
-  "batchSize": 10
-}
