@@ -108,6 +108,12 @@ export default {
 				return
 			}
 			const raw = this.option ? this.option.raw : {}
+			if (this.strategy) {
+				delete raw.maxValues;
+				delete raw.maxSources;
+				delete raw.priorityOrder;
+				delete raw.strategyName;
+			}
 			const option = {
 				...(raw || {}),
 				entityPropertyPath: this.entityPropertyPath,
