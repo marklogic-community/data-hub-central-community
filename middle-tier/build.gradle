@@ -61,7 +61,7 @@ dependencies {
 	// No idea why this is necessary, but when Gradle brings the core project over, it bumps the okhttp3 dependency
 	// down from 4.4.0 to 3.x, which then breaks all kinds of stuff. So exclude the two okhttp3 dependencies and
 	// then explicitly depending on the desired versions.
-	implementation ("com.marklogic:marklogic-data-hub:5.4.2") {
+	implementation ("com.marklogic:marklogic-data-hub:5.4.4") {
 		exclude group: "com.squareup.okhttp3", module: "okhttp"
 		exclude group: "com.squareup.okhttp3", module: "logging-interceptor"
 	}
