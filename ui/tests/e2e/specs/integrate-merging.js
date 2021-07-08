@@ -76,10 +76,6 @@ describe('Integrate Tab', () => {
                             .to.deep.equal(JSON.stringify({
                                 "entityPropertyPath": "departmentId",
                                 "mergeType": "strategy",
-                                "length": {
-                                    "weight": null
-                                },
-                                "sourceWeights": [],
                                 "mergeStrategyName": "My Strategy"
                             }))
                     })
@@ -131,33 +127,7 @@ describe('Integrate Tab', () => {
                             .to.deep.equal(JSON.stringify({
                                 "entityPropertyPath": "departmentId",
                                 "mergeStrategyName": "My Strategy",
-                                "maxValues": "2",
-                                "priorityOrder": {
-                                    "lengthWeight": 55,
-                                    "sources": [{
-                                        "sourceName": "source1",
-                                        "weight": "2"
-                                    }, {
-                                        "sourceName": "source2",
-                                        "weight": "3"
-                                    }]
-                                },
-                                "strategyName": "My Strategy",
-                                "maxSources": "3",
-                                "raw": {
-                                    "entityPropertyPath": "address",
-                                    "mergeStrategyName": "My Strategy",
-                                    "maxValues": 1,
-                                    "priorityOrder": {
-                                        "lengthWeight": "10",
-                                        "sources": []
-                                    }
-                                },
-                                "mergeType": "strategy",
-                                "length": {
-                                    "weight": null
-                                },
-                                "sourceWeights": []
+                                "mergeType": "strategy"
                             }))
                     })
                 cy.get('#optionsTable td').contains('departmentId').parent().within(() => {
@@ -209,33 +179,7 @@ describe('Integrate Tab', () => {
                             .to.deep.equal(JSON.stringify({
                                 "entityPropertyPath": "address",
                                 "mergeStrategyName": "My Strategy2",
-                                "maxValues": "2",
-                                "priorityOrder": {
-                                    "lengthWeight": 55,
-                                    "sources": [{
-                                        "sourceName": "source1",
-                                        "weight": "2"
-                                    }, {
-                                        "sourceName": "source2",
-                                        "weight": "3"
-                                    }]
-                                },
-                                "strategyName": "My Strategy",
-                                "maxSources": "3",
-                                "raw": {
-                                    "entityPropertyPath": "address",
-                                    "mergeStrategyName": "My Strategy",
-                                    "maxValues": 1,
-                                    "priorityOrder": {
-                                        "lengthWeight": "10",
-                                        "sources": []
-                                    }
-                                },
-                                "mergeType": "strategy",
-                                "length": {
-                                    "weight": null
-                                },
-                                "sourceWeights": []
+                                "mergeType": "strategy"
                             }))
                     })
                 cy.get('#optionsTable td').contains('address').parent().within(() => {
@@ -288,33 +232,7 @@ describe('Integrate Tab', () => {
                             .to.deep.equal(JSON.stringify({
                                 "entityPropertyPath": "departmentId",
                                 "mergeStrategyName": "My Strategy2",
-                                "maxValues": "2",
-                                "priorityOrder": {
-                                    "lengthWeight": 55,
-                                    "sources": [{
-                                        "sourceName": "source1",
-                                        "weight": "2"
-                                    }, {
-                                        "sourceName": "source2",
-                                        "weight": "3"
-                                    }]
-                                },
-                                "strategyName": "My Strategy",
-                                "maxSources": "3",
-                                "raw": {
-                                    "entityPropertyPath": "address",
-                                    "mergeStrategyName": "My Strategy",
-                                    "maxValues": 1,
-                                    "priorityOrder": {
-                                        "lengthWeight": "10",
-                                        "sources": []
-                                    }
-                                },
-                                "mergeType": "strategy",
-                                "length": {
-                                    "weight": null
-                                },
-                                "sourceWeights": []
+                                "mergeType": "strategy"
                             }))
                     })
                 cy.get('#optionsTable td').contains('departmentId').parent().within(() => {
