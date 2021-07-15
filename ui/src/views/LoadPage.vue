@@ -2,24 +2,24 @@
 	<v-container>
 		<v-layout row>
 			<v-flex md12 class="text-center">
-				<h1>Load Data From RDBMS</h1>
+				<h1>Load From a Relational Database</h1>
 			</v-flex>
 		</v-layout>
 
 	<vue-form-generator tag="div" :schema="schema" :model="loadModel" :options="formOptions"></vue-form-generator>
 	<v-row justify="center">
 			<v-col cols="6">
-				<v-btn @click="choosePJConfigFile('preJoinChoose')" color="primary">
-				Pre-Join Config File
-				</v-btn>
-		</v-col>
+				<file-upload @upload="preJoinChoose" :dropZoneLabel="'Drop a JSON file containing your source database pre-join specification here'">
+				</file-upload>
+				<div>Pre-join configuration: {{preJoinConfig === {}?'':preJoinConfig}}</div>
+			</v-col>
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
-				<v-btn @click="choosePJConfigFile('insertConfigChoose')" color="primary">
-				Insert Config File
-				</v-btn>
-		</v-col>
+				<file-upload @upload="insertConfigChoose" :dropZoneLabel="'Drop a JSON file containing your Marklogic database insert specification here'">
+				</file-upload>
+				<div>Insert into Marklogic configuration: {{insertConfig === {}?'':insertConfig}}</div>
+			</v-col>
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
@@ -68,64 +68,13 @@ export default {
 	data() {
 		return {
 			loadModel: {
-        id: 1,
-        name: 'John Doe',
-        password: 'J0hnD03!x4',
-        skills: ['Javascript', 'VueJS'],
-        email: 'john.doe@gmail.com',
-        status: true
-      },
+				srcConnection:'',
+				srcUser:'',
+				srcPassword:''
+			},
+			insertConfig:{},
+			preJoinConfig:{},
 			schema : userFormSchema,
-      schema2: {
-        fields: [
-          {
-            type: 'input',
-            inputType: 'text',
-            label: 'ID (disabled text field)',
-            model: 'id',
-            readonly: true,
-            disabled: true
-          },
-          {
-            type: 'input',
-            inputType: 'text',
-            label: 'Name',
-            model: 'name',
-            placeholder: 'Your name',
-            featured: true,
-            required: true
-          },
-          {
-            type: 'input',
-            inputType: 'password',
-            label: 'Password',
-            model: 'password',
-            min: 6,
-            required: true,
-            hint: 'Minimum 6 characters',
-            validator: VueFormGenerator.validators.string
-          },
-          {
-            type: 'select',
-            label: 'Skills',
-            model: 'skills',
-            values: ['Javascript', 'VueJS', 'CSS3', 'HTML5']
-          },
-          {
-            type: 'input',
-            inputType: 'email',
-            label: 'E-mail',
-            model: 'email',
-            placeholder: 'User\'s e-mail address'
-          },
-          {
-            type: 'checkbox',
-            label: 'Status',
-            model: 'status',
-            default: true
-          }
-        ]
-      },
       formOptions: {
         validateAfterLoad: true,
         validateAfterChanged: true,
@@ -153,7 +102,11 @@ export default {
 	},
 	methods: {
 		updateLoadDetails(){},
-		loadFromRDBMS(){},
+		loadFromRDBMS(){
+			var sourceConfig = {name:"sourceConfig"}
+			var mlConfig = {name:"mlConfig"}
+			R2MConnectAPI.r2m(this.preJoinConfig, sourceConfig, this.insertConfig, mlConfig)
+		},
 		choosePJConfigFile(myEvent){
 			this.chooseFileInput = document.createElement('input');
 			this.chooseFileInput.id = 'envision-config-file-chooser'
@@ -164,19 +117,12 @@ export default {
 			})
 			this.chooseFileInput.click()
 		},
-		uploadFiles(files) {
-			const collection = files.length === 1 ? files[0].name : null
-			this.$refs.uploadCollectionDlg.open(collection).then(({collection, database}) => {
-				if (collection) {
-					this.percentComplete = 0
-					uploadApi.upload({collection, database}, files, (progressEvent) => {
-						this.percentComplete = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-						if (this.percentComplete >= 100) {
-							this.percentComplete = null
-						}
-					})
-				}
-			})
+		preJoinChoose(files) {
+			this.preJoinConfig = files.length === 1 ? files[0].name : null
+
+		},
+		insertConfigChoose(files) {
+			this.insertConfig = files.length === 1 ? files[0].name : null
 		},
 		inputErrors(field, fieldName) {
 			const errors = []

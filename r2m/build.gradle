@@ -6,7 +6,8 @@ plugins {
 
 group = 'com.marklogic'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '8' //required for gradle to provide classes to middle-tier
+//sourceCompatibility = '11'
 
 repositories {
 	maven {
@@ -27,7 +28,6 @@ configurations {
 }
 
 dependencies {
-
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	implementation "com.marklogic:spring-batch-rdbms:1.4.2"

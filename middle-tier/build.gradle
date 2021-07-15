@@ -47,6 +47,7 @@ ext.junitPlatformVersion = '1.7.0'
 ext.junitJupiterVersion  = '5.7.0'
 
 dependencies {
+	implementation (project(":r2m"))
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
 	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 

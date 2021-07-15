@@ -14,7 +14,7 @@
 			contain
 			@click="handleImgClick"
 			@load="handleMapImgLoad"
-    	>
+			>
 			<div class="minimapRadar"
 					id="minimapRadar"
 					v-show="showMiniMapRadar"
@@ -122,6 +122,7 @@ export default {
 			}
 		}
 	},
+	// eslint-disable-next-line no-unused-vars
 	handleZoom(e){
 
 	},

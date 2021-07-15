@@ -7,7 +7,7 @@
 		@dragleave.prevent="dragOut">
 		<slot name="default">
 		<div class="container">
-			<div>Drag & Drop your Data File here</div>
+			<div>{{dropZoneLabel}}</div>
 
 			<div class="or">or...</div>
 			<v-btn @click="chooseFile" color="primary">
@@ -21,6 +21,12 @@
 
 <script>
 export default {
+	props: {
+		dropZoneLabel: {
+    default: "Drag & Drop your Data File here",
+    type: String
+		}
+	},
   components: {
   },
   computed: {

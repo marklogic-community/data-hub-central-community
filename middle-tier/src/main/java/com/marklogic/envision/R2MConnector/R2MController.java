@@ -2,28 +2,38 @@ package com.marklogic.envision.R2MConnector;
 
 import com.marklogic.grove.boot.AbstractController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.marklogic.r2m.*;
+
+import java.util.Collections;
 
 @RestController
-@RequestMapping("/api/r2mconnect")
+@RequestMapping("/api/r2m")
 public class R2MController extends AbstractController {
 
-	final private R2MService r2mService;
-	private String database;
-
 	@Autowired
-	R2MController(R2MService r2MService) {
-		this.r2mService = r2MService;
-	}
+	private  R2MService r2MService;
 
-	@RequestMapping(method = RequestMethod.POST)
-	@ResponseBody
-	public ResponseEntity<?> runDBConnector(@RequestParam("database") String database) {
+	public static final int NUM_THREADS_PER_HOST = 5;
+	public static final int BATCH_SIZE = 10;
+	public static final String AUTH_CONTEXT = "digest";
 
-		this.database = database;
-		this.r2mService.asyncRunConnection(getHubClient());
-		return new ResponseEntity<>(HttpStatus.OK);
+	@RequestMapping(value = "/runExports", method = RequestMethod.POST)
+	ResponseEntity<String> runR2M(@RequestBody R2MPayload payload) throws Exception {
+		MarkLogicConfiguration markLogicConfiguration = new MarkLogicConfiguration(
+			Collections.singletonList(getHubClient().getHubConfig().getHost()),
+			getHubClient().getHubConfig().getStagingPort(),
+			NUM_THREADS_PER_HOST,
+			BATCH_SIZE,
+			getHubClient().getHubConfig().getMlUsername(),
+			getHubClient().getHubConfig().getMlPassword(),
+			AUTH_CONTEXT
+		);
+
+		R2MPayload r2mPayload = new R2MPayload();
+		r2mPayload.setMlConfig(markLogicConfiguration);
+		this.r2MService.execute(payload);
+		return ResponseEntity.ok("Processing...");
 	}
 }

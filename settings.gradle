@@ -1,4 +1,4 @@
-rootProject.name = 'middle-tier'
+rootProject.name = 'envision-middle-tier'
 include ':middle-tier'
-include 'r2m'
+include ':r2m'
 
