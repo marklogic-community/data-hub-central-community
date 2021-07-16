@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.marklogic'
+group = 'com.marklogic.r2m'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '8' //required for gradle to provide classes to middle-tier
 //sourceCompatibility = '11'
@@ -18,6 +18,10 @@ repositories {
 	mavenCentral()
 	maven { url "https://developer.marklogic.com/maven2/" }
 	maven { url "https://plugins.gradle.org/m2/" }
+}
+
+jar {
+	enabled = true
 }
 
 configurations {

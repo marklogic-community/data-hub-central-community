@@ -11,14 +11,14 @@
 			<v-col cols="6">
 				<file-upload @upload="preJoinChoose" :dropZoneLabel="'Drop a JSON file containing your source database pre-join specification here'">
 				</file-upload>
-				<div>Pre-join configuration: {{preJoinConfig === {}?'':preJoinConfig}}</div>
+				<div>Pre-join configuration: {{preJoinConfig === {}?'':preJoinConfig.name}}</div>
 			</v-col>
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
 				<file-upload @upload="insertConfigChoose" :dropZoneLabel="'Drop a JSON file containing your Marklogic database insert specification here'">
 				</file-upload>
-				<div>Insert into Marklogic configuration: {{insertConfig === {}?'':insertConfig}}</div>
+				<div>Insert into Marklogic configuration: {{insertConfig === {}?'':insertConfig.name}}</div>
 			</v-col>
 	</v-row>
 	<v-row justify="center">
@@ -33,12 +33,7 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators'
-import uploadApi from '@/api/UploadApi'
-import flowsApi from '@/api/FlowsApi'
 import FileUpload from '@/components/FileUpload'
-import DeleteDataConfirm from '@/components/DeleteDataConfirm'
-import axios from 'axios'
-import UploadCollectionDialog from '../components/UploadCollectionDialog.vue'
 import VueFormGenerator from 'vue-form-generator'
 import 'vue-form-generator/dist/vfg-core.css'  // optional full css additions
 import 'vue-form-generator/dist/vfg.css'  // optional full css additions
@@ -49,8 +44,6 @@ export default {
 	name: 'LoadPage',
 	components: {
 		FileUpload,
-		DeleteDataConfirm,
-		UploadCollectionDialog,
 		"vue-form-generator": VueFormGenerator.component
 	},
 	props: ['type'],
@@ -81,17 +74,6 @@ export default {
         validateAsync: true
       },
 			deleteInProgress: false,
-			sampleData: [
-				{
-					collection: 'MyDataSource.csv',
-					count: 125
-				},
-				{
-					collection: 'MyOtherDataSource.csv',
-					count: 32
-				}
-			],
-			stagingData: [],
 			dataSource: null,
 			percentComplete: null,
 			uploadLabel: null
@@ -101,61 +83,27 @@ export default {
 		dataSource: { required }
 	},
 	methods: {
-		updateLoadDetails(){},
-		loadFromRDBMS(){
-			var sourceConfig = {name:"sourceConfig"}
-			var mlConfig = {name:"mlConfig"}
-			R2MConnectAPI.r2m(this.preJoinConfig, sourceConfig, this.insertConfig, mlConfig)
-		},
-		choosePJConfigFile(myEvent){
-			this.chooseFileInput = document.createElement('input');
-			this.chooseFileInput.id = 'envision-config-file-chooser'
-			this.chooseFileInput.type = 'file'
-			this.chooseFileInput.multiple = true
-			this.chooseFileInput.addEventListener('change', () => {
-				this.$emit(myEvent, this.chooseFileInput.files)
-			})
-			this.chooseFileInput.click()
+		loadFromRDBMS() {
+			var preJoinConfig;
+			this.readAsBinaryString(this.preJoinConfig).then (result=>{preJoinConfig = result});
+			var insertConfig;
+			this.readAsBinaryString(this.insertConfig).then (result=>{insertConfig = result});
+			R2MConnectAPI.r2m(this.loadModel, preJoinConfig, insertConfig)
 		},
 		preJoinChoose(files) {
-			this.preJoinConfig = files.length === 1 ? files[0].name : null
-
+			this.preJoinConfig = files.length === 1 ? files[0] : null
 		},
 		insertConfigChoose(files) {
-			this.insertConfig = files.length === 1 ? files[0].name : null
+			this.insertConfig = files.length === 1 ? files[0] : null
 		},
-		inputErrors(field, fieldName) {
-			const errors = []
-			if (!this.$v[field].$dirty) return errors
-			this.$v[field].$params.required && !this.$v[field].required && errors.push(`${fieldName} is required.`)
-			return errors
-		},
-		refreshInfo() {
-			flowsApi.getNewStepInfo().then(info => {
-				this.stagingData = info.collections.staging
-			})
-		},
-		async removeAllData() {
-			this.deleteInProgress = true
-			await axios.post("/api/system/deleteCollection", { database: 'staging', collections: this.allCollections })
-			this.deleteInProgress = false
-			this.stagingData = []
-		},
-		async removeData(collection) {
-			this.deleteInProgress = true
-			await axios.post("/api/system/deleteCollection", { database: 'staging', collections: [collection] })
-			this.deleteInProgress = false
-			this.stagingData = this.stagingData.filter(c => c.collection !== collection)
+		readAsBinaryString : async(file)=> {
+			let result = await new Promise((resolve) => {
+			let fileReader = new FileReader();
+			fileReader.onload = (e) => resolve(fileReader.result);
+			fileReader.readAsBinaryString(file);
+			});
+			return result;
 		}
-	},
-	mounted() {
-		this.$ws.subscribe('/topic/status', tick => {
-			const msg = tick.body
-			if (msg.percentComplete >= 100) {
-				this.refreshInfo()
-			}
-		})
-		this.refreshInfo()
 	}
 }
 </script>

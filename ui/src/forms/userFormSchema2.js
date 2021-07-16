@@ -27,7 +27,7 @@ export default {
           label: 'Password',
           model: 'srcPassword',
           required: true,
-          validator: ['strongPassword', 'required']
+          validator: ['string', 'required']
         }
       ]
     }

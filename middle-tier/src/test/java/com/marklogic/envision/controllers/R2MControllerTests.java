@@ -3,6 +3,7 @@ package com.marklogic.envision.controllers;
 import com.marklogic.envision.R2MConnector.R2MService;
 
 import com.marklogic.envision.hub.HubClient;
+import com.marklogic.r2m.R2MPayload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,10 @@ public class R2MControllerTests extends AbstractMvcTest {
 */
 	@Test
 	void r2mconnect() throws Exception {
-		HubClient hubClient = getNonAdminHubClient();
 		try {
-		//r2mService.asyncRunConnection(hubClient);
-		r2mService.runR2M(hubClient);
+			R2MPayload payload = new R2MPayload();
+			//TODO load up the payload with the test config
+			r2mService.execute( payload);
 			//verify(r2mService, times(1)).asyncRunConnection(hubClient);
 		} catch (Exception e) {
 			throw new Exception("Unable to test r2m, cause: " + e.getMessage(), e);
