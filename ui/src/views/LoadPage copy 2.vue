@@ -47,6 +47,17 @@ export default {
 		"vue-form-generator": VueFormGenerator.component
 	},
 	props: ['type'],
+	computed: {
+		uploading() {
+			return this.percentComplete !== null && this.percentComplete < 100
+		},
+		tableData() {
+			return (this.stagingData.length > 0) ? this.stagingData : this.sampleData
+		},
+		allCollections() {
+			return (this.stagingData.length > 0) ? this.stagingData.map(d => d.collection) : []
+		}
+	},
 	data() {
 		return {
 			loadModel: {
@@ -80,6 +91,20 @@ export default {
 				return  R2MConnectAPI.r2m(this.loadModel, results[0], results[1])
 			});
 		},
+		loadFromRDBMS2(evt){
+			try{
+				this.readPreJoinConfig().then(result=> {
+					console.log(result)
+			}).then(result=> {
+				//try{
+				//const insertConfigData = await this.readConfig(this.insertConfig)
+				//const preJoinConfigData = await this.readPreJoinConfig()
+					return  R2MConnectAPI.r2m(this.loadModel, result, result)
+				})
+			}catch (ex) {
+				console.log(ex);
+      }
+		},
 		preJoinChoose(files) {
 			this.preJoinConfig = files.length === 1 ? files[0] : null
 		},
@@ -92,7 +117,7 @@ export default {
 					reader.onload = async (e) => {
 						try {
 							console.log('Loaded ' + file.name);
-							resolve(JSON.parse(e.target.result))
+							resolve(e.target.result)
 						} catch (err) {
 							reject(err);
 						}
@@ -100,26 +125,69 @@ export default {
 					reader.onerror = (error) => {
 						reject(error);
 					};
-					reader.readAsText(file);
+					reader.readAsDataURL(file);
 				})
 		},
+		readConfig2(file) {
+			const filePromise = (file) => {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = async (e) => {
+						try {
+							console.log('Loaded ' + file.name);
+							resolve(e.target.result)
+						} catch (err) {
+							reject(err);
+						}
+					};
+					reader.onerror = (error) => {
+						reject(error);
+					};
+					reader.readAsDataURL(file);
+				}
+			)};
+			//const fileData = await Promise.all([filePromise]);
+			//console.log('Loaded ' + file.name);
+			//return fileData;
+			return filePromise;
+		},
+		async readPreJoinConfig() {
+			const file = this.preJoinConfig
+			const filePromise = (file) => {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = async (e) => {
+						try {
+							console.log('Loaded ' + file.name);
+							resolve(e.target.result)
+						} catch (err) {
+							reject(err);
+						}
+					};
+					reader.onerror = (error) => {
+						reject(error);
+					};
+					reader.readAsDataURL(file);
+				}
+			)};
+			this.preJoinConfigData = Promise.all([filePromise]);
+			console.log('Loaded ' + this.preJoinConfig.name);
+			return this.preJoinConfigData;
+		},
 		//https://stackoverflow.com/questions/41906697/how-to-determine-that-all-the-files-have-been-read-and-resolve-a-promise
-		readMultiFiles2(files) {
+		readMultiFiles(files) {
 			var results = [];
-			files.reduce(async (p, file) => {
+			files.reduce((p, file) => {
 				return p.then(() => {
-					return this.readConfig(file).then(data => {
+					return this.readConfig(file).then(function(data) {
 					// put this result into the results array
 					results.push(data);
 					});
 				});
-			}, Promise.resolve()).then(()=> {
+			}, Promise.resolve()).then(function() {
         // make final resolved value be the results array
         return results;
 			});
-		},
-		readMultiFiles(files) {
-			return Promise.all(files.map(this.readConfig));
 		}
 	}
 }
