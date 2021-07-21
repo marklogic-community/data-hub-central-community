@@ -139,6 +139,13 @@ task testUi(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
 	execOverrides { it.workingDir = groveUiPath }
 }
 
+task testUiBuild(type: NpmTask, dependsOn: installDependencies, group: taskGroup) {
+	environment = [ VUE_APP_ENVISION_VERSION: project.version ]
+	description = "Run the UI tests"
+	args = ["run", "test:e2e:headless"]
+	execOverrides { it.workingDir = groveUiPath }
+}
+
 task deleteSpringBootUiFiles(type: Delete, group: taskGroup) {
 	description = "Delete the UI files that may have already been copied over to the Spring Boot UI directory"
 	delete springBootUiPath
