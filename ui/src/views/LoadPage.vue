@@ -23,7 +23,7 @@
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
-				<v-btn @click="loadFromRDBMS" color="primary">
+				<v-btn @click="loadFromRDBMS2" color="primary">
 				Load
 				</v-btn>
 		</v-col>
@@ -50,9 +50,11 @@ export default {
 	data() {
 		return {
 			loadModel: {
-				srcConnection:'',
-				srcUser:'',
-				srcPassword:''
+				connectionString:'jdbc:oracle:thin:@localhost:1527:OraDoc',
+				username:'admin',
+				password:'admin',
+				numThreads: 5,
+				batchSize: 10
 			},
 			insertConfig:{},
 			preJoinConfig:{},
@@ -74,10 +76,47 @@ export default {
 		dataSource: { required }
 	},
 	methods: {
-		loadFromRDBMS(evt){
-			this.readMultiFiles([this.insertConfig,this.preJoinConfig]).then(results=> {
+		loadFromRDBMS(){
+			// eslint-disable-next-line no-unused-vars
+			var myPromise = this.readMultiFiles2([this.insertConfig,this.preJoinConfig]).then(results=> {
 				// all results in the results array here
 				return  R2MConnectAPI.r2m(this.loadModel, results[0], results[1])
+			});
+		},
+		//TODO refactor this code
+		//this function creates and resolves promises to read config files in sequence
+		//and supply the file contents to the r2m api
+		loadFromRDBMS2(){
+			var results = [];
+			let filePromises = [this.insertConfig,this.preJoinConfig].reduce((p, file) => {
+				return p.then(() => {
+					new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = async (e) => {
+						try {
+							console.log('Loaded ' + file.name);
+							resolve(JSON.parse(e.target.result))
+						} catch (err) {
+							reject(err);
+						}
+					};
+					reader.onerror = (error) => {
+						reject(error);
+					};
+					reader.readAsText(file);
+				}).then(data => {
+					// put this result into the results array
+					results.push(data);
+					});
+				}); //reduce creates a chain of promises
+			}, Promise.resolve()); //first item in chain is a resolve
+			const connection = this.loadModel //without this callbacks lose track of context
+			// eslint-disable-next-line no-unused-vars
+			let _ = filePromises.then(function() {
+				let query = results[1];
+				let insert = results[0]
+        // make final resolved value be the results array
+        return R2MConnectAPI.r2m(connection, query, insert)
 			});
 		},
 		preJoinChoose(files) {
@@ -86,6 +125,7 @@ export default {
 		insertConfigChoose(files) {
 			this.insertConfig = files.length === 1 ? files[0] : null
 		},
+		//return FileReader Promise
 		async readConfig(file) {
 			return new Promise((resolve, reject) => {
 					const reader = new FileReader();
@@ -131,7 +171,3 @@ export default {
 }
 
 </style>
-
-  function newFunction(file) {
-    console.log("Reading file: "+file.name)
-  }

@@ -13,7 +13,7 @@ import java.util.Collections;
 public class R2MController extends AbstractController {
 
 	@Autowired
-	private  R2MService r2MService;
+	private R2MService r2MService;
 
 	public static final int NUM_THREADS_PER_HOST = 5;
 	public static final int BATCH_SIZE = 10;
@@ -31,9 +31,12 @@ public class R2MController extends AbstractController {
 			AUTH_CONTEXT
 		);
 
-		R2MPayload r2mPayload = new R2MPayload();
-		r2mPayload.setMlConfig(markLogicConfiguration);
-		this.r2MService.execute(payload);
-		return ResponseEntity.ok("Processing...");
+		payload.setMlConfig(markLogicConfiguration);
+		try {
+			this.r2MService.execute(payload);
+			return ResponseEntity.ok("Processing...");
+		} catch (Exception e) {
+			return ResponseEntity.ok("Unable to run r2m, cause: " + e.getMessage());
+		}
 	}
 }

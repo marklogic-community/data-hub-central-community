@@ -9,25 +9,41 @@ export default {
           type: 'input',
           inputType: 'text',
           label: 'Connection',
-          model: 'srcConnection',
-          required: true,
-          validator: ['string', 'required']
+          model: 'connectionString',
+          required: false,
+          validator: ['string']
         },
 				{
           type: 'input',
           inputType: 'text',
           label: 'Username',
-          model: 'srcUser',
-          required: true,
-          validator: ['string', 'required']
+          model: 'username',
+          required: false,
+          validator: ['string']
         },
         {
           type: 'input',
           inputType: 'password',
           label: 'Password',
-          model: 'srcPassword',
-          required: true,
-          validator: ['string', 'required']
+          model: 'password',
+          required: false,
+          validator: ['string']
+        },
+        {
+          type: 'input',
+          inputType: 'number',
+          label: 'Threads',
+          model: 'numThreads',
+          required: false,
+          validator: ['number']
+        },
+        {
+          type: 'input',
+          inputType: 'number',
+          label: 'Batch Size',
+          model: 'batchSize',
+          required: false,
+          validator: ['number']
         }
       ]
     }
