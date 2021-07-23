@@ -3,6 +3,7 @@ import VueFormGenerator from 'vue-form-generator'
 export default {
   groups: [
     {
+			styleClasses: "group-one-class",
       legend: 'Source Connection',
       fields: [
         {

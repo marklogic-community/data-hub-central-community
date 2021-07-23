@@ -23,7 +23,7 @@
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
-				<v-btn @click="loadFromRDBMS2" color="primary">
+				<v-btn @click="loadFromRDBMS" color="primary">
 				Load
 				</v-btn>
 		</v-col>
@@ -58,18 +58,12 @@ export default {
 			},
 			insertConfig:{},
 			preJoinConfig:{},
-			insertConfigData:{},
-			preJoinConfigData:{},
 			schema : userFormSchema,
       formOptions: {
         validateAfterLoad: true,
         validateAfterChanged: true,
         validateAsync: true
       },
-			deleteInProgress: false,
-			dataSource: null,
-			percentComplete: null,
-			uploadLabel: null
 		}
 	},
 	validations: {
@@ -77,46 +71,16 @@ export default {
 	},
 	methods: {
 		loadFromRDBMS(){
-			// eslint-disable-next-line no-unused-vars
-			var myPromise = this.readMultiFiles2([this.insertConfig,this.preJoinConfig]).then(results=> {
-				// all results in the results array here
-				return  R2MConnectAPI.r2m(this.loadModel, results[0], results[1])
-			});
-		},
-		//TODO refactor this code
-		//this function creates and resolves promises to read config files in sequence
-		//and supply the file contents to the r2m api
-		loadFromRDBMS2(){
-			var results = [];
-			let filePromises = [this.insertConfig,this.preJoinConfig].reduce((p, file) => {
-				return p.then(() => {
-					new Promise((resolve, reject) => {
-					const reader = new FileReader();
-					reader.onload = async (e) => {
-						try {
-							console.log('Loaded ' + file.name);
-							resolve(JSON.parse(e.target.result))
-						} catch (err) {
-							reject(err);
-						}
-					};
-					reader.onerror = (error) => {
-						reject(error);
-					};
-					reader.readAsText(file);
-				}).then(data => {
-					// put this result into the results array
-					results.push(data);
-					});
-				}); //reduce creates a chain of promises
-			}, Promise.resolve()); //first item in chain is a resolve
 			const connection = this.loadModel //without this callbacks lose track of context
 			// eslint-disable-next-line no-unused-vars
-			let _ = filePromises.then(function() {
-				let query = results[1];
-				let insert = results[0]
-        // make final resolved value be the results array
-        return R2MConnectAPI.r2m(connection, query, insert)
+			var myPromise = this.readMultiFiles([this.insertConfig,this.preJoinConfig]).then(results=> {
+				// all results in the results array here
+				//it's more trouble to guarantee a sequence than sniff the results
+				//TODO make this one object, or move from file-oriented settings
+				let merged = Object.assign(...results);
+				const query = results[0].hasOwnProperty("query") ? results[0] : results[1]
+				const insert = results[0].hasOwnProperty("entityName") ? results[0] : results[1]
+				return R2MConnectAPI.r2m(connection, query, insert)
 			});
 		},
 		preJoinChoose(files) {
@@ -143,31 +107,38 @@ export default {
 					reader.readAsText(file);
 				})
 		},
-		//https://stackoverflow.com/questions/41906697/how-to-determine-that-all-the-files-have-been-read-and-resolve-a-promise
-		readMultiFiles2(files) {
-			var results = [];
-			files.reduce(async (p, file) => {
-				return p.then(() => {
-					return this.readConfig(file).then(data => {
-					// put this result into the results array
-					results.push(data);
-					});
-				});
-			}, Promise.resolve()).then(()=> {
-        // make final resolved value be the results array
-        return results;
-			});
-		},
 		readMultiFiles(files) {
 			return Promise.all(files.map(this.readConfig));
+		},
+		mounted() {
+			this.$ws.subscribe('/topic/status', tick => {
+				const msg = tick.body
+				if (msg.percentComplete >= 100) {
+					this.refreshInfo()
+				}
+			})
+			this.refreshInfo()
+		},
+		refreshInfo() {
+
 		}
 	}
 }
 </script>
 
 <style scoped>
-.vue-form-generator{
-  color: #df23d5;
-}
 
+.group-one-class legend {
+  color: #824082;
+  font-weight: bold;
+  font-size: 1.6em;
+  position: relative;
+  display: block;
+  width: 100%;
+  float: left;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #824082;
+}
 </style>

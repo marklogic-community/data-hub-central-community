@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,10 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RelationalToMarkLogic {
-
-	public RelationalToMarkLogic() {
+	final private SimpMessagingTemplate template;
+	@Autowired
+	public RelationalToMarkLogic(SimpMessagingTemplate template) {
+		this.template = template;
 		objectMapper = new ObjectMapper();
 
 		if (sqlDateFormat != null) {
@@ -102,6 +108,8 @@ public class RelationalToMarkLogic {
 
 		init();
 
+		StatusMessage msg = StatusMessage.newStatus("Loading from RDBMS");
+
 		final ColumnMapRowMapper rowMapper = new ColumnMapRowMapper();
 
 		createDocumentLoaders();
@@ -114,7 +122,7 @@ public class RelationalToMarkLogic {
 		int printFrequency = numChildQueryExecutors * joinBatchSize;
 		try {
 			System.out.println("Executing query: " + query);
-
+			updateStatus(msg.withMessage("Executing query: " + query));
 			try {
 				preparedStatement = connection.prepareStatement(query);
 				resultSet = preparedStatement.executeQuery();
@@ -133,6 +141,7 @@ public class RelationalToMarkLogic {
 					totalRows += rowNumber;
 					if(totalRows % printFrequency == 0) {
 						System.out.print("\rSent " + totalRows + " rows for processing.  Loader queue capacity: " + docQueue.remainingCapacity());
+						updateStatus(msg.withMessage("Sent " + totalRows + " rows for processing.  Loader queue capacity: " + docQueue.remainingCapacity()));
 					}
 					rowNumber = 0;
 					columnMaps = new ArrayList<>();
@@ -146,6 +155,7 @@ public class RelationalToMarkLogic {
 			// Send
 			if (!columnMaps.isEmpty()) {
 				System.out.println("Sending final batch of size: " + columnMaps.size());
+				updateStatus(msg.withMessage("Sending final batch of size: " + columnMaps.size()));
 				executeChildQueries(columnMaps);
 			}
 		} catch (SQLException ex) {
@@ -175,7 +185,9 @@ public class RelationalToMarkLogic {
 		}
 		// Watch both queues to see when they finally empty.
 		System.out.println("Placed " + totalRows + " documents in queue to be loaded");
+		updateStatus(msg.withMessage("Placed " + totalRows + " documents in queue to be loaded"));
 		System.out.println("Shutting down child query executors...");
+		updateStatus(msg.withMessage("Shutting down child query executors..."));
 
 		int childQueriesRemaining = 0;
 		int remainingJobs = numChildQueryExecutors;
@@ -183,6 +195,7 @@ public class RelationalToMarkLogic {
 			childQueriesRemaining = rowQueue.remainingCapacity();
 			if(childQueriesRemaining == numChildQueryExecutors) {
 				System.out.println("Child query queue exhausted.  Sending signal to child query executors to shut down");
+				updateStatus(msg.withMessage("Child query queue exhausted. Sending signal to child query executors to shut down"));
 				for(int i = 0; i < childQueryExecutors.length; i++) {
 					childQueryExecutors[i].stopRunning();
 				}
@@ -190,6 +203,7 @@ public class RelationalToMarkLogic {
 				if(remainingJobs > numChildQueryExecutors - childQueriesRemaining) {
 					remainingJobs = numChildQueryExecutors - childQueriesRemaining;
 					System.out.print("\r" + remainingJobs + " child executors still processing");
+					updateStatus(msg.withMessage(remainingJobs + " child executors still processing"));
 				}
 				Thread.sleep(1000);
 			}
@@ -197,6 +211,7 @@ public class RelationalToMarkLogic {
 
 		for(int i = 0; i < childQueryExecutors.length; i++) {
 			System.out.print("\rWaiting for executor #" + i + " to shut down");
+			updateStatus(msg.withMessage("Waiting for executor #" + i + " to shut down"));
 			while(!childQueryExecutors[i].doneRunning) {
 				Thread.sleep(1000);
 			}
@@ -208,17 +223,22 @@ public class RelationalToMarkLogic {
 			docsRemaining = docQueue.remainingCapacity();
 			if(docsRemaining == docQueueSize) {
 				System.out.println("Document queue exhausted.  Sending signal to document loaders to shut down");
+				updateStatus(msg.withMessage("Document queue exhausted.  Sending signal to document loaders to shut down"));
+
 				for(int i = 0; i < docLoaders.length; i++) {
 					docLoaders[i].stopRunning();
 				}
 			} else {
 				int remainingDocs = docQueueSize - docsRemaining;
 				System.out.println(remainingDocs + " documents to be loaded");
+				updateStatus(msg.withMessage(remainingDocs + " documents to be loaded"));
 				Thread.sleep(1000);
 			}
 		} while (docsRemaining < docQueueSize);
 
 		System.out.println("Done!");
+		updateStatus(msg.withPercentComplete(100));
+
 	}
 
 	protected void executeChildQueries(List<Map<String, Object>> columnMapList) {
@@ -227,6 +247,9 @@ public class RelationalToMarkLogic {
 		} catch(InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	private void updateStatus(StatusMessage message) {
+		template.convertAndSend("/topic/status", message);
 	}
 
 	private void createChildQueryExecutors() throws SQLException {

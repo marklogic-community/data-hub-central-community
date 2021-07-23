@@ -19,5 +19,20 @@ export default {
 			console.error('error:', error);
 			return { isError: true, error: error };
 		});
+	},
+	async r2mGetStatus() {
+		return axios.get('/api/r2m/status')
+			.then(response => {
+        if (response.status === 200) {
+					return response.data;
+        } else {
+          return { isError: true, error: response.data };
+        }
+			}
+		)
+		.catch(error => {
+			console.error('error:', error);
+			return { isError: true, error: error };
+		});
 	}
 }
