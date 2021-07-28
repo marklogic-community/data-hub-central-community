@@ -38,6 +38,10 @@ public class R2MService {
 		} catch (ParseException | IOException e) {
 			updateStatus(msg.withError(e.getMessage()));
 			e.printStackTrace();
+		} catch (Exception e) {
+			updateStatus(msg.withError(e.getMessage()));
+			e.printStackTrace();
+			throw e;
 		}
 	}
 	private void updateStatus(StatusMessage message) {

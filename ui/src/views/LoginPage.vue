@@ -6,8 +6,8 @@
           <img src="@/assets/images/hub-central-community-edition.png" height="60%"/>
           <v-spacer></v-spacer>
        <div>
-      		<a target="_blank" href="https://marklogic-community.github.io/data-hub-central-community/" class="docsLink">
-                    	<v-icon>help_outline</v-icon>
+					<a target="_blank" href="https://marklogic-community.github.io/data-hub-central-community/" class="docsLink">
+							<v-icon>help_outline</v-icon>
           </a>
        </div>
   </v-app-bar>

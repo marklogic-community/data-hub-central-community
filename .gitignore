@@ -16,3 +16,7 @@ middle-tier/.project
 .settings/org.eclipse.buildship.core.prefs
 middle-tier/.classpath
 test-scratch/
+r2m/.settings/org.eclipse.jdt.core.prefs
+r2m/.settings/org.eclipse.buildship.core.prefs
+r2m/.project
+r2m/.classpath

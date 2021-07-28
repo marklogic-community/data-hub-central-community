@@ -1,10 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 import VueFormGenerator from 'vue-form-generator'
 
 export default {
   groups: [
     {
 			styleClasses: "group-one-class",
-      legend: 'Source Connection',
+      //legend: 'Source Connection',
       fields: [
         {
           type: 'input',

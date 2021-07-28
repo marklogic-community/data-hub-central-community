@@ -5,25 +5,25 @@
 				<h1>Load From a Relational Database</h1>
 			</v-flex>
 		</v-layout>
-
+	<v-alert type="error" v-show="hasR2MError" v-cloak>Error loading data!</v-alert>
 	<vue-form-generator tag="div" :schema="schema" :model="loadModel" :options="formOptions"></vue-form-generator>
 	<v-row justify="center">
 			<v-col cols="6">
 				<file-upload @upload="preJoinChoose" :dropZoneLabel="'Drop a JSON file containing your source database pre-join specification here'">
 				</file-upload>
-				<div>Pre-join configuration: {{preJoinConfig === {}?'':preJoinConfig.name}}</div>
+				<div>Pre-join configuration: <span v-bind:class="preJoinConfigStyle" >{{preJoinConfig? preJoinConfig.name:'please choose a pre-join specification'}}</span></div>
 			</v-col>
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
 				<file-upload @upload="insertConfigChoose" :dropZoneLabel="'Drop a JSON file containing your Marklogic database insert specification here'">
 				</file-upload>
-				<div>Insert into Marklogic configuration: {{insertConfig === {}?'':insertConfig.name}}</div>
+				<div>Insert into Marklogic configuration: <span v-bind:class="insertConfigStyle" >{{insertConfig? insertConfig.name :'please choose a Marklogic database insert specification'}}</span></div>
 			</v-col>
 	</v-row>
 	<v-row justify="center">
 			<v-col cols="6">
-				<v-btn @click="loadFromRDBMS" color="primary">
+				<v-btn @click="loadFromRDBMS" color="primary" :disabled='isDisabled'>
 				Load
 				</v-btn>
 		</v-col>
@@ -34,6 +34,7 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 import FileUpload from '@/components/FileUpload'
+//scoped css unexpectedly has no effect on vue-form-generator
 import VueFormGenerator from 'vue-form-generator'
 import 'vue-form-generator/dist/vfg-core.css'  // optional full css additions
 import 'vue-form-generator/dist/vfg.css'  // optional full css additions
@@ -56,8 +57,9 @@ export default {
 				numThreads: 5,
 				batchSize: 10
 			},
-			insertConfig:{},
-			preJoinConfig:{},
+			insertConfig:null,
+			preJoinConfig:null,
+			hasR2MError:false,
 			schema : userFormSchema,
       formOptions: {
         validateAfterLoad: true,
@@ -71,16 +73,22 @@ export default {
 	},
 	methods: {
 		loadFromRDBMS(){
+			this.hasR2MError = false
 			const connection = this.loadModel //without this callbacks lose track of context
 			// eslint-disable-next-line no-unused-vars
 			var myPromise = this.readMultiFiles([this.insertConfig,this.preJoinConfig]).then(results=> {
 				// all results in the results array here
 				//it's more trouble to guarantee a sequence than sniff the results
 				//TODO make this one object, or move from file-oriented settings
-				let merged = Object.assign(...results);
-				const query = results[0].hasOwnProperty("query") ? results[0] : results[1]
-				const insert = results[0].hasOwnProperty("entityName") ? results[0] : results[1]
-				return R2MConnectAPI.r2m(connection, query, insert)
+				if(results.length === 2){
+					//let merged = Object.assign(...results);
+					const query = results[0].hasOwnProperty("query") ? results[0] : (results[1].hasOwnProperty("query") ? results[1] : null )
+					const insert = results[0].hasOwnProperty("entityName") ? results[0] : (results[1].hasOwnProperty("entityName") ? results[1] : null )
+					R2MConnectAPI.r2m(connection, query, insert)
+				}else{
+					//report error
+					this.hasR2MError = true
+				}
 			});
 		},
 		preJoinChoose(files) {
@@ -122,23 +130,85 @@ export default {
 		refreshInfo() {
 
 		}
+	},
+	computed: {
+		isDisabled: function(){
+			return !this.insertConfig  ||
+			!this.preJoinConfig ||
+			!this.loadModel.connectionString ||
+			!this.loadModel.username ||
+			!this.loadModel.password ||
+			!this.loadModel.numThreads ||
+			!this.loadModel.batchSize
+    },
+		insertConfigStyle: function () {
+    return {
+			'config-provided': this.insertConfig,
+			'text-danger': !this.insertConfig
+			}
+		},
+		preJoinConfigStyle: function () {
+    return {
+			'config-provided': this.preJoinConfig,
+			'text-danger': !this.preJoinConfig
+			}
+		},
 	}
 }
 </script>
 
-<style scoped>
+<style lang="less">
 
-.group-one-class legend {
-  color: #824082;
-  font-weight: bold;
-  font-size: 1.6em;
-  position: relative;
-  display: block;
-  width: 100%;
-  float: left;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-bottom: 1em;
-  border-bottom: 1px solid #824082;
+.text-danger{
+	color: gray;
+	font-style: italic;
 }
+.config-provided{
+	color: green;
+	font-style: normal;
+}
+.vue-form-generator > div{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-grow: 1;
+  }
+
+  .group-one-class .form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 2%;
+    width: 50%;
+  }
+
+  .group-one-class .field-wrap, .wrapper{
+    width: 100%;
+  }
+
+  .group-one-class .dropList{
+    z-index: 10;
+    background-color: #FFF;
+    position: relative;
+    width: 40%;
+    top: 5px;
+    right: 12px;
+  }
+
+  .group-one-class legend{
+    margin: 10px 0 20px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .group-one-class .hint{
+    font-size: 10px;
+    font-style: italic;
+    color: purple;
+  }
+
+  .group-one-class .help-block{
+    color: red;
+  }
 </style>
