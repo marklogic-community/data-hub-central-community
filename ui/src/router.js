@@ -70,24 +70,6 @@ const routes = [
 		}
 	},
 	{
-		path: '/load',
-		name: 'root.load',
-		// lazy-loading of page
-		component: () =>
-			import(/* webpackChunkName: "upload" */ './views/LoadPage.vue'),
-		props: {
-			type: 'all'
-		},
-		meta: {
-			label: 'Load',
-			navArea: 'header',
-			requiresUpdates: true,
-			tutorialLink: 'https://www.youtube.com/watch?v=Hcamr-WomQQ&list=PLyLys5HTD_bCAT2gUnf8v_tDwuk6Vu3d2&index=1',
-			tutorialName: 'Upload Tutorial',
-			checkLogin
-		}
-	},
-	{
 		path: '/model',  //url path
 		name: 'root.modeler', //use to navigate to page
 		// lazy-loading of page

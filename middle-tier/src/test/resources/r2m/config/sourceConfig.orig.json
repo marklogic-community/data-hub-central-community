@@ -1,7 +1,0 @@
-{
-  "connectionString": "jdbc:h2:~/r2m",
-  "username": "admin",
-  "password": "admin",
-  "numThreads": 5,
-  "batchSize": 10
-}
