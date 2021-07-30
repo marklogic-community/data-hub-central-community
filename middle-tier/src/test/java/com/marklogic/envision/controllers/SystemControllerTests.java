@@ -28,6 +28,9 @@ public class SystemControllerTests extends AbstractMvcTest {
 		postJson(RESET_URL, "{\"database\":\"staging\",\"collection\":\"user-data\"}")
 			.andExpect(status().isUnauthorized());
 
+		// Installing hub modules so artifacts are found to avoid trying to reload them.
+		installHubModules();
+
 		HubClient hubClient = getNonAdminHubClient();
 		installDoc(hubClient.getStagingClient(), "data/stagingDoc.json", "/ingest/" + ACCOUNT_NAME + "/doc1.json", "user-data");
 		installDoc(hubClient.getFinalClient(), "data/stagingDoc.json", "/data/" + ACCOUNT_NAME + "/doc1.json", "user-data");
