@@ -121,6 +121,9 @@ export default {
 			}
 		}
 	},
+	handleZoom(e) {
+		// Handle Zoom
+	},
 	handleImgClick(e){
 		const{
 			offsetX,
