@@ -191,7 +191,7 @@ public class EnvisionConfig {
 
 	public DatabaseClient getClient() {
 		DatabaseClientConfig config = new DatabaseClientConfig(markLogicHost, markLogicPort, marklogicUsername, marklogicPassword);
-		config.setSecurityContextType(SecurityContextType.DIGEST);
+		config.setSecurityContextType(SecurityContextType.valueOf(hubConfig.getAuthMethod(DatabaseKind.FINAL).toUpperCase()));
 		if (marklogicDatabase.length() > 0) {
 			config.setDatabase(marklogicDatabase);
 		}
