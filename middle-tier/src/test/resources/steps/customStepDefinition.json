@@ -5,15 +5,18 @@
 	"type": "CUSTOM",
 	"version": 1,
 	"options": {
+		"sourceQuery": "cts.collectionQuery([\"SonoranEmployees\"])",
 		"collections": [
 			"DenormalizeEmployees"
 		],
 		"sourceDatabase": "data-hub-STAGING",
 		"permissions": "data-hub-common,read,data-hub-common,update",
 		"outputFormat": "json",
+		"sourceCollection": "SonoranEmployees",
 		"targetDatabase": "data-hub-FINAL"
 	},
-	"customHook": {},
+	"customHook": {
+	},
 	"modulePath": "/custom-modules/custom/DenormalizeEmployees/main.sjs",
 	"retryLimit": 0,
 	"batchSize": 100,

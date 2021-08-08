@@ -22,5 +22,7 @@
 	"batchSize" : 100,
 	"threadCount" : 4,
 	"stepDefinitionName" : "DenormalizeEmployees",
-	"stepDefinitionType" : "CUSTOM"
+	"stepDefinitionType" : "CUSTOM",
+	"sourceCollection" : "SonoranEmployees",
+	"sourceQuery" : "cts.collectionQuery([\"SonoranEmployees\"])"
 }
