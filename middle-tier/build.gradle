@@ -37,6 +37,7 @@ bootJar {
 }
 
 repositories {
+	mavenLocal()
 	jcenter()
 	mavenCentral()
 }
@@ -45,6 +46,16 @@ ext.springVersion = '5.2.13.RELEASE'
 ext.springSecurityVersion = '5.2.9.RELEASE'
 ext.junitPlatformVersion = '1.7.0'
 ext.junitJupiterVersion  = '5.7.0'
+
+if (project.hasProperty("use-snapshot")) {
+	if ("".equals(project.property("use-snapshot"))) {
+		ext.dataHubVersion = "5.5-SNAPSHOT"
+	} else {
+		ext.dataHubVersion = project.property("use-snapshot") + "-SNAPSHOT"
+	}
+} else {
+	ext.dataHubVersion = "5.4.4"
+}
 
 dependencies {
 	compile group: 'org.springframework', name: 'spring-web', version: springVersion
@@ -61,7 +72,7 @@ dependencies {
 	// No idea why this is necessary, but when Gradle brings the core project over, it bumps the okhttp3 dependency
 	// down from 4.4.0 to 3.x, which then breaks all kinds of stuff. So exclude the two okhttp3 dependencies and
 	// then explicitly depending on the desired versions.
-	implementation ("com.marklogic:marklogic-data-hub:5.4.4") {
+	implementation ("com.marklogic:marklogic-data-hub:" + dataHubVersion) {
 		exclude group: "com.squareup.okhttp3", module: "okhttp"
 		exclude group: "com.squareup.okhttp3", module: "logging-interceptor"
 	}
