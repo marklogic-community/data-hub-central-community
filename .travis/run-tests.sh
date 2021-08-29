@@ -10,7 +10,7 @@ if [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ] ; then
 
 	echo "plugins {
 		id 'net.saliman.properties' version '1.4.6'
-		id 'com.marklogic.ml-data-hub' version '5.2.0'
+		id 'com.marklogic.ml-data-hub' version '5.5.3'
 	}" > build.gradle
 
 	gradle hubInit

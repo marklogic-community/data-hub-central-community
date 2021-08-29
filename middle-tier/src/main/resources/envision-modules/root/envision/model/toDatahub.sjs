@@ -5,5 +5,5 @@
  */
 
 const model = require('/envision/model.sjs');
-const m = model.enhancedModel() || { nodes: {}, edges: {} };
+const m = model.enhancedModel();
 model.modelToES(m);

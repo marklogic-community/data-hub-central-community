@@ -15,6 +15,7 @@ import com.marklogic.client.eval.EvalResultIterator;
 import com.marklogic.client.eval.ServerEvaluationCall;
 import com.marklogic.client.ext.DatabaseClientConfig;
 import com.marklogic.client.ext.SecurityContextType;
+import com.marklogic.client.impl.FailedRequest;
 import com.marklogic.client.io.*;
 import com.marklogic.client.query.QueryManager;
 import com.marklogic.client.query.StructuredQueryBuilder;
@@ -404,6 +405,11 @@ public class BaseTest {
 			Path devProperties = getResourceFile("gradle.properties").toPath();
 			Path projectProperties = projectDir.toPath().resolve("gradle.properties");
 			Files.copy(devProperties, projectProperties, REPLACE_EXISTING);
+
+			File testConfig = getResourceFile("test-config");
+			File projectMlConfig = projectDir.toPath().resolve("src").resolve("main").resolve("ml-config").toFile();
+			projectMlConfig.mkdirs();
+			FileUtils.copyDirectory(testConfig, projectMlConfig);
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
@@ -436,6 +442,7 @@ public class BaseTest {
 	}
 
 	public void installEnvisionModules() {
+
 		if (!InstallTracker.hasInstalledModules()) {
 			installHubModules();
 		}
@@ -444,6 +451,15 @@ public class BaseTest {
 			installService.install(true);
 			InstallTracker.setInstalledModules(true);
 			InstallTracker.setLastMultiTenantValue(multiTenantValue);
+			if (envisionConfig.isMultiTenant()) {
+				try {
+					registerAccount();
+					registerAccount(ACCOUNT_NAME2, ACCOUNT_PASSWORD);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
 		}
 	}
 

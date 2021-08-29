@@ -43,7 +43,7 @@ else {
 	let sourceDatabase = combinedOptions.sourceDatabase || datahub.flow.globalContext.sourceDatabase;
 
 	combinedOptions.fullOutput = true;
-	combinedOptions.noWrite = !!preview;
+	combinedOptions.writeStepOutput = !preview;
 	combinedOptions.acceptsBatch = true;
 	let query = cts.documentQuery(uris);
 	let content = dhUtils.hubUtils.queryToContentDescriptorArray(query, combinedOptions, sourceDatabase);

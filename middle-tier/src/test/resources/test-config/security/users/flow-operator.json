@@ -1,0 +1,10 @@
+{
+	"user-name": "flow-operator",
+	"description": "Generic operator account",
+	"password": "password",
+	"role": [
+		"data-hub-operator",
+		"hub-central-operator",
+		"pii-reader"
+	]
+}

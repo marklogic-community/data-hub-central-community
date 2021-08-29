@@ -9,7 +9,7 @@ mkdir conceptConnectorModels
 
 echo "plugins {
 	id 'net.saliman.properties' version '1.4.6'
-	id 'com.marklogic.ml-data-hub' version '5.2.5'
+	id 'com.marklogic.ml-data-hub' version '5.5.3'
 }" > build.gradle
 
 echo "Initializing Hub..."
@@ -17,6 +17,16 @@ gradle hubInit
 
 echo "mlUsername=admin
 mlPassword=admin
+mlRestUsername=admin
+mlRestPassword=admin
+mlManageUsername=admin
+mlManagePassword=admin
+mlFlowOperatorRole=flow-operator-role
+mlFlowOperatorUserName=flow-operator
+mlFlowOperatorPassword=password
+mlFlowDeveloperRole=flow-developer-role
+mlFlowDeveloperUserName=flow-developer
+mlFlowDeveloperPassword=password
 " > gradle-local.properties
 
 mkdir -p src/main/entity-config/databases/
@@ -32,6 +42,9 @@ echo "{
 \"database-name\" : \"%%mlFinalDbName%%\"
 }
 "  > src/main/entity-config/databases/final-database.json
+
+mkdir -p src/main/ml-config
+cp -R ${project_dir}/middle-tier/src/test/resources/test-config/* src/main/ml-config/
 
 echo "gradle mlDeploy -i"
 gradle mlDeploy -i

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Objects;
 
 @Service
@@ -76,7 +77,7 @@ public class InstallService {
 	private void createEnvisionRole(ManageClient manageClient, DatabaseClient client) {
 		try {
 			RoleManager roleManager = new RoleManager(manageClient);
-			String role = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("envision-config/roles/envision.json")));
+			String role = IOUtils.toString(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("envision-config/roles/envision.json")), Charset.defaultCharset());
 			roleManager.save(role);
 
 			client.newServerEval().xquery("xquery version \"1.0-ml\";\n" +

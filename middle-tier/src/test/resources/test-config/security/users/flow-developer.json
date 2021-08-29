@@ -1,0 +1,10 @@
+{
+	"user-name": "flow-developer",
+	"description": "Generic developer account",
+	"password": "password",
+	"role": [
+		"data-hub-developer",
+		"hub-central-developer",
+		"pii-reader"
+	]
+}

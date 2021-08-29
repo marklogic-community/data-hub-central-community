@@ -169,7 +169,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 			.andDo(
 				result -> {
 					JsonNode node = readJsonObject(result.getResponse().getContentAsString());
-					JSONAssert.assertEquals("{\"lang\":\"zxx\",\"name\":\"wacky\",\"description\":\"Default description\",\"version\":1,\"targetEntityType\":\"http://marklogic.com/envision/Planet-0.0.1/Planet\",\"sourceContext\":\"/\",\"sourceURI\":\"\",\"properties\":{},\"namespaces\":{}}", objectMapper.writeValueAsString(node), true);
+					JSONAssert.assertEquals("{\"lang\":\"zxx\",\"name\":\"wacky\",\"description\":\"Default description\",\"version\":1,\"targetEntityType\":\"http://marklogic.com/envision/Planet-0.0.1/Planet\",\"sourceContext\":\"/\",\"sourceURI\":\"\",\"properties\":{},\"namespaces\":{},\"uriExpression\":{\"output\":\"/testFile.json\"},\"expressionContext\":\"/\"}", objectMapper.writeValueAsString(node), true);
 				})
 			.andExpect(status().isOk());
 	}

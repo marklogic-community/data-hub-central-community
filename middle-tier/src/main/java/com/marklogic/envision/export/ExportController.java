@@ -3,10 +3,10 @@ package com.marklogic.envision.export;
 import com.marklogic.grove.boot.AbstractController;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

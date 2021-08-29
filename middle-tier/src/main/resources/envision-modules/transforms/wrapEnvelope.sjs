@@ -44,7 +44,7 @@ function transform(context, params, content) {
 		outputFormat: outputFormat
 	};
 
-  options.noWrite = true;
+  options.writeStepOutput = false;
   options.fullOutput = true;
   options.noBatchWrite = true;
 

@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.FailedRequestException;
 import com.marklogic.envision.dataServices.Flows;
 import com.marklogic.grove.boot.AbstractController;
+import com.marklogic.hub.DatabaseKind;
 import com.marklogic.hub.dataservices.MappingService;
 import com.marklogic.hub.dataservices.StepService;
-import com.marklogic.hub.mapping.MappingValidator;
 import com.marklogic.hub.step.StepDefinition;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +95,9 @@ public class FlowsController extends AbstractController {
 
 	@RequestMapping(value = "/mappings/validate", method = RequestMethod.POST)
 	@ResponseBody
-	public JsonNode validateMapping(@RequestBody JsonNode mapping, @RequestParam(value = "uri")String uri) {
-		MappingValidator mappingValidator = new MappingValidator(getHubClient().getStagingClient());
-		return mappingValidator.validateJsonMapping(mapping.toString(), uri);
+	public ResponseEntity<?> validateMapping(@RequestBody JsonNode mapping, @RequestParam(value = "uri")String uri) {
+		MappingService mappingService = MappingService.on(getHubClient().getStagingClient());
+		return new ResponseEntity<>(mappingService.testMapping(uri, getHubClient().getDbName(DatabaseKind.STAGING), mapping), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/mappings/functions", method = RequestMethod.GET)
