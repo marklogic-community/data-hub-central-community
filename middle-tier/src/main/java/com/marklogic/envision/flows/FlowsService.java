@@ -18,6 +18,7 @@ import com.marklogic.hub.dataservices.FlowService;
 import com.marklogic.hub.dataservices.StepService;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
+import com.marklogic.hub.flow.RunFlowResponse;
 import com.marklogic.hub.flow.impl.FlowRunnerImpl;
 import com.marklogic.hub.impl.FlowManagerImpl;
 import com.marklogic.hub.impl.ScaffoldingImpl;
@@ -255,7 +256,9 @@ public class FlowsService {
 					.withPercentComplete(percentComplete);
 				this.template.convertAndSend("/topic/status", msg);
 			});
-			flowRunner.runFlow(inputs);
+			RunFlowResponse runFlowResp = flowRunner.runFlow(inputs);
+			String jobId = runFlowResp.getJobId();
+
 			flowRunner.awaitCompletion();
 		}
 		catch(Exception e) {

@@ -164,8 +164,7 @@ function getModel() {
 }
 
 function getEnhancedModel() {
-	let model = getModel();
-	if (!model) return null;
+	let model = getModel() || { nodes: {}, edges: {} };
 
 	let names = {};
 	Object.keys(model.nodes).forEach(key => {
