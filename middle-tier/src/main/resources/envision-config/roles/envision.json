@@ -30,16 +30,6 @@
       "privilege-name": "admin-database",
       "action": "http://marklogic.com/xdmp/privileges/admin/database",
       "kind": "execute"
-    },
-    {
-      "privilege-name": "dhf-internal-entities",
-      "action": "/entities/",
-      "kind": "uri"
-		},
-		{
-      "privilege-name": "dhf-internal-mappings",
-      "action": "/mappings/",
-      "kind": "uri"
     }
   ]
 }
