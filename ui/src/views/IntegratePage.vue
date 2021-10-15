@@ -143,7 +143,7 @@
 							<template>
 								<v-layout row>
 									<v-flex md12 class="text-center">
-										<h1>Manage My Data</h1>
+										<div class="headline">Manage My Data</div>
 									</v-flex>
 								</v-layout>
 								<v-row justify="center">
@@ -757,7 +757,7 @@ export default {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	padding: 0px;
+	padding: 20px;
 
 	.flex {
 		padding: 12px 20px;
