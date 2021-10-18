@@ -18,7 +18,7 @@ import java.util.List;
 public class EntityManagerService {
 	public List<HubEntity> getEntities(HubClient hubClient) {
 		List<HubEntity> hubEntites = new ArrayList<HubEntity>();
-		Iterator<JsonNode> models = newService(hubClient).getPrimaryEntityTypes().elements();
+		Iterator<JsonNode> models = newService(hubClient).getPrimaryEntityTypes(Boolean.FALSE).elements();
 		while (models.hasNext()) {
 			JsonNode model = models.next();
 			hubEntites.add(HubEntity.fromJson(model.path("info").path("title").asText(""), model.path("model")));
@@ -27,8 +27,7 @@ public class EntityManagerService {
 	}
 
 	public HubEntity getEntity(HubClient hubClient, String entityName, Boolean extendSubEntities) {
-		ModelsService service = newService(hubClient);
-		Iterator<JsonNode> models = service.getPrimaryEntityTypes().elements();
+		Iterator<JsonNode> models = newService(hubClient).getPrimaryEntityTypes(Boolean.FALSE).elements();
 		while (models.hasNext()) {
 			JsonNode model = models.next();
 			String modelTitle = model.path("info").path("title").asText("");
@@ -41,14 +40,25 @@ public class EntityManagerService {
 		HubEntity hubEntity = em.getEntityFromProject(entityName, extendSubEntities);
 		if (hubEntity != null) {
 			try {
-				service.saveModel(hubEntity.toJson());
+				newService(hubClient).saveDraftModel(hubEntity.toJson());
+				newService(hubClient).publishDraftModels();
 			} catch (FailedRequestException e) {}
 		}
 		return hubEntity;
 	}
 
 	public void deleteEntity(HubClient hubClient, String entityName) {
-		newService(hubClient).deleteModel(entityName);
+		String entityURI = "/entities/"+ entityName + ".entity.json";
+		try {
+			hubClient.getStagingClient().newDocumentManager().delete(entityURI);
+		} catch (FailedRequestException ignored) {}
+		try {
+			hubClient.getFinalClient().newDocumentManager().delete(entityURI);
+		} catch (FailedRequestException ignored) {}
+	}
+
+	public void publishDraftModels(HubClient hubClient) {
+		newService(hubClient).publishDraftModels();
 	}
 
 	private ModelsService newService(HubClient hubClient) {

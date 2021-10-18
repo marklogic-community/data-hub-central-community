@@ -49,12 +49,12 @@ ext.junitJupiterVersion  = '5.7.0'
 
 if (project.hasProperty("use-snapshot")) {
 	if ("".equals(project.property("use-snapshot"))) {
-		ext.dataHubVersion = "5.5-SNAPSHOT"
+		ext.dataHubVersion = "5.6-SNAPSHOT"
 	} else {
 		ext.dataHubVersion = project.property("use-snapshot") + "-SNAPSHOT"
 	}
 } else {
-	ext.dataHubVersion = "5.5.3"
+	ext.dataHubVersion = "5.6.0"
 }
 
 dependencies {
@@ -82,6 +82,8 @@ dependencies {
 	// jack-core and jackson-dataformat-csv are no longer packaged with marklogic-data-hub
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.5'
 	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.12.5'
+
+	implementation 'org.apache.commons:commons-collections4:4.4'
 
 	// Depend on the versions that ML Java Client 5.3.0 depends on
 	implementation "com.squareup.okhttp3:okhttp:4.7.2"

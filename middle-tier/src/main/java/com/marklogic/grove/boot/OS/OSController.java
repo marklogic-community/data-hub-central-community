@@ -3,8 +3,7 @@ package com.marklogic.grove.boot.OS;
 import com.marklogic.envision.config.EnvisionConfig;
 import com.marklogic.envision.deploy.DeployHubService;
 import com.marklogic.grove.boot.AbstractController;
-import com.marklogic.hub.deploy.util.HubDeployStatusListener;
-import com.marklogic.hub.dhs.DhsDeployer;
+import com.marklogic.hub.deploy.HubDeployer;
 import com.marklogic.hub.entity.HubEntity;
 import com.marklogic.hub.flow.Flow;
 import com.marklogic.hub.flow.FlowInputs;
@@ -129,24 +128,6 @@ public class OSController extends AbstractController {
 		return output;
 	}
 
-	private HubDeployStatusListener getListener() {
-		// callback for status updates
-		HubDeployStatusListener listener;
-		listener = new HubDeployStatusListener() {
-			@Override
-			public void onStatusChange(final int percentComplete, final String message) {
-				// TODO access view's progress indicator
-				System.out.println(message + " complete:" + percentComplete);
-			}
-
-			@Override
-			public void onError(String msg, Exception ex) {
-				System.out.println("Deploy controller in error: " + msg);
-			}
-		};
-		return listener;
-	}
-
 	// Deploy entities and flows to DH
 	@RequestMapping(value = "/deployToDH", method = RequestMethod.GET)
 	public String deployToDH() {
@@ -169,7 +150,7 @@ public class OSController extends AbstractController {
 
 	// dispatch to DHSDeployer
 	private void deployToDHS() {
-		final DhsDeployer dhsDeployer = new DhsDeployer();
+		final HubDeployer dhsDeployer = new HubDeployer();
 
 		HubConfigImpl hubConfig = getHubClient().getHubConfig();
 		dhsDeployer.deployAsSecurityAdmin(hubConfig);
@@ -178,9 +159,8 @@ public class OSController extends AbstractController {
 
 	private boolean deployToNonProvisioned() {
 		boolean result = false;
-		final HubDeployStatusListener listener = getListener();
 		try {
-			result = deployService.deployHubInstall(listener);
+			result = deployService.deployHubInstall();
 		} catch (final Error error) {
 			error.printStackTrace();
 		}
