@@ -87,6 +87,11 @@ public class HubClientImpl implements HubClient {
 	}
 
 	@Override
+	public DatabaseClient getStagingClient(String dbName) {
+		return this.hubConfig.newStagingClient(dbName);
+	}
+
+	@Override
 	public DatabaseClient getFinalClient() {
 		return finalClient;
 	}
