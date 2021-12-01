@@ -185,7 +185,7 @@ public class FlowsControllerTests extends AbstractMvcTest {
 			.andDo(
 				result -> {
 					ArrayNode node = readJsonArray(result.getResponse().getContentAsString());
-					assertTrue(node.size() > 100);
+					assertTrue(node.size() > 90);
 				})
 			.andExpect(status().isOk());
 	}
