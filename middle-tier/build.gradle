@@ -54,7 +54,7 @@ if (project.hasProperty("use-snapshot")) {
 		ext.dataHubVersion = project.property("use-snapshot") + "-SNAPSHOT"
 	}
 } else {
-	ext.dataHubVersion = "5.6.1"
+	ext.dataHubVersion = "5.6.2"
 }
 
 dependencies {
