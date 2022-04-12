@@ -94,8 +94,8 @@ dependencies {
 
 	implementation 'org.apache.commons:commons-email:1.5'
 
-	implementation 'org.apache.jena:jena-arq:4.4.0'
-	implementation 'org.apache.jena:jena-core:4.4.0'
+	implementation 'org.apache.jena:jena-arq:3.17.0'
+	implementation 'org.apache.jena:jena-core:3.17.0'
 	implementation 'commons-codec:commons-codec:1.15'
 
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
