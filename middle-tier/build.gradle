@@ -4,14 +4,14 @@ buildscript {
 		maven { url "https://plugins.gradle.org/m2/" }
 	}
 	dependencies {
-		classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.13.RELEASE"
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.6"
 		classpath "com.moowork.gradle:gradle-node-plugin:1.3.1"
 	}
 }
 
 plugins {
-	id 'com.marklogic.ml-development-tools' version '4.1.1'
-	id 'org.springframework.boot' version '2.2.13.RELEASE'
+	id 'com.marklogic.ml-development-tools' version '5.5.2'
+	id 'org.springframework.boot' version '2.6.6'
 }
 
 apply plugin: "java"
@@ -42,32 +42,32 @@ repositories {
 	mavenCentral()
 }
 
-ext.springVersion = '5.2.13.RELEASE'
-ext.springSecurityVersion = '5.2.9.RELEASE'
-ext.junitPlatformVersion = '1.7.0'
-ext.junitJupiterVersion  = '5.7.0'
+ext.springVersion = '5.3.18'
+ext.springSecurityVersion = '5.6.2'
+ext.junitPlatformVersion = '1.8.2'
+ext.junitJupiterVersion  = '5.8.2'
 
 if (project.hasProperty("use-snapshot")) {
 	if ("".equals(project.property("use-snapshot"))) {
-		ext.dataHubVersion = "5.6-SNAPSHOT"
+		ext.dataHubVersion = "5.8-SNAPSHOT"
 	} else {
 		ext.dataHubVersion = project.property("use-snapshot") + "-SNAPSHOT"
 	}
 } else {
-	ext.dataHubVersion = "5.7.0"
+	ext.dataHubVersion = "5.7.1"
 }
 
 dependencies {
-	compile group: 'org.springframework', name: 'spring-web', version: springVersion
-	compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
+	implementation group: 'org.springframework', name: 'spring-web', version: springVersion
+	implementation group: 'org.springframework', name: 'spring-webmvc', version: springVersion
 
-	compile group: 'org.springframework.security', name: 'spring-security-core', version: springSecurityVersion
-	compile group: 'org.springframework.security', name: 'spring-security-config', version: springSecurityVersion
-	compile group: 'org.springframework.security', name: 'spring-security-web', version: springSecurityVersion
+	implementation group: 'org.springframework.security', name: 'spring-security-core', version: springSecurityVersion
+	implementation group: 'org.springframework.security', name: 'spring-security-config', version: springSecurityVersion
+	implementation group: 'org.springframework.security', name: 'spring-security-web', version: springSecurityVersion
 
-	compile "org.springframework.boot:spring-boot-starter-web"
-	compile "org.springframework.boot:spring-boot-starter-websocket"
-	compile "org.springframework.boot:spring-boot-starter-mail"
+	implementation "org.springframework.boot:spring-boot-starter-web"
+	implementation "org.springframework.boot:spring-boot-starter-websocket"
+	implementation "org.springframework.boot:spring-boot-starter-mail"
 
 	// No idea why this is necessary, but when Gradle brings the core project over, it bumps the okhttp3 dependency
 	// down from 4.4.0 to 3.x, which then breaks all kinds of stuff. So exclude the two okhttp3 dependencies and
@@ -80,49 +80,49 @@ dependencies {
 	// data-movement-components are no longer packaged with marklogic-data-hub
 	implementation "com.marklogic:marklogic-data-movement-components:2.4.0"
 	// jack-core and jackson-dataformat-csv are no longer packaged with marklogic-data-hub
-	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.5'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.12.5'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.13.2'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.2'
 
 	implementation 'org.apache.commons:commons-collections4:4.4'
 
 	// Depend on the versions that ML Java Client 5.3.0 depends on
 	implementation "com.squareup.okhttp3:okhttp:4.7.2"
 	implementation "com.squareup.okhttp3:logging-interceptor:4.7.2"
-	implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.72"
+	implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
 
-	compile("com.marklogic:marklogic-spring-web:1.0")
+	implementation "com.marklogic:marklogic-spring-web:1.0"
 
-	compile('org.apache.commons:commons-email:1.5')
+	implementation 'org.apache.commons:commons-email:1.5'
 
-	compile('org.apache.jena:jena-arq:3.17.0')
-	compile('org.apache.jena:jena-core:3.17.0')
-	compile('commons-codec:commons-codec:1.15')
+	implementation 'org.apache.jena:jena-arq:4.4.0'
+	implementation 'org.apache.jena:jena-core:4.4.0'
+	implementation 'commons-codec:commons-codec:1.15'
 
-	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
-	testCompile group: 'org.springframework', name: 'spring-test'
-	testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+	testImplementation group: 'org.springframework', name: 'spring-test'
+	testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
 		exclude group : 'junit', module: 'junit'
 		exclude group : 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	testCompile group: 'org.springframework.security', name: 'spring-security-test'
+	testImplementation group: 'org.springframework.security', name: 'spring-security-test'
 
-//	testCompile "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
-	testCompile "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testCompile "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
-	testCompile "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
-	testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
-	testRuntime "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
-	testRuntime "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
+//	testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+	testImplementation "org.junit.platform:junit-platform-commons:${junitPlatformVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junitPlatformVersion}"
+	testRuntimeOnly "org.junit.platform:junit-platform-engine:${junitPlatformVersion}"
 
-	testCompile 'org.skyscreamer:jsonassert:1.5.0'
-	testCompile 'org.xmlunit:xmlunit-core:2.8.2'
-	testCompile 'org.xmlunit:xmlunit-matchers:2.8.2'
-	testCompile 'org.easymock:easymock:3.4'
-	testCompile 'ch.qos.logback:logback-classic:1.1.11'
-	testCompile 'org.slf4j:log4j-over-slf4j:1.7.13'
-	testCompile "org.mockito:mockito-core:3.0.0"
-	testCompile "org.mockito:mockito-junit-jupiter:3.0.0"
+	testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+	testImplementation 'org.xmlunit:xmlunit-core:2.9.0'
+	testImplementation 'org.xmlunit:xmlunit-matchers:2.9.0'
+	testImplementation 'org.easymock:easymock:4.3'
+	testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+	testImplementation 'org.slf4j:log4j-over-slf4j:1.7.36'
+	testImplementation "org.mockito:mockito-core:4.4.0"
+	testImplementation "org.mockito:mockito-junit-jupiter:4.4.0"
 }
 
 processResources {
@@ -192,7 +192,7 @@ clean.dependsOn deleteSpringBootUiFiles
 
 springBoot {
 	// not in spring boot 2 executable = true
-	mainClassName = "com.marklogic.grove.boot.Application"
+	mainClass = "com.marklogic.grove.boot.Application"
 }
 
 
