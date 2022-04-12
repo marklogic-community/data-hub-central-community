@@ -27,17 +27,19 @@ xdmp.invokeFunction(function() {
 
 xdmp.invokeFunction(function() {
 	declareUpdate();
-	sec.createUser(
-		user.email,
-		user.email,
-		user.password,
-		[roleName],
-		[
-			xdmp.permission(roleName, 'read', 'element'),
-			xdmp.permission(roleName, 'update', 'element')
-		],
-		xdmp.defaultCollections()
-	);
+	if (!sec.userExists(user.email)) {
+		sec.createUser(
+			user.email,
+			user.email,
+			user.password,
+			[roleName],
+			[
+				xdmp.permission(roleName, 'read', 'element'),
+				xdmp.permission(roleName, 'update', 'element')
+			],
+			xdmp.defaultCollections()
+		);
+	}
 }, {
 	database: xdmp.securityDatabase()
 });
